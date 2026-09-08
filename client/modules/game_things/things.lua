@@ -42,6 +42,25 @@ local function hasModernAssetFeatures(datPath)
   return otfi:find('frame%-groups:%s*true') ~= nil or otfi:find('sprite%-data%-size:%s*4096') ~= nil
 end
 
+-- O .otfi pode declarar "transparency: true", que significa sprites com canal
+-- alpha (RGBA, 4 bytes por pixel). Sem isso o SpriteManager le como RGB (3
+-- bytes) e o stream dessincroniza: writePos estoura 4096 e o sprite vira lixo
+-- -- na pratica, chao e outfits invisiveis. Ver spritemanager.cpp, onde
+-- useAlpha = getFeature(GameSpritesAlphaChannel).
+local function hasSpriteAlphaChannel(datPath)
+  local otfiPath = datPath .. '.otfi'
+  if not g_resources.fileExists(otfiPath) then
+    return false
+  end
+
+  local otfi = g_resources.readFileContents(otfiPath)
+  if not otfi then
+    return false
+  end
+
+  return otfi:find('transparency:%s*true') ~= nil
+end
+
 local function enableModernAssetFeatures()
   g_game.enableFeature(GameSpritesU32)
   g_game.enableFeature(GameIdleAnimations)
@@ -77,6 +96,9 @@ function load()
   local assetVersion = getVersionFromPath(datPath) or version
   if hasModernAssetFeatures(datPath) then
     enableModernAssetFeatures()
+  end
+  if hasSpriteAlphaChannel(datPath) then
+    g_game.enableFeature(GameSpritesAlphaChannel)
   end
 
   if assetVersion ~= version then
