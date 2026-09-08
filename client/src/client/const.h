@@ -47,6 +47,21 @@ namespace Otc
         // diagonal do Tibia.
         FLOOR_LIFT = 16,
 
+        // Deslocamento horizontal do HUD da criatura -- barra de vida, nome,
+        // mana e icones -- em MapView::drawCreatureInformation.
+        //
+        // O termo original `16 * offsetFactor - displacementX` assume que
+        // `dest` e o canto superior-ESQUERDO de uma celula QUADRADA de 32x32,
+        // e por isso anda 16px para a direita para achar o centro. No losango
+        // `dest` e o VERTICE SUPERIOR, que ja e o centro horizontal da celula
+        // (ela abre +-16px em torno dele), entao aquele termo nao aterrissa
+        // mais onde aterrissava. Este e o ajuste, medido na tela.
+        //
+        // CUIDADO: o HUD tambem subtrai o displacement do outfit, entao mexer
+        // no displacement das criaturas no .dat move as barras junto e este
+        // valor precisa ser reconferido.
+        HUD_SHIFT_X = 8,
+
         INVISIBLE_TICKS_PER_FRAME = 500,
         INVISIBLE_TICKS_PER_FRAME_FAST = 100,
         ITEM_TICKS_PER_FRAME = 500,
