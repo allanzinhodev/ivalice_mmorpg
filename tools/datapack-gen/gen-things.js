@@ -426,6 +426,22 @@ function main() {
   });
 
   // --- grava
+  //
+  // ATENCAO: o datapack em client/data/things/860/ e VERSIONADO e foi
+  // autorado a mao (Object Builder). Este gerador escreve nos mesmos
+  // caminhos, entao rodar sem querer apagaria o material bom. So sobrescreve
+  // com --force, e ai a recuperacao e `git checkout -- client/data/things`.
+  const force = process.argv.includes('--force');
+  const existentes = ['Tibia.dat', 'Tibia.spr', 'Tibia.otfi']
+    .filter((f) => fs.existsSync(path.join(OUT_DIR, f)));
+  if (existentes.length > 0 && !force) {
+    console.error(`Ja existe datapack em ${OUT_DIR}: ${existentes.join(', ')}`);
+    console.error('Este gerador SOBRESCREVE esses arquivos. O datapack versionado');
+    console.error('foi feito a mao -- se e ele que esta ai, nao rode isto.');
+    console.error('Para gerar mesmo assim: node tools/datapack-gen/gen-things.js --force');
+    process.exit(1);
+  }
+
   fs.mkdirSync(OUT_DIR, { recursive: true });
   const dat = w.toBuffer();
   const spr = buildSpr(sprites);
