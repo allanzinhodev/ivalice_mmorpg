@@ -20,6 +20,7 @@ const { Props, Node, buildFile } = require('./otb-common');
 const ROOT_ATTR_VERSION = 0x01;
 
 const ITEM_GROUP_GROUND = 1; // itemloader.h:9-29
+const ITEM_GROUP_CONTAINER = 2;
 
 const ITEM_ATTR_SERVERID = 0x10; // itemloader.h:62+
 const ITEM_ATTR_CLIENTID = 0x11;
@@ -45,6 +46,16 @@ const ITEMS = [
   { id: 100, name: 'grass', speed: 110 },
   { id: 101, name: 'sand', speed: 110 },
   { id: 102, name: 'stone', speed: 110 },
+
+  // O store inbox (ITEM_STORE_INBOX = 23396) NAO entra aqui de proposito.
+  // O Player o cria no construtor (player.cpp) e o server o enviava a todo
+  // cliente OTC no login (protocolgame.cpp), mas o Tibia.dat deste projeto so
+  // vai ate o id 102 -- o client lancaria "unable to create item with invalid
+  // id 23396" e ABORTARIA o parse do pacote, entrando sem receber o mapa.
+  //
+  // A correcao esta no server: o envio agora e condicionado a existencia do
+  // item no items.otb. Declarar 23396 aqui reativaria o bug, porque o lado do
+  // client continua sem o ThingType.
 ];
 
 function buildOtb() {
@@ -64,9 +75,10 @@ function buildOtb() {
   root.props.attr(ROOT_ATTR_VERSION, versionBuf);
 
   for (const item of ITEMS) {
-    // O byte de tipo do no E o itemgroup_t -> 1 = ITEM_GROUP_GROUND.
-    const n = root.child(ITEM_GROUP_GROUND);
-    // flags = 0: sem FLAG_BLOCK_SOLID -> andavel.
+    // O byte de tipo do no E o itemgroup_t (items.cpp:707).
+    const group = item.group === 'container' ? ITEM_GROUP_CONTAINER : ITEM_GROUP_GROUND;
+    const n = root.child(group);
+    // flags = 0: sem FLAG_BLOCK_SOLID -> chao andavel.
     n.props.u32(0);
     const u16 = (v) => {
       const b = Buffer.alloc(2);
@@ -75,7 +87,9 @@ function buildOtb() {
     };
     n.props.attr(ITEM_ATTR_SERVERID, u16(item.id));
     n.props.attr(ITEM_ATTR_CLIENTID, u16(item.id)); // igual ao serverid!
-    n.props.attr(ITEM_ATTR_SPEED, u16(item.speed));
+    if (item.speed !== undefined) {
+      n.props.attr(ITEM_ATTR_SPEED, u16(item.speed));
+    }
   }
 
   return buildFile(root);

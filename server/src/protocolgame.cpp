@@ -4171,7 +4171,15 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position& pos
 	}
 
 	if (isOTC) {
-		sendInventoryItem(CONST_SLOT_STORE_INBOX, player->getStoreInbox());
+		// So envia o store inbox se o item existir no items.otb. Ele e criado
+		// incondicionalmente no construtor do Player (player.cpp, com o id fixo
+		// ITEM_STORE_INBOX), entao num datapack minimo que nao o declare o
+		// cliente recebe um id desconhecido, lanca "unable to create item with
+		// invalid id" e ABORTA o parse do pacote inteiro -- o jogador entra mas
+		// nunca recebe o mapa.
+		if (Item::items[ITEM_STORE_INBOX].id != 0) {
+			sendInventoryItem(CONST_SLOT_STORE_INBOX, player->getStoreInbox());
+		}
 	}
 
 	sendPlayerInventory();

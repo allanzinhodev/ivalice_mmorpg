@@ -79,17 +79,21 @@ function checkItems(file) {
       else if (a === 0x11) clientid = payload.readUInt16LE(0);
       else if (a === 0x14) speed = payload.readUInt16LE(0);
     }
-    const isGround = c.type === 1;
-    const ok = serverid === clientid && isGround;
+    const groupName = { 1: 'GROUND', 2: 'CONTAINER' }[c.type] || `grupo ${c.type}`;
     console.log(
-      `    id=${clientid} group=${c.type}${isGround ? ' (GROUND)' : ''} ` +
-      `serverid=${serverid} clientid=${clientid} speed=${speed} ${ok ? 'OK' : '<<< PROBLEMA'}`
+      `    id=${clientid} group=${c.type} (${groupName}) ` +
+      `serverid=${serverid} clientid=${clientid}${speed !== null ? ` speed=${speed}` : ''}` +
+      `${serverid === clientid ? ' OK' : ' <<< PROBLEMA'}`
     );
     if (serverid !== clientid) {
       throw new Error(`serverid != clientid em id=${clientid}: o server indexa por clientid (items.cpp:705)`);
     }
-    if (!isGround) throw new Error(`item ${clientid} nao e ITEM_GROUP_GROUND`);
   }
+
+  // Pelo menos um ground tile precisa existir, senao o mapa fica sem chao.
+  const grounds = root.children.filter((c) => c.type === 1).length;
+  if (grounds === 0) throw new Error('nenhum ITEM_GROUP_GROUND definido');
+  console.log(`  ground tiles: ${grounds}`);
 }
 
 function checkMap(file, expectedIds) {
@@ -165,7 +169,9 @@ function main() {
   checkItems(path.join(base, 'items/items.otb'));
   console.log('== world.otbm ==');
   const { ITEMS } = require('./gen-items');
-  checkMap(path.join(base, 'world/world.otbm'), ITEMS.map((i) => i.id));
+  // o mapa so usa ground tiles; o store inbox nao aparece no OTBM
+  const groundIds = ITEMS.filter((i) => i.group !== 'container').map((i) => i.id);
+  checkMap(path.join(base, 'world/world.otbm'), groundIds);
   console.log('\nTudo consistente.');
 }
 

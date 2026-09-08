@@ -130,9 +130,17 @@ void MapView::drawMapBackground(const Rect& rect, const TilePtr& crosshairTile) 
         Light ambientLight;
         if (cameraPosition.z <= g_gameConfig.getMapSeaFloor())
             ambientLight = g_map.getLight();
-        if (!m_lightTexture || m_lightTexture->getSize() != m_drawDimension)
-            m_lightTexture = std::make_shared<Texture>(m_drawDimension, false, true);
-        m_lightView = std::make_unique<LightView>(m_lightTexture, m_drawDimension, rect, srcRect, ambientLight.color,
+        // O grid de luz e indexado por (pixel / spriteSize) -- ver
+        // LightView::setFieldBrightness. Com a projecao isometrica o campo de
+        // tiles nao cabe mais num grid m_drawDimension: os pixels vao ate
+        // m_optimizedSize, entao o grid tem que cobrir o framebuffer inteiro.
+        // Dimensionar pelo drawDimension deixava a maioria dos tiles fora do
+        // grid, sem luz nenhuma -- tela preta.
+        const Size lightSize((m_optimizedSize.width() + g_sprites.spriteSize() - 1) / g_sprites.spriteSize(),
+                             (m_optimizedSize.height() + g_sprites.spriteSize() - 1) / g_sprites.spriteSize());
+        if (!m_lightTexture || m_lightTexture->getSize() != lightSize)
+            m_lightTexture = std::make_shared<Texture>(lightSize, false, true);
+        m_lightView = std::make_unique<LightView>(m_lightTexture, lightSize, rect, srcRect, ambientLight.color,
                                                   std::max<int>(m_minimumAmbientLight * 255, ambientLight.intensity));
     }
 
@@ -439,25 +447,33 @@ void MapView::updateGeometry(const Size& visibleDimension, const Size& optimized
     m_visibleCenterOffset = m_virtualCenterOffset;
 
     // --- Geometria isometrica ---
-    // Um campo diamante de W x H tiles ocupa (W+H)*TILE_HALF_W de largura por
-    // (W+H)*TILE_HALF_H de altura. Isso e bem diferente do W*32 x H*32 da
-    // grade ortogonal, entao o framebuffer precisa ser redimensionado.
+    // Os tiles desenhados vao de col=[-cx, w-1-cx] e row=[-cy, h-1-cy], onde
+    // (cx,cy) = m_virtualCenterOffset. Projetando os quatro cantos:
+    //   screenX = (col-row)*HW   -> extremos em (colMin-rowMax) e (colMax-rowMin)
+    //   screenY = (col+row)*HH   -> extremos em (colMin+rowMin) e (colMax+rowMax)
+    // A origem da projecao fica DENTRO desse campo, nao no topo -- foi o erro
+    // que deixava metade do mapa fora da janela visivel.
     const int w = m_drawDimension.width();
     const int h = m_drawDimension.height();
-    const int diamondW = (w + h) * Otc::TILE_HALF_W;
-    const int diamondH = (w + h) * Otc::TILE_HALF_H;
+    const int colMin = -m_virtualCenterOffset.x, colMax = w - 1 - m_virtualCenterOffset.x;
+    const int rowMin = -m_virtualCenterOffset.y, rowMax = h - 1 - m_virtualCenterOffset.y;
 
-    // Margens: sprites sao mais altos que a celula e ficam ancorados pela
-    // base, o lift de andares sobe a cena, e itens empilhados usam elevacao.
+    const int fieldLeft = (colMin - rowMax) * Otc::TILE_HALF_W;
+    const int fieldRight = (colMax - rowMin) * Otc::TILE_HALF_W;
+    const int fieldTop = (colMin + rowMin) * Otc::TILE_HALF_H;
+    const int fieldBottom = (colMax + rowMax) * Otc::TILE_HALF_H;
+
+    // Margens: sprites sao mais altos que a celula e ancorados pela base, o
+    // lift de andares sobe a cena, e itens empilhados usam elevacao.
     const int marginTop = g_gameConfig.getMapMaxZ() * Otc::FLOOR_LIFT + g_sprites.spriteSize() + Otc::MAX_ELEVATION;
     const int marginBottom = g_sprites.spriteSize();
     const int marginX = g_sprites.spriteSize();
 
-    m_optimizedSize = Size(diamondW + marginX * 2, diamondH + marginTop + marginBottom);
+    m_optimizedSize = Size((fieldRight - fieldLeft) + marginX * 2,
+                           (fieldBottom - fieldTop) + marginTop + marginBottom);
 
-    // Origem da projecao dentro do framebuffer. O tile (0,0) relativo a camera
-    // fica no centro horizontal; em Y descontamos a margem de topo.
-    m_projectionOffset = Point(m_optimizedSize.width() / 2, marginTop);
+    // Origem da projecao: desloca o campo para dentro do framebuffer.
+    m_projectionOffset = Point(marginX - fieldLeft, marginTop - fieldTop);
 
     requestVisibleTilesCacheUpdate();
 }
@@ -622,16 +638,24 @@ void MapView::move(int x, int y)
 
 Rect MapView::calcFramebufferSource(const Size& destSize, bool inNextFrame)
 {
-    // Janela visivel em espaco diamante: os tiles visiveis formam um losango
-    // de (W+H)*TILE_HALF_W por (W+H)*TILE_HALF_H.
+    // Janela visivel em espaco diamante. Calculada do mesmo jeito que o campo
+    // em updateGeometry, mas com m_visibleDimension: os extremos vem dos
+    // quatro cantos projetados, e a janela e centrada no tile da camera.
     const int vw = m_visibleDimension.width();
     const int vh = m_visibleDimension.height();
-    Size srcVisible((vw + vh) * Otc::TILE_HALF_W, (vh + vw) * Otc::TILE_HALF_H);
+    const int cx = vw / 2, cy = vh / 2;
+    const int colMin = -cx, colMax = vw - 1 - cx;
+    const int rowMin = -cy, rowMax = vh - 1 - cy;
 
-    // Canto superior-esquerdo do losango visivel dentro do framebuffer.
-    // O centro da area visivel coincide com a origem da projecao em X.
-    Point drawOffset(m_projectionOffset.x - srcVisible.width() / 2,
-                     m_projectionOffset.y - Otc::TILE_HALF_H);
+    const int left = (colMin - rowMax) * Otc::TILE_HALF_W;
+    const int right = (colMax - rowMin) * Otc::TILE_HALF_W;
+    const int top = (colMin + rowMin) * Otc::TILE_HALF_H;
+    const int bottom = (colMax + rowMax) * Otc::TILE_HALF_H;
+
+    Size srcVisible(right - left, bottom - top);
+
+    // Canto superior-esquerdo da janela, relativo a origem da projecao.
+    Point drawOffset(m_projectionOffset.x + left, m_projectionOffset.y + top);
 
     if(isFollowingCreature()) {
         // O walk offset ja vem projetado em espaco diamante (ver
