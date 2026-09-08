@@ -18,7 +18,12 @@ vcpkg_installed/
 build/
 build-*/
 client/vc23/otclient/
-server/vc18/
+# ATENCAO: server/vc18/ NAO e arvore de build -- e o diretorio do projeto MSVC
+# do server, com fontes dentro. O server/CMakeLists.txt:337 faz
+# `target_sources(tfs PRIVATE ${CMAKE_SOURCE_DIR}/vc18/theforgottenserver.rc)`
+# no Windows, entao ignorar a pasta inteira quebra o build em todo clone novo
+# ("Cannot find source file"). Ignorar so a saida intermediaria.
+server/vc18/*/
 x64/
 Win32/
 [Dd]ebug/
