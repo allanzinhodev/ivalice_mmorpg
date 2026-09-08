@@ -163,6 +163,179 @@ function checkMap(file, expectedIds) {
   if (!hasTown1) throw new Error('nenhuma town com id=1 -- todo login falharia');
 }
 
+// --- lado do client: Tibia.dat + Tibia.spr --------------------------------
+
+// Atributos COM payload na versao 860 (o switch de ThingType::unserialize,
+// client/src/client/thingtype.cpp:232-290). Os que nao estao aqui caem no
+// `default` e nao consomem bytes.
+const ATTR_PAYLOAD = {
+  0: 2,   // Ground (speed)
+  8: 2,   // Writable
+  9: 2,   // WritableOnce
+  21: 4,  // Light
+  24: 4,  // Displacement
+  25: 2,  // Elevation
+  28: 2,  // MinimapColor
+  29: 2,  // LensHelp
+  32: 2,  // Cloth
+  34: 2,  // Usable
+  38: 16, // Bones
+};
+const ATTR_GROUND = 0;
+const ATTR_DISPLACEMENT = 24;
+const ATTR_MARKET = 33;
+const ATTR_LAST = 0xff;
+
+/** Le um ThingType do .dat exatamente como o client le. */
+function readThing(b, o, hasFrameGroups) {
+  const attrs = new Map();
+  for (;;) {
+    if (o >= b.length) throw new Error('EOF no meio dos atributos');
+    const a = b.readUInt8(o); o += 1;
+    if (a === ATTR_LAST) break;
+    if (a === ATTR_MARKET) {
+      o += 6;                                // category, tradeAs, showAs
+      const len = b.readUInt16LE(o); o += 2;  // name
+      o += len + 4;                           // restrictVocation, requiredLevel
+      attrs.set(a, true);
+      continue;
+    }
+    const size = ATTR_PAYLOAD[a] || 0;
+    // Displacement e int16 logico, gravado em complemento de dois.
+    if (a === ATTR_DISPLACEMENT) attrs.set(a, [b.readInt16LE(o), b.readInt16LE(o + 2)]);
+    else if (size === 2) attrs.set(a, b.readUInt16LE(o));
+    else attrs.set(a, true);
+    o += size;
+  }
+
+  let groups = 1;
+  if (hasFrameGroups) {
+    groups = b.readUInt8(o); o += 1;
+  }
+
+  const sprites = [];
+  for (let g = 0; g < groups; g++) {
+    if (hasFrameGroups) o += 1; // frameGroupType
+    const w = b.readUInt8(o), h = b.readUInt8(o + 1); o += 2;
+    if (w > 1 || h > 1) o += 1; // realSize
+    const layers = b.readUInt8(o);
+    const px = b.readUInt8(o + 1), py = b.readUInt8(o + 2), pz = b.readUInt8(o + 3);
+    const phases = b.readUInt8(o + 4);
+    o += 5;
+    if (phases > 1) o += 1 + 4 + 1 + phases * 8; // Animator::unserialize
+    const n = w * h * layers * px * py * pz * phases;
+    for (let k = 0; k < n; k++) { sprites.push(b.readUInt32LE(o)); o += 4; }
+  }
+
+  return { attrs, sprites, end: o };
+}
+
+function checkDat(file) {
+  const b = fs.readFileSync(file);
+  let o = 0;
+  const signature = b.readUInt32LE(o); o += 4;
+  const maxItem = b.readUInt16LE(o); o += 2;
+  const maxOutfit = b.readUInt16LE(o); o += 2;
+  const maxEffect = b.readUInt16LE(o); o += 2;
+  const maxMissile = b.readUInt16LE(o); o += 2;
+
+  console.log(
+    `  header: sig=0x${signature.toString(16)} itens<=${maxItem} outfits<=${maxOutfit} ` +
+    `effects<=${maxEffect} missiles<=${maxMissile}`
+  );
+
+  const things = { items: new Map(), outfits: new Map() };
+  const spritesUsed = new Set();
+
+  // thingtypemanager.cpp:291-293: itens comecam em 100, o resto em 1.
+  const ranges = [
+    ['items', 100, maxItem, false],
+    ['outfits', 1, maxOutfit, true], // frame groups: o .otfi declara frame-groups
+    ['effects', 1, maxEffect, false],
+    ['missiles', 1, maxMissile, false],
+  ];
+
+  for (const [name, first, last, frameGroups] of ranges) {
+    for (let id = first; id <= last; id++) {
+      const t = readThing(b, o, frameGroups);
+      o = t.end;
+      for (const s of t.sprites) if (s !== 0) spritesUsed.add(s);
+      if (things[name]) things[name].set(id, t);
+    }
+  }
+
+  // Sobra de bytes significa que a leitura dessincronizou -- o client
+  // abortaria com "corrupt data" num id qualquer, longe da causa real.
+  if (o !== b.length) {
+    throw new Error(`o parse terminou em ${o} mas o arquivo tem ${b.length} bytes`);
+  }
+  console.log(`  parse consumiu o arquivo inteiro (${b.length} bytes)  OK`);
+
+  return { things, spritesUsed };
+}
+
+/**
+ * Decodifica o .spr como SpriteManager::getSpriteImageCasual
+ * (client/src/client/spritemanager.cpp:604-644) com useAlpha = true.
+ * O erro que isso pega e o mesmo que deixou os sprites invisiveis: se os
+ * pixels forem gravados em RGB, o stream dessincroniza e writePos nao fecha.
+ */
+function checkSpr(file, spritesUsed) {
+  const b = fs.readFileSync(file);
+  const signature = b.readUInt32LE(0);
+  const count = b.readUInt32LE(4); // GameSpritesU32
+  const offset = 8;
+  const pixelBytes = 32 * 32 * 4;
+
+  console.log(`  header: sig=0x${signature.toString(16)} sprites=${count}`);
+
+  for (let id = 1; id <= count; id++) {
+    const address = b.readUInt32LE(offset + (id - 1) * 4);
+    if (address === 0) continue; // sprite vazio e legitimo
+    const size = b.readUInt16LE(address + 3); // 3 bytes de color key antes
+    let p = address + 5;
+    const endOfData = p + size;
+    let writePos = 0;
+    while (p < endOfData) {
+      const transparent = b.readUInt16LE(p); p += 2;
+      const colored = b.readUInt16LE(p); p += 2;
+      writePos += transparent * 4;
+      if (writePos + colored * 4 > pixelBytes) {
+        throw new Error(`sprite ${id}: run estoura o sprite (writePos=${writePos}, colored=${colored})`);
+      }
+      writePos += colored * 4;
+      p += colored * 4;
+    }
+    if (p !== endOfData) throw new Error(`sprite ${id}: os runs nao fecham em pixelDataSize`);
+    if (writePos > pixelBytes) throw new Error(`sprite ${id}: escreveu ${writePos} de ${pixelBytes}`);
+  }
+  console.log(`  ${count} sprites decodificam sem estourar 32x32 RGBA  OK`);
+
+  for (const id of spritesUsed) {
+    if (id > count) throw new Error(`o .dat referencia o sprite ${id}, mas o .spr so tem ${count}`);
+  }
+  console.log(`  todos os ${spritesUsed.size} sprites referenciados pelo .dat existem  OK`);
+}
+
+/**
+ * O erro do commit 796a29f: o server aceita qualquer id (o items.otb e a fonte
+ * da verdade dele), mas sem ThingType no .dat o chao some -- e parece bug da
+ * projecao. Este cruzamento pega isso na hora de gerar.
+ */
+function checkGroundsHaveThingTypes(groundIds, things) {
+  for (const id of groundIds) {
+    const t = things.items.get(id);
+    if (!t) {
+      throw new Error(`id ${id} existe no items.otb mas nao tem ThingType no Tibia.dat -> chao invisivel`);
+    }
+    if (!t.attrs.has(ATTR_GROUND)) {
+      throw new Error(`id ${id} nao tem ThingAttrGround -> Tile::drawGround da break e nada e desenhado`);
+    }
+    const d = t.attrs.get(ATTR_DISPLACEMENT) || [0, 0];
+    console.log(`    id=${id} ground=sim displacement=(${d[0]},${d[1]})  OK`);
+  }
+}
+
 function main() {
   const base = path.resolve(__dirname, '../../server/data');
   console.log('== items.otb ==');
@@ -172,6 +345,23 @@ function main() {
   // o mapa so usa ground tiles; o store inbox nao aparece no OTBM
   const groundIds = ITEMS.filter((i) => i.group !== 'container').map((i) => i.id);
   checkMap(path.join(base, 'world/world.otbm'), groundIds);
+
+  // O lado do client so e verificavel se o datapack ja foi gerado -- ele nao
+  // e versionado (client/.gitignore:2). Ver gen-things.js.
+  const things = path.resolve(__dirname, '../../client/data/things/860');
+  if (!fs.existsSync(path.join(things, 'Tibia.dat'))) {
+    console.log('\n== Tibia.dat/.spr ==\n  ausentes -- rode `node tools/datapack-gen/gen-things.js`');
+    console.log('\nLado do server consistente.');
+    return;
+  }
+
+  console.log('== Tibia.dat ==');
+  const dat = checkDat(path.join(things, 'Tibia.dat'));
+  console.log('== Tibia.spr ==');
+  checkSpr(path.join(things, 'Tibia.spr'), dat.spritesUsed);
+  console.log('== server x client ==');
+  checkGroundsHaveThingTypes(groundIds, dat.things);
+
   console.log('\nTudo consistente.');
 }
 

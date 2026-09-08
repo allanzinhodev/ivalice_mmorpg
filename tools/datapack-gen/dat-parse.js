@@ -16,17 +16,28 @@ function parseThing(label, hasFrameGroups){
     const a=b[o];
     if(a===0xFF){o++;break;}
     o++;
-    // atributos com payload (8.60 / tfs1.4)
+    // Atributos com payload na versao 860. Os numeros sao os do enum
+    // ThingAttr (client/src/client/thingtype.h:62-105) usados como estao:
+    // thingtype.cpp:175-179 nao remapeia nada para 860 <= versao < 1000.
+    // Quem nao aparece aqui cai no `default` do switch e nao tem payload.
     if(a===0)      { attrs.push(`ground(speed=${b.readUInt16LE(o)})`); o+=2; }
     else if(a===8) { attrs.push('writable'); o+=2; }
     else if(a===9) { attrs.push('writableOnce'); o+=2; }
-    else if(a===16){ attrs.push('light'); o+=4; }
-    else if(a===19){ attrs.push('elevation'); o+=2; }
-    else if(a===24){ attrs.push(`displacement(${b.readUInt16LE(o)},${b.readUInt16LE(o+2)})`); o+=4; }
-    else if(a===27){ attrs.push('minimapColor'); o+=2; }
-    else if(a===28){ attrs.push('lensHelp'); o+=2; }
-    else if(a===29){ attrs.push('cloth'); o+=2; }
-    else if(a===30){ attrs.push('market'); /* market tem payload variavel */ }
+    else if(a===21){ attrs.push('light'); o+=4; }
+    else if(a===24){ attrs.push(`displacement(${b.readInt16LE(o)},${b.readInt16LE(o+2)})`); o+=4; }
+    else if(a===25){ attrs.push('elevation'); o+=2; }
+    else if(a===28){ attrs.push('minimapColor'); o+=2; }
+    else if(a===29){ attrs.push('lensHelp'); o+=2; }
+    else if(a===30){ attrs.push('fullGround'); }
+    else if(a===32){ attrs.push('cloth'); o+=2; }
+    else if(a===33){
+      // market: category, tradeAs, showAs, name(string), restrictVocation, requiredLevel
+      const len=b.readUInt16LE(o+6);
+      attrs.push(`market("${b.subarray(o+8,o+8+len).toString('latin1')}")`);
+      o+=6+2+len+4;
+    }
+    else if(a===34){ attrs.push('usable'); o+=2; }
+    else if(a===38){ attrs.push('bones'); o+=16; }
     else attrs.push(String(a));
   }
   const groups = hasFrameGroups ? b[o++] : 1;
