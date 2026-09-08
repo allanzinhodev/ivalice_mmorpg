@@ -82,8 +82,11 @@ void ThingType::serialize(const FileStreamPtr& fin)
         fin->addU8(attr);
         switch(attr) {
             case ThingAttrDisplacement: {
-                fin->addU16(m_displacement.x);
-                fin->addU16(m_displacement.y);
+                // Grava de volta como u16 em complemento de dois, para que um
+                // displacement negativo sobreviva ao round-trip (ver a leitura
+                // em unserialize, que reinterpreta como int16).
+                fin->addU16(static_cast<uint16_t>(static_cast<int16_t>(m_displacement.x)));
+                fin->addU16(static_cast<uint16_t>(static_cast<int16_t>(m_displacement.y)));
                 break;
             }
             case ThingAttrLight: {
@@ -230,8 +233,14 @@ void ThingType::unserialize(uint16 clientId, ThingCategory category, const FileS
         switch(attr) {
             case ThingAttrDisplacement: {
                 if(g_game.getClientVersion() >= 755) {
-                    m_displacement.x = fin->getU16();
-                    m_displacement.y = fin->getU16();
+                    // O displacement e gravado como u16 no .dat, mas o valor e
+                    // logicamente COM SINAL: editores gravam -16 como 65520.
+                    // Reinterpretar como int16 preserva offsets negativos, que
+                    // sao necessarios para posicionar o chao corretamente na
+                    // projecao isometrica. Sem isso, um -16 vira 65520 e o
+                    // sprite e jogado para fora da tela (ver screenRect abaixo).
+                    m_displacement.x = static_cast<int16_t>(fin->getU16());
+                    m_displacement.y = static_cast<int16_t>(fin->getU16());
                 } else {
                     m_displacement.x = 8;
                     m_displacement.y = 8;

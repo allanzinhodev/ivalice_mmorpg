@@ -16,18 +16,17 @@ primeira iteracao (`client/src/client/tile.cpp`) -- nenhum chao e desenhado.
 Correcao: inserir `00 6E 00` (atributo 0, speed = 110) no inicio dos
 atributos de cada item de chao.
 
-## 2. Displacement 65520 (deveria ser 0)
+## 2. Displacement negativo -- RESOLVIDO NO CLIENT
 
-Os tres itens tinham displacement `(0, 65520)`. O 65520 e o -16 lido como
-unsigned: `ThingType::unserialize` usa `fin->getU16()`
-(`client/src/client/thingtype.cpp`), entao o valor vira 65520 de verdade.
+Os itens tinham displacement `(0, 65520)`. O 65520 e o -16 em complemento de
+dois: o `.dat` grava displacement como u16, mas o valor e logicamente COM
+SINAL.
 
-Esse displacement entra direto no `screenRect`
-(`client/src/client/thingtype.cpp:540`), jogando o sprite 65520 px para fora
-da tela. **Era a causa da tela preta**, mesmo com a projecao correta e os
-draw calls acontecendo nas coordenadas certas.
-
-Correcao: zerar os dois u16 do atributo 24.
+Antes o client lia com `getU16()` e o -16 virava 65520 de verdade, jogando o
+sprite para fora da tela. **Isso foi corrigido no client**
+(`ThingType::unserialize` agora reinterpreta como `int16_t`), entao
+displacements negativos sao validos e nao devem mais ser zerados -- eles sao
+necessarios para posicionar o chao na projecao isometrica.
 
 ## Como diagnosticamos
 

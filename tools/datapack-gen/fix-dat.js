@@ -58,28 +58,12 @@ function main() {
 
   let b = fs.readFileSync(DAT);
   let addedGround = 0;
-  let fixedDisp = 0;
+  const fixedDisp = 0; // ver nota abaixo
 
-  // --- passo 1: displacements absurdos (edicao in-place, nao muda o tamanho)
-  {
-    let o = 12;
-    for (let i = 0; i < GROUND_ITEM_COUNT; i++) {
-      const { attrs, end } = scanAttrs(b, o);
-      for (const a of attrs) {
-        if (a.id === ATTR_DISPLACEMENT) {
-          const dx = b.readUInt16LE(a.offset + 1);
-          const dy = b.readUInt16LE(a.offset + 3);
-          if (dx > 1000 || dy > 1000) {
-            b.writeUInt16LE(0, a.offset + 1);
-            b.writeUInt16LE(0, a.offset + 3);
-            console.log(`  id ${100 + i}: displacement ${dx},${dy} -> 0,0`);
-            fixedDisp++;
-          }
-        }
-      }
-      o = skipSprites(b, end);
-    }
-  }
+  // NOTA: displacements negativos (ex.: 65520 = -16) NAO sao mais corrigidos
+  // aqui. O client passou a reinterpretar o u16 como int16 em
+  // ThingType::unserialize, entao offsets negativos sao validos e
+  // necessarios para posicionar o chao na projecao isometrica.
 
   // --- passo 2: ThingAttrGround ausente (muda o tamanho, reconstroi o buffer)
   {
