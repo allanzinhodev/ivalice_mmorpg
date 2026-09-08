@@ -31,11 +31,20 @@ const OTB_MINOR = 20; // CLIENT_VERSION_860
 const OTB_BUILD = 1;
 const OTB_DESCRIPTION = 'OTB 3.20.1-8.60';
 
-// Os 3 tiles pedidos. id = serverid = clientid = indice do sprite no .spr.
+// Os 3 tiles de chao. id = serverid = clientid (ver nota acima).
+//
+// POR QUE 100/101/102 E NAO 1/2/3:
+// No formato .dat os itens comecam no id 100 -- os ids 1..99 sao
+// reservados e nao existem do lado do client. Ver
+// client/src/client/thingtypemanager.cpp:290-293, onde o loop de leitura
+// faz `firstId = 100` para ThingCategoryItem.
+// O Tibia.dat deste projeto declara 3 itens, que sao portanto 100, 101 e 102.
+// Usar 1/2/3 daria chao invisivel: o server aceitaria, mas o client nao teria
+// ThingType para esses ids.
 const ITEMS = [
-  { id: 1, name: 'grass', speed: 110 },
-  { id: 2, name: 'sand', speed: 110 },
-  { id: 3, name: 'stone', speed: 110 },
+  { id: 100, name: 'grass', speed: 110 },
+  { id: 101, name: 'sand', speed: 110 },
+  { id: 102, name: 'stone', speed: 110 },
 ];
 
 function buildOtb() {

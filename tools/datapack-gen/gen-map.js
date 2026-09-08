@@ -53,9 +53,9 @@ const TOWN_NAME = 'Temple';
 const TEMPLE = { x: 512, y: 512, z: MAP_Z };
 
 // ids de chao (client id == server id, ver gen-items.js)
-const GRASS = 1;
-const SAND = 2;
-const STONE = 3;
+const GRASS = 100;
+const SAND = 101;
+const STONE = 102;
 
 /**
  * Quadrantes: divide o mapa em faixas verticais de um terco.

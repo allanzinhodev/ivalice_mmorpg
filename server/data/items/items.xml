@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <items>
-	<item id="1" name="grass" />
-	<item id="2" name="sand" />
-	<item id="3" name="stone" />
+	<item id="100" name="grass" />
+	<item id="101" name="sand" />
+	<item id="102" name="stone" />
 </items>
