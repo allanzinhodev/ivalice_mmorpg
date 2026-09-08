@@ -1,0 +1,63 @@
+# ============================================================
+# ivalice — regras da raiz do monorepo.
+# Os .gitignore de client/ e server/ continuam valendo para as
+# suas proprias pastas; aqui ficam so as regras transversais.
+# ============================================================
+
+# --- ROM comercial de Final Fantasy Tactics Advance ---
+# Nao versionar: risco de DMCA. O FFTAUtils espera que o usuario
+# forneca a ROM (ver tools/FFTAUtils/BIN/rom/PLACE_ROMFILE_ffta.gba_HERE).
+tools/rom.gba
+*.gba
+
+# --- Dependencias compiladas (vcpkg) ---
+vcpkg_installed/
+.vcpkg_installed/
+
+# --- Arvores de build ---
+build/
+build-*/
+client/vc23/otclient/
+server/vc18/
+x64/
+Win32/
+[Dd]ebug/
+[Rr]elease/
+
+# --- Artefatos de compilacao / link ---
+*.obj
+*.o
+*.pdb
+*.ilk
+*.exp
+*.lib
+*.a
+*.idb
+*.tlog
+*.suo
+*.user
+
+# --- Binarios gerados ---
+otclient_gl*.exe
+otclient_dx*.exe
+theforgottenserver*.exe
+
+# --- Assets pesados ---
+# client/android_libs.7z (49 MB) NAO esta listado aqui: client/.gitignore:22 tem
+# uma negacao explicita (!android_libs.7z) que vence por ser mais profunda.
+# E versionado de proposito pelo upstream.
+server/tools/imbuments_scroll.gif
+
+# --- Logs e saidas temporarias ---
+*.log
+output.log
+otclientv8.log
+
+# --- Cache de mapa do servidor ---
+server/data/cache/
+
+# --- Configuracao local com credenciais ---
+# (server/.gitignore ja cobre config.lua; repetido aqui por seguranca)
+server/config.lua
+server/config.lua.backup-*
+.env

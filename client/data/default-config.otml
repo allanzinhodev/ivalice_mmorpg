@@ -1,0 +1,169 @@
+window-size: 1490 714
+window-pos: 61 92
+window-maximized: false
+locale: en
+extras_debugPathfinding: false
+extras_debugPredictiveWalking: false
+extras_debugProxy: false
+extras_debugRender: false
+extras_debugWalking: false
+extras_debugWidgets: false
+extras_disablePredictiveWalking: false
+extras_limitedPolling: true
+extras_showPredictions: false
+actionBarShowLeft3: false
+quickLogin: false
+allActionBar46: false
+actionBarShowRight1: false
+actionBarShowRight2: false
+actionBarShowRight3: false
+allActionBar79: false
+enableLights: true
+ambientLight: 40
+stackEffects: true
+maxEffects: false
+limitEffects: 400
+opacityEffects: 100
+opacityMissile: 100
+showInfoMessagesInConsole: true
+showPing: true
+engine: 2
+antialiasing: 3
+autoSwitchHotkey: false
+linkCopyWarning: true
+stowContainer: true
+profile: 1
+showEventMessagesInConsole: true
+classicControl: 1
+showStatusMessagesInConsole: true
+showBoostedMessagesInConsole: true
+showStatusOthersMessagesInConsole: true
+ctrlCheckBox: true
+shiftCheckBox: false
+altCheckBox: false
+displayNames: true
+topHealtManaBar: true
+leftPanels: 0
+containerMoveToManagedContainerRecursiveWarning: false
+containerSortRecursive: false
+showPrivateMessagesInConsole: true
+rightPanels: 1
+showFps: true
+hotkeyDelay: 50
+containerSortBackpacksFirst: false
+lootControl: 1
+sizeBox: 2
+showRightHorizontalPanel: false
+topBar: false
+colouriseLootColor: 2
+timeInventory: true
+timeContainers: true
+timeUnnused: true
+floorFading: 0
+showOwnName: true
+otherHUDCreatures: true
+opacityArc: 70
+containerMoveToManagedContainerRecursiveShowWarningAgain: false
+showHealthManaCircle: false
+displayMana: true
+statusBars: true
+openPrivateMessageInNewTab: true
+showTimestampsInConsole: true
+showSecondTimestampsInConsole: true
+showLevelsInConsole: true
+textualEffect: true
+potionSoundEffect: true
+showSpells: true
+showOwnBars: true
+showLootMessagesInConsole: true
+showMarks: true
+lootHighlight: true
+storeNotification: true
+showPrivateMessagesOnScreen: true
+trainingProgress: true
+combatFrames: true
+pvpFrames: true
+markTargetVisually: 1
+showAssignedHKButton: true
+showHKObjectsBars: true
+turnDelay: 30
+walkStairsDelay: 0
+walkFirstStepDelay: 50
+wsadWalking: false
+showCooldown: true
+fullscreen: false
+dontStretchShrink: false
+vsync: true
+noFrameCheckBox: false
+backgroundFrameRate: 100
+actionBarShowBottom1: true
+showOthersMarks: false
+showNPC: true
+actionBarShowBottom2: false
+actionBarShowBottom3: false
+containerPanel: 8
+containerMoveToManagedContainerRecursive: false
+allActionBar13: false
+optimizationLevel: 1
+musicSoundVolume: 100
+actionBarShowLeft1: false
+customisableBars: true
+displayText: true
+enableAudio: true
+hotkeyDelayNative: false
+walkTurnDelay: 0
+cacheMap: false
+chatModeOn: true
+nativeMouseCursor: false
+storeAskBeforeBuyingProducts: true
+stayLoggedInforSession: false
+actionbarLock: false
+classicView: true
+showOwnHealth: true
+layout: default
+hidePlayerBars: false
+walkTeleportDelay: 0
+autoChaseOverride: true
+talkOnRightClick: false
+displayHealthOnTop: false
+displayHealth: true
+ctrlDragCheckBox: false
+alwaysTurnTowardsMoveDirection: true
+highlightThingsUnderCursor: true
+enableMusicSound: false
+showMessages: true
+showOwnMana: true
+smartWalk: true
+walkCtrlTurnDelay: 0
+ownHUDCharacter: true
+showLeftHorizontalPanel: false
+distanceArc: 15
+showHotkeyMessagesInConsole: true
+containerSortRecursiveShowWarningAgain: false
+actionTooltip: true
+cooldownSecond: true
+graphicalCooldown: true
+showSpellParameters: true
+actionBarShowLeft2: false
+spellsOthers: false
+optimiseConnectionStability: false
+resetconfig: true
+map
+  viewport: 8 6
+  extended-view-ui: false
+  max-z: 15
+  sea-floor: 7
+  underground-floor: 8
+  aware-underground-floor-range: 2
+game_interface:
+  splitterMarginBottom: 200
+game_console:
+  messageHistory:
+UseIgnoreList: false
+UseWhiteList: false
+IgnorePrivateMessages: false
+IgnoreYelling: false
+IgnorePlayers:
+WhitelistedPlayers:
+terminal-window:
+  poped: false

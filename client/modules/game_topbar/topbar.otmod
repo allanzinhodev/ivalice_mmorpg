@@ -1,0 +1,11 @@
+Module
+  name: game_topbar
+  description:
+  author: Vithrax
+  discord: Vithrax#5814
+  sandboxed: true
+  autoload: false
+  dependencies: [ game_interface, client_settings ]
+  scripts: [ topbar ]
+  @onLoad: init()
+  @onUnload: terminate()

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<outfits>
+	<!-- Datapack minimo do ivalice: apenas looktypes 1-4.
+
+	     ATENCAO: o mapa de outfits e indexado SO pelo looktype
+	     (outfit.cpp:62-64), e getOutfitByLookType(lookType, sex) exige
+	     que o sexo bata (outfit.cpp:192-198). Ou seja, cada looktype
+	     pertence a UM sexo apenas -- declarar o mesmo looktype para os
+	     dois gera "Duplicate looktype ignored" e o segundo e descartado.
+
+	     Por isso 1-4 sao todos type="0" (feminino), casando com o
+	     sex=0 dos personagens semeados no schema.sql. -->
+	<outfit type="0" looktype="1" name="Outfit 1" enabled="yes" premium="no" unlocked="yes" />
+	<outfit type="0" looktype="2" name="Outfit 2" enabled="yes" premium="no" unlocked="yes" />
+	<outfit type="0" looktype="3" name="Outfit 3" enabled="yes" premium="no" unlocked="yes" />
+	<outfit type="0" looktype="4" name="Outfit 4" enabled="yes" premium="no" unlocked="yes" />
+</outfits>

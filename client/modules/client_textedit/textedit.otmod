@@ -1,0 +1,9 @@
+Module
+  name: client_textedit
+  description: Shows window which allows to edit text
+  author: AstraClient
+  website: https://github.com/Mateuzkl/AstraClient
+  sandboxed: true
+  scripts: [ textedit ]
+  @onLoad: init()
+  @onUnload: terminate()

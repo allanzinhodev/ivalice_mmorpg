@@ -1,0 +1,1707 @@
+/*
+ * Copyright (c) 2010-2017 OTClient <https://github.com/edubart/otclient>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+#include "resourcemanager.h"
+#include "filestream.h"
+#include "resource.h"
+
+#include <framework/core/application.h>
+#include <framework/luaengine/luainterface.h>
+#include <framework/platform/platform.h>
+#include <framework/util/crypt.h>
+#include <framework/http/http.h>
+#include <queue>
+#include <regex>
+#include <fstream>
+#include <memory>
+#include <string_view>
+
+#if defined(WIN32)
+#include <windows.h>
+#else
+#include <fcntl.h>
+#include <unistd.h>
+#endif
+
+#if !defined(ANDROID)
+#include <boost/process.hpp>
+#endif
+#include <locale>
+#include <zlib.h>
+
+#define PHYSFS_DEPRECATED
+#include <physfs.h>
+#ifndef __EMSCRIPTEN__
+#include <zip.h>
+#include <zlib.h>
+#endif
+
+ResourceManager g_resources;
+static const std::string INIT_FILENAME = "init.lua";
+static constexpr size_t MAX_ENCRYPTED_PAYLOAD_SIZE = 512ULL * 1024 * 1024;
+static constexpr size_t ENC3_HEADER_SIZE = 24;
+
+namespace {
+struct PhysFsListDeleter
+{
+    void operator()(char** list) const { PHYSFS_freeList(list); }
+};
+
+bool isPathInside(const std::filesystem::path& root, const std::filesystem::path& candidate)
+{
+    auto rootString = root.lexically_normal().generic_string();
+    auto candidateString = candidate.lexically_normal().generic_string();
+#if defined(WIN32)
+    stdext::tolower(rootString);
+    stdext::tolower(candidateString);
+#endif
+    if (candidateString == rootString)
+        return true;
+    if (!rootString.empty() && rootString.back() != '/')
+        rootString += '/';
+    return stdext::starts_with(candidateString, rootString);
+}
+
+bool isSafeWindowsPathComponent(const std::string& component)
+{
+    if (component.empty() || component.back() == ' ' || component.back() == '.')
+        return false;
+
+    for (const unsigned char character : component) {
+        if (character < 32 || std::string_view("<>:\"/\\|?*").find(character) != std::string_view::npos)
+            return false;
+    }
+
+    auto baseName = component.substr(0, component.find('.'));
+    while (!baseName.empty() && (baseName.back() == ' ' || baseName.back() == '.'))
+        baseName.pop_back();
+    stdext::tolower(baseName);
+
+    if (baseName == "con" || baseName == "prn" || baseName == "aux" || baseName == "nul")
+        return false;
+    if (baseName.size() == 4 && baseName[3] >= '1' && baseName[3] <= '9' &&
+        (stdext::starts_with(baseName, "com") || stdext::starts_with(baseName, "lpt")))
+        return false;
+    return true;
+}
+
+bool isSafeOtuiProjectPath(const std::filesystem::path& path)
+{
+    if (path.empty() || path.is_absolute() || path.has_root_name() || path.has_root_directory())
+        return false;
+
+    std::vector<std::string> parts;
+    for (const auto& part : path) {
+        const auto value = part.generic_string();
+        if (value.empty() || value == "." || value == ".." || !isSafeWindowsPathComponent(value))
+            return false;
+        parts.push_back(value);
+    }
+
+    if (parts.size() < 2)
+        return false;
+    if (parts[0] != "modules" && parts[0] != "mods" &&
+        !(parts.size() >= 3 && parts[0] == "data" && parts[1] == "styles"))
+        return false;
+
+    auto filename = parts.back();
+    stdext::tolower(filename);
+    return stdext::ends_with(filename, ".otui") || stdext::ends_with(filename, ".otui.bak");
+}
+
+bool readDiskFile(const std::filesystem::path& path, std::string& contents)
+{
+    std::ifstream stream(path, std::ios::binary);
+    if (!stream)
+        return false;
+    contents.assign(std::istreambuf_iterator<char>(stream), std::istreambuf_iterator<char>());
+    return stream.good() || stream.eof();
+}
+
+bool writeDiskFile(const std::filesystem::path& path, const std::string& contents)
+{
+    {
+        std::ofstream stream(path, std::ios::binary | std::ios::trunc);
+        if (!stream)
+            return false;
+        stream.write(contents.data(), static_cast<std::streamsize>(contents.size()));
+        stream.flush();
+        if (!stream.good())
+            return false;
+        stream.close();
+        if (stream.fail())
+            return false;
+    }
+
+#if defined(WIN32)
+    const HANDLE file = ::CreateFileW(path.c_str(), GENERIC_WRITE, FILE_SHARE_READ, nullptr,
+                                      OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+    if (file == INVALID_HANDLE_VALUE)
+        return false;
+    const bool synchronized = ::FlushFileBuffers(file) != 0;
+    const bool closed = ::CloseHandle(file) != 0;
+    return synchronized && closed;
+#else
+    const int file = ::open(path.c_str(), O_WRONLY);
+    if (file == -1)
+        return false;
+    const bool synchronized = ::fsync(file) == 0;
+    const bool closed = ::close(file) == 0;
+    return synchronized && closed;
+#endif
+}
+}
+
+static bool canEncryptPayload(size_t payloadSize)
+{
+    if (payloadSize > MAX_ENCRYPTED_PAYLOAD_SIZE)
+        return false;
+    return static_cast<size_t>(compressBound(static_cast<uLong>(payloadSize))) <=
+           MAX_ENCRYPTED_PAYLOAD_SIZE - ENC3_HEADER_SIZE;
+}
+
+void ResourceManager::init(const char *argv0)
+{
+#if defined(WIN32)
+    char fileName[255];
+    GetModuleFileNameA(NULL, fileName, sizeof(fileName));
+    m_binaryPath = std::filesystem::absolute(fileName);
+#elif defined(ANDROID)
+    // nothing
+#else
+    m_binaryPath = std::filesystem::absolute(argv0);    
+#endif
+    PHYSFS_init(argv0);
+    PHYSFS_permitSymbolicLinks(1);
+}
+
+void ResourceManager::terminate()
+{
+    PHYSFS_deinit();
+}
+
+bool ResourceManager::launchCorrect(const std::string& product, const std::string& app) { // curently works only on windows
+#if !defined(ANDROID)
+    auto init_path = m_binaryPath.parent_path();
+    init_path /= INIT_FILENAME;
+    if (std::filesystem::exists(init_path)) // debug version
+        return false;
+
+    const char* localDir = PHYSFS_getPrefDir(product.c_str(), app.c_str());
+    if (!localDir)
+        return false;
+
+    auto fileName2 = m_binaryPath.stem().string();
+    fileName2 = stdext::split(fileName2, "-")[0];
+    stdext::tolower(fileName2);
+
+    std::filesystem::path path(std::filesystem::u8path(localDir));
+    std::error_code ec;
+    auto lastWrite = std::filesystem::last_write_time(m_binaryPath, ec);
+    std::filesystem::path binary = m_binaryPath;
+    for (auto& entry : std::filesystem::directory_iterator(path)) {
+        if (std::filesystem::is_directory(entry.path()))
+            continue;
+
+        auto fileName1 = entry.path().stem().string();
+        fileName1 = stdext::split(fileName1, "-")[0];
+        stdext::tolower(fileName1);
+        if (fileName1 != fileName2)
+            continue;
+
+        if (entry.path().extension() == m_binaryPath.extension()) {
+            std::error_code ec;
+            auto writeTime = std::filesystem::last_write_time(entry.path(), ec);
+            if (!ec && writeTime > lastWrite) {
+                lastWrite = writeTime;
+                binary = entry.path();
+            }
+        }
+    }
+
+    for (auto& entry : std::filesystem::directory_iterator(path)) { // remove old
+        if (std::filesystem::is_directory(entry.path()))
+            continue;
+
+        auto fileName1 = entry.path().stem().string();
+        fileName1 = stdext::split(fileName1, "-")[0];
+        stdext::tolower(fileName1);
+        if (fileName1 != fileName2)
+            continue;
+
+        if (entry.path().extension() == m_binaryPath.extension()) {
+            if (binary == entry.path())
+                continue;
+            std::error_code ec;
+            std::filesystem::remove(entry.path(), ec);
+        }
+    }
+
+    if (binary == m_binaryPath)
+        return false;
+
+    boost::process::child c(binary.string());
+    std::error_code ec2;
+    if (c.wait_for(std::chrono::seconds(5), ec2)) {
+        return c.exit_code() == 0;
+    }
+
+    c.detach();
+    return true;
+#else
+    return false;
+#endif
+}
+
+bool ResourceManager::setupWriteDir(const std::string& product, const std::string& app) {
+#ifdef ANDROID
+    const char* localDir = g_androidState->activity->internalDataPath;
+#else
+    const char* localDir = PHYSFS_getPrefDir(product.c_str(), app.c_str());
+#endif
+
+    if (!localDir) {
+        g_logger.fatal(stdext::format("Unable to get local dir, error: %s", PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode())));
+        return false;
+    }
+
+    if (!PHYSFS_mount(localDir, NULL, 0)) {
+        g_logger.fatal(stdext::format("Unable to mount local directory '%s': %s", localDir, PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode())));
+        return false;
+    }
+
+    if (!PHYSFS_setWriteDir(localDir)) {
+        g_logger.fatal(stdext::format("Unable to set write dir '%s': %s", localDir, PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode())));
+        return false;
+    }
+
+#ifndef ANDROID
+    m_writeDir = std::filesystem::path(std::filesystem::u8path(localDir));
+#endif
+    return true;
+}
+
+bool ResourceManager::setup()
+{
+    m_workDir.clear();
+#ifdef ANDROID
+    PHYSFS_File* file = PHYSFS_openRead("data.zip");
+    if (file) {
+        auto data = std::make_shared<std::vector<uint8_t>>(PHYSFS_fileLength(file));
+        PHYSFS_readBytes(file, data->data(), data->size());
+        PHYSFS_close(file);
+        if (mountMemoryData(data))
+            return true;
+    }
+#else
+    std::string localDir(PHYSFS_getWriteDir());
+    std::vector<std::string> possiblePaths = { localDir, g_platform.getCurrentDir() };
+    const char* baseDir = PHYSFS_getBaseDir();
+    if (baseDir)
+        possiblePaths.push_back(baseDir);
+
+    for (const std::string& dir : possiblePaths) {
+        if (dir == localDir || !PHYSFS_mount(dir.c_str(), NULL, 0))
+            continue;
+
+        if(PHYSFS_exists(INIT_FILENAME.c_str())) {
+            g_logger.info(stdext::format("Found work dir at '%s'", dir));
+            std::error_code ec;
+            const auto canonicalDir = std::filesystem::weakly_canonical(std::filesystem::u8path(dir), ec);
+            if (!ec)
+                m_workDir = canonicalDir.generic_string();
+            return true;
+        }
+
+        PHYSFS_unmount(dir.c_str());
+    }
+
+    for(const std::string& dir : possiblePaths) {
+        if (dir != localDir && !PHYSFS_mount(dir.c_str(), NULL, 0)) {
+            continue;
+        }
+
+        if (!PHYSFS_exists("data.zip")) {
+            if(dir != localDir)
+                PHYSFS_unmount(dir.c_str());
+            continue;
+        }
+
+        PHYSFS_File* file = PHYSFS_openRead("data.zip");
+        if (!file) {
+            if (dir != localDir)
+                PHYSFS_unmount(dir.c_str());
+            continue;
+        }
+
+        auto data = std::make_shared<std::vector<uint8_t>>(PHYSFS_fileLength(file));
+        PHYSFS_readBytes(file, data->data(), data->size());
+        PHYSFS_close(file);
+        if (dir != localDir)
+            PHYSFS_unmount(dir.c_str());
+
+        g_logger.info(stdext::format("Found work dir at '%s'", dir));
+        if (mountMemoryData(data))
+            return true;
+    }
+#endif
+    if (loadDataFromSelf()) {
+        g_logger.info(stdext::format("Found work dir inside binary"));
+        return true;
+    }
+
+    g_logger.fatal("Unable to find working directory (or data.zip)");
+    return false;
+}
+
+std::string ResourceManager::getCompactName() {
+    std::string fileData;
+    if (loadDataFromSelf()) {
+        try {
+            fileData = readFileContents(INIT_FILENAME);
+        } catch (...) {
+            fileData = "";
+        }
+        unmountMemoryData();
+    }
+
+#ifndef ANDROID
+    std::vector<std::string> possiblePaths = { g_platform.getCurrentDir() };
+    const char* baseDir = PHYSFS_getBaseDir();
+    if (baseDir)
+        possiblePaths.push_back(baseDir);
+
+    if (fileData.empty()) {
+        try {
+            for (const std::string& dir : possiblePaths) {
+                if (!PHYSFS_mount(dir.c_str(), NULL, 0))
+                    continue;
+
+                if (PHYSFS_exists(INIT_FILENAME.c_str())) {
+                    fileData = readFileContents(INIT_FILENAME);
+                    PHYSFS_unmount(dir.c_str());
+                    break;
+                }
+                PHYSFS_unmount(dir.c_str());
+            }
+        } catch (...) {
+            fileData = "";
+        }
+    }
+
+    if (fileData.empty()) {
+        try {
+            for (const std::string& dir : possiblePaths) {
+                std::string path = dir + "/data.zip";
+                if (!PHYSFS_mount(path.c_str(), NULL, 0))
+                    continue;
+
+                if (PHYSFS_exists(INIT_FILENAME.c_str())) {
+                    fileData = readFileContents(INIT_FILENAME);
+                    PHYSFS_unmount(path.c_str());
+                    break;
+                }
+                PHYSFS_unmount(path.c_str());
+            }
+        } catch (...) {}
+    }
+#endif
+
+    std::smatch regex_match;
+    if (std::regex_search(fileData, regex_match, std::regex("APP_NAME[^\"]+\"([^\"]+)"))) {
+        if (regex_match.size() == 2 && regex_match[1].str().length() > 0 && regex_match[1].str().length() < 30) {
+            return regex_match[1].str();
+        }
+    }
+    return "astraclient";
+}
+
+bool ResourceManager::loadDataFromSelf(bool unmountIfMounted) {
+    std::shared_ptr<std::vector<uint8_t>> data = nullptr;
+#ifdef ANDROID
+    AAsset* file = AAssetManager_open(g_androidState->activity->assetManager, "data.zip", AASSET_MODE_BUFFER);
+    if (!file)
+        g_logger.fatal("Can't open data.zip from assets");
+    data = std::make_shared<std::vector<uint8_t>>(AAsset_getLength(file));
+    AAsset_read(file, data->data(), data->size());
+    AAsset_close(file);
+#else
+    std::ifstream file(m_binaryPath.string(), std::ios::binary);
+    if (!file.is_open())
+        return false;
+    file.seekg(0, std::ios_base::end);
+    std::size_t size = file.tellg();
+    file.seekg(0, std::ios_base::beg);
+    if (size < 1024 || size > 1024 * 1024 * 128) {
+        file.close();
+        return false;
+    }
+
+    std::vector<uint8_t> v(1 + size);
+    file.read((char*)&v[0], size);
+    file.close();
+    for (size_t i = 0, end = size - 128; i < end; ++i) {
+        if (v[i] == 0x50 && v[i + 1] == 0x4b && v[i + 2] == 0x03 && v[i + 3] == 0x04 && v[i + 4] == 0x14) {
+            uint32_t compSize = stdext::readULE32(&v[i + 18]);
+            uint32_t decompSize = stdext::readULE32(&v[i + 22]);
+            if (compSize < 1024 * 1024 * 512 && decompSize < 1024 * 1024 * 512) {
+                data = std::make_shared<std::vector<uint8_t>>(&v[i], &v[v.size() - 1]);
+                break;
+            }
+        }
+    }
+    v.clear();
+
+#endif
+
+    if (unmountIfMounted)
+        unmountMemoryData();
+
+    if (mountMemoryData(data)) {
+        m_loadedFromMemory = true;
+        return true;
+    }
+
+    return false;
+}
+
+bool ResourceManager::fileExists(const std::string& fileName)
+{
+    if (fileName.find("/downloads") != std::string::npos)
+        return g_http.getFile(fileName.substr(10)) != nullptr;
+    return (PHYSFS_exists(resolvePath(fileName).c_str()) && !PHYSFS_isDirectory(resolvePath(fileName).c_str()));
+}
+
+bool ResourceManager::directoryExists(const std::string& directoryName)
+{
+    if (directoryName == "/downloads")
+        return true;
+    return (PHYSFS_isDirectory(resolvePath(directoryName).c_str()));
+}
+
+void ResourceManager::readFileStream(const std::string& fileName, std::iostream& out)
+{
+    std::string buffer(readFileContents(fileName));
+    if(buffer.length() == 0) {
+        out.clear(std::ios::eofbit);
+        return;
+    }
+    out.clear(std::ios::goodbit);
+    out.write(&buffer[0], buffer.length());
+    out.seekg(0, std::ios::beg);
+}
+
+std::string ResourceManager::readFileContents(const std::string& fileName, bool safe)
+{
+    std::string fullPath = resolvePath(fileName);
+    
+    if (fullPath.find("/downloads") != std::string::npos) {
+        auto dfile = g_http.getFile(fullPath.substr(10));
+        if (dfile)
+            return std::string(dfile->body.begin(), dfile->body.end());
+    }
+
+    PHYSFS_File* file = PHYSFS_openRead(fullPath.c_str());
+    if(!file)
+        stdext::throw_exception(stdext::format("unable to open file '%s': %s", fullPath, PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode())));
+
+    const PHYSFS_sint64 fileSize = PHYSFS_fileLength(file);
+    constexpr PHYSFS_sint64 MAX_RESOURCE_SIZE = 512LL * 1024 * 1024;
+    if (fileSize < 0 || fileSize > MAX_RESOURCE_SIZE) {
+        PHYSFS_close(file);
+        stdext::throw_exception(stdext::format("invalid file size for '%s'", fullPath));
+    }
+
+    std::string buffer(static_cast<size_t>(fileSize), 0);
+    if (fileSize > 0 && PHYSFS_readBytes(file, buffer.data(), fileSize) != fileSize) {
+        PHYSFS_close(file);
+        stdext::throw_exception(stdext::format("unable to read file '%s'", fullPath));
+    }
+    PHYSFS_close(file);
+
+    if (safe) {
+        return buffer;
+    }
+
+    // skip decryption for bot configs
+    if (fullPath.find("/bot/") != std::string::npos) {
+        return buffer;
+    }
+
+    static std::string unencryptedExtensions[] = { ".otml", ".otmm", ".dmp", ".log", ".txt", ".dll", ".exe", ".zip" };
+
+    if (!decryptBuffer(buffer)) {
+        bool ignore = (m_customEncryption == 0);
+        for (auto& it : unencryptedExtensions) {
+            if (fileName.find(it) == fileName.size() - it.size()) {
+                ignore = true;
+            }
+        }
+        if(!ignore)
+            g_logger.fatal(stdext::format("unable to decrypt file: %s", fullPath));
+    }
+
+    return buffer;
+}
+
+bool ResourceManager::isFileEncryptedOrCompressed(const std::string& fileName)
+{
+    std::string fullPath = resolvePath(fileName);
+    std::string fileContent;
+
+    if (fullPath.find("/downloads") != std::string::npos) {
+        auto dfile = g_http.getFile(fullPath.substr(10));
+        if (dfile) {
+            if (dfile->body.size() < 10)
+                return false;
+            fileContent = std::string(dfile->body.begin(), dfile->body.begin() + 10);
+        } else
+            return false;
+    }
+
+    if (fileContent.empty()) {
+        PHYSFS_File* file = PHYSFS_openRead(fullPath.c_str());
+        if (!file)
+            stdext::throw_exception(stdext::format("unable to open file '%s': %s", fullPath, PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode())));
+
+        const PHYSFS_sint64 fileLength = PHYSFS_fileLength(file);
+        if (fileLength < 0) {
+            PHYSFS_close(file);
+            return false;
+        }
+        const size_t fileSize = static_cast<size_t>(std::min<PHYSFS_sint64>(10, fileLength));
+        fileContent.resize(fileSize);
+        if (fileSize > 0 && PHYSFS_readBytes(file, fileContent.data(), fileSize) != fileSize) {
+            PHYSFS_close(file);
+            return false;
+        }
+        PHYSFS_close(file);
+    }
+
+    if (fileContent.size() < 10)
+        return false;
+    
+    if (fileContent.substr(0, 4).compare("ENC3") == 0)
+        return true;
+
+    if ((uint8_t)fileContent[0] != 0x1f || (uint8_t)fileContent[1] != 0x8b || (uint8_t)fileContent[2] != 0x08) {
+        return false;
+    }
+
+    return true;
+}
+
+bool ResourceManager::writeFileBuffer(const std::string& fileName, const uchar* data, uint size)
+{
+    PHYSFS_file* file = PHYSFS_openWrite(fileName.c_str());
+    if(!file) {
+        g_logger.error(stdext::format("unable to open file for writing '%s': %s", fileName, PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode())));
+        return false;
+    }
+
+    PHYSFS_writeBytes(file, (void*)data, size);
+    PHYSFS_close(file);
+    return true;
+}
+
+bool ResourceManager::writeFileStream(const std::string& fileName, std::iostream& in)
+{
+    std::streampos oldPos = in.tellg();
+    in.seekg(0, std::ios::end);
+    std::streampos size = in.tellg();
+    in.seekg(0, std::ios::beg);
+    std::vector<char> buffer(size);
+    in.read(&buffer[0], size);
+    bool ret = writeFileBuffer(fileName, (const uchar*)&buffer[0], size);
+    in.seekg(oldPos, std::ios::beg);
+    return ret;
+}
+
+bool ResourceManager::writeFileContents(const std::string& fileName, const std::string& data)
+{
+    return writeFileBuffer(fileName, (const uchar*)data.c_str(), data.size());
+}
+
+FileStreamPtr ResourceManager::openFile(const std::string& fileName, bool dontCache)
+{
+    std::string fullPath = resolvePath(fileName);
+    if (isFileEncryptedOrCompressed(fullPath) || !dontCache) {
+        return std::make_shared<FileStream>(fullPath, readFileContents(fullPath));
+    }
+    PHYSFS_File* file = PHYSFS_openRead(fullPath.c_str());
+    if (!file)
+        stdext::throw_exception(stdext::format("unable to open file '%s': %s", fullPath, PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode())));
+    return std::make_shared<FileStream>(fullPath, file, false);
+}
+
+FileStreamPtr ResourceManager::appendFile(const std::string& fileName)
+{
+    PHYSFS_File* file = PHYSFS_openAppend(fileName.c_str());
+    if(!file)
+        stdext::throw_exception(stdext::format("failed to append file '%s': %s", fileName, PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode())));
+    return std::make_shared<FileStream>(fileName, file, true);
+}
+
+FileStreamPtr ResourceManager::createFile(const std::string& fileName)
+{
+    PHYSFS_File* file = PHYSFS_openWrite(fileName.c_str());
+    if(!file)
+        stdext::throw_exception(stdext::format("failed to create file '%s': %s", fileName, PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode())));
+    return std::make_shared<FileStream>(fileName, file, true);
+}
+
+bool ResourceManager::deleteFile(const std::string& fileName)
+{
+    return PHYSFS_delete(resolvePath(fileName).c_str()) != 0;
+}
+
+bool ResourceManager::copyFile(const std::string& fromFileName, const std::string& toFileName)
+{
+    // Streams in fixed chunks so callers can back up multi-hundred-megabyte files
+    // (minimap dumps, for one) without ever holding them in memory.
+    const std::string fromPath = resolvePath(fromFileName);
+
+    PHYSFS_File* from = PHYSFS_openRead(fromPath.c_str());
+    if(!from) {
+        g_logger.error(stdext::format("unable to open file for reading '%s': %s", fromPath, PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode())));
+        return false;
+    }
+
+    // Write to a scratch file so an interrupted copy never truncates whatever is already
+    // at the destination; that file may be the only surviving copy during a rollback.
+    const std::string tempPath = toFileName + ".part";
+
+    PHYSFS_File* to = PHYSFS_openWrite(tempPath.c_str());
+    if(!to) {
+        g_logger.error(stdext::format("unable to open file for writing '%s': %s", tempPath, PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode())));
+        PHYSFS_close(from);
+        return false;
+    }
+
+    std::vector<char> buffer(64 * 1024);
+    bool ok = true;
+    while(true) {
+        const PHYSFS_sint64 bytesRead = PHYSFS_readBytes(from, buffer.data(), buffer.size());
+        if(bytesRead < 0) {
+            g_logger.error(stdext::format("unable to read file '%s': %s", fromPath, PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode())));
+            ok = false;
+            break;
+        }
+        if(bytesRead == 0)
+            break;
+        if(PHYSFS_writeBytes(to, buffer.data(), bytesRead) != bytesRead) {
+            g_logger.error(stdext::format("unable to write file '%s': %s", tempPath, PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode())));
+            ok = false;
+            break;
+        }
+    }
+
+    if(PHYSFS_close(from) == 0)
+        g_logger.error(stdext::format("unable to close file '%s': %s", fromPath, PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode())));
+
+    // Buffered writes are only known to have reached the disk once the close succeeds,
+    // so a failure here means the copy is incomplete no matter what the loop reported.
+    if(PHYSFS_close(to) == 0) {
+        g_logger.error(stdext::format("unable to close file '%s': %s", tempPath, PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode())));
+        ok = false;
+    }
+
+    if(!ok) {
+        PHYSFS_delete(tempPath.c_str());
+        return false;
+    }
+
+    // PhysFS has no rename, and openWrite always lands in the write dir, so the swap is
+    // done on the real paths underneath it. Only now is the destination allowed to go away.
+    const char* writeDir = PHYSFS_getWriteDir();
+    if(!writeDir) {
+        g_logger.error("unable to resolve the write dir to finish the copy");
+        PHYSFS_delete(tempPath.c_str());
+        return false;
+    }
+
+    const auto toRealPath = [&](const std::string& path) {
+        return std::filesystem::path(writeDir) /
+            std::filesystem::u8path(stdext::starts_with(path, "/") ? path.substr(1) : path);
+    };
+
+    std::error_code ec;
+    std::filesystem::rename(toRealPath(tempPath), toRealPath(toFileName), ec);
+    if(ec) {
+        g_logger.error(stdext::format("unable to move '%s' onto '%s': %s", tempPath, toFileName, ec.message()));
+        PHYSFS_delete(tempPath.c_str());
+        return false;
+    }
+
+    return true;
+}
+
+bool ResourceManager::makeDir(const std::string directory)
+{
+    return PHYSFS_mkdir(directory.c_str());
+}
+
+std::list<std::string> ResourceManager::listDirectoryFiles(const std::string& directoryPath, bool fullPath /* = false */, bool raw /*= false*/, bool recursive /*= false*/)
+{
+    std::list<std::string> files;
+    const auto rootPath = raw ? directoryPath : resolvePath(directoryPath);
+
+    std::function<void(const std::string&, size_t)> visit;
+    visit = [&](const std::string& path, const size_t depth) {
+        if (depth > 64) {
+            g_logger.warning(stdext::format("Directory recursion limit reached at '%s'", path));
+            return;
+        }
+
+        std::unique_ptr<char*, PhysFsListDeleter> entries(PHYSFS_enumerateFiles(path.c_str()));
+        if (!entries)
+            return;
+
+        for (auto current = entries.get(); *current != nullptr; ++current) {
+            const std::string name = *current;
+            const std::string childPath = path.empty() || path == "/" ? "/" + name : path + "/" + name;
+            if (recursive && PHYSFS_isDirectory(childPath.c_str()))
+                visit(childPath, depth + 1);
+            else
+                files.push_back((recursive || fullPath) ? childPath : name);
+        }
+    };
+
+    visit(rootPath, 0);
+    files.sort();
+    return files;
+}
+
+std::string ResourceManager::getRealDir(const std::string& path)
+{
+    const auto resolvedPath = resolvePath(path);
+    const char* realDir = PHYSFS_getRealDir(resolvedPath.c_str());
+    return realDir ? realDir : "";
+}
+
+ticks_t ResourceManager::getFileTime(const std::string& path)
+{
+    const auto resolvedPath = resolvePath(path);
+    const char* realDir = PHYSFS_getRealDir(resolvedPath.c_str());
+    if (!realDir)
+        return 0;
+
+    std::error_code ec;
+    const auto basePath = std::filesystem::u8path(realDir);
+    if (!std::filesystem::is_directory(basePath, ec) || ec)
+        return 0;
+
+    const auto relativePath = std::filesystem::u8path(resolvedPath).relative_path();
+    return g_platform.getFileModificationTime((basePath / relativePath).string());
+}
+
+bool ResourceManager::writeFileContentsToWorkDir(const std::string& relativePath, const std::string& contents) try
+{
+#if defined(ANDROID)
+    g_logger.warning("Project file writing is unavailable on Android");
+    return false;
+#else
+    if (m_workDir.empty()) {
+        g_logger.warning("Project file writing is unavailable without a real work directory");
+        return false;
+    }
+
+    const auto relative = std::filesystem::u8path(relativePath);
+    if (!isSafeOtuiProjectPath(relative)) {
+        g_logger.warning(stdext::format("Rejected unsafe project file path '%s'", relativePath));
+        return false;
+    }
+
+    std::error_code ec;
+    const auto root = std::filesystem::weakly_canonical(std::filesystem::u8path(m_workDir), ec);
+    if (ec || !std::filesystem::is_directory(root, ec)) {
+        g_logger.warning("Project work directory is not accessible");
+        return false;
+    }
+
+    const auto target = root / relative;
+    const auto parent = std::filesystem::weakly_canonical(target.parent_path(), ec);
+    if (ec || !std::filesystem::is_directory(parent, ec) || !isPathInside(root, parent)) {
+        g_logger.warning(stdext::format("Rejected project file outside the work directory '%s'", relativePath));
+        return false;
+    }
+
+    const bool existed = std::filesystem::exists(target, ec);
+    if (ec)
+        return false;
+    if (existed) {
+        const auto status = std::filesystem::symlink_status(target, ec);
+        if (ec || std::filesystem::is_symlink(status) || !std::filesystem::is_regular_file(status)) {
+            g_logger.warning(stdext::format("Rejected non-regular project file '%s'", relativePath));
+            return false;
+        }
+
+        const auto canonicalTarget = std::filesystem::canonical(target, ec);
+        if (ec || !isPathInside(root, canonicalTarget)) {
+            g_logger.warning(stdext::format("Rejected project file resolving outside the work directory '%s'", relativePath));
+            return false;
+        }
+    }
+
+    const std::string virtualPath = "/" + relative.generic_string();
+    if (fileExists(virtualPath)) {
+        const auto realDir = getRealDir(virtualPath);
+        const auto canonicalRealDir = std::filesystem::weakly_canonical(std::filesystem::u8path(realDir), ec);
+        if (realDir.empty() || ec || canonicalRealDir != root) {
+            g_logger.warning(stdext::format("Rejected project file shadowed by another resource '%s'", relativePath));
+            return false;
+        }
+    }
+
+    std::string original;
+    if (existed && !readDiskFile(target, original)) {
+        g_logger.warning(stdext::format("Unable to read project file before writing '%s'", relativePath));
+        return false;
+    }
+
+    auto temporary = target;
+    temporary += ".tmp";
+    auto rollback = target;
+    rollback += ".rollback";
+
+    enum class RestoreResult {
+        Restored,
+        OriginalAtRollback,
+        OriginalLost,
+    };
+
+    const auto originalAtRollback = [&]() {
+        std::error_code checkError;
+        const auto status = std::filesystem::symlink_status(rollback, checkError);
+        if (checkError || std::filesystem::is_symlink(status) || !std::filesystem::is_regular_file(status))
+            return false;
+
+        std::string rollbackContents;
+        return readDiskFile(rollback, rollbackContents) && rollbackContents == original;
+    };
+
+    const auto restoreOriginal = [&]() {
+        std::error_code restoreError;
+        if (std::filesystem::exists(target, restoreError)) {
+            std::filesystem::remove(target, restoreError);
+            if (restoreError) {
+                if (originalAtRollback()) {
+                    g_logger.error(stdext::format(
+                        "Unable to remove a failed project file; the original remains at '%s'",
+                        rollback.string()));
+                    return RestoreResult::OriginalAtRollback;
+                }
+                g_logger.error(stdext::format(
+                    "Unable to remove a failed project file; the original may be lost (target '%s')",
+                    target.string()));
+                return RestoreResult::OriginalLost;
+            }
+        }
+
+        std::filesystem::rename(rollback, target, restoreError);
+        if (restoreError) {
+            if (originalAtRollback()) {
+                g_logger.error(stdext::format(
+                    "Unable to restore the project file; the original remains at '%s'",
+                    rollback.string()));
+                return RestoreResult::OriginalAtRollback;
+            }
+            g_logger.error(stdext::format(
+                "Unable to restore the project file; the original may be lost (target '%s')", target.string()));
+            return RestoreResult::OriginalLost;
+        }
+
+        std::string restored;
+        if (!readDiskFile(target, restored) || restored != original) {
+            g_logger.error(stdext::format(
+                "Restored project file verification failed for '%s'; the original may be lost",
+                relativePath));
+            return RestoreResult::OriginalLost;
+        }
+        return RestoreResult::Restored;
+    };
+
+    const auto reportRestore = [&](const char* operation, RestoreResult result) {
+        if (result == RestoreResult::Restored) {
+            g_logger.warning(stdext::format(
+                "%s aborted; the original project file remains intact", operation));
+        } else if (result == RestoreResult::OriginalAtRollback) {
+            g_logger.error(stdext::format(
+                "%s aborted; the original project file remains at '%s'", operation, rollback.string()));
+        } else {
+            g_logger.error(stdext::format(
+                "%s aborted; the original project file may be lost (check '%s')", operation, target.string()));
+        }
+    };
+
+    const bool hasRollback = std::filesystem::exists(rollback, ec);
+    if (ec) {
+        g_logger.error(stdext::format(
+            "Unable to inspect previous project file transaction '%s'", rollback.string()));
+        return false;
+    }
+    if (hasRollback) {
+
+        std::error_code targetError;
+        std::error_code rollbackError;
+        const auto targetStatus = std::filesystem::symlink_status(target, targetError);
+        const auto rollbackStatus = std::filesystem::symlink_status(rollback, rollbackError);
+        if (targetError || rollbackError || std::filesystem::is_symlink(targetStatus) ||
+            !std::filesystem::is_regular_file(targetStatus) || std::filesystem::is_symlink(rollbackStatus) ||
+            !std::filesystem::is_regular_file(rollbackStatus)) {
+            g_logger.error(stdext::format(
+                "Previous project transaction cannot be recovered safely; target or rollback is not a regular file. "
+                "Inspect '%s' before retrying.",
+                rollback.string()));
+            return false;
+        }
+
+        std::string targetContents;
+        std::string rollbackContents;
+        if (!readDiskFile(target, targetContents) || !readDiskFile(rollback, rollbackContents)) {
+            g_logger.error(stdext::format(
+                "Previous project transaction cannot be recovered safely; target '%s' or rollback '%s' "
+                "cannot be read.",
+                target.string(), rollback.string()));
+            return false;
+        }
+        const bool targetMatchesRollback = targetContents == rollbackContents;
+
+        std::error_code removeRollbackError;
+        if (!std::filesystem::remove(rollback, removeRollbackError) || removeRollbackError) {
+            g_logger.error(stdext::format(
+                "Recovered project target '%s', but could not remove rollback '%s'. "
+                "Inspect the rollback before retrying.",
+                target.string(), rollback.string()));
+            return false;
+        }
+        g_logger.warning(stdext::format(
+            "Recovered completed project file transaction '%s' (target %s rollback); continuing with the new write",
+            target.string(), targetMatchesRollback ? "matches" : "differs from"));
+    }
+    std::filesystem::remove(temporary, ec);
+    ec.clear();
+
+    if (!writeDiskFile(temporary, contents)) {
+        std::filesystem::remove(temporary, ec);
+        g_logger.warning(stdext::format("Unable to write project file temporary '%s'", relativePath));
+        return false;
+    }
+
+    std::string temporaryContents;
+    if (!readDiskFile(temporary, temporaryContents) || temporaryContents != contents) {
+        std::filesystem::remove(temporary, ec);
+        g_logger.warning(stdext::format("Project file temporary verification failed '%s'", relativePath));
+        return false;
+    }
+
+    if (existed) {
+        std::filesystem::rename(target, rollback, ec);
+        if (ec) {
+            std::filesystem::remove(temporary, ec);
+            g_logger.warning(stdext::format("Unable to preserve project file before replacement '%s'", relativePath));
+            return false;
+        }
+
+        std::string rollbackContents;
+        if (!readDiskFile(rollback, rollbackContents) || rollbackContents != original) {
+            const auto restoreResult = restoreOriginal();
+            reportRestore("Project file rollback verification", restoreResult);
+            std::filesystem::remove(temporary, ec);
+            g_logger.warning(stdext::format("Project file rollback verification failed '%s'", relativePath));
+            return false;
+        }
+    }
+
+    std::filesystem::rename(temporary, target, ec);
+    if (ec) {
+        if (existed) {
+            const auto restoreResult = restoreOriginal();
+            reportRestore("Project file replacement", restoreResult);
+        }
+        std::filesystem::remove(temporary, ec);
+        g_logger.warning(stdext::format("Unable to replace project file '%s'", relativePath));
+        return false;
+    }
+
+    std::string confirmed;
+    if (!readDiskFile(target, confirmed) || confirmed != contents) {
+        if (existed) {
+            const auto restoreResult = restoreOriginal();
+            reportRestore("Project file verification", restoreResult);
+        } else {
+            std::filesystem::remove(target, ec);
+        }
+        g_logger.warning(stdext::format("Project file verification failed after replacement '%s'", relativePath));
+        return false;
+    }
+
+    if (existed) {
+        std::error_code removeRollbackError;
+        if (!std::filesystem::remove(rollback, removeRollbackError) || removeRollbackError)
+            g_logger.error(stdext::format(
+                "Project file was written, but could not remove rollback '%s'. "
+                "The backup remains available for recovery.",
+                rollback.string()));
+    }
+    return true;
+#endif
+}
+catch (const std::exception& exception)
+{
+    g_logger.warning(stdext::format(
+        "Project file transaction failed for '%s': %s", relativePath, exception.what()));
+    return false;
+}
+
+std::string ResourceManager::resolvePath(std::string path)
+{
+    if(!stdext::starts_with(path, "/")) {
+        std::string scriptPath = "/" + g_lua.getCurrentSourcePath();
+        if(!scriptPath.empty())
+            path = scriptPath + "/" + path;
+        else
+            g_logger.traceWarning(stdext::format("the following file path is not fully resolved: %s", path));
+    }
+    stdext::replace_all(path, "//", "/");
+    if(!PHYSFS_exists(path.c_str())) {
+        static const std::string layouts_prefix = "/layouts/";
+        if (!m_layout.empty()) {
+            if (PHYSFS_exists((layouts_prefix + m_layout + path).c_str())) {
+                return layouts_prefix + m_layout + path;
+            }
+        }
+        static const std::string extra_check[] = { "/mods", "/data", "/modules" };
+        for (auto extra : extra_check) {
+            if (PHYSFS_exists((extra + path).c_str())) {
+                return extra + path;
+            }
+        }
+    }
+    return path;
+}
+
+std::string ResourceManager::guessFilePath(const std::string& filename, const std::string& type)
+{
+    if(isFileType(filename, type))
+        return filename;
+    return filename + "." + type;
+}
+
+bool ResourceManager::isFileType(const std::string& filename, const std::string& type)
+{
+    if(stdext::ends_with(filename, std::string(".") + type))
+        return true;
+    return false;
+}
+
+std::string ResourceManager::fileChecksum(const std::string& path) {
+    static std::map<std::string, std::string> cache;
+
+    auto it = cache.find(path);
+    if (it != cache.end())
+        return it->second;
+
+    PHYSFS_File* file = PHYSFS_openRead(path.c_str());
+    if(!file)
+        return "";
+
+    const PHYSFS_sint64 fileSize = PHYSFS_fileLength(file);
+    constexpr PHYSFS_sint64 MAX_CHECKSUM_FILE_SIZE = 512LL * 1024 * 1024;
+    if (fileSize < 0 || fileSize > MAX_CHECKSUM_FILE_SIZE) {
+        PHYSFS_close(file);
+        return "";
+    }
+    std::string buffer(static_cast<size_t>(fileSize), 0);
+    if (fileSize > 0 && PHYSFS_readBytes(file, buffer.data(), fileSize) != fileSize) {
+        PHYSFS_close(file);
+        return "";
+    }
+    PHYSFS_close(file);
+
+    auto checksum = g_crypt.crc32(buffer, false);
+    cache[path] = checksum;
+
+    return checksum;
+}
+
+std::map<std::string, std::string> ResourceManager::filesChecksums()
+{
+    std::map<std::string, std::string> ret;
+#ifndef __EMSCRIPTEN__
+    if (!m_memoryData)
+        return ret;
+
+    zip_source_t* src;
+    zip_t* za;
+    zip_stat_t file_stat;
+    zip_error_t error;
+    zip_error_init(&error);
+    zip_stat_init(&file_stat);
+
+    if ((src = zip_source_buffer_create(m_memoryData->data(), m_memoryData->size(), 0, &error)) == NULL)
+        g_logger.fatal(stdext::format("can't create source: %s", zip_error_strerror(&error)));
+
+    if ((za = zip_open_from_source(src, ZIP_RDONLY, &error)) == NULL)
+        g_logger.fatal(stdext::format("can't open zip from source: %s", zip_error_strerror(&error)));
+
+    zip_int64_t entries = zip_get_num_entries(za, 0);
+    for (zip_int64_t entry_idx = 0; entry_idx < entries; entry_idx++) {
+        if (zip_stat_index(za, entry_idx, 0, &file_stat)) {
+            g_logger.fatal(stdext::format("error stat-ing file at index %i: %s",
+                    (int)(entry_idx), zip_strerror(za)));
+        }
+        if (!(file_stat.valid & ZIP_STAT_NAME)) {
+            g_logger.warning(stdext::format("warning: skipping entry at index %i with invalid name.",
+                    (int)entry_idx));
+            continue;
+        }
+        std::string name(file_stat.name);
+        if (name.empty()) continue;
+        if (name[0] != '/')
+            name = std::string("/") + name;
+        if (name.back() == '/' || file_stat.size == 0) // dir
+            continue;
+        stdext::replace_all(name, "\\", "/");
+        ret[name] = stdext::dec_to_hex(file_stat.crc);
+    }
+
+    if (zip_close(za) < 0)
+        g_logger.fatal(stdext::format("can't close zip archive: %s", zip_strerror(za)));
+    zip_error_fini(&error);
+#endif
+    return ret;
+}
+
+std::string ResourceManager::selfChecksum() {
+#ifdef ANDROID
+    return "";
+#else
+    static std::string checksum;
+    if (!checksum.empty())
+        return checksum;
+
+    std::ifstream file(m_binaryPath.string(), std::ios::binary);
+    if (!file.is_open())
+        return "";
+
+    std::string buffer(std::istreambuf_iterator<char>(file), {});
+    file.close();
+
+    checksum = g_crypt.crc32(buffer, false);
+    return checksum;
+#endif
+}
+
+void ResourceManager::updateData(const std::set<std::string>& files, bool reMount) {
+#if !defined(__EMSCRIPTEN__)
+    if (!m_loadedFromArchive)
+        g_logger.fatal("Client can be updated only when running from zip archive");
+
+    g_logger.info(stdext::format("Updating client, %i files", files.size()));
+
+    zip_source_t *src;
+    zip_t *za;
+    zip_error_t error;
+    zip_error_init(&error);
+
+    if ((src = zip_source_buffer_create(0, 0, 0, &error)) == NULL)
+        return g_logger.fatal(stdext::format("can't create source: %s", zip_error_strerror(&error)));
+    zip_source_keep(src);
+
+    if ((za = zip_open_from_source(src, ZIP_TRUNCATE, &error)) == NULL)
+        return g_logger.fatal(stdext::format("can't open zip from source: %s", zip_error_strerror(&error)));
+
+    zip_error_fini(&error);
+
+    for (auto fileName : files) {
+        if (fileName.empty())
+            continue;
+        if (fileName.size() > 1 && fileName[0] == '/')
+            fileName = fileName.substr(1);
+        zip_source_t* s;
+        auto dFile = g_http.getFile(fileName);
+        if (dFile) {
+            if ((s = zip_source_buffer(za, dFile->body.data(), dFile->body.size(), 0)) == NULL)
+                return g_logger.fatal(stdext::format("can't create source buffer: %s", zip_strerror(za)));
+        } else {
+            PHYSFS_File* file = PHYSFS_openRead((std::string("/") + fileName).c_str());
+            if (!file)
+                g_logger.fatal(stdext::format("unable to open file '%s': %s", fileName, PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode())));
+
+            int fileSize = PHYSFS_fileLength(file);
+            void* buffer = malloc(fileSize);
+            PHYSFS_readBytes(file, buffer, fileSize);
+            PHYSFS_close(file);
+            if ((s = zip_source_buffer(za, buffer, fileSize, 1)) == NULL)
+                return g_logger.fatal(stdext::format("can't create source buffer: %s", zip_strerror(za)));
+        }
+
+        int fileIndex = zip_file_add(za, fileName.c_str(), s, ZIP_FL_OVERWRITE);
+        if(fileIndex < 0)
+            return g_logger.fatal(stdext::format("can't add file %s to zip archive: %s", fileName, zip_strerror(za)));
+        if (zip_set_file_compression(za, fileIndex, ZIP_CM_DEFLATE, 1) != 0)
+            return g_logger.fatal("Can't set file compression level");
+    }
+
+    if (zip_close(za) < 0)
+        return g_logger.fatal(stdext::format("can't close zip archive: %s", zip_strerror(za)));
+
+    zip_stat_t zst;
+    if (zip_source_stat(src, &zst) < 0)
+        return g_logger.fatal(stdext::format("can't stat source: %s", zip_error_strerror(zip_source_error(src))));
+    
+    size_t zipSize = zst.size;    
+
+    if (zip_source_open(src) < 0)
+        return g_logger.fatal(stdext::format("can't open source: %s", zip_error_strerror(zip_source_error(src))));
+
+    PHYSFS_file* file = PHYSFS_openWrite("data.zip");
+    if (!file)
+        return g_logger.fatal(stdext::format("can't open data.zip for writing: %s", PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode())));
+
+    static const size_t CHUNK_SIZE = 1024 * 1024;
+    std::vector<char> chunk(CHUNK_SIZE);
+    while (zipSize > 0) {
+        size_t currentChunk = std::min<size_t>(zipSize, CHUNK_SIZE);
+        if ((zip_uint64_t)zip_source_read(src, chunk.data(), currentChunk) < currentChunk)
+            return g_logger.fatal(stdext::format("can't read data from source: %s", zip_error_strerror(zip_source_error(src))));
+        PHYSFS_writeBytes(file, chunk.data(), currentChunk);
+        zipSize -= currentChunk;
+    }
+
+    PHYSFS_close(file);
+    zip_source_close(src);
+    zip_source_free(src);
+
+    if (reMount) {
+        unmountMemoryData();
+        file = PHYSFS_openRead("data.zip");
+        if (!file)
+            g_logger.fatal(stdext::format("Can't open new data.zip"));
+
+        int size = PHYSFS_fileLength(file);
+        if (size < 1024)
+            g_logger.fatal(stdext::format("New data.zip is invalid"));
+
+        auto data = std::make_shared<std::vector<uint8_t>>(size);
+        PHYSFS_readBytes(file, data->data(), data->size());
+        PHYSFS_close(file);
+        if (!mountMemoryData(data)) {
+            g_logger.fatal("Error while mounting new data.zip");
+        }
+    }
+#else
+    g_logger.fatal("updateData is unsupported");
+#endif
+}
+
+void ResourceManager::updateExecutable(std::string fileName)
+{
+#if defined(ANDROID)
+    g_logger.fatal("Executable cannot be updated on android or in free version");
+#else
+    if (fileName.size() <= 2) {
+        g_logger.fatal("Invalid executable name");
+    }
+
+    if (fileName[0] == '/')
+        fileName = fileName.substr(1);
+
+    auto dFile = g_http.getFile(fileName);
+    if (!dFile)
+        g_logger.fatal(stdext::format("Cannot find executable: %s in downloads", fileName));
+
+    std::filesystem::path path(m_binaryPath);
+    auto newBinary = path.stem().string() + "-" + std::to_string(time(nullptr)) + path.extension().string();
+    g_logger.info(stdext::format("Updating binary file: %s", newBinary));
+    PHYSFS_file* file = PHYSFS_openWrite(newBinary.c_str());
+    if (!file)
+        return g_logger.fatal(stdext::format("can't open %s for writing: %s", newBinary, PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode())));
+    PHYSFS_writeBytes(file, dFile->body.data(), dFile->body.size());
+    PHYSFS_close(file);
+
+    std::filesystem::path newBinaryPath(std::filesystem::u8path(PHYSFS_getWriteDir()));
+#if defined(WIN32)
+    installDlls(newBinaryPath);
+#endif
+#endif
+}
+
+std::string ResourceManager::createArchive(const std::map<std::string, std::string>& files)
+{
+#ifdef __EMSCRIPTEN__
+    return "";
+#else
+    if (files.empty()) return "";
+
+    zip_source_t* src;
+    zip_t* za;
+    zip_error_t error;
+    zip_error_init(&error);
+
+    if ((src = zip_source_buffer_create(0, 0, 0, &error)) == NULL)
+        stdext::throw_exception(stdext::format("can't create source: %s", zip_error_strerror(&error)));
+    zip_source_keep(src);
+
+    if ((za = zip_open_from_source(src, ZIP_TRUNCATE, &error)) == NULL)
+        stdext::throw_exception(stdext::format("can't open zip from source: %s", zip_error_strerror(&error)));
+
+    zip_error_fini(&error);
+
+    for (auto& file : files) {
+        if (file.first.empty() || file.second.empty())
+            continue;
+
+        zip_source_t* s;
+        if ((s = zip_source_buffer(za, file.second.data(), file.second.size(), 0)) == NULL)
+            stdext::throw_exception(stdext::format("can't create source buffer: %s", zip_strerror(za)));
+
+        std::string fileName = file.first;
+        if (fileName.size() > 1 && fileName[0] == '/')
+            fileName = fileName.substr(1);
+
+        int fileIndex = zip_file_add(za, fileName.c_str(), s, ZIP_FL_OVERWRITE);
+        if (fileIndex < 0)
+            stdext::throw_exception(stdext::format("can't add file %s to zip archive: %s", fileName, zip_strerror(za)));
+//        if (zip_set_file_compression(za, fileIndex, ZIP_CM_DEFLATE, 1) != 0)
+//            stdext::throw_exception("Can't set file compression level");
+    }
+
+    if (zip_close(za) < 0)
+        stdext::throw_exception(stdext::format("can't close zip archive: %s", zip_strerror(za)));
+
+    zip_stat_t zst;
+    if (zip_source_stat(src, &zst) < 0)
+        stdext::throw_exception(stdext::format("can't stat source: %s", zip_error_strerror(zip_source_error(src))));
+
+    size_t zipSize = zst.size;
+
+    if (zip_source_open(src) < 0)
+        stdext::throw_exception(stdext::format("can't open source: %s", zip_error_strerror(zip_source_error(src))));
+
+    std::string data(zipSize, '\0');
+    if ((zip_uint64_t)zip_source_read(src, data.data(), data.size()) != data.size())
+        stdext::throw_exception(stdext::format("can't read data from source: %s", zip_error_strerror(zip_source_error(src))));
+
+    zip_source_close(src);
+    zip_source_free(src);
+
+    return data;
+#endif
+}
+
+std::map<std::string, std::string> ResourceManager::decompressArchive(std::string dataOrPath)
+{
+    std::map<std::string, std::string> ret;
+#ifdef __EMSCRIPTEN__
+    return ret;
+#else
+    if (dataOrPath.size() < 64) {
+        dataOrPath = readFileContents(dataOrPath);
+    }
+
+    zip_source_t* src;
+    zip_t* za;
+    zip_stat_t file_stat;
+    zip_error_t error;
+    zip_error_init(&error);
+    zip_stat_init(&file_stat);
+
+    if ((src = zip_source_buffer_create(dataOrPath.c_str(), dataOrPath.size(), 0, &error)) == NULL)
+        stdext::throw_exception(stdext::format("unpackArchive: can't create source: %s", zip_error_strerror(&error)));
+
+    if ((za = zip_open_from_source(src, ZIP_RDONLY, &error)) == NULL)
+        stdext::throw_exception(stdext::format("unpackArchive: can't open zip from source: %s", zip_error_strerror(&error)));
+
+    zip_int64_t entries = zip_get_num_entries(za, 0);
+    for (zip_int64_t entry_idx = 0; entry_idx < entries; entry_idx++) {
+        if (zip_stat_index(za, entry_idx, 0, &file_stat)) {
+            stdext::throw_exception(stdext::format("unpackArchive: error stat-ing file at index %i: %s",
+                                          (int)(entry_idx), zip_strerror(za)));
+        }
+        if (!(file_stat.valid & ZIP_STAT_NAME)) {
+            g_logger.warning(stdext::format("warning: skipping entry at index %i with invalid name.",
+                                            (int)entry_idx));
+            continue;
+        }
+        std::string name(file_stat.name);
+        if (name.empty()) continue;
+        if (name[0] != '/')
+            name = std::string("/") + name;
+        if (name.back() == '/' || file_stat.size == 0) // dir
+            continue;
+        stdext::replace_all(name, "\\", "/");
+
+        zip_file_t* file = zip_fopen_index(za, entry_idx, 0);
+        if(!file)
+            stdext::throw_exception(stdext::format("can't open file from zip archive: %s - %s", name, zip_strerror(za)));
+        std::string buffer(file_stat.size, '\0');
+        zip_fread(file, buffer.data(), buffer.size());
+        zip_fclose(file);
+        ret[name] = std::move(buffer);
+    }
+
+    if (zip_close(za) < 0)
+        stdext::throw_exception(stdext::format("can't close zip archive: %s", zip_strerror(za)));
+    zip_error_fini(&error);
+    return ret; // success
+#endif
+}
+
+#if defined(WIN32)
+void ResourceManager::installDlls(std::filesystem::path dest)
+{
+    static std::list<std::string> dlls = {
+        {"libEGL.dll"},
+        {"libGLESv2.dll"},
+        {"d3dcompiler_46.dll"},
+        {"d3dcompiler_47.dll"}
+    };
+
+    int added_dlls = 0;
+    for (auto& dll : dlls) {
+        auto dll_path = m_binaryPath.parent_path();
+        dll_path /= dll;
+        if (!std::filesystem::exists(dll_path)) {
+            continue;
+        }
+        auto out_path = dest;
+        out_path /= dll;
+        if (std::filesystem::exists(out_path)) {
+            continue;
+        }
+        std::filesystem::copy_file(dll_path, out_path);
+    }
+}
+#endif
+
+#if defined(WITH_ENCRYPTION) && !defined(ANDROID)
+void ResourceManager::encrypt(const std::string& seed) {
+    const std::string dirsToCheck[] = { "data", "modules", "mods", "layouts" };
+    const std::string luaExtension = ".lua";
+
+    g_logger.setLogFile("encryption.log");
+    g_logger.info("----------------------");
+
+    std::queue<std::filesystem::path> toEncrypt;
+    // you can add custom files here
+    toEncrypt.push(std::filesystem::path(INIT_FILENAME));
+
+    for (auto& dir : dirsToCheck) {
+        if (!std::filesystem::exists(dir))
+            continue;
+        for(auto&& entry : std::filesystem::recursive_directory_iterator(std::filesystem::path(dir))) {
+            if (!std::filesystem::is_regular_file(entry.path()))
+                continue;
+            std::string str(entry.path().string());
+            // skip encryption for bot configs
+            if (str.find("game_bot") != std::string::npos && str.find("default_config") != std::string::npos) {
+                continue;
+            }
+            toEncrypt.push(entry.path());
+        }
+    }
+
+    bool encryptForAndroid = seed.find("android") != std::string::npos;
+    uint32_t uintseed = seed.empty() ? 0 : stdext::adler32((const uint8_t*)seed.c_str(), seed.size());
+
+    while (!toEncrypt.empty()) {
+        auto it = toEncrypt.front();
+        toEncrypt.pop();
+
+        std::error_code fileSizeError;
+        const auto fileSize = std::filesystem::file_size(it, fileSizeError);
+        if (fileSizeError) {
+            g_logger.error(stdext::format("%s - unable to determine file size", it.string()));
+            continue;
+        }
+        if (fileSize > MAX_ENCRYPTED_PAYLOAD_SIZE) {
+            g_logger.error(stdext::format("%s - exceeds the 512 MiB encryption limit", it.string()));
+            continue;
+        }
+
+        std::ifstream in_file(it, std::ios::binary);
+        if (!in_file.is_open())
+            continue;
+        std::string buffer(std::istreambuf_iterator<char>(in_file), {});
+        in_file.close();
+        if (buffer.size() >= 4 && buffer.substr(0, 4).compare("ENC3") == 0)
+            continue; // already encrypted
+
+        if (!encryptForAndroid && it.extension().string() == luaExtension && it.filename().string() != INIT_FILENAME) {
+            std::string bytecode = g_lua.generateByteCode(buffer, it.string());
+            if (bytecode.length() > 10) {
+                buffer = bytecode;
+                g_logger.info(stdext::format("%s - lua bytecode encrypted", it.string()));
+            } else {
+                g_logger.info(stdext::format("%s - lua but not bytecode encrypted", it.string()));
+            }
+        }
+
+        if (!canEncryptPayload(buffer.size())) {
+            g_logger.error(stdext::format("%s - exceeds the 512 MiB encryption limit", it.string()));
+            continue;
+        }
+
+        if (!encryptBuffer(buffer, uintseed)) { // already encrypted
+            g_logger.info(stdext::format("%s - already encrypted", it.string()));
+            continue;
+        }
+
+        std::ofstream out_file(it, std::ios::binary);
+        if (!out_file.is_open())
+            continue;
+        out_file.write(buffer.data(), buffer.size());
+        out_file.close();
+        g_logger.info(stdext::format("%s - encrypted", it.string()));
+    }
+}
+#endif 
+
+bool ResourceManager::decryptBuffer(std::string& buffer) {
+    if (buffer.size() < 4)
+        return true;
+
+    if (buffer.substr(0, 4).compare("ENC3") != 0) {
+        return false;
+    }
+
+    if (buffer.size() < ENC3_HEADER_SIZE)
+        return false;
+
+    const auto* header = reinterpret_cast<const uint8_t*>(buffer.data());
+    const uint64_t key = stdext::readULE64(header + 4);
+    const uint32_t compressed_size = stdext::readULE32(header + 12);
+    const uint32_t size = stdext::readULE32(header + 16);
+    const uint32_t adler = stdext::readULE32(header + 20);
+    if (compressed_size == 0 ||
+        compressed_size > MAX_ENCRYPTED_PAYLOAD_SIZE ||
+        compressed_size > buffer.size() - ENC3_HEADER_SIZE ||
+        size > MAX_ENCRYPTED_PAYLOAD_SIZE)
+        return false;
+
+    g_crypt.bdecrypt((uint8_t*)&buffer[ENC3_HEADER_SIZE], compressed_size, key);
+    std::string new_buffer;
+    new_buffer.resize(size);
+    unsigned long new_buffer_size = new_buffer.size();
+    if (uncompress(reinterpret_cast<uint8_t*>(new_buffer.data()), &new_buffer_size,
+                   reinterpret_cast<uint8_t*>(&buffer[ENC3_HEADER_SIZE]), compressed_size) != Z_OK ||
+        new_buffer_size != size)
+        return false;
+
+    uint32_t addlerCheck = stdext::adler32(reinterpret_cast<const uint8_t*>(new_buffer.data()), size);
+    if (adler != addlerCheck) {
+        uint32_t cseed = adler ^ addlerCheck;
+        if (m_customEncryption == 0) {
+            m_customEncryption = cseed;
+        }
+        if ((addlerCheck ^ m_customEncryption) != adler) {
+            return false;
+        }
+    }
+
+    buffer = new_buffer;
+    return true;
+}
+
+#ifdef WITH_ENCRYPTION
+bool ResourceManager::encryptBuffer(std::string& buffer, uint32_t seed) {
+    if (!canEncryptPayload(buffer.size()))
+        return false;
+
+    if (buffer.size() >= 4 && buffer.substr(0, 4).compare("ENC3") == 0)
+        return false; // already encrypted
+
+    // not random beacause it would require to update to new files each time
+    int64_t key = stdext::adler32(reinterpret_cast<const uint8_t*>(buffer.data()), buffer.size());
+    key <<= 32;
+    key += stdext::adler32(reinterpret_cast<const uint8_t*>(buffer.data()), buffer.size() / 2);
+
+    unsigned long dstLen = compressBound(static_cast<uLong>(buffer.size()));
+    std::string new_buffer(ENC3_HEADER_SIZE + static_cast<size_t>(dstLen), '0');
+    new_buffer[0] = 'E';
+    new_buffer[1] = 'N';
+    new_buffer[2] = 'C';
+    new_buffer[3] = '3';
+
+    if (compress((uint8_t*)&new_buffer[ENC3_HEADER_SIZE], &dstLen, (const uint8_t*)buffer.data(), buffer.size()) != Z_OK) {
+        g_logger.error("Error while compressing");
+        return false;
+    }
+    new_buffer.resize(ENC3_HEADER_SIZE + dstLen);
+
+    auto* header = reinterpret_cast<uint8_t*>(new_buffer.data());
+    stdext::writeULE64(header + 4, static_cast<uint64_t>(key));
+    stdext::writeULE32(header + 12, static_cast<uint32_t>(dstLen));
+    stdext::writeULE32(header + 16, static_cast<uint32_t>(buffer.size()));
+    stdext::writeULE32(header + 20, stdext::adler32(reinterpret_cast<const uint8_t*>(buffer.data()), buffer.size()) ^ seed);
+
+    g_crypt.bencrypt((uint8_t*)&new_buffer[0] + ENC3_HEADER_SIZE, new_buffer.size() - ENC3_HEADER_SIZE, key);
+    buffer = new_buffer;
+    return true;
+}
+#endif
+
+void ResourceManager::setLayout(std::string layout)
+{
+    stdext::tolower(layout);
+    stdext::replace_all(layout, "/", "");
+    if (layout == "default") {
+        layout = "";
+    }
+    if (!layout.empty() && !PHYSFS_exists((std::string("/layouts/") + layout).c_str())) {
+        g_logger.error(stdext::format("Layour %s doesn't exist, using default", layout));
+        return;
+    }
+    m_layout = layout;
+}
+
+bool ResourceManager::mountMemoryData(const std::shared_ptr<std::vector<uint8_t>>& data)
+{
+    if (!data || data->size() < 1024)
+        return false;
+
+    if (PHYSFS_mountMemory(data->data(), data->size(), nullptr,
+                           "memory_data.zip", "/", 0)) {
+        if (PHYSFS_exists(INIT_FILENAME.c_str())) {
+            m_loadedFromArchive = true;
+            m_memoryData = data;
+            return true;
+        }
+        PHYSFS_unmount("memory_data.zip");
+    }
+    return false;
+}
+
+void ResourceManager::unmountMemoryData()
+{
+    if (!m_memoryData)
+        return;
+
+    if (!PHYSFS_unmount("memory_data.zip")) {
+        g_logger.fatal(stdext::format("Unable to unmount memory data", PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode())));
+    }
+    m_memoryData = nullptr;
+    m_loadedFromMemory = false;
+    m_loadedFromArchive = false;
+}

@@ -1,0 +1,79 @@
+name: Build Docker Image (Linux)
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - Dockerfile
+      - .dockerignore
+      - ".github/workflows/docker-image.yml"
+      - "src/**"
+      - "cmake/**"
+      - "data/**"
+      - "vc18/**"
+      - CMakeLists.txt
+      - vcpkg.json
+      - vcpkg-configuration.json
+      - "vcpkg-overlays/**"
+
+  pull_request:
+    branches:
+      - main
+    paths:
+      - Dockerfile
+      - .dockerignore
+      - ".github/workflows/docker-image.yml"
+      - "src/**"
+      - "cmake/**"
+      - "data/**"
+      - "vc18/**"
+      - CMakeLists.txt
+      - vcpkg.json
+      - vcpkg-configuration.json
+      - "vcpkg-overlays/**"
+
+  workflow_dispatch:
+
+concurrency:
+  group: docker-image-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Docker build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7.0.1
+
+      - name: Show Docker version
+        run: docker version
+
+      - name: Build Docker image
+        run: |
+          set -e
+          max_attempts=3
+          attempt=0
+          until [ "$attempt" -ge "$max_attempts" ]; do
+            attempt=$((attempt+1))
+            echo "Docker build attempt $attempt/$max_attempts..."
+            if docker build --pull --file ./Dockerfile --tag tfs-linux:latest .; then
+              echo "Docker build succeeded"
+              break
+            fi
+            echo "Docker build failed (attempt $attempt)."
+            if [ "$attempt" -lt "$max_attempts" ]; then
+              sleep_seconds=$(( attempt * 10 ))
+              echo "Retrying in ${sleep_seconds}s..."
+              sleep $sleep_seconds
+            else
+              echo "Docker build failed after $max_attempts attempts"
+              exit 1
+            fi
+          done
