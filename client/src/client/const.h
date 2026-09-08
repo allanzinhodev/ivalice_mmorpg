@@ -30,6 +30,23 @@ namespace Otc
     enum : int {
         MAX_ELEVATION = 24,
 
+        // --- Projecao isometrica (estilo Final Fantasy Tactics Advance) ---
+        // Meias-extensoes do losango de uma celula: 32x16 px.
+        //   screenX = offsetX + (col - row) * TILE_HALF_W
+        //   screenY = offsetY + (col + row) * TILE_HALF_H
+        // Os valores batem com o renderer de referencia do proprio repo,
+        // tools/FFTAUtils/RenderArrangeMap/Form1.cs:21-22 (PILE_WIDTH/HEIGHT).
+        //
+        // NAO confundir com g_sprites.spriteSize(): aquele e o tamanho do
+        // SPRITE, este e o tamanho da CELULA. Sao conceitos distintos.
+        TILE_HALF_W = 16,
+        TILE_HALF_H = 8,
+
+        // Quanto um andar sobe em screenY. No FFTA a altura e levantamento
+        // vertical puro (Form1.cs:41 usa Y - height), nao o deslocamento
+        // diagonal do Tibia.
+        FLOOR_LIFT = 16,
+
         INVISIBLE_TICKS_PER_FRAME = 500,
         INVISIBLE_TICKS_PER_FRAME_FAST = 100,
         ITEM_TICKS_PER_FRAME = 500,
