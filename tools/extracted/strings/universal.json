@@ -1,0 +1,3076 @@
+{
+  "table": "universal",
+  "note": "termos de menu, nomes de habilidades/magias, buffs",
+  "pointerTableOffset": "0x5567F0",
+  "entryCount": 767,
+  "entries": [
+    {
+      "index": 0,
+      "text": "-"
+    },
+    {
+      "index": 1,
+      "text": "Turn Order"
+    },
+    {
+      "index": 2,
+      "text": "Mission"
+    },
+    {
+      "index": 3,
+      "text": "Law Cards"
+    },
+    {
+      "index": 4,
+      "text": "Options"
+    },
+    {
+      "index": 5,
+      "text": "Flee"
+    },
+    {
+      "index": 6,
+      "text": "Save Now"
+    },
+    {
+      "index": 7,
+      "text": "Laws"
+    },
+    {
+      "index": 8,
+      "text": "Move"
+    },
+    {
+      "index": 9,
+      "text": "Action"
+    },
+    {
+      "index": 10,
+      "text": "Wait"
+    },
+    {
+      "index": 11,
+      "text": "Status"
+    },
+    {
+      "index": 12,
+      "text": "Fight"
+    },
+    {
+      "index": 13,
+      "text": "Snowball"
+    },
+    {
+      "index": 14,
+      "text": "Totema"
+    },
+    {
+      "index": 15,
+      "text": "Combo"
+    },
+    {
+      "index": 16,
+      "text": "Party"
+    },
+    {
+      "index": 17,
+      "text": "Clan"
+    },
+    {
+      "index": 18,
+      "text": "Link"
+    },
+    {
+      "index": 19,
+      "text": "Area List"
+    },
+    {
+      "index": 20,
+      "text": "System"
+    },
+    {
+      "index": 21,
+      "text": "Save"
+    },
+    {
+      "index": 22,
+      "text": "Load"
+    },
+    {
+      "index": 23,
+      "text": "Back"
+    },
+    {
+      "index": 24,
+      "text": "Release"
+    },
+    {
+      "index": 25,
+      "text": "Pardon"
+    },
+    {
+      "index": 26,
+      "text": "Leave"
+    },
+    {
+      "index": 27,
+      "text": "Suspended"
+    },
+    {
+      "index": 28,
+      "text": "Bail"
+    },
+    {
+      "index": 29,
+      "text": "Sentence"
+    },
+    {
+      "index": 30,
+      "text": "Trade"
+    },
+    {
+      "index": 31,
+      "text": "Gossip"
+    },
+    {
+      "index": 32,
+      "text": "Leave"
+    },
+    {
+      "index": 33,
+      "text": "Buy"
+    },
+    {
+      "index": 34,
+      "text": "Sell"
+    },
+    {
+      "index": 35,
+      "text": "Trade Items"
+    },
+    {
+      "index": 36,
+      "text": "List"
+    },
+    {
+      "index": 37,
+      "text": "Back"
+    },
+    {
+      "index": 38,
+      "text": "????"
+    },
+    {
+      "index": 39,
+      "text": "Play"
+    },
+    {
+      "index": 40,
+      "text": "Release"
+    },
+    {
+      "index": 41,
+      "text": "Rumors"
+    },
+    {
+      "index": 42,
+      "text": "Missions"
+    },
+    {
+      "index": 43,
+      "text": "Quit Mission"
+    },
+    {
+      "index": 44,
+      "text": "Leave"
+    },
+    {
+      "index": 45,
+      "text": "Equip"
+    },
+    {
+      "index": 46,
+      "text": "Abilities"
+    },
+    {
+      "index": 47,
+      "text": "Change Jobs"
+    },
+    {
+      "index": 48,
+      "text": "Dismiss"
+    },
+    {
+      "index": 49,
+      "text": "Set"
+    },
+    {
+      "index": 50,
+      "text": "List"
+    },
+    {
+      "index": 51,
+      "text": "Sort Units"
+    },
+    {
+      "index": 52,
+      "text": "Sort Items"
+    },
+    {
+      "index": 53,
+      "text": "Change"
+    },
+    {
+      "index": 54,
+      "text": "Confirm"
+    },
+    {
+      "index": 55,
+      "text": "Do it"
+    },
+    {
+      "index": 56,
+      "text": "Cancel"
+    },
+    {
+      "index": 57,
+      "text": "Yes"
+    },
+    {
+      "index": 58,
+      "text": "No"
+    },
+    {
+      "index": 59,
+      "text": "Mission List"
+    },
+    {
+      "index": 60,
+      "text": "Report"
+    },
+    {
+      "index": 61,
+      "text": "Clan Turf"
+    },
+    {
+      "index": 62,
+      "text": "Mission Item"
+    },
+    {
+      "index": 63,
+      "text": "Support Clan"
+    },
+    {
+      "index": 64,
+      "text": "\"---"
+    },
+    {
+      "index": 65,
+      "text": "Treasure Hunt"
+    },
+    {
+      "index": 66,
+      "text": "/used"
+    },
+    {
+      "index": 67,
+      "text": "OK"
+    },
+    {
+      "index": 68,
+      "text": "Paid"
+    },
+    {
+      "index": 69,
+      "text": "Equipped"
+    },
+    {
+      "index": 70,
+      "text": "Team Up"
+    },
+    {
+      "index": 71,
+      "text": "Trade Items"
+    },
+    {
+      "index": 72,
+      "text": "Trade Units"
+    },
+    {
+      "index": 73,
+      "text": "Unmorph"
+    },
+    {
+      "index": 74,
+      "text": "Enhance+"
+    },
+    {
+      "index": 75,
+      "text": "\"---"
+    },
+    {
+      "index": 76,
+      "text": "Equipped"
+    },
+    {
+      "index": 77,
+      "text": "Mission Item"
+    },
+    {
+      "index": 78,
+      "text": "Law Cards"
+    },
+    {
+      "index": 79,
+      "text": "Law Cards"
+    },
+    {
+      "index": 80,
+      "text": "Totema"
+    },
+    {
+      "index": 81,
+      "text": "Totema"
+    },
+    {
+      "index": 82,
+      "text": "Totema"
+    },
+    {
+      "index": 83,
+      "text": "Totema"
+    },
+    {
+      "index": 84,
+      "text": "Totema"
+    },
+    {
+      "index": 85,
+      "text": "Plains"
+    },
+    {
+      "index": 86,
+      "text": "Forest"
+    },
+    {
+      "index": 87,
+      "text": "Desert"
+    },
+    {
+      "index": 88,
+      "text": "Marsh"
+    },
+    {
+      "index": 89,
+      "text": "Mountain"
+    },
+    {
+      "index": 90,
+      "text": "Cave"
+    },
+    {
+      "index": 91,
+      "text": "Town"
+    },
+    {
+      "index": 92,
+      "text": "Jagd"
+    },
+    {
+      "index": 93,
+      "text": "Shop"
+    },
+    {
+      "index": 94,
+      "text": "Pub"
+    },
+    {
+      "index": 95,
+      "text": "Prison"
+    },
+    {
+      "index": 96,
+      "text": "Card Keeper"
+    },
+    {
+      "index": 97,
+      "text": "Monster Bank"
+    },
+    {
+      "index": 98,
+      "text": "Combat"
+    },
+    {
+      "index": 99,
+      "text": "Magic"
+    },
+    {
+      "index": 100,
+      "text": "Smithing"
+    },
+    {
+      "index": 101,
+      "text": "Craft"
+    },
+    {
+      "index": 102,
+      "text": "Appraise"
+    },
+    {
+      "index": 103,
+      "text": "Gather"
+    },
+    {
+      "index": 104,
+      "text": "Negotiate"
+    },
+    {
+      "index": 105,
+      "text": "Track"
+    },
+    {
+      "index": 106,
+      "text": "Item"
+    },
+    {
+      "index": 107,
+      "text": "Blue Magic"
+    },
+    {
+      "index": 108,
+      "text": "Red Magic"
+    },
+    {
+      "index": 109,
+      "text": "Trick"
+    },
+    {
+      "index": 110,
+      "text": "Control"
+    },
+    {
+      "index": 111,
+      "text": "Hunt"
+    },
+    {
+      "index": 112,
+      "text": "Chivalry"
+    },
+    {
+      "index": 113,
+      "text": "Prayer"
+    },
+    {
+      "index": 114,
+      "text": "Song"
+    },
+    {
+      "index": 115,
+      "text": "Black Magic"
+    },
+    {
+      "index": 116,
+      "text": "Sagacity Skill"
+    },
+    {
+      "index": 117,
+      "text": "Phantasm Skill"
+    },
+    {
+      "index": 118,
+      "text": "Sacred Tech"
+    },
+    {
+      "index": 119,
+      "text": "Blaze"
+    },
+    {
+      "index": 120,
+      "text": "Sandstorm"
+    },
+    {
+      "index": 121,
+      "text": "Rot"
+    },
+    {
+      "index": 122,
+      "text": "Corner"
+    },
+    {
+      "index": 123,
+      "text": "Stunt"
+    },
+    {
+      "index": 124,
+      "text": "Gunmanship"
+    },
+    {
+      "index": 125,
+      "text": "Defend"
+    },
+    {
+      "index": 126,
+      "text": "Summon Magic"
+    },
+    {
+      "index": 127,
+      "text": "Stench"
+    },
+    {
+      "index": 128,
+      "text": "White Magic"
+    },
+    {
+      "index": 129,
+      "text": "Debilitate"
+    },
+    {
+      "index": 130,
+      "text": "Spirit Magic"
+    },
+    {
+      "index": 131,
+      "text": "Battle Tech"
+    },
+    {
+      "index": 132,
+      "text": "Monk Tech"
+    },
+    {
+      "index": 133,
+      "text": "Sharpshoot"
+    },
+    {
+      "index": 134,
+      "text": "Punch"
+    },
+    {
+      "index": 135,
+      "text": "Charge"
+    },
+    {
+      "index": 136,
+      "text": "Fighter Tech"
+    },
+    {
+      "index": 137,
+      "text": "Time Magic"
+    },
+    {
+      "index": 138,
+      "text": "Lunge Tech"
+    },
+    {
+      "index": 139,
+      "text": "Icewyrm"
+    },
+    {
+      "index": 140,
+      "text": "Morph"
+    },
+    {
+      "index": 141,
+      "text": "Melt"
+    },
+    {
+      "index": 142,
+      "text": "Ninja Skill"
+    },
+    {
+      "index": 143,
+      "text": "Steal"
+    },
+    {
+      "index": 144,
+      "text": "Aim"
+    },
+    {
+      "index": 145,
+      "text": "Pandora"
+    },
+    {
+      "index": 146,
+      "text": "Rake"
+    },
+    {
+      "index": 147,
+      "text": "Spellblade Tech"
+    },
+    {
+      "index": 148,
+      "text": "Gaze"
+    },
+    {
+      "index": 149,
+      "text": "Call"
+    },
+    {
+      "index": 150,
+      "text": "Dragon Tech"
+    },
+    {
+      "index": 151,
+      "text": "Alchemy Skill"
+    },
+    {
+      "index": 152,
+      "text": "Grudge"
+    },
+    {
+      "index": 153,
+      "text": "Rune"
+    },
+    {
+      "index": 154,
+      "text": "Hermetics"
+    },
+    {
+      "index": 155,
+      "text": "Dark Magic"
+    },
+    {
+      "index": 156,
+      "text": "Flair"
+    },
+    {
+      "index": 157,
+      "text": "Genesis"
+    },
+    {
+      "index": 158,
+      "text": "Wicca"
+    },
+    {
+      "index": 159,
+      "text": "Expulse"
+    },
+    {
+      "index": 160,
+      "text": "Magestorm"
+    },
+    {
+      "index": 161,
+      "text": "Hit"
+    },
+    {
+      "index": 162,
+      "text": "Chill"
+    },
+    {
+      "index": 163,
+      "text": "Scorch"
+    },
+    {
+      "index": 164,
+      "text": "Boom!"
+    },
+    {
+      "index": 165,
+      "text": "Dragonblaze"
+    },
+    {
+      "index": 166,
+      "text": "Dragonbolt"
+    },
+    {
+      "index": 167,
+      "text": "Poison Fang"
+    },
+    {
+      "index": 168,
+      "text": "Adhere"
+    },
+    {
+      "index": 169,
+      "text": "Crush"
+    },
+    {
+      "index": 170,
+      "text": "Malice"
+    },
+    {
+      "index": 171,
+      "text": "Scratch"
+    },
+    {
+      "index": 172,
+      "text": "Reek"
+    },
+    {
+      "index": 173,
+      "text": "Glare"
+    },
+    {
+      "index": 174,
+      "text": "Illude"
+    },
+    {
+      "index": 175,
+      "text": "Fluoresce"
+    },
+    {
+      "index": 176,
+      "text": "Advanced Law"
+    },
+    {
+      "index": 177,
+      "text": "Judgement"
+    },
+    {
+      "index": 178,
+      "text": "Blank Card"
+    },
+    {
+      "index": 179,
+      "text": "Damage > MP"
+    },
+    {
+      "index": 180,
+      "text": "Turbo MP"
+    },
+    {
+      "index": 181,
+      "text": "Earth Heal"
+    },
+    {
+      "index": 182,
+      "text": "Aim: Armor"
+    },
+    {
+      "index": 183,
+      "text": "Ice Breath"
+    },
+    {
+      "index": 184,
+      "text": "Item"
+    },
+    {
+      "index": 185,
+      "text": "Blue Screw"
+    },
+    {
+      "index": 186,
+      "text": "Red Spring"
+    },
+    {
+      "index": 187,
+      "text": "Steal: Access."
+    },
+    {
+      "index": 188,
+      "text": "Mog Rush"
+    },
+    {
+      "index": 189,
+      "text": "Devil Gaze"
+    },
+    {
+      "index": 190,
+      "text": "Nightmare"
+    },
+    {
+      "index": 191,
+      "text": "Aim: Legs"
+    },
+    {
+      "index": 192,
+      "text": "Astra"
+    },
+    {
+      "index": 193,
+      "text": "Death Sickle"
+    },
+    {
+      "index": 194,
+      "text": "Mog Attack"
+    },
+    {
+      "index": 195,
+      "text": "Steal: Ability"
+    },
+    {
+      "index": 196,
+      "text": "Ultima Charge"
+    },
+    {
+      "index": 197,
+      "text": "Ultima Masher"
+    },
+    {
+      "index": 198,
+      "text": "Ultima Shot"
+    },
+    {
+      "index": 199,
+      "text": "Ultima Sword"
+    },
+    {
+      "index": 200,
+      "text": "Ultima Blow"
+    },
+    {
+      "index": 201,
+      "text": "Full-Life"
+    },
+    {
+      "index": 202,
+      "text": "Undead"
+    },
+    {
+      "index": 203,
+      "text": "Fireshot"
+    },
+    {
+      "index": 204,
+      "text": "Capture"
+    },
+    {
+      "index": 205,
+      "text": "Zombify"
+    },
+    {
+      "index": 206,
+      "text": "Ifrit"
+    },
+    {
+      "index": 207,
+      "text": "Rockbeast"
+    },
+    {
+      "index": 208,
+      "text": "100% Wool"
+    },
+    {
+      "index": 209,
+      "text": "Aim: Weapon"
+    },
+    {
+      "index": 210,
+      "text": "Water"
+    },
+    {
+      "index": 211,
+      "text": "Voodoo"
+    },
+    {
+      "index": 212,
+      "text": "Aim: Arm"
+    },
+    {
+      "index": 213,
+      "text": "Whirlwind"
+    },
+    {
+      "index": 214,
+      "text": "Air Blast"
+    },
+    {
+      "index": 215,
+      "text": "Aero"
+    },
+    {
+      "index": 216,
+      "text": "Ether"
+    },
+    {
+      "index": 217,
+      "text": "X-Potion"
+    },
+    {
+      "index": 218,
+      "text": "Esuna"
+    },
+    {
+      "index": 219,
+      "text": "Elixir"
+    },
+    {
+      "index": 220,
+      "text": "Oust"
+    },
+    {
+      "index": 221,
+      "text": "First Aid"
+    },
+    {
+      "index": 222,
+      "text": "Aura"
+    },
+    {
+      "index": 223,
+      "text": "Ague"
+    },
+    {
+      "index": 224,
+      "text": "Warcry"
+    },
+    {
+      "index": 225,
+      "text": "Maiden Kiss"
+    },
+    {
+      "index": 226,
+      "text": "Mog Guard"
+    },
+    {
+      "index": 227,
+      "text": "Guard-Off"
+    },
+    {
+      "index": 228,
+      "text": "Carbuncle"
+    },
+    {
+      "index": 229,
+      "text": "Soundwave"
+    },
+    {
+      "index": 230,
+      "text": "Unspell"
+    },
+    {
+      "index": 231,
+      "text": "Nurse"
+    },
+    {
+      "index": 232,
+      "text": "Counter"
+    },
+    {
+      "index": 233,
+      "text": "Addle"
+    },
+    {
+      "index": 234,
+      "text": "Frogsong"
+    },
+    {
+      "index": 235,
+      "text": "Firebomb"
+    },
+    {
+      "index": 236,
+      "text": "Shadowbind"
+    },
+    {
+      "index": 237,
+      "text": "Monkey Grip"
+    },
+    {
+      "index": 238,
+      "text": "Fire Veil"
+    },
+    {
+      "index": 239,
+      "text": "Cover"
+    },
+    {
+      "index": 240,
+      "text": "Steal: Helm"
+    },
+    {
+      "index": 241,
+      "text": "Munch"
+    },
+    {
+      "index": 242,
+      "text": "Body Slam"
+    },
+    {
+      "index": 243,
+      "text": "Iceshot"
+    },
+    {
+      "index": 244,
+      "text": "Yellow Spring"
+    },
+    {
+      "index": 245,
+      "text": "Giga Flare"
+    },
+    {
+      "index": 246,
+      "text": "Catch"
+    },
+    {
+      "index": 247,
+      "text": "Aim: Vitals"
+    },
+    {
+      "index": 248,
+      "text": "Resonate"
+    },
+    {
+      "index": 249,
+      "text": "Kirin"
+    },
+    {
+      "index": 250,
+      "text": "Gil Toss"
+    },
+    {
+      "index": 251,
+      "text": "Mug"
+    },
+    {
+      "index": 252,
+      "text": "Steal: Gil"
+    },
+    {
+      "index": 253,
+      "text": "Cheer"
+    },
+    {
+      "index": 254,
+      "text": "Metal Veil"
+    },
+    {
+      "index": 255,
+      "text": "Silver Disc"
+    },
+    {
+      "index": 256,
+      "text": "Gold Battery"
+    },
+    {
+      "index": 257,
+      "text": "Soft"
+    },
+    {
+      "index": 258,
+      "text": "Quicken"
+    },
+    {
+      "index": 259,
+      "text": "Air Render"
+    },
+    {
+      "index": 260,
+      "text": "Bad Breath"
+    },
+    {
+      "index": 261,
+      "text": "Kiss"
+    },
+    {
+      "index": 262,
+      "text": "Demi"
+    },
+    {
+      "index": 263,
+      "text": "Quarter"
+    },
+    {
+      "index": 264,
+      "text": "Mythril"
+    },
+    {
+      "index": 265,
+      "text": "Steal: JP"
+    },
+    {
+      "index": 266,
+      "text": "Black Ingot"
+    },
+    {
+      "index": 267,
+      "text": "Cure"
+    },
+    {
+      "index": 268,
+      "text": "Curaga"
+    },
+    {
+      "index": 269,
+      "text": "Cura"
+    },
+    {
+      "index": 270,
+      "text": "Steal: EXP"
+    },
+    {
+      "index": 271,
+      "text": "Evil Gaze"
+    },
+    {
+      "index": 272,
+      "text": "Weapon Atk+"
+    },
+    {
+      "index": 273,
+      "text": "Parley"
+    },
+    {
+      "index": 274,
+      "text": "Goblin"
+    },
+    {
+      "index": 275,
+      "text": "Goblin Punch"
+    },
+    {
+      "index": 276,
+      "text": "Bug"
+    },
+    {
+      "index": 277,
+      "text": "Confushot"
+    },
+    {
+      "index": 278,
+      "text": "Circle"
+    },
+    {
+      "index": 279,
+      "text": "Sidewinder"
+    },
+    {
+      "index": 280,
+      "text": "Aim: Wallet"
+    },
+    {
+      "index": 281,
+      "text": "Silence"
+    },
+    {
+      "index": 282,
+      "text": "Silenshot"
+    },
+    {
+      "index": 283,
+      "text": "Star Cross"
+    },
+    {
+      "index": 284,
+      "text": "Cuisine"
+    },
+    {
+      "index": 285,
+      "text": "Thunder"
+    },
+    {
+      "index": 286,
+      "text": "Bolt Sword"
+    },
+    {
+      "index": 287,
+      "text": "Bolt Breath"
+    },
+    {
+      "index": 288,
+      "text": "Thundaga"
+    },
+    {
+      "index": 289,
+      "text": "Thundara"
+    },
+    {
+      "index": 290,
+      "text": "Sandstorm"
+    },
+    {
+      "index": 291,
+      "text": "Shiva"
+    },
+    {
+      "index": 292,
+      "text": "Shell"
+    },
+    {
+      "index": 293,
+      "text": "Aphonia"
+    },
+    {
+      "index": 294,
+      "text": "Greased Bolt"
+    },
+    {
+      "index": 295,
+      "text": "Tail Wag"
+    },
+    {
+      "index": 296,
+      "text": "Roulette"
+    },
+    {
+      "index": 297,
+      "text": "Blowup"
+    },
+    {
+      "index": 298,
+      "text": "Shining Air"
+    },
+    {
+      "index": 299,
+      "text": "Jump"
+    },
+    {
+      "index": 300,
+      "text": "Judge"
+    },
+    {
+      "index": 301,
+      "text": "Absorb MP"
+    },
+    {
+      "index": 302,
+      "text": "Miasma"
+    },
+    {
+      "index": 303,
+      "text": "Half MP"
+    },
+    {
+      "index": 304,
+      "text": "Advice"
+    },
+    {
+      "index": 305,
+      "text": "Mog Lance"
+    },
+    {
+      "index": 306,
+      "text": "Water Veil"
+    },
+    {
+      "index": 307,
+      "text": "Stardust"
+    },
+    {
+      "index": 308,
+      "text": "Shadowstick"
+    },
+    {
+      "index": 309,
+      "text": "Stop"
+    },
+    {
+      "index": 310,
+      "text": "Stopshot"
+    },
+    {
+      "index": 311,
+      "text": "Chill"
+    },
+    {
+      "index": 312,
+      "text": "Speedbreak"
+    },
+    {
+      "index": 313,
+      "text": "Smile"
+    },
+    {
+      "index": 314,
+      "text": "Featherblow"
+    },
+    {
+      "index": 315,
+      "text": "Sliprain"
+    },
+    {
+      "index": 316,
+      "text": "Sleep"
+    },
+    {
+      "index": 317,
+      "text": "Slow"
+    },
+    {
+      "index": 318,
+      "text": "Swallowtail"
+    },
+    {
+      "index": 319,
+      "text": "Holy Sign"
+    },
+    {
+      "index": 320,
+      "text": "Concentrate"
+    },
+    {
+      "index": 321,
+      "text": "Holy Water"
+    },
+    {
+      "index": 322,
+      "text": "Saint Cross"
+    },
+    {
+      "index": 323,
+      "text": "Conceal"
+    },
+    {
+      "index": 324,
+      "text": "Reveal"
+    },
+    {
+      "index": 325,
+      "text": "Soil Evidence"
+    },
+    {
+      "index": 326,
+      "text": "Draw Weapon"
+    },
+    {
+      "index": 327,
+      "text": "Soul Sphere"
+    },
+    {
+      "index": 328,
+      "text": "Last Breath"
+    },
+    {
+      "index": 329,
+      "text": "Geomancy"
+    },
+    {
+      "index": 330,
+      "text": "Revive"
+    },
+    {
+      "index": 331,
+      "text": "Sonic Boom"
+    },
+    {
+      "index": 332,
+      "text": "Wild Tornado"
+    },
+    {
+      "index": 333,
+      "text": "Swarmstrike"
+    },
+    {
+      "index": 334,
+      "text": "Shieldbearer"
+    },
+    {
+      "index": 335,
+      "text": "Steal: Shield"
+    },
+    {
+      "index": 336,
+      "text": "Boost"
+    },
+    {
+      "index": 337,
+      "text": "Mog Peek"
+    },
+    {
+      "index": 338,
+      "text": "Checkmate"
+    },
+    {
+      "index": 339,
+      "text": "Suffocate"
+    },
+    {
+      "index": 340,
+      "text": "Charmshot"
+    },
+    {
+      "index": 341,
+      "text": "Chakra"
+    },
+    {
+      "index": 342,
+      "text": "Provoke"
+    },
+    {
+      "index": 343,
+      "text": "Chocobo Rush"
+    },
+    {
+      "index": 344,
+      "text": "Earth Render"
+    },
+    {
+      "index": 345,
+      "text": "Twister"
+    },
+    {
+      "index": 346,
+      "text": "Subdue"
+    },
+    {
+      "index": 347,
+      "text": "Death"
+    },
+    {
+      "index": 348,
+      "text": "Dispel"
+    },
+    {
+      "index": 349,
+      "text": "Angel Whisper"
+    },
+    {
+      "index": 350,
+      "text": "Tempest"
+    },
+    {
+      "index": 351,
+      "text": "Hibernate"
+    },
+    {
+      "index": 352,
+      "text": "Toad"
+    },
+    {
+      "index": 353,
+      "text": "Poison Frog"
+    },
+    {
+      "index": 354,
+      "text": "Antidote"
+    },
+    {
+      "index": 355,
+      "text": "Poison Claw"
+    },
+    {
+      "index": 356,
+      "text": "Earth Veil"
+    },
+    {
+      "index": 357,
+      "text": "Friend"
+    },
+    {
+      "index": 358,
+      "text": "Dragon"
+    },
+    {
+      "index": 359,
+      "text": "Wyrmkiller"
+    },
+    {
+      "index": 360,
+      "text": "Dragon Force"
+    },
+    {
+      "index": 361,
+      "text": "Drain"
+    },
+    {
+      "index": 362,
+      "text": "Drain Touch"
+    },
+    {
+      "index": 363,
+      "text": "Tonberry"
+    },
+    {
+      "index": 364,
+      "text": "Nighthawk"
+    },
+    {
+      "index": 365,
+      "text": "Dagger"
+    },
+    {
+      "index": 366,
+      "text": "Mow Down"
+    },
+    {
+      "index": 367,
+      "text": "Throw"
+    },
+    {
+      "index": 368,
+      "text": "Bonecrusher"
+    },
+    {
+      "index": 369,
+      "text": "Chroma Gem"
+    },
+    {
+      "index": 370,
+      "text": "Double Sword"
+    },
+    {
+      "index": 371,
+      "text": "Stare"
+    },
+    {
+      "index": 372,
+      "text": "Rend"
+    },
+    {
+      "index": 373,
+      "text": "Goo"
+    },
+    {
+      "index": 374,
+      "text": "Take Aim"
+    },
+    {
+      "index": 375,
+      "text": "Piercethrough"
+    },
+    {
+      "index": 376,
+      "text": "Cupid"
+    },
+    {
+      "index": 377,
+      "text": "Expert Guard"
+    },
+    {
+      "index": 378,
+      "text": "Bio"
+    },
+    {
+      "index": 379,
+      "text": "Hi-Potion"
+    },
+    {
+      "index": 380,
+      "text": "Tremor"
+    },
+    {
+      "index": 381,
+      "text": "Exorcise"
+    },
+    {
+      "index": 382,
+      "text": "Backdraft"
+    },
+    {
+      "index": 383,
+      "text": "Far Fist"
+    },
+    {
+      "index": 384,
+      "text": "Strikeback"
+    },
+    {
+      "index": 385,
+      "text": "Barrier"
+    },
+    {
+      "index": 386,
+      "text": "Powerbreak"
+    },
+    {
+      "index": 387,
+      "text": "Bangaa Cry"
+    },
+    {
+      "index": 388,
+      "text": "Panther"
+    },
+    {
+      "index": 389,
+      "text": "Bandage"
+    },
+    {
+      "index": 390,
+      "text": "Hunting"
+    },
+    {
+      "index": 391,
+      "text": "Cureall"
+    },
+    {
+      "index": 392,
+      "text": "Mog Aid"
+    },
+    {
+      "index": 393,
+      "text": "Sheep Count"
+    },
+    {
+      "index": 394,
+      "text": "Hand Slap"
+    },
+    {
+      "index": 395,
+      "text": "Last Quicken"
+    },
+    {
+      "index": 396,
+      "text": "Last Berserk"
+    },
+    {
+      "index": 397,
+      "text": "Last Haste"
+    },
+    {
+      "index": 398,
+      "text": "Fire"
+    },
+    {
+      "index": 399,
+      "text": "Fire Whip"
+    },
+    {
+      "index": 400,
+      "text": "Fire Sword"
+    },
+    {
+      "index": 401,
+      "text": "Fire Breath"
+    },
+    {
+      "index": 402,
+      "text": "Firaga"
+    },
+    {
+      "index": 403,
+      "text": "Fira"
+    },
+    {
+      "index": 404,
+      "text": "Faster"
+    },
+    {
+      "index": 405,
+      "text": "Rockseal"
+    },
+    {
+      "index": 406,
+      "text": "Beatdown"
+    },
+    {
+      "index": 407,
+      "text": "Phoenix"
+    },
+    {
+      "index": 408,
+      "text": "Phoenix Down"
+    },
+    {
+      "index": 409,
+      "text": "Steal: Weapon"
+    },
+    {
+      "index": 410,
+      "text": "Burial"
+    },
+    {
+      "index": 411,
+      "text": "Drop Weapon"
+    },
+    {
+      "index": 412,
+      "text": "Meteorite"
+    },
+    {
+      "index": 413,
+      "text": "Blind"
+    },
+    {
+      "index": 414,
+      "text": "Blindshot"
+    },
+    {
+      "index": 415,
+      "text": "Blaster"
+    },
+    {
+      "index": 416,
+      "text": "Blackout"
+    },
+    {
+      "index": 417,
+      "text": "Freezeblink"
+    },
+    {
+      "index": 418,
+      "text": "Blizzaga"
+    },
+    {
+      "index": 419,
+      "text": "Blizzard"
+    },
+    {
+      "index": 420,
+      "text": "Ice Sword"
+    },
+    {
+      "index": 421,
+      "text": "Blizzara"
+    },
+    {
+      "index": 422,
+      "text": "Blitz"
+    },
+    {
+      "index": 423,
+      "text": "Flan"
+    },
+    {
+      "index": 424,
+      "text": "Manastrike"
+    },
+    {
+      "index": 425,
+      "text": "Flare"
+    },
+    {
+      "index": 426,
+      "text": "Break"
+    },
+    {
+      "index": 427,
+      "text": "Flame Attack"
+    },
+    {
+      "index": 428,
+      "text": "Floateye"
+    },
+    {
+      "index": 429,
+      "text": "Protect"
+    },
+    {
+      "index": 430,
+      "text": "Elementalshift"
+    },
+    {
+      "index": 431,
+      "text": "Prominence"
+    },
+    {
+      "index": 432,
+      "text": "Haste"
+    },
+    {
+      "index": 433,
+      "text": "Hastebreak"
+    },
+    {
+      "index": 434,
+      "text": "Heavy Dust"
+    },
+    {
+      "index": 435,
+      "text": "Poison"
+    },
+    {
+      "index": 436,
+      "text": "Oblivion"
+    },
+    {
+      "index": 437,
+      "text": "Weapon Def+"
+    },
+    {
+      "index": 438,
+      "text": "Knife"
+    },
+    {
+      "index": 439,
+      "text": "Hurl"
+    },
+    {
+      "index": 440,
+      "text": "Potion"
+    },
+    {
+      "index": 441,
+      "text": "Holy"
+    },
+    {
+      "index": 442,
+      "text": "Holy Blade"
+    },
+    {
+      "index": 443,
+      "text": "Ball"
+    },
+    {
+      "index": 444,
+      "text": "Bomb"
+    },
+    {
+      "index": 445,
+      "text": "White Wind"
+    },
+    {
+      "index": 446,
+      "text": "White Flame"
+    },
+    {
+      "index": 447,
+      "text": "Beso Toxico"
+    },
+    {
+      "index": 448,
+      "text": "Mighty Guard"
+    },
+    {
+      "index": 449,
+      "text": "Mindbreak"
+    },
+    {
+      "index": 450,
+      "text": "Magic Hammer"
+    },
+    {
+      "index": 451,
+      "text": "Magicbreak"
+    },
+    {
+      "index": 452,
+      "text": "Catnip"
+    },
+    {
+      "index": 453,
+      "text": "Doom Archer"
+    },
+    {
+      "index": 454,
+      "text": "Madeen"
+    },
+    {
+      "index": 455,
+      "text": "Matra Magic"
+    },
+    {
+      "index": 456,
+      "text": "Return Magic"
+    },
+    {
+      "index": 457,
+      "text": "Magic Pow+"
+    },
+    {
+      "index": 458,
+      "text": "Defense"
+    },
+    {
+      "index": 459,
+      "text": "Raise"
+    },
+    {
+      "index": 460,
+      "text": "Reflex"
+    },
+    {
+      "index": 461,
+      "text": "Green Gear"
+    },
+    {
+      "index": 462,
+      "text": "Sensor"
+    },
+    {
+      "index": 463,
+      "text": "Mutilate"
+    },
+    {
+      "index": 464,
+      "text": "Karma"
+    },
+    {
+      "index": 465,
+      "text": "Eye Drops"
+    },
+    {
+      "index": 466,
+      "text": "Meteor"
+    },
+    {
+      "index": 467,
+      "text": "Immunity"
+    },
+    {
+      "index": 468,
+      "text": "Maintenance"
+    },
+    {
+      "index": 469,
+      "text": "Wood Veil"
+    },
+    {
+      "index": 470,
+      "text": "Malboro"
+    },
+    {
+      "index": 471,
+      "text": "Return Fire"
+    },
+    {
+      "index": 472,
+      "text": "Block Arrows"
+    },
+    {
+      "index": 473,
+      "text": "Echo Screen"
+    },
+    {
+      "index": 474,
+      "text": "Sacrifice"
+    },
+    {
+      "index": 475,
+      "text": "Unicorn"
+    },
+    {
+      "index": 476,
+      "text": "Acid"
+    },
+    {
+      "index": 477,
+      "text": "Fairy"
+    },
+    {
+      "index": 478,
+      "text": "Night"
+    },
+    {
+      "index": 479,
+      "text": "Steal: Armor"
+    },
+    {
+      "index": 480,
+      "text": "Learning"
+    },
+    {
+      "index": 481,
+      "text": "Downsize"
+    },
+    {
+      "index": 482,
+      "text": "Lifebreak"
+    },
+    {
+      "index": 483,
+      "text": "Rasp"
+    },
+    {
+      "index": 484,
+      "text": "Rush"
+    },
+    {
+      "index": 485,
+      "text": "Lamia"
+    },
+    {
+      "index": 486,
+      "text": "Ramuh"
+    },
+    {
+      "index": 487,
+      "text": "Boltshot"
+    },
+    {
+      "index": 488,
+      "text": "Meltdown"
+    },
+    {
+      "index": 489,
+      "text": "Auto-Regen"
+    },
+    {
+      "index": 490,
+      "text": "Reflect"
+    },
+    {
+      "index": 491,
+      "text": "Limit Glove"
+    },
+    {
+      "index": 492,
+      "text": "Lancet"
+    },
+    {
+      "index": 493,
+      "text": "Wyrmtamer"
+    },
+    {
+      "index": 494,
+      "text": "Dragonheart"
+    },
+    {
+      "index": 495,
+      "text": "Doublehand"
+    },
+    {
+      "index": 496,
+      "text": "Auto-Life"
+    },
+    {
+      "index": 497,
+      "text": "Life"
+    },
+    {
+      "index": 498,
+      "text": "Mog Shield"
+    },
+    {
+      "index": 499,
+      "text": "LV? S-Flare"
+    },
+    {
+      "index": 500,
+      "text": "LV3 Def-less"
+    },
+    {
+      "index": 501,
+      "text": "LV5 Death"
+    },
+    {
+      "index": 502,
+      "text": "LV?D Holy"
+    },
+    {
+      "index": 503,
+      "text": "Doubleshot"
+    },
+    {
+      "index": 504,
+      "text": "Doublecast"
+    },
+    {
+      "index": 505,
+      "text": "Deluge"
+    },
+    {
+      "index": 506,
+      "text": "Wild Swing"
+    },
+    {
+      "index": 507,
+      "text": "Ring"
+    },
+    {
+      "index": 508,
+      "text": "Explode"
+    },
+    {
+      "index": 509,
+      "text": "Stillness"
+    },
+    {
+      "index": 510,
+      "text": "Azoth"
+    },
+    {
+      "index": 511,
+      "text": "Omega"
+    },
+    {
+      "index": 512,
+      "text": "Abyss"
+    },
+    {
+      "index": 513,
+      "text": "Life Render"
+    },
+    {
+      "index": 514,
+      "text": "Heart Render"
+    },
+    {
+      "index": 515,
+      "text": "Ripcircle"
+    },
+    {
+      "index": 516,
+      "text": "Furycircle"
+    },
+    {
+      "index": 517,
+      "text": "Lawshift"
+    },
+    {
+      "index": 518,
+      "text": "Amber Gleam"
+    },
+    {
+      "index": 519,
+      "text": "Alpha"
+    },
+    {
+      "index": 520,
+      "text": "Descent"
+    },
+    {
+      "index": 521,
+      "text": "Magi"
+    },
+    {
+      "index": 522,
+      "text": "Spellbind"
+    },
+    {
+      "index": 523,
+      "text": "Breath of God"
+    },
+    {
+      "index": 524,
+      "text": "Lightspeed"
+    },
+    {
+      "index": 525,
+      "text": "Firestream"
+    },
+    {
+      "index": 526,
+      "text": "Howl of Rage"
+    },
+    {
+      "index": 527,
+      "text": "Presence"
+    },
+    {
+      "index": 528,
+      "text": "Logos"
+    },
+    {
+      "index": 529,
+      "text": "Adrammalech"
+    },
+    {
+      "index": 530,
+      "text": "Mateus"
+    },
+    {
+      "index": 531,
+      "text": "Ultima"
+    },
+    {
+      "index": 532,
+      "text": "Exodus"
+    },
+    {
+      "index": 533,
+      "text": "Famfrit"
+    },
+    {
+      "index": 534,
+      "text": "Abate"
+    },
+    {
+      "index": 535,
+      "text": "Judge Sword"
+    },
+    {
+      "index": 536,
+      "text": "Bind"
+    },
+    {
+      "index": 537,
+      "text": "JP Gift"
+    },
+    {
+      "index": 538,
+      "text": "Yellow Clip"
+    },
+    {
+      "index": 539,
+      "text": "Judge Sword"
+    },
+    {
+      "index": 540,
+      "text": "Yellow Card"
+    },
+    {
+      "index": 541,
+      "text": "Palaistra"
+    },
+    {
+      "index": 542,
+      "text": "Blank Card"
+    },
+    {
+      "index": 543,
+      "text": "Blue Combo"
+    },
+    {
+      "index": 544,
+      "text": "Red Combo"
+    },
+    {
+      "index": 545,
+      "text": "Hunt Combo"
+    },
+    {
+      "index": 546,
+      "text": "Knight Combo"
+    },
+    {
+      "index": 547,
+      "text": "Pray Combo"
+    },
+    {
+      "index": 548,
+      "text": "Black Combo"
+    },
+    {
+      "index": 549,
+      "text": "Wise Combo"
+    },
+    {
+      "index": 550,
+      "text": "Sacred Combo"
+    },
+    {
+      "index": 551,
+      "text": "Thief Combo"
+    },
+    {
+      "index": 552,
+      "text": "Killer Combo"
+    },
+    {
+      "index": 553,
+      "text": "Juggle Combo"
+    },
+    {
+      "index": 554,
+      "text": "Gun Combo"
+    },
+    {
+      "index": 555,
+      "text": "Defend Combo"
+    },
+    {
+      "index": 556,
+      "text": "Summon Combo"
+    },
+    {
+      "index": 557,
+      "text": "White Combo"
+    },
+    {
+      "index": 558,
+      "text": "Spirit Combo"
+    },
+    {
+      "index": 559,
+      "text": "Combat Combo"
+    },
+    {
+      "index": 560,
+      "text": "Sniper Combo"
+    },
+    {
+      "index": 561,
+      "text": "Spell Combo"
+    },
+    {
+      "index": 562,
+      "text": "Charge Combo"
+    },
+    {
+      "index": 563,
+      "text": "Fight Combo"
+    },
+    {
+      "index": 564,
+      "text": "Animal Combo"
+    },
+    {
+      "index": 565,
+      "text": "Time Combo"
+    },
+    {
+      "index": 566,
+      "text": "Lunge Combo"
+    },
+    {
+      "index": 567,
+      "text": "Morph Combo"
+    },
+    {
+      "index": 568,
+      "text": "Ninja Combo"
+    },
+    {
+      "index": 569,
+      "text": "Gadget Combo"
+    },
+    {
+      "index": 570,
+      "text": "Bow Combo"
+    },
+    {
+      "index": 571,
+      "text": "Sword Combo"
+    },
+    {
+      "index": 572,
+      "text": "Beast Combo"
+    },
+    {
+      "index": 573,
+      "text": "Monk Combo"
+    },
+    {
+      "index": 574,
+      "text": "Dragon Combo"
+    },
+    {
+      "index": 575,
+      "text": "Gold Combo"
+    },
+    {
+      "index": 576,
+      "text": "Dummy"
+    },
+    {
+      "index": 577,
+      "text": "Dummy"
+    },
+    {
+      "index": 578,
+      "text": "Dummy"
+    },
+    {
+      "index": 579,
+      "text": "Dummy"
+    },
+    {
+      "index": 580,
+      "text": "Dummy"
+    },
+    {
+      "index": 581,
+      "text": "Dummy"
+    },
+    {
+      "index": 582,
+      "text": "Dummy"
+    },
+    {
+      "index": 583,
+      "text": "Dummy"
+    },
+    {
+      "index": 584,
+      "text": "Dummy"
+    },
+    {
+      "index": 585,
+      "text": "Dummy"
+    },
+    {
+      "index": 586,
+      "text": "Dummy"
+    },
+    {
+      "index": 587,
+      "text": "Dummy"
+    },
+    {
+      "index": 588,
+      "text": "Dummy"
+    },
+    {
+      "index": 589,
+      "text": "Dummy"
+    },
+    {
+      "index": 590,
+      "text": "Dummy"
+    },
+    {
+      "index": 591,
+      "text": "Dummy"
+    },
+    {
+      "index": 592,
+      "text": "Dummy"
+    },
+    {
+      "index": 593,
+      "text": "Dummy"
+    },
+    {
+      "index": 594,
+      "text": "Dummy"
+    },
+    {
+      "index": 595,
+      "text": "Dummy"
+    },
+    {
+      "index": 596,
+      "text": "Dummy"
+    },
+    {
+      "index": 597,
+      "text": "Dummy"
+    },
+    {
+      "index": 598,
+      "text": "Dummy"
+    },
+    {
+      "index": 599,
+      "text": "Dummy"
+    },
+    {
+      "index": 600,
+      "text": "Dummy"
+    },
+    {
+      "index": 601,
+      "text": "Dummy"
+    },
+    {
+      "index": 602,
+      "text": "Dummy"
+    },
+    {
+      "index": 603,
+      "text": "Dummy"
+    },
+    {
+      "index": 604,
+      "text": "Dummy"
+    },
+    {
+      "index": 605,
+      "text": "Dummy"
+    },
+    {
+      "index": 606,
+      "text": "Dummy"
+    },
+    {
+      "index": 607,
+      "text": "Dummy"
+    },
+    {
+      "index": 608,
+      "text": "Dummy"
+    },
+    {
+      "index": 609,
+      "text": "Dummy"
+    },
+    {
+      "index": 610,
+      "text": "Dummy"
+    },
+    {
+      "index": 611,
+      "text": "Dummy"
+    },
+    {
+      "index": 612,
+      "text": "Dummy"
+    },
+    {
+      "index": 613,
+      "text": "Dummy"
+    },
+    {
+      "index": 614,
+      "text": "Dummy"
+    },
+    {
+      "index": 615,
+      "text": "Dummy"
+    },
+    {
+      "index": 616,
+      "text": "Dummy"
+    },
+    {
+      "index": 617,
+      "text": "Dummy"
+    },
+    {
+      "index": 618,
+      "text": "Dummy"
+    },
+    {
+      "index": 619,
+      "text": "Dummy"
+    },
+    {
+      "index": 620,
+      "text": "Dummy"
+    },
+    {
+      "index": 621,
+      "text": "Dummy"
+    },
+    {
+      "index": 622,
+      "text": "Dummy"
+    },
+    {
+      "index": 623,
+      "text": "Dummy"
+    },
+    {
+      "index": 624,
+      "text": "Dummy"
+    },
+    {
+      "index": 625,
+      "text": "Dummy"
+    },
+    {
+      "index": 626,
+      "text": "Dummy"
+    },
+    {
+      "index": 627,
+      "text": "Dummy"
+    },
+    {
+      "index": 628,
+      "text": "Dummy"
+    },
+    {
+      "index": 629,
+      "text": "Dummy"
+    },
+    {
+      "index": 630,
+      "text": "Dummy"
+    },
+    {
+      "index": 631,
+      "text": "Dummy"
+    },
+    {
+      "index": 632,
+      "text": "Dummy"
+    },
+    {
+      "index": 633,
+      "text": "Dummy"
+    },
+    {
+      "index": 634,
+      "text": "Dummy"
+    },
+    {
+      "index": 635,
+      "text": "Dummy"
+    },
+    {
+      "index": 636,
+      "text": "Dummy"
+    },
+    {
+      "index": 637,
+      "text": "Dummy"
+    },
+    {
+      "index": 638,
+      "text": "Dummy"
+    },
+    {
+      "index": 639,
+      "text": "Dummy"
+    },
+    {
+      "index": 640,
+      "text": "Dummy"
+    },
+    {
+      "index": 641,
+      "text": "Dummy"
+    },
+    {
+      "index": 642,
+      "text": "Dummy"
+    },
+    {
+      "index": 643,
+      "text": "Dummy"
+    },
+    {
+      "index": 644,
+      "text": "Dummy"
+    },
+    {
+      "index": 645,
+      "text": "Dummy"
+    },
+    {
+      "index": 646,
+      "text": "Dummy"
+    },
+    {
+      "index": 647,
+      "text": "Dummy"
+    },
+    {
+      "index": 648,
+      "text": "Dummy"
+    },
+    {
+      "index": 649,
+      "text": "Dummy"
+    },
+    {
+      "index": 650,
+      "text": "Dummy"
+    },
+    {
+      "index": 651,
+      "text": "Dummy"
+    },
+    {
+      "index": 652,
+      "text": "Dummy"
+    },
+    {
+      "index": 653,
+      "text": "Dummy"
+    },
+    {
+      "index": 654,
+      "text": "Dummy"
+    },
+    {
+      "index": 655,
+      "text": "Dummy"
+    },
+    {
+      "index": 656,
+      "text": "Dummy"
+    },
+    {
+      "index": 657,
+      "text": "Dummy"
+    },
+    {
+      "index": 658,
+      "text": "Dummy"
+    },
+    {
+      "index": 659,
+      "text": "Dummy"
+    },
+    {
+      "index": 660,
+      "text": "Dummy"
+    },
+    {
+      "index": 661,
+      "text": "Dummy"
+    },
+    {
+      "index": 662,
+      "text": "Dummy"
+    },
+    {
+      "index": 663,
+      "text": "Dummy"
+    },
+    {
+      "index": 664,
+      "text": "Dummy"
+    },
+    {
+      "index": 665,
+      "text": "Dummy"
+    },
+    {
+      "index": 666,
+      "text": "Dummy"
+    },
+    {
+      "index": 667,
+      "text": "Dummy"
+    },
+    {
+      "index": 668,
+      "text": "Dummy"
+    },
+    {
+      "index": 669,
+      "text": "Dummy"
+    },
+    {
+      "index": 670,
+      "text": "Dummy"
+    },
+    {
+      "index": 671,
+      "text": "Dummy"
+    },
+    {
+      "index": 672,
+      "text": "Dummy"
+    },
+    {
+      "index": 673,
+      "text": "Dummy"
+    },
+    {
+      "index": 674,
+      "text": "Dummy"
+    },
+    {
+      "index": 675,
+      "text": "Dummy"
+    },
+    {
+      "index": 676,
+      "text": "Dummy"
+    },
+    {
+      "index": 677,
+      "text": "Dummy"
+    },
+    {
+      "index": 678,
+      "text": "Dummy"
+    },
+    {
+      "index": 679,
+      "text": "Dummy"
+    },
+    {
+      "index": 680,
+      "text": "Dummy"
+    },
+    {
+      "index": 681,
+      "text": "Dummy"
+    },
+    {
+      "index": 682,
+      "text": "Dummy"
+    },
+    {
+      "index": 683,
+      "text": "Dummy"
+    },
+    {
+      "index": 684,
+      "text": "Dummy"
+    },
+    {
+      "index": 685,
+      "text": "Dummy"
+    },
+    {
+      "index": 686,
+      "text": "Dummy"
+    },
+    {
+      "index": 687,
+      "text": "Sword?"
+    },
+    {
+      "index": 688,
+      "text": "Sharp Sword?"
+    },
+    {
+      "index": 689,
+      "text": "Bent Sword?"
+    },
+    {
+      "index": 690,
+      "text": "Rusty Sword?"
+    },
+    {
+      "index": 691,
+      "text": "Big Sword?"
+    },
+    {
+      "index": 692,
+      "text": "Heavy Sword?"
+    },
+    {
+      "index": 693,
+      "text": "Knife?"
+    },
+    {
+      "index": 694,
+      "text": "Thin Sword?"
+    },
+    {
+      "index": 695,
+      "text": "Blade?"
+    },
+    {
+      "index": 696,
+      "text": "Old Staff?"
+    },
+    {
+      "index": 697,
+      "text": "Rod?"
+    },
+    {
+      "index": 698,
+      "text": "Heavy Club?"
+    },
+    {
+      "index": 699,
+      "text": "Bow?"
+    },
+    {
+      "index": 700,
+      "text": "Big Bow?"
+    },
+    {
+      "index": 701,
+      "text": "Spear?"
+    },
+    {
+      "index": 702,
+      "text": "Instrument?"
+    },
+    {
+      "index": 703,
+      "text": "Gloves?"
+    },
+    {
+      "index": 704,
+      "text": "Bauble?"
+    },
+    {
+      "index": 705,
+      "text": "Rusty Gun?"
+    },
+    {
+      "index": 706,
+      "text": "Shield?"
+    },
+    {
+      "index": 707,
+      "text": "Rusty Helm?"
+    },
+    {
+      "index": 708,
+      "text": "Old Cap?"
+    },
+    {
+      "index": 709,
+      "text": "Armor?"
+    },
+    {
+      "index": 710,
+      "text": "Clothes?"
+    },
+    {
+      "index": 711,
+      "text": "Robe?"
+    },
+    {
+      "index": 712,
+      "text": "Boots?"
+    },
+    {
+      "index": 713,
+      "text": "Gauntlet?"
+    },
+    {
+      "index": 714,
+      "text": "Trinket?"
+    },
+    {
+      "index": 715,
+      "text": "Bag?"
+    },
+    {
+      "index": 716,
+      "text": "Metal?"
+    },
+    {
+      "index": 717,
+      "text": "Status Down"
+    },
+    {
+      "index": 718,
+      "text": "Monster Run"
+    },
+    {
+      "index": 719,
+      "text": "Item Fine"
+    },
+    {
+      "index": 720,
+      "text": "Card Fine"
+    },
+    {
+      "index": 721,
+      "text": "AP Fine"
+    },
+    {
+      "index": 722,
+      "text": "EqpItem Fine"
+    },
+    {
+      "index": 723,
+      "text": "Volunteer"
+    },
+    {
+      "index": 724,
+      "text": "Gil Fine"
+    },
+    {
+      "index": 725,
+      "text": "HP MAX"
+    },
+    {
+      "index": 726,
+      "text": "MP MAX"
+    },
+    {
+      "index": 727,
+      "text": "Weapon Atk"
+    },
+    {
+      "index": 728,
+      "text": "Weapon Def"
+    },
+    {
+      "index": 729,
+      "text": "Magic Pow"
+    },
+    {
+      "index": 730,
+      "text": "Magic Res"
+    },
+    {
+      "index": 731,
+      "text": "Speed"
+    },
+    {
+      "index": 732,
+      "text": "Gil"
+    },
+    {
+      "index": 733,
+      "text": "No Award?"
+    },
+    {
+      "index": 734,
+      "text": "No AP?"
+    },
+    {
+      "index": 735,
+      "text": "No AP+Award?"
+    },
+    {
+      "index": 736,
+      "text": "All Items?"
+    },
+    {
+      "index": 737,
+      "text": "Empty Handed?"
+    },
+    {
+      "index": 738,
+      "text": "3 Cards?"
+    },
+    {
+      "index": 739,
+      "text": "5 Cards?"
+    },
+    {
+      "index": 740,
+      "text": "10 Cards??"
+    },
+    {
+      "index": 741,
+      "text": "All Cards??"
+    },
+    {
+      "index": 742,
+      "text": "No Abilities?"
+    },
+    {
+      "index": 743,
+      "text": "Nothing!"
+    },
+    {
+      "index": 744,
+      "text": "No Monsters?"
+    },
+    {
+      "index": 745,
+      "text": "Color Mode"
+    },
+    {
+      "index": 746,
+      "text": "Cursor Type"
+    },
+    {
+      "index": 747,
+      "text": "Cursor Spd"
+    },
+    {
+      "index": 748,
+      "text": "Message Spd"
+    },
+    {
+      "index": 749,
+      "text": "Attack Name"
+    },
+    {
+      "index": 750,
+      "text": "EXP?"
+    },
+    {
+      "index": 751,
+      "text": "Judge Pts?"
+    },
+    {
+      "index": 752,
+      "text": "NonEqpItems?"
+    },
+    {
+      "index": 753,
+      "text": "L BUTTON"
+    },
+    {
+      "index": 754,
+      "text": "Default"
+    },
+    {
+      "index": 755,
+      "text": "LCD A"
+    },
+    {
+      "index": 756,
+      "text": "LCD B"
+    },
+    {
+      "index": 757,
+      "text": "TV"
+    },
+    {
+      "index": 758,
+      "text": "Type A"
+    },
+    {
+      "index": 759,
+      "text": "Type B"
+    },
+    {
+      "index": 760,
+      "text": "Fast"
+    },
+    {
+      "index": 761,
+      "text": "Normal"
+    },
+    {
+      "index": 762,
+      "text": "Slow"
+    },
+    {
+      "index": 763,
+      "text": "Slow"
+    },
+    {
+      "index": 764,
+      "text": "Quick"
+    },
+    {
+      "index": 765,
+      "text": "ON"
+    },
+    {
+      "index": 766,
+      "text": "OFF"
+    }
+  ]
+}

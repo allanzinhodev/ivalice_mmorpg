@@ -1,0 +1,376 @@
+{
+  "table": "dummyTable",
+  "note": "quase tudo \"dummy\" (nao usado)",
+  "pointerTableOffset": "0x557E98",
+  "entryCount": 92,
+  "entries": [
+    {
+      "index": 0,
+      "text": "-"
+    },
+    {
+      "index": 1,
+      "text": "dummy"
+    },
+    {
+      "index": 2,
+      "text": "dummy"
+    },
+    {
+      "index": 3,
+      "text": "dummy"
+    },
+    {
+      "index": 4,
+      "text": "dummy"
+    },
+    {
+      "index": 5,
+      "text": "dummy"
+    },
+    {
+      "index": 6,
+      "text": "dummy"
+    },
+    {
+      "index": 7,
+      "text": "Laws:A History"
+    },
+    {
+      "index": 8,
+      "text": "Unfair Laws?"
+    },
+    {
+      "index": 9,
+      "text": "Clashing Clans"
+    },
+    {
+      "index": 10,
+      "text": "Crazy Monsters"
+    },
+    {
+      "index": 11,
+      "text": "Famfrit"
+    },
+    {
+      "index": 12,
+      "text": "The Crystals"
+    },
+    {
+      "index": 13,
+      "text": "Strong Laws"
+    },
+    {
+      "index": 14,
+      "text": "Secret Shop"
+    },
+    {
+      "index": 15,
+      "text": "Ultima"
+    },
+    {
+      "index": 16,
+      "text": "Adrammalech"
+    },
+    {
+      "index": 17,
+      "text": "The Jagds"
+    },
+    {
+      "index": 18,
+      "text": "Trade Goods"
+    },
+    {
+      "index": 19,
+      "text": "Wanted Poster"
+    },
+    {
+      "index": 20,
+      "text": "New Clock"
+    },
+    {
+      "index": 21,
+      "text": "Serious Search"
+    },
+    {
+      "index": 22,
+      "text": "Exodus"
+    },
+    {
+      "index": 23,
+      "text": "Judges Alone"
+    },
+    {
+      "index": 24,
+      "text": "Matius"
+    },
+    {
+      "index": 25,
+      "text": "Audience Day"
+    },
+    {
+      "index": 26,
+      "text": "Prices Soar"
+    },
+    {
+      "index": 27,
+      "text": "Royal Vacation"
+    },
+    {
+      "index": 28,
+      "text": "New Adventure"
+    },
+    {
+      "index": 29,
+      "text": "Clan Borzoi"
+    },
+    {
+      "index": 30,
+      "text": "Dirty Secret"
+    },
+    {
+      "index": 31,
+      "text": "Thief Exposed"
+    },
+    {
+      "index": 32,
+      "text": "Area Freed?"
+    },
+    {
+      "index": 33,
+      "text": "Our Heroes?"
+    },
+    {
+      "index": 34,
+      "text": "Borzoi's Plan"
+    },
+    {
+      "index": 35,
+      "text": "Borzoi's End"
+    },
+    {
+      "index": 36,
+      "text": "Gukko Gone"
+    },
+    {
+      "index": 37,
+      "text": "Foreign Ship"
+    },
+    {
+      "index": 38,
+      "text": "Crime Ring"
+    },
+    {
+      "index": 39,
+      "text": "The Redwings"
+    },
+    {
+      "index": 40,
+      "text": "Monopoly!"
+    },
+    {
+      "index": 41,
+      "text": "Falgabird"
+    },
+    {
+      "index": 42,
+      "text": "The Spiritstone"
+    },
+    {
+      "index": 43,
+      "text": "The Sages"
+    },
+    {
+      "index": 44,
+      "text": "Peace At Last"
+    },
+    {
+      "index": 45,
+      "text": "Grissom's End"
+    },
+    {
+      "index": 46,
+      "text": "Weird Minstrel"
+    },
+    {
+      "index": 47,
+      "text": "Foreign Fiends"
+    },
+    {
+      "index": 48,
+      "text": "Heroes"
+    },
+    {
+      "index": 49,
+      "text": "Gukko's Return"
+    },
+    {
+      "index": 50,
+      "text": "Hooray!"
+    },
+    {
+      "index": 51,
+      "text": "dummy"
+    },
+    {
+      "index": 52,
+      "text": "The Liberators"
+    },
+    {
+      "index": 53,
+      "text": "Tourney"
+    },
+    {
+      "index": 54,
+      "text": "The Tourneys"
+    },
+    {
+      "index": 55,
+      "text": "Clan League"
+    },
+    {
+      "index": 56,
+      "text": "Snowy Pass"
+    },
+    {
+      "index": 57,
+      "text": "Poaching"
+    },
+    {
+      "index": 58,
+      "text": "Ruins Found"
+    },
+    {
+      "index": 59,
+      "text": "Unfair Judges?"
+    },
+    {
+      "index": 60,
+      "text": "Blank Cards"
+    },
+    {
+      "index": 61,
+      "text": "!Abilities"
+    },
+    {
+      "index": 62,
+      "text": "?Ability Types"
+    },
+    {
+      "index": 63,
+      "text": "?Job Change"
+    },
+    {
+      "index": 64,
+      "text": "?Expert Jobs"
+    },
+    {
+      "index": 65,
+      "text": "!Morphing"
+    },
+    {
+      "index": 66,
+      "text": "!Conditions"
+    },
+    {
+      "index": 67,
+      "text": "!Combos"
+    },
+    {
+      "index": 68,
+      "text": "!Exemption"
+    },
+    {
+      "index": 69,
+      "text": "?The Totema"
+    },
+    {
+      "index": 70,
+      "text": "dummy"
+    },
+    {
+      "index": 71,
+      "text": "!Laws"
+    },
+    {
+      "index": 72,
+      "text": "?Law Rankings"
+    },
+    {
+      "index": 73,
+      "text": "!Imprisoned"
+    },
+    {
+      "index": 74,
+      "text": "dummy"
+    },
+    {
+      "index": 75,
+      "text": "?Law Cards"
+    },
+    {
+      "index": 76,
+      "text": "dummy"
+    },
+    {
+      "index": 77,
+      "text": "!Negotiations"
+    },
+    {
+      "index": 78,
+      "text": "dummy"
+    },
+    {
+      "index": 79,
+      "text": "?Treasure Hunt"
+    },
+    {
+      "index": 80,
+      "text": "dummy"
+    },
+    {
+      "index": 81,
+      "text": "!Requests"
+    },
+    {
+      "index": 82,
+      "text": "dummy"
+    },
+    {
+      "index": 83,
+      "text": "?Mission Items"
+    },
+    {
+      "index": 84,
+      "text": "dummy"
+    },
+    {
+      "index": 85,
+      "text": "?Clan Level"
+    },
+    {
+      "index": 86,
+      "text": "?Skill Levels"
+    },
+    {
+      "index": 87,
+      "text": "?Clan Turf"
+    },
+    {
+      "index": 88,
+      "text": "dummy"
+    },
+    {
+      "index": 89,
+      "text": "!Linking"
+    },
+    {
+      "index": 90,
+      "text": "dummy"
+    },
+    {
+      "index": 91,
+      "text": "?Trade Goods"
+    }
+  ]
+}

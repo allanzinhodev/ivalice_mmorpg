@@ -1,0 +1,15 @@
+{
+  "file": "rom.gba",
+  "bytes": 16777216,
+  "internalTitle": "FFTA_USVER.",
+  "gameCode": "AFXE",
+  "makerCode": "01",
+  "softwareVersion": 0,
+  "md5": "cd99cdde3d45554c1b36fbeb8863b7bd",
+  "sha1": "4ac05441f4de70a4ec3dd932116346c61b8783d9",
+  "region": "USA",
+  "game": "Final Fantasy Tactics Advance",
+  "matchesKnownGoodDump": true,
+  "generatedAt": "2026-09-08T20:02:18.177Z",
+  "source": "Data Crystal ROM map / Items / Abilities / Jobs / String Tables"
+}

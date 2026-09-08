@@ -1,0 +1,1149 @@
+{
+  "note": "Tabela de registros de mapa. base=0x569104, 163 registros de 88 bytes. Offsets sao diffs somados a base. Graphics/Arrangement/Height sao streams comprimidos.",
+  "pointerTableOffset": "0x569104",
+  "recordSize": 88,
+  "count": 163,
+  "maps": [
+    {
+      "index": 0,
+      "graphicsOffset": "0x56C8B4",
+      "arrangementOffset": "0x56F528",
+      "heightMapOffset": "0x5704C8",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 1,
+      "graphicsOffset": "0x56C8B4",
+      "arrangementOffset": "0x5705C8",
+      "heightMapOffset": "0x571560",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 2,
+      "graphicsOffset": "0x5715EC",
+      "arrangementOffset": "0x575014",
+      "heightMapOffset": "0x57643C",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 3,
+      "graphicsOffset": "0x5715EC",
+      "arrangementOffset": "0x576558",
+      "heightMapOffset": "0x577984",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 4,
+      "graphicsOffset": "0x5779F8",
+      "arrangementOffset": "0x57B1F0",
+      "heightMapOffset": "0x57BD08",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 5,
+      "graphicsOffset": "0x57CE2C",
+      "arrangementOffset": "0x580634",
+      "heightMapOffset": "0x58114C",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 6,
+      "graphicsOffset": "0x582270",
+      "arrangementOffset": "0x5862A0",
+      "heightMapOffset": "0x58751C",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 7,
+      "graphicsOffset": "0x582270",
+      "arrangementOffset": "0x5862A0",
+      "heightMapOffset": "0x58751C",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 8,
+      "graphicsOffset": "0x582270",
+      "arrangementOffset": "0x587754",
+      "heightMapOffset": "0x588624",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 9,
+      "graphicsOffset": "0x582270",
+      "arrangementOffset": "0x587754",
+      "heightMapOffset": "0x588624",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 10,
+      "graphicsOffset": "0x588774",
+      "arrangementOffset": "0x58C074",
+      "heightMapOffset": "0x58CD38",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 11,
+      "graphicsOffset": "0x588774",
+      "arrangementOffset": "0x58CE14",
+      "heightMapOffset": "0x58DEDC",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 12,
+      "graphicsOffset": "0x588774",
+      "arrangementOffset": "0x58DFD0",
+      "heightMapOffset": "0x58F0C8",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 13,
+      "graphicsOffset": "0x588774",
+      "arrangementOffset": "0x58F1CC",
+      "heightMapOffset": "0x58FE10",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 14,
+      "graphicsOffset": "0x588774",
+      "arrangementOffset": "0x58FED8",
+      "heightMapOffset": "0x590D58",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 15,
+      "graphicsOffset": "0x590E38",
+      "arrangementOffset": "0x5949E4",
+      "heightMapOffset": "0x595764",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 16,
+      "graphicsOffset": "0x590E38",
+      "arrangementOffset": "0x5958B8",
+      "heightMapOffset": "0x595764",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 17,
+      "graphicsOffset": "0x590E38",
+      "arrangementOffset": "0x59598C",
+      "heightMapOffset": "0x5967B4",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 18,
+      "graphicsOffset": "0x590E38",
+      "arrangementOffset": "0x59598C",
+      "heightMapOffset": "0x5967B4",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 19,
+      "graphicsOffset": "0x596904",
+      "arrangementOffset": "0x598E94",
+      "heightMapOffset": "0x599A60",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 20,
+      "graphicsOffset": "0x59AA2C",
+      "arrangementOffset": "0x59CFD0",
+      "heightMapOffset": "0x59DBF4",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 21,
+      "graphicsOffset": "0x59EC2C",
+      "arrangementOffset": "0x5A1588",
+      "heightMapOffset": "0x5A2290",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 22,
+      "graphicsOffset": "0x5A325C",
+      "arrangementOffset": "0x5A70C8",
+      "heightMapOffset": "0x5A8218",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 23,
+      "graphicsOffset": "0x5A8BB8",
+      "arrangementOffset": "0x5AB704",
+      "heightMapOffset": "0x5AC604",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 24,
+      "graphicsOffset": "0x5AEEE4",
+      "arrangementOffset": "0x5B1028",
+      "heightMapOffset": "0x5B1A98",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 25,
+      "graphicsOffset": "0x5B1D58",
+      "arrangementOffset": "0x5B5AEC",
+      "heightMapOffset": "0x5B675C",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 26,
+      "graphicsOffset": "0x5B6DE4",
+      "arrangementOffset": "0x5B8CF8",
+      "heightMapOffset": "0x5B9778",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 27,
+      "graphicsOffset": "0x5BA26C",
+      "arrangementOffset": "0x5BDBFC",
+      "heightMapOffset": "0x5BECB8",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 28,
+      "graphicsOffset": "0x5BF0A8",
+      "arrangementOffset": "0x5C27EC",
+      "heightMapOffset": "0x5C3584",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 29,
+      "graphicsOffset": "0x5C4610",
+      "arrangementOffset": "0x5C642C",
+      "heightMapOffset": "0x5C6D2C",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 30,
+      "graphicsOffset": "0x5BF0A8",
+      "arrangementOffset": "0x5C6EBC",
+      "heightMapOffset": "0x5C7B38",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 31,
+      "graphicsOffset": "0x5C4610",
+      "arrangementOffset": "0x5C7BC0",
+      "heightMapOffset": "0x5C6D2C",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 32,
+      "graphicsOffset": "0x5C849C",
+      "arrangementOffset": "0x5CB6F0",
+      "heightMapOffset": "0x5CC064",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 33,
+      "graphicsOffset": "0x5C849C",
+      "arrangementOffset": "0x5CEE00",
+      "heightMapOffset": "0x5CF9A4",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 34,
+      "graphicsOffset": "0x5C849C",
+      "arrangementOffset": "0x5CFAB0",
+      "heightMapOffset": "0x5D0814",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 35,
+      "graphicsOffset": "0x5C849C",
+      "arrangementOffset": "0x5D0938",
+      "heightMapOffset": "0x5D17D8",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 36,
+      "graphicsOffset": "0x5D18D0",
+      "arrangementOffset": "0x5D4A78",
+      "heightMapOffset": "0x5D5BC0",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 37,
+      "graphicsOffset": "0x5D5E84",
+      "arrangementOffset": "0x5D9B1C",
+      "heightMapOffset": "0x5DA9A0",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 38,
+      "graphicsOffset": "0x5DBB20",
+      "arrangementOffset": "0x5DF7FC",
+      "heightMapOffset": "0x5E085C",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 39,
+      "graphicsOffset": "0x5DBB20",
+      "arrangementOffset": "0x5DF7FC",
+      "heightMapOffset": "0x5E085C",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 40,
+      "graphicsOffset": "0x5DBB20",
+      "arrangementOffset": "0x5E09C0",
+      "heightMapOffset": "0x5E1974",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 41,
+      "graphicsOffset": "0x5DBB20",
+      "arrangementOffset": "0x5E09C0",
+      "heightMapOffset": "0x5E1974",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 42,
+      "graphicsOffset": "0x5E1AD0",
+      "arrangementOffset": "0x5E4C9C",
+      "heightMapOffset": "0x5E613C",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 43,
+      "graphicsOffset": "0x5E1AD0",
+      "arrangementOffset": "0x5E4C9C",
+      "heightMapOffset": "0x5E613C",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 44,
+      "graphicsOffset": "0x5E1AD0",
+      "arrangementOffset": "0x5E6FB8",
+      "heightMapOffset": "0x5E7CB4",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 45,
+      "graphicsOffset": "0x5E1AD0",
+      "arrangementOffset": "0x5E7DF8",
+      "heightMapOffset": "0x5E7CB4",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 46,
+      "graphicsOffset": "0x5E7F48",
+      "arrangementOffset": "0x5EAA80",
+      "heightMapOffset": "0x5EBAAC",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 47,
+      "graphicsOffset": "0x5E7F48",
+      "arrangementOffset": "0x5EBBF4",
+      "heightMapOffset": "0x5EBC84",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 48,
+      "graphicsOffset": "0x5E7F48",
+      "arrangementOffset": "0x5EBCF8",
+      "heightMapOffset": "0x5ECC54",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 49,
+      "graphicsOffset": "0x5E7F48",
+      "arrangementOffset": "0x5ECD80",
+      "heightMapOffset": "0x5ECE1C",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 50,
+      "graphicsOffset": "0x5ECE2C",
+      "arrangementOffset": "0x5F08E0",
+      "heightMapOffset": "0x5F1DE0",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 51,
+      "graphicsOffset": "0x5ECE2C",
+      "arrangementOffset": "0x5F08E0",
+      "heightMapOffset": "0x5F1DE0",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 52,
+      "graphicsOffset": "0x5ECE2C",
+      "arrangementOffset": "0x5F1F2C",
+      "heightMapOffset": "0x5F32F0",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 53,
+      "graphicsOffset": "0x5ECE2C",
+      "arrangementOffset": "0x5F1F2C",
+      "heightMapOffset": "0x5F33F8",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 54,
+      "graphicsOffset": "0x5F343C",
+      "arrangementOffset": "0x5F615C",
+      "heightMapOffset": "0x5F72C0",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 55,
+      "graphicsOffset": "0x5F343C",
+      "arrangementOffset": "0x5F9058",
+      "heightMapOffset": "0x5F72C0",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 56,
+      "graphicsOffset": "0x5F343C",
+      "arrangementOffset": "0x5F90E4",
+      "heightMapOffset": "0x5FA0D4",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 57,
+      "graphicsOffset": "0x5F343C",
+      "arrangementOffset": "0x5F90E4",
+      "heightMapOffset": "0x5FA0D4",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 58,
+      "graphicsOffset": "0x5FA254",
+      "arrangementOffset": "0x5FCF44",
+      "heightMapOffset": "0x5FE038",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 59,
+      "graphicsOffset": "0x5FA254",
+      "arrangementOffset": "0x602D9C",
+      "heightMapOffset": "0x603758",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 60,
+      "graphicsOffset": "0x5FA254",
+      "arrangementOffset": "0x603870",
+      "heightMapOffset": "0x604A84",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 61,
+      "graphicsOffset": "0x5FA254",
+      "arrangementOffset": "0x604BC8",
+      "heightMapOffset": "0x605880",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 62,
+      "graphicsOffset": "0x605948",
+      "arrangementOffset": "0x609960",
+      "heightMapOffset": "0x60A7E0",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 63,
+      "graphicsOffset": "0x60B58C",
+      "arrangementOffset": "0x60E3A0",
+      "heightMapOffset": "0x60ECC4",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 64,
+      "graphicsOffset": "0x610274",
+      "arrangementOffset": "0x612DE8",
+      "heightMapOffset": "0x613BD8",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 65,
+      "graphicsOffset": "0x614ACC",
+      "arrangementOffset": "0x61854C",
+      "heightMapOffset": "0x619060",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 66,
+      "graphicsOffset": "0x6190A0",
+      "arrangementOffset": "0x61D088",
+      "heightMapOffset": "0x61DDF4",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 67,
+      "graphicsOffset": "0x61DE78",
+      "arrangementOffset": "0x62144C",
+      "heightMapOffset": "0x621D80",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 68,
+      "graphicsOffset": "0x6229FC",
+      "arrangementOffset": "0x625E50",
+      "heightMapOffset": "0x6266D4",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 69,
+      "graphicsOffset": "0x6229FC",
+      "arrangementOffset": "0x625E50",
+      "heightMapOffset": "0x6266D4",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 70,
+      "graphicsOffset": "0x6229FC",
+      "arrangementOffset": "0x628874",
+      "heightMapOffset": "0x6290F4",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 71,
+      "graphicsOffset": "0x6229FC",
+      "arrangementOffset": "0x628874",
+      "heightMapOffset": "0x6290F4",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 72,
+      "graphicsOffset": "0x6229FC",
+      "arrangementOffset": "0x6291FC",
+      "heightMapOffset": "0x629A50",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 73,
+      "graphicsOffset": "0x6229FC",
+      "arrangementOffset": "0x6291FC",
+      "heightMapOffset": "0x629A50",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 74,
+      "graphicsOffset": "0x6229FC",
+      "arrangementOffset": "0x629BD0",
+      "heightMapOffset": "0x62A5C0",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 75,
+      "graphicsOffset": "0x6229FC",
+      "arrangementOffset": "0x629BD0",
+      "heightMapOffset": "0x62A5C0",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 76,
+      "graphicsOffset": "0x6229FC",
+      "arrangementOffset": "0x62A6D4",
+      "heightMapOffset": "0x62AF78",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 77,
+      "graphicsOffset": "0x6229FC",
+      "arrangementOffset": "0x62A6D4",
+      "heightMapOffset": "0x62AF78",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 78,
+      "graphicsOffset": "0x62B018",
+      "arrangementOffset": "0x62EE9C",
+      "heightMapOffset": "0x62FC1C",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 79,
+      "graphicsOffset": "0x62B018",
+      "arrangementOffset": "0x62EE9C",
+      "heightMapOffset": "0x62FC1C",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 80,
+      "graphicsOffset": "0x62B018",
+      "arrangementOffset": "0x62FD98",
+      "heightMapOffset": "0x630B14",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 81,
+      "graphicsOffset": "0x62B018",
+      "arrangementOffset": "0x62FD98",
+      "heightMapOffset": "0x630B14",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 82,
+      "graphicsOffset": "0x62B018",
+      "arrangementOffset": "0x630C30",
+      "heightMapOffset": "0x6319FC",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 83,
+      "graphicsOffset": "0x62B018",
+      "arrangementOffset": "0x631AE0",
+      "heightMapOffset": "0x6319FC",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 84,
+      "graphicsOffset": "0x62B018",
+      "arrangementOffset": "0x631B64",
+      "heightMapOffset": "0x63257C",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 85,
+      "graphicsOffset": "0x62B018",
+      "arrangementOffset": "0x631B64",
+      "heightMapOffset": "0x63257C",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 86,
+      "graphicsOffset": "0x62B018",
+      "arrangementOffset": "0x6326B4",
+      "heightMapOffset": "0x633418",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 87,
+      "graphicsOffset": "0x62B018",
+      "arrangementOffset": "0x6326B4",
+      "heightMapOffset": "0x633418",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 88,
+      "graphicsOffset": "0x6334EC",
+      "arrangementOffset": "0x636DB4",
+      "heightMapOffset": "0x637914",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 89,
+      "graphicsOffset": "0x6334EC",
+      "arrangementOffset": "0x636DB4",
+      "heightMapOffset": "0x637914",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 90,
+      "graphicsOffset": "0x6334EC",
+      "arrangementOffset": "0x639444",
+      "heightMapOffset": "0x63A264",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 91,
+      "graphicsOffset": "0x6334EC",
+      "arrangementOffset": "0x639444",
+      "heightMapOffset": "0x63A264",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 92,
+      "graphicsOffset": "0x6334EC",
+      "arrangementOffset": "0x63A394",
+      "heightMapOffset": "0x63AF8C",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 93,
+      "graphicsOffset": "0x6334EC",
+      "arrangementOffset": "0x63B058",
+      "heightMapOffset": "0x63AF8C",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 94,
+      "graphicsOffset": "0x6334EC",
+      "arrangementOffset": "0x63B0E8",
+      "heightMapOffset": "0x63C01C",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 95,
+      "graphicsOffset": "0x6334EC",
+      "arrangementOffset": "0x63B0E8",
+      "heightMapOffset": "0x63C01C",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 96,
+      "graphicsOffset": "0x6334EC",
+      "arrangementOffset": "0x63C150",
+      "heightMapOffset": "0x63D128",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 97,
+      "graphicsOffset": "0x6334EC",
+      "arrangementOffset": "0x63C150",
+      "heightMapOffset": "0x63D128",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 98,
+      "graphicsOffset": "0x63D1D8",
+      "arrangementOffset": "0x640A14",
+      "heightMapOffset": "0x6417DC",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 99,
+      "graphicsOffset": "0x63D1D8",
+      "arrangementOffset": "0x6418D0",
+      "heightMapOffset": "0x6417DC",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 100,
+      "graphicsOffset": "0x63D1D8",
+      "arrangementOffset": "0x641950",
+      "heightMapOffset": "0x642338",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 101,
+      "graphicsOffset": "0x63D1D8",
+      "arrangementOffset": "0x641950",
+      "heightMapOffset": "0x642338",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 102,
+      "graphicsOffset": "0x63D1D8",
+      "arrangementOffset": "0x642464",
+      "heightMapOffset": "0x643204",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 103,
+      "graphicsOffset": "0x63D1D8",
+      "arrangementOffset": "0x642464",
+      "heightMapOffset": "0x643204",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 104,
+      "graphicsOffset": "0x63D1D8",
+      "arrangementOffset": "0x64332C",
+      "heightMapOffset": "0x644080",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 105,
+      "graphicsOffset": "0x63D1D8",
+      "arrangementOffset": "0x64332C",
+      "heightMapOffset": "0x644080",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 106,
+      "graphicsOffset": "0x63D1D8",
+      "arrangementOffset": "0x6441B8",
+      "heightMapOffset": "0x644FF8",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 107,
+      "graphicsOffset": "0x63D1D8",
+      "arrangementOffset": "0x6441B8",
+      "heightMapOffset": "0x644FF8",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 108,
+      "graphicsOffset": "0x6450C0",
+      "arrangementOffset": "0x647AEC",
+      "heightMapOffset": "0x6486A4",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 109,
+      "graphicsOffset": "0x6450C0",
+      "arrangementOffset": "0x647AEC",
+      "heightMapOffset": "0x6486A4",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 110,
+      "graphicsOffset": "0x6450C0",
+      "arrangementOffset": "0x64B4E4",
+      "heightMapOffset": "0x64BF6C",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 111,
+      "graphicsOffset": "0x6450C0",
+      "arrangementOffset": "0x64B4E4",
+      "heightMapOffset": "0x64BF6C",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 112,
+      "graphicsOffset": "0x6450C0",
+      "arrangementOffset": "0x64C094",
+      "heightMapOffset": "0x64CC98",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 113,
+      "graphicsOffset": "0x6450C0",
+      "arrangementOffset": "0x64C094",
+      "heightMapOffset": "0x64CC98",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 114,
+      "graphicsOffset": "0x6450C0",
+      "arrangementOffset": "0x64CDCC",
+      "heightMapOffset": "0x64D83C",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 115,
+      "graphicsOffset": "0x6450C0",
+      "arrangementOffset": "0x64CDCC",
+      "heightMapOffset": "0x64D83C",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 116,
+      "graphicsOffset": "0x6450C0",
+      "arrangementOffset": "0x64D904",
+      "heightMapOffset": "0x64E4B4",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 117,
+      "graphicsOffset": "0x6450C0",
+      "arrangementOffset": "0x64D904",
+      "heightMapOffset": "0x64E4B4",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 118,
+      "graphicsOffset": "0x64E574",
+      "arrangementOffset": "0x651764",
+      "heightMapOffset": "0x6521B4",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 119,
+      "graphicsOffset": "0x64E574",
+      "arrangementOffset": "0x651764",
+      "heightMapOffset": "0x6521B4",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 120,
+      "graphicsOffset": "0x64E574",
+      "arrangementOffset": "0x652344",
+      "heightMapOffset": "0x652CB8",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 121,
+      "graphicsOffset": "0x64E574",
+      "arrangementOffset": "0x652344",
+      "heightMapOffset": "0x652CB8",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 122,
+      "graphicsOffset": "0x64E574",
+      "arrangementOffset": "0x652DC8",
+      "heightMapOffset": "0x6536C8",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 123,
+      "graphicsOffset": "0x64E574",
+      "arrangementOffset": "0x652DC8",
+      "heightMapOffset": "0x6536C8",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 124,
+      "graphicsOffset": "0x64E574",
+      "arrangementOffset": "0x653764",
+      "heightMapOffset": "0x6542A0",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 125,
+      "graphicsOffset": "0x64E574",
+      "arrangementOffset": "0x653764",
+      "heightMapOffset": "0x6542A0",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 126,
+      "graphicsOffset": "0x64E574",
+      "arrangementOffset": "0x6543DC",
+      "heightMapOffset": "0x654E9C",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 127,
+      "graphicsOffset": "0x64E574",
+      "arrangementOffset": "0x6543DC",
+      "heightMapOffset": "0x654E9C",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 128,
+      "graphicsOffset": "0x654F58",
+      "arrangementOffset": "0x6580F8",
+      "heightMapOffset": "0x65903C",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 129,
+      "graphicsOffset": "0x654F58",
+      "arrangementOffset": "0x65CB28",
+      "heightMapOffset": "0x65D900",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 130,
+      "graphicsOffset": "0x654F58",
+      "arrangementOffset": "0x65DA40",
+      "heightMapOffset": "0x65E8F4",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 131,
+      "graphicsOffset": "0x654F58",
+      "arrangementOffset": "0x65EA38",
+      "heightMapOffset": "0x65F95C",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 132,
+      "graphicsOffset": "0x654F58",
+      "arrangementOffset": "0x65FADC",
+      "heightMapOffset": "0x660A64",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 133,
+      "graphicsOffset": "0x660B44",
+      "arrangementOffset": "0x663EC0",
+      "heightMapOffset": "0x664CE8",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 134,
+      "graphicsOffset": "0x660B44",
+      "arrangementOffset": "0x668F64",
+      "heightMapOffset": "0x669130",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 135,
+      "graphicsOffset": "0x660B44",
+      "arrangementOffset": "0x6691C8",
+      "heightMapOffset": "0x669EA8",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 136,
+      "graphicsOffset": "0x660B44",
+      "arrangementOffset": "0x6691C8",
+      "heightMapOffset": "0x669EA8",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 137,
+      "graphicsOffset": "0x660B44",
+      "arrangementOffset": "0x66A068",
+      "heightMapOffset": "0x66A914",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 138,
+      "graphicsOffset": "0x660B44",
+      "arrangementOffset": "0x66A068",
+      "heightMapOffset": "0x66A914",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 139,
+      "graphicsOffset": "0x660B44",
+      "arrangementOffset": "0x66AAD0",
+      "heightMapOffset": "0x66B80C",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 140,
+      "graphicsOffset": "0x660B44",
+      "arrangementOffset": "0x66AAD0",
+      "heightMapOffset": "0x66B80C",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 141,
+      "graphicsOffset": "0x660B44",
+      "arrangementOffset": "0x66B9C0",
+      "heightMapOffset": "0x66C6F4",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 142,
+      "graphicsOffset": "0x660B44",
+      "arrangementOffset": "0x66B9C0",
+      "heightMapOffset": "0x66C6F4",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 143,
+      "graphicsOffset": "0x66C860",
+      "arrangementOffset": "0x66D904",
+      "heightMapOffset": "0x66E23C",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 144,
+      "graphicsOffset": "0x5C4610",
+      "arrangementOffset": "0x66FAD8",
+      "heightMapOffset": "0x5C6D2C",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 145,
+      "graphicsOffset": "0x5C4610",
+      "arrangementOffset": "0x6702A4",
+      "heightMapOffset": "0x5C6D2C",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 146,
+      "graphicsOffset": "0x5C4610",
+      "arrangementOffset": "0x670A70",
+      "heightMapOffset": "0x5C6D2C",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 147,
+      "graphicsOffset": "0x67123C",
+      "arrangementOffset": "0x67385C",
+      "heightMapOffset": "0x6740D4",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 148,
+      "graphicsOffset": "0x67123C",
+      "arrangementOffset": "0x67419C",
+      "heightMapOffset": "0x674AC8",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 149,
+      "graphicsOffset": "0x67123C",
+      "arrangementOffset": "0x674B94",
+      "heightMapOffset": "0x6753FC",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 150,
+      "graphicsOffset": "0x67123C",
+      "arrangementOffset": "0x67548C",
+      "heightMapOffset": "0x676008",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 151,
+      "graphicsOffset": "0x676080",
+      "arrangementOffset": "0x678DDC",
+      "heightMapOffset": "0x679DC0",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 152,
+      "graphicsOffset": "0x676080",
+      "arrangementOffset": "0x67D740",
+      "heightMapOffset": "0x67E5AC",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 153,
+      "graphicsOffset": "0x676080",
+      "arrangementOffset": "0x67E70C",
+      "heightMapOffset": "0x67F718",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 154,
+      "graphicsOffset": "0x676080",
+      "arrangementOffset": "0x67F878",
+      "heightMapOffset": "0x680334",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 155,
+      "graphicsOffset": "0x6803DC",
+      "arrangementOffset": "0x684500",
+      "heightMapOffset": "0x6853EC",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 156,
+      "graphicsOffset": "0x685C54",
+      "arrangementOffset": "0x689194",
+      "heightMapOffset": "0x689EA0",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 157,
+      "graphicsOffset": "0x685C54",
+      "arrangementOffset": "0x689F9C",
+      "heightMapOffset": "0x68AD18",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 158,
+      "graphicsOffset": "0x68ADB4",
+      "arrangementOffset": "0x68D040",
+      "heightMapOffset": "0x68DCD0",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 159,
+      "graphicsOffset": "0x68E378",
+      "arrangementOffset": "0x69037C",
+      "heightMapOffset": "0x690FEC",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 160,
+      "graphicsOffset": "0x69167C",
+      "arrangementOffset": "0x693684",
+      "heightMapOffset": "0x693EA4",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 161,
+      "graphicsOffset": "0x694884",
+      "arrangementOffset": "0x696EA8",
+      "heightMapOffset": "0x698218",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    },
+    {
+      "index": 162,
+      "graphicsOffset": "0x8EB124",
+      "arrangementOffset": "0x208E9104",
+      "heightMapOffset": "0xCC969384",
+      "note": "dados comprimidos (formato GBAmdc). Ver tools/FFTAUtils."
+    }
+  ]
+}

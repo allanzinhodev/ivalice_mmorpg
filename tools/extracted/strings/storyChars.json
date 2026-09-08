@@ -1,0 +1,436 @@
+{
+  "table": "storyChars",
+  "note": "nomes de personagens de historia / especiais",
+  "pointerTableOffset": "0x5516D0",
+  "entryCount": 107,
+  "entries": [
+    {
+      "index": 0,
+      "text": "CRNNONE"
+    },
+    {
+      "index": 1,
+      "text": "CRNDEF"
+    },
+    {
+      "index": 2,
+      "text": "Marche"
+    },
+    {
+      "index": 3,
+      "text": "Mewt"
+    },
+    {
+      "index": 4,
+      "text": "Ritz"
+    },
+    {
+      "index": 5,
+      "text": "Remedi"
+    },
+    {
+      "index": 6,
+      "text": "Cid"
+    },
+    {
+      "index": 7,
+      "text": "Doned"
+    },
+    {
+      "index": 8,
+      "text": "Montblanc"
+    },
+    {
+      "index": 9,
+      "text": "Babus"
+    },
+    {
+      "index": 10,
+      "text": "Ezel"
+    },
+    {
+      "index": 11,
+      "text": "Nono"
+    },
+    {
+      "index": 12,
+      "text": "Shara"
+    },
+    {
+      "index": 13,
+      "text": "Llednar"
+    },
+    {
+      "index": 14,
+      "text": "Lyle"
+    },
+    {
+      "index": 15,
+      "text": "Guinness"
+    },
+    {
+      "index": 16,
+      "text": "Colin"
+    },
+    {
+      "index": 17,
+      "text": "Leslaie"
+    },
+    {
+      "index": 18,
+      "text": "Mateus"
+    },
+    {
+      "index": 19,
+      "text": "Adrammelech"
+    },
+    {
+      "index": 20,
+      "text": "Ultima Crystal"
+    },
+    {
+      "index": 21,
+      "text": "Exodus Fruit"
+    },
+    {
+      "index": 22,
+      "text": "Famfrit"
+    },
+    {
+      "index": 23,
+      "text": "Judge"
+    },
+    {
+      "index": 24,
+      "text": "Mateus"
+    },
+    {
+      "index": 25,
+      "text": "Adrammelech"
+    },
+    {
+      "index": 26,
+      "text": "Famfrit"
+    },
+    {
+      "index": 27,
+      "text": "Littlevili"
+    },
+    {
+      "index": 28,
+      "text": "CRNRES6"
+    },
+    {
+      "index": 29,
+      "text": "CRNRES7"
+    },
+    {
+      "index": 30,
+      "text": "Dabarosa"
+    },
+    {
+      "index": 31,
+      "text": "Dolce"
+    },
+    {
+      "index": 32,
+      "text": "Warose"
+    },
+    {
+      "index": 33,
+      "text": "Raven"
+    },
+    {
+      "index": 34,
+      "text": "Hejaat"
+    },
+    {
+      "index": 35,
+      "text": "Batalise"
+    },
+    {
+      "index": 36,
+      "text": "Golitaire"
+    },
+    {
+      "index": 37,
+      "text": "Bishon"
+    },
+    {
+      "index": 38,
+      "text": "Steraiz"
+    },
+    {
+      "index": 39,
+      "text": "Gukko"
+    },
+    {
+      "index": 40,
+      "text": "Maliris"
+    },
+    {
+      "index": 41,
+      "text": "Sandy"
+    },
+    {
+      "index": 42,
+      "text": "Cindy"
+    },
+    {
+      "index": 43,
+      "text": "Mindy"
+    },
+    {
+      "index": 44,
+      "text": "Kraken"
+    },
+    {
+      "index": 45,
+      "text": "Tiamat"
+    },
+    {
+      "index": 46,
+      "text": "Lich"
+    },
+    {
+      "index": 47,
+      "text": "Glasm"
+    },
+    {
+      "index": 48,
+      "text": "Silverlock"
+    },
+    {
+      "index": 49,
+      "text": "Gutskor"
+    },
+    {
+      "index": 50,
+      "text": "Ogma"
+    },
+    {
+      "index": 51,
+      "text": "Reaker"
+    },
+    {
+      "index": 52,
+      "text": "Bladesman"
+    },
+    {
+      "index": 53,
+      "text": "Carot"
+    },
+    {
+      "index": 54,
+      "text": "Hanzou"
+    },
+    {
+      "index": 55,
+      "text": "Dark Knight"
+    },
+    {
+      "index": 56,
+      "text": "Buckles"
+    },
+    {
+      "index": 57,
+      "text": "Gagat"
+    },
+    {
+      "index": 58,
+      "text": "Meow"
+    },
+    {
+      "index": 59,
+      "text": "Mystery Box"
+    },
+    {
+      "index": 60,
+      "text": "Odd Statue"
+    },
+    {
+      "index": 61,
+      "text": "Magic Device"
+    },
+    {
+      "index": 62,
+      "text": "Big Gabbana"
+    },
+    {
+      "index": 63,
+      "text": "Lil Gabbana"
+    },
+    {
+      "index": 64,
+      "text": "Diaghilev"
+    },
+    {
+      "index": 65,
+      "text": "Kanan"
+    },
+    {
+      "index": 66,
+      "text": "Rayne"
+    },
+    {
+      "index": 67,
+      "text": "Lodion"
+    },
+    {
+      "index": 68,
+      "text": "Gerland"
+    },
+    {
+      "index": 69,
+      "text": "Lord Ghost"
+    },
+    {
+      "index": 70,
+      "text": "Gelato"
+    },
+    {
+      "index": 71,
+      "text": "Auggie"
+    },
+    {
+      "index": 72,
+      "text": "Belvay"
+    },
+    {
+      "index": 73,
+      "text": "Delia Wyrms"
+    },
+    {
+      "index": 74,
+      "text": "Grissom"
+    },
+    {
+      "index": 75,
+      "text": "Mombomb"
+    },
+    {
+      "index": 76,
+      "text": "Celia"
+    },
+    {
+      "index": 77,
+      "text": "Redy"
+    },
+    {
+      "index": 78,
+      "text": "Queen Lamia"
+    },
+    {
+      "index": 79,
+      "text": "Adamantoise"
+    },
+    {
+      "index": 80,
+      "text": "Ochu"
+    },
+    {
+      "index": 81,
+      "text": "Neochu"
+    },
+    {
+      "index": 82,
+      "text": "Dread Lord"
+    },
+    {
+      "index": 83,
+      "text": "Apanda"
+    },
+    {
+      "index": 84,
+      "text": "Archaedemon"
+    },
+    {
+      "index": 85,
+      "text": "Mamaflan"
+    },
+    {
+      "index": 86,
+      "text": "Fog"
+    },
+    {
+      "index": 87,
+      "text": "Grang"
+    },
+    {
+      "index": 88,
+      "text": "Vili"
+    },
+    {
+      "index": 89,
+      "text": "Haweh"
+    },
+    {
+      "index": 90,
+      "text": "Ganderu"
+    },
+    {
+      "index": 91,
+      "text": "Weaver"
+    },
+    {
+      "index": 92,
+      "text": "Mintz"
+    },
+    {
+      "index": 93,
+      "text": "Eldena"
+    },
+    {
+      "index": 94,
+      "text": "Cheney"
+    },
+    {
+      "index": 95,
+      "text": "Pallanza"
+    },
+    {
+      "index": 96,
+      "text": "Lini"
+    },
+    {
+      "index": 97,
+      "text": "Quin"
+    },
+    {
+      "index": 98,
+      "text": "Pam Le Fay"
+    },
+    {
+      "index": 99,
+      "text": "Delusiah"
+    },
+    {
+      "index": 100,
+      "text": "CRNNAME071"
+    },
+    {
+      "index": 101,
+      "text": "CRNNAME072"
+    },
+    {
+      "index": 102,
+      "text": "Don Brass"
+    },
+    {
+      "index": 103,
+      "text": "Leanan"
+    },
+    {
+      "index": 104,
+      "text": "Dredd"
+    },
+    {
+      "index": 105,
+      "text": "Reinhold"
+    },
+    {
+      "index": 106,
+      "text": "Mike"
+    }
+  ]
+}

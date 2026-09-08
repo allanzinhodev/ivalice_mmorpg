@@ -1,0 +1,344 @@
+{
+  "table": "areaTypeNames",
+  "note": "tipos de local no mapa (Pub, Shop, Prison, ...)",
+  "pointerTableOffset": "0x5668B0",
+  "entryCount": 84,
+  "entries": [
+    {
+      "index": 0,
+      "text": "No symbol"
+    },
+    {
+      "index": 1,
+      "text": "Surrounded by:"
+    },
+    {
+      "index": 2,
+      "text": "Pub"
+    },
+    {
+      "index": 3,
+      "text": "Shop"
+    },
+    {
+      "index": 4,
+      "text": "Prison"
+    },
+    {
+      "index": 5,
+      "text": "Card Keeper"
+    },
+    {
+      "index": 6,
+      "text": "Monster Bank"
+    },
+    {
+      "index": 7,
+      "text": "Treasure Hunt"
+    },
+    {
+      "index": 8,
+      "text": "Discard item?"
+    },
+    {
+      "index": 9,
+      "text": "    YES    NO"
+    },
+    {
+      "index": 10,
+      "text": "Reward\\xef"
+    },
+    {
+      "index": 11,
+      "text": "Gil"
+    },
+    {
+      "index": 12,
+      "text": "Clan Pts:"
+    },
+    {
+      "index": 13,
+      "text": "points"
+    },
+    {
+      "index": 14,
+      "text": "Skill Lvl"
+    },
+    {
+      "index": 15,
+      "text": "Clan Level UP?"
+    },
+    {
+      "index": 16,
+      "text": "Skill Lvl UP & Item?"
+    },
+    {
+      "index": 17,
+      "text": "dummy"
+    },
+    {
+      "index": 18,
+      "text": "Clan applicant?"
+    },
+    {
+      "index": 19,
+      "text": "Accept this person?"
+    },
+    {
+      "index": 20,
+      "text": "Deny this person?"
+    },
+    {
+      "index": 21,
+      "text": "Remove this person?"
+    },
+    {
+      "index": 22,
+      "text": "dummy"
+    },
+    {
+      "index": 23,
+      "text": " areas left."
+    },
+    {
+      "index": 24,
+      "text": " areas left."
+    },
+    {
+      "index": 25,
+      "text": "Liberate"
+    },
+    {
+      "index": 26,
+      "text": "Clear!"
+    },
+    {
+      "index": 27,
+      "text": "Freed!"
+    },
+    {
+      "index": 28,
+      "text": "dummy"
+    },
+    {
+      "index": 29,
+      "text": "dummy"
+    },
+    {
+      "index": 30,
+      "text": "dummy"
+    },
+    {
+      "index": 31,
+      "text": "dummy"
+    },
+    {
+      "index": 32,
+      "text": "dummy"
+    },
+    {
+      "index": 33,
+      "text": "dummy"
+    },
+    {
+      "index": 34,
+      "text": "dummy"
+    },
+    {
+      "index": 35,
+      "text": "dummy"
+    },
+    {
+      "index": 36,
+      "text": "dummy"
+    },
+    {
+      "index": 37,
+      "text": "dummy"
+    },
+    {
+      "index": 38,
+      "text": "dummy"
+    },
+    {
+      "index": 39,
+      "text": "No info available."
+    },
+    {
+      "index": 40,
+      "text": "Lv."
+    },
+    {
+      "index": 41,
+      "text": "masterd"
+    },
+    {
+      "index": 42,
+      "text": "N/A"
+    },
+    {
+      "index": 43,
+      "text": "Skill level UP?"
+    },
+    {
+      "index": 44,
+      "text": "Too many items."
+    },
+    {
+      "index": 45,
+      "text": "Choose item to discard."
+    },
+    {
+      "index": 46,
+      "text": "OK"
+    },
+    {
+      "index": 47,
+      "text": " traded."
+    },
+    {
+      "index": 48,
+      "text": " received."
+    },
+    {
+      "index": 49,
+      "text": "Equip Items"
+    },
+    {
+      "index": 50,
+      "text": "Pick Abilities"
+    },
+    {
+      "index": 51,
+      "text": "Change Jobs"
+    },
+    {
+      "index": 52,
+      "text": "No Abilities"
+    },
+    {
+      "index": 53,
+      "text": "Leave Clan"
+    },
+    {
+      "index": 54,
+      "text": " was taken?"
+    },
+    {
+      "index": 55,
+      "text": "hrs"
+    },
+    {
+      "index": 56,
+      "text": "min"
+    },
+    {
+      "index": 57,
+      "text": "No data"
+    },
+    {
+      "index": 58,
+      "text": "Resume Battle"
+    },
+    {
+      "index": 59,
+      "text": "Load"
+    },
+    {
+      "index": 60,
+      "text": "Pick slot to save."
+    },
+    {
+      "index": 61,
+      "text": "Pick slot to load."
+    },
+    {
+      "index": 62,
+      "text": "Saving..."
+    },
+    {
+      "index": 63,
+      "text": "Loading..."
+    },
+    {
+      "index": 64,
+      "text": "Save complete."
+    },
+    {
+      "index": 65,
+      "text": "Load complete."
+    },
+    {
+      "index": 66,
+      "text": "Save failed?"
+    },
+    {
+      "index": 67,
+      "text": "Load failed?"
+    },
+    {
+      "index": 68,
+      "text": "Error in backup memory."
+    },
+    {
+      "index": 69,
+      "text": "All areas freed?"
+    },
+    {
+      "index": 70,
+      "text": "Resume saved battle."
+    },
+    {
+      "index": 71,
+      "text": "Overwriting this slot."
+    },
+    {
+      "index": 72,
+      "text": "Checking save data."
+    },
+    {
+      "index": 73,
+      "text": "Mission Cleared"
+    },
+    {
+      "index": 74,
+      "text": "Dispatched unit returned."
+    },
+    {
+      "index": 75,
+      "text": "mastered"
+    },
+    {
+      "index": 76,
+      "text": "Place location symbol."
+    },
+    {
+      "index": 77,
+      "text": "Select empty slot."
+    },
+    {
+      "index": 78,
+      "text": "......Searching......"
+    },
+    {
+      "index": 79,
+      "text": "Auto"
+    },
+    {
+      "index": 80,
+      "text": "Manual"
+    },
+    {
+      "index": 81,
+      "text": "Found"
+    },
+    {
+      "index": 82,
+      "text": "!"
+    },
+    {
+      "index": 83,
+      "text": "is under attack?"
+    }
+  ]
+}

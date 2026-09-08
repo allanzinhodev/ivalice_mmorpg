@@ -1,0 +1,520 @@
+{
+  "table": "clanNames",
+  "note": "nomes de clas (proprio e inimigos)",
+  "pointerTableOffset": "0x565F14",
+  "entryCount": 128,
+  "entries": [
+    {
+      "index": 0,
+      "text": "Nutsy"
+    },
+    {
+      "index": 1,
+      "text": "Guard Patrol"
+    },
+    {
+      "index": 2,
+      "text": "Cyril Band"
+    },
+    {
+      "index": 3,
+      "text": "Sprohmknights"
+    },
+    {
+      "index": 4,
+      "text": "Clan Belmia"
+    },
+    {
+      "index": 5,
+      "text": "Clan Banisa"
+    },
+    {
+      "index": 6,
+      "text": "Gaja Band"
+    },
+    {
+      "index": 7,
+      "text": "Rangers"
+    },
+    {
+      "index": 8,
+      "text": "Clan Marble"
+    },
+    {
+      "index": 9,
+      "text": "Kudik Beasts"
+    },
+    {
+      "index": 10,
+      "text": "Roaming Naiads"
+    },
+    {
+      "index": 11,
+      "text": "Clan Clatz"
+    },
+    {
+      "index": 12,
+      "text": "Clan Dip"
+    },
+    {
+      "index": 13,
+      "text": "Koring Band"
+    },
+    {
+      "index": 14,
+      "text": "Clan Shalo"
+    },
+    {
+      "index": 15,
+      "text": "Aisen Ghosts"
+    },
+    {
+      "index": 16,
+      "text": "Roda Dragons"
+    },
+    {
+      "index": 17,
+      "text": "Antlions"
+    },
+    {
+      "index": 18,
+      "text": "Tribites"
+    },
+    {
+      "index": 19,
+      "text": "Tricky Spirits"
+    },
+    {
+      "index": 20,
+      "text": "Brass Dragoons"
+    },
+    {
+      "index": 21,
+      "text": "Wild Monsters"
+    },
+    {
+      "index": 22,
+      "text": "Gertai Band"
+    },
+    {
+      "index": 23,
+      "text": "Ramble Band"
+    },
+    {
+      "index": 24,
+      "text": "Zoara Sect"
+    },
+    {
+      "index": 25,
+      "text": "Lost Monsters"
+    },
+    {
+      "index": 26,
+      "text": "Tubola Bandits"
+    },
+    {
+      "index": 27,
+      "text": "Clan Hounds"
+    },
+    {
+      "index": 28,
+      "text": "Jagd Emissaries"
+    },
+    {
+      "index": 29,
+      "text": "Bloodthirsters"
+    },
+    {
+      "index": 30,
+      "text": "Doned Faction"
+    },
+    {
+      "index": 31,
+      "text": "Wanted!"
+    },
+    {
+      "index": 32,
+      "text": "Escaped Beasts"
+    },
+    {
+      "index": 33,
+      "text": "Clan Crow"
+    },
+    {
+      "index": 34,
+      "text": "Roda Dragons"
+    },
+    {
+      "index": 35,
+      "text": "Yellow Powerz"
+    },
+    {
+      "index": 36,
+      "text": "Blue Geniuses"
+    },
+    {
+      "index": 37,
+      "text": "Brown Rabbits"
+    },
+    {
+      "index": 38,
+      "text": "White Kupos"
+    },
+    {
+      "index": 39,
+      "text": "Mythril Team"
+    },
+    {
+      "index": 40,
+      "text": "Sprohm Writer"
+    },
+    {
+      "index": 41,
+      "text": "Smugglers"
+    },
+    {
+      "index": 42,
+      "text": "Resistance"
+    },
+    {
+      "index": 43,
+      "text": "dummy"
+    },
+    {
+      "index": 44,
+      "text": "Weapon Biter"
+    },
+    {
+      "index": 45,
+      "text": "Poachers"
+    },
+    {
+      "index": 46,
+      "text": "Snow Fairy"
+    },
+    {
+      "index": 47,
+      "text": "Mad Weaver"
+    },
+    {
+      "index": 48,
+      "text": "Postman"
+    },
+    {
+      "index": 49,
+      "text": "Clan Baham"
+    },
+    {
+      "index": 50,
+      "text": "dummy"
+    },
+    {
+      "index": 51,
+      "text": "dummy"
+    },
+    {
+      "index": 52,
+      "text": "dummy"
+    },
+    {
+      "index": 53,
+      "text": "dummy"
+    },
+    {
+      "index": 54,
+      "text": "dummy"
+    },
+    {
+      "index": 55,
+      "text": "dummy"
+    },
+    {
+      "index": 56,
+      "text": "dummy"
+    },
+    {
+      "index": 57,
+      "text": "dummy"
+    },
+    {
+      "index": 58,
+      "text": "dummy"
+    },
+    {
+      "index": 59,
+      "text": "dummy"
+    },
+    {
+      "index": 60,
+      "text": "dummy"
+    },
+    {
+      "index": 61,
+      "text": "dummy"
+    },
+    {
+      "index": 62,
+      "text": "dummy"
+    },
+    {
+      "index": 63,
+      "text": "dummy"
+    },
+    {
+      "index": 64,
+      "text": "dummy"
+    },
+    {
+      "index": 65,
+      "text": "dummy"
+    },
+    {
+      "index": 66,
+      "text": "dummy"
+    },
+    {
+      "index": 67,
+      "text": "dummy"
+    },
+    {
+      "index": 68,
+      "text": "dummy"
+    },
+    {
+      "index": 69,
+      "text": "dummy"
+    },
+    {
+      "index": 70,
+      "text": "dummy"
+    },
+    {
+      "index": 71,
+      "text": "dummy"
+    },
+    {
+      "index": 72,
+      "text": "dummy"
+    },
+    {
+      "index": 73,
+      "text": "dummy"
+    },
+    {
+      "index": 74,
+      "text": "dummy"
+    },
+    {
+      "index": 75,
+      "text": "dummy"
+    },
+    {
+      "index": 76,
+      "text": "dummy"
+    },
+    {
+      "index": 77,
+      "text": "dummy"
+    },
+    {
+      "index": 78,
+      "text": "dummy"
+    },
+    {
+      "index": 79,
+      "text": "dummy"
+    },
+    {
+      "index": 80,
+      "text": "dummy"
+    },
+    {
+      "index": 81,
+      "text": "dummy"
+    },
+    {
+      "index": 82,
+      "text": "dummy"
+    },
+    {
+      "index": 83,
+      "text": "dummy"
+    },
+    {
+      "index": 84,
+      "text": "dummy"
+    },
+    {
+      "index": 85,
+      "text": "dummy"
+    },
+    {
+      "index": 86,
+      "text": "dummy"
+    },
+    {
+      "index": 87,
+      "text": "dummy"
+    },
+    {
+      "index": 88,
+      "text": "dummy"
+    },
+    {
+      "index": 89,
+      "text": "dummy"
+    },
+    {
+      "index": 90,
+      "text": "dummy"
+    },
+    {
+      "index": 91,
+      "text": "dummy"
+    },
+    {
+      "index": 92,
+      "text": "dummy"
+    },
+    {
+      "index": 93,
+      "text": "dummy"
+    },
+    {
+      "index": 94,
+      "text": "dummy"
+    },
+    {
+      "index": 95,
+      "text": "dummy"
+    },
+    {
+      "index": 96,
+      "text": "dummy"
+    },
+    {
+      "index": 97,
+      "text": "dummy"
+    },
+    {
+      "index": 98,
+      "text": "dummy"
+    },
+    {
+      "index": 99,
+      "text": "dummy"
+    },
+    {
+      "index": 100,
+      "text": "dummy"
+    },
+    {
+      "index": 101,
+      "text": "dummy"
+    },
+    {
+      "index": 102,
+      "text": "dummy"
+    },
+    {
+      "index": 103,
+      "text": "dummy"
+    },
+    {
+      "index": 104,
+      "text": "dummy"
+    },
+    {
+      "index": 105,
+      "text": "dummy"
+    },
+    {
+      "index": 106,
+      "text": "dummy"
+    },
+    {
+      "index": 107,
+      "text": "dummy"
+    },
+    {
+      "index": 108,
+      "text": "dummy"
+    },
+    {
+      "index": 109,
+      "text": "dummy"
+    },
+    {
+      "index": 110,
+      "text": "dummy"
+    },
+    {
+      "index": 111,
+      "text": "dummy"
+    },
+    {
+      "index": 112,
+      "text": "dummy"
+    },
+    {
+      "index": 113,
+      "text": "dummy"
+    },
+    {
+      "index": 114,
+      "text": "dummy"
+    },
+    {
+      "index": 115,
+      "text": "dummy"
+    },
+    {
+      "index": 116,
+      "text": "dummy"
+    },
+    {
+      "index": 117,
+      "text": "dummy"
+    },
+    {
+      "index": 118,
+      "text": "dummy"
+    },
+    {
+      "index": 119,
+      "text": "dummy"
+    },
+    {
+      "index": 120,
+      "text": "dummy"
+    },
+    {
+      "index": 121,
+      "text": "dummy"
+    },
+    {
+      "index": 122,
+      "text": "Lizard Men??"
+    },
+    {
+      "index": 123,
+      "text": "Li-grim"
+    },
+    {
+      "index": 124,
+      "text": "Queen Remedi"
+    },
+    {
+      "index": 125,
+      "text": "Llednar"
+    },
+    {
+      "index": 126,
+      "text": "Mateus"
+    },
+    {
+      "index": 127,
+      "text": "Exodus"
+    }
+  ]
+}

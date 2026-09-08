@@ -1,0 +1,216 @@
+{
+  "table": "clanTitles",
+  "note": "titulos/prefixos de cla",
+  "pointerTableOffset": "0x569034",
+  "entryCount": 52,
+  "entries": [
+    {
+      "index": 0,
+      "text": "-"
+    },
+    {
+      "index": 1,
+      "text": "Loser "
+    },
+    {
+      "index": 2,
+      "text": "Cheater "
+    },
+    {
+      "index": 3,
+      "text": "Cheap "
+    },
+    {
+      "index": 4,
+      "text": "Baham Faction "
+    },
+    {
+      "index": 5,
+      "text": "Explorer "
+    },
+    {
+      "index": 6,
+      "text": "Master "
+    },
+    {
+      "index": 7,
+      "text": "Peerless "
+    },
+    {
+      "index": 8,
+      "text": "Super "
+    },
+    {
+      "index": 9,
+      "text": "Riskbreaker "
+    },
+    {
+      "index": 10,
+      "text": "Jamagus "
+    },
+    {
+      "index": 11,
+      "text": "Meister "
+    },
+    {
+      "index": 12,
+      "text": "Defthand "
+    },
+    {
+      "index": 13,
+      "text": "Godeye "
+    },
+    {
+      "index": 14,
+      "text": "Trufflenose "
+    },
+    {
+      "index": 15,
+      "text": "Negotiator "
+    },
+    {
+      "index": 16,
+      "text": "Wyrmkiller "
+    },
+    {
+      "index": 17,
+      "text": "Adventurer "
+    },
+    {
+      "index": 18,
+      "text": "1 in 10!000 "
+    },
+    {
+      "index": 19,
+      "text": "Expert "
+    },
+    {
+      "index": 20,
+      "text": "Warmaster "
+    },
+    {
+      "index": 21,
+      "text": "Gamagus "
+    },
+    {
+      "index": 22,
+      "text": "Mastersmith "
+    },
+    {
+      "index": 23,
+      "text": "Goldhand "
+    },
+    {
+      "index": 24,
+      "text": "Trueeye "
+    },
+    {
+      "index": 25,
+      "text": "Strawnose "
+    },
+    {
+      "index": 26,
+      "text": "Counselor "
+    },
+    {
+      "index": 27,
+      "text": "Bearkiller "
+    },
+    {
+      "index": 28,
+      "text": "Traveler "
+    },
+    {
+      "index": 29,
+      "text": "1 in 1!000 "
+    },
+    {
+      "index": 30,
+      "text": "Intermediate "
+    },
+    {
+      "index": 31,
+      "text": "Commander "
+    },
+    {
+      "index": 32,
+      "text": "Ramagus "
+    },
+    {
+      "index": 33,
+      "text": "Blacksmith "
+    },
+    {
+      "index": 34,
+      "text": "Silverhand "
+    },
+    {
+      "index": 35,
+      "text": "Cleareye "
+    },
+    {
+      "index": 36,
+      "text": "Funginose "
+    },
+    {
+      "index": 37,
+      "text": "Know-it-all "
+    },
+    {
+      "index": 38,
+      "text": "Shepherd "
+    },
+    {
+      "index": 39,
+      "text": "Squire "
+    },
+    {
+      "index": 40,
+      "text": "1 in 100 "
+    },
+    {
+      "index": 41,
+      "text": "Beginner "
+    },
+    {
+      "index": 42,
+      "text": "Warrior "
+    },
+    {
+      "index": 43,
+      "text": "Amagus "
+    },
+    {
+      "index": 44,
+      "text": "Craftsman "
+    },
+    {
+      "index": 45,
+      "text": "Copperhand "
+    },
+    {
+      "index": 46,
+      "text": "Squinteye "
+    },
+    {
+      "index": 47,
+      "text": "Reednose "
+    },
+    {
+      "index": 48,
+      "text": "Taleteller "
+    },
+    {
+      "index": 49,
+      "text": "Ratcatcher "
+    },
+    {
+      "index": 50,
+      "text": "Dreamer "
+    },
+    {
+      "index": 51,
+      "text": "1 in 10 "
+    }
+  ]
+}

@@ -1,0 +1,2056 @@
+{
+  "table": "missionNames",
+  "note": "nomes de missoes",
+  "pointerTableOffset": "0x55A64C",
+  "entryCount": 512,
+  "entries": [
+    {
+      "index": 0,
+      "text": "-"
+    },
+    {
+      "index": 1,
+      "text": "Snowball Fight"
+    },
+    {
+      "index": 2,
+      "text": "Another World"
+    },
+    {
+      "index": 3,
+      "text": "Herb Picking"
+    },
+    {
+      "index": 4,
+      "text": "Thesis Hunt"
+    },
+    {
+      "index": 5,
+      "text": "The Cheetahs"
+    },
+    {
+      "index": 6,
+      "text": "Desert Peril"
+    },
+    {
+      "index": 7,
+      "text": "Twisted Flow"
+    },
+    {
+      "index": 8,
+      "text": "Antilaws"
+    },
+    {
+      "index": 9,
+      "text": "Diamond Rain"
+    },
+    {
+      "index": 10,
+      "text": "Hot Awakening"
+    },
+    {
+      "index": 11,
+      "text": "Magic Wood"
+    },
+    {
+      "index": 12,
+      "text": "Emerald Keep"
+    },
+    {
+      "index": 13,
+      "text": "Pale Company"
+    },
+    {
+      "index": 14,
+      "text": "Jagd Hunt"
+    },
+    {
+      "index": 15,
+      "text": "The Bounty"
+    },
+    {
+      "index": 16,
+      "text": "Golden Clock"
+    },
+    {
+      "index": 17,
+      "text": "Scouring Time"
+    },
+    {
+      "index": 18,
+      "text": "The Big Find"
+    },
+    {
+      "index": 19,
+      "text": "Desert Patrol"
+    },
+    {
+      "index": 20,
+      "text": "Quiet Sands"
+    },
+    {
+      "index": 21,
+      "text": "Materite Now?"
+    },
+    {
+      "index": 22,
+      "text": "Present Day"
+    },
+    {
+      "index": 23,
+      "text": "Hidden Vein"
+    },
+    {
+      "index": 24,
+      "text": "To Ambervale"
+    },
+    {
+      "index": 25,
+      "text": "Over The Hill"
+    },
+    {
+      "index": 26,
+      "text": "Royal Valley"
+    },
+    {
+      "index": 27,
+      "text": "dummy"
+    },
+    {
+      "index": 28,
+      "text": "Wanted!"
+    },
+    {
+      "index": 29,
+      "text": "Wanted!"
+    },
+    {
+      "index": 30,
+      "text": "Wanted!"
+    },
+    {
+      "index": 31,
+      "text": "Wanted!"
+    },
+    {
+      "index": 32,
+      "text": "Wanted!"
+    },
+    {
+      "index": 33,
+      "text": "Wanted!"
+    },
+    {
+      "index": 34,
+      "text": "Ruby Red"
+    },
+    {
+      "index": 35,
+      "text": "Tower Ruins"
+    },
+    {
+      "index": 36,
+      "text": "Battle In Aisen"
+    },
+    {
+      "index": 37,
+      "text": "Magewyrm"
+    },
+    {
+      "index": 38,
+      "text": "Salika Keep"
+    },
+    {
+      "index": 39,
+      "text": "Twin Swords"
+    },
+    {
+      "index": 40,
+      "text": "Village Hunt"
+    },
+    {
+      "index": 41,
+      "text": "Fire? Fire?"
+    },
+    {
+      "index": 42,
+      "text": "The Wanderer"
+    },
+    {
+      "index": 43,
+      "text": "Battle Tourney"
+    },
+    {
+      "index": 44,
+      "text": "Mage Tourney"
+    },
+    {
+      "index": 45,
+      "text": "Swimming Meet"
+    },
+    {
+      "index": 46,
+      "text": "Clan League"
+    },
+    {
+      "index": 47,
+      "text": "Snow In Lutia"
+    },
+    {
+      "index": 48,
+      "text": "Frosty Mage"
+    },
+    {
+      "index": 49,
+      "text": "Prof In Trouble"
+    },
+    {
+      "index": 50,
+      "text": "Hot Recipe"
+    },
+    {
+      "index": 51,
+      "text": "S.O.S."
+    },
+    {
+      "index": 52,
+      "text": "A Lost Ring"
+    },
+    {
+      "index": 53,
+      "text": "Staring Eyes"
+    },
+    {
+      "index": 54,
+      "text": "Desert Rose"
+    },
+    {
+      "index": 55,
+      "text": "Friend Trouble"
+    },
+    {
+      "index": 56,
+      "text": "Flesh & Bones"
+    },
+    {
+      "index": 57,
+      "text": "For A Song"
+    },
+    {
+      "index": 58,
+      "text": "White Flowers"
+    },
+    {
+      "index": 59,
+      "text": "New Antilaw"
+    },
+    {
+      "index": 60,
+      "text": "Prison Break"
+    },
+    {
+      "index": 61,
+      "text": "Royal Ruins"
+    },
+    {
+      "index": 62,
+      "text": "Sketchy Thief"
+    },
+    {
+      "index": 63,
+      "text": "Showdown!"
+    },
+    {
+      "index": 64,
+      "text": "Hit Again"
+    },
+    {
+      "index": 65,
+      "text": "Oasis Frogs"
+    },
+    {
+      "index": 66,
+      "text": "Missing Prof"
+    },
+    {
+      "index": 67,
+      "text": "Den of Evil"
+    },
+    {
+      "index": 68,
+      "text": "Exploration"
+    },
+    {
+      "index": 69,
+      "text": "A Dragon's Aid"
+    },
+    {
+      "index": 70,
+      "text": "dummy"
+    },
+    {
+      "index": 71,
+      "text": "Missing Meow"
+    },
+    {
+      "index": 72,
+      "text": "Fowl Thief"
+    },
+    {
+      "index": 73,
+      "text": "Free Sprohm?"
+    },
+    {
+      "index": 74,
+      "text": "Raven's Oath"
+    },
+    {
+      "index": 75,
+      "text": "Nubswood Base"
+    },
+    {
+      "index": 76,
+      "text": "Lutia Mop-up"
+    },
+    {
+      "index": 77,
+      "text": "Borzoi Falling"
+    },
+    {
+      "index": 78,
+      "text": "Cadoan Watch"
+    },
+    {
+      "index": 79,
+      "text": "Free Cadoan?"
+    },
+    {
+      "index": 80,
+      "text": "Fire Sigil"
+    },
+    {
+      "index": 81,
+      "text": "Free Baguba?"
+    },
+    {
+      "index": 82,
+      "text": "Water Sigil"
+    },
+    {
+      "index": 83,
+      "text": "Wind Sigil"
+    },
+    {
+      "index": 84,
+      "text": "Earth Sigil"
+    },
+    {
+      "index": 85,
+      "text": "The Redwings"
+    },
+    {
+      "index": 86,
+      "text": "Free Muscadet?"
+    },
+    {
+      "index": 87,
+      "text": "Foreign Fiend"
+    },
+    {
+      "index": 88,
+      "text": "Foreign Fiend"
+    },
+    {
+      "index": 89,
+      "text": "Foreign Fiend"
+    },
+    {
+      "index": 90,
+      "text": "Last Stand"
+    },
+    {
+      "index": 91,
+      "text": "Free Bervenia?"
+    },
+    {
+      "index": 92,
+      "text": "The Worldwyrm"
+    },
+    {
+      "index": 93,
+      "text": "Moogle Bride"
+    },
+    {
+      "index": 94,
+      "text": "Clan Law"
+    },
+    {
+      "index": 95,
+      "text": "Challengers?"
+    },
+    {
+      "index": 96,
+      "text": "Cursed Bride"
+    },
+    {
+      "index": 97,
+      "text": "Flan Breakout?"
+    },
+    {
+      "index": 98,
+      "text": "Sorry! Friend"
+    },
+    {
+      "index": 99,
+      "text": "Carrot!"
+    },
+    {
+      "index": 100,
+      "text": "Shadow Clan"
+    },
+    {
+      "index": 101,
+      "text": "The Dark Blade"
+    },
+    {
+      "index": 102,
+      "text": "The Hero Blade"
+    },
+    {
+      "index": 103,
+      "text": "The Fey Blade"
+    },
+    {
+      "index": 104,
+      "text": "Fiend Run"
+    },
+    {
+      "index": 105,
+      "text": "Clan Roundup"
+    },
+    {
+      "index": 106,
+      "text": "Wyrms Awaken"
+    },
+    {
+      "index": 107,
+      "text": "Yellow Powerz"
+    },
+    {
+      "index": 108,
+      "text": "Blue Geniuses"
+    },
+    {
+      "index": 109,
+      "text": "Brown Rabbits"
+    },
+    {
+      "index": 110,
+      "text": "White Kupos"
+    },
+    {
+      "index": 111,
+      "text": "Mythril Rush"
+    },
+    {
+      "index": 112,
+      "text": "Stolen Scoop"
+    },
+    {
+      "index": 113,
+      "text": "Smuggle Bust"
+    },
+    {
+      "index": 114,
+      "text": "Resistance"
+    },
+    {
+      "index": 115,
+      "text": "dummy"
+    },
+    {
+      "index": 116,
+      "text": "Old Friends"
+    },
+    {
+      "index": 117,
+      "text": "Poachers"
+    },
+    {
+      "index": 118,
+      "text": "Snow Fairy"
+    },
+    {
+      "index": 119,
+      "text": "Revenge"
+    },
+    {
+      "index": 120,
+      "text": "Retrieve Mail?"
+    },
+    {
+      "index": 121,
+      "text": "A Challenge"
+    },
+    {
+      "index": 122,
+      "text": "dummy"
+    },
+    {
+      "index": 123,
+      "text": "Human Wanted"
+    },
+    {
+      "index": 124,
+      "text": "Bangaa Wanted"
+    },
+    {
+      "index": 125,
+      "text": "Nu Mou Wanted"
+    },
+    {
+      "index": 126,
+      "text": "Viera Wanted"
+    },
+    {
+      "index": 127,
+      "text": "Moogle Wanted"
+    },
+    {
+      "index": 128,
+      "text": "Watching You"
+    },
+    {
+      "index": 129,
+      "text": "Golden Gil"
+    },
+    {
+      "index": 130,
+      "text": "Dueling Sub"
+    },
+    {
+      "index": 131,
+      "text": "Gulug Ghost"
+    },
+    {
+      "index": 132,
+      "text": "Water City"
+    },
+    {
+      "index": 133,
+      "text": "Mirage Tower"
+    },
+    {
+      "index": 134,
+      "text": "A Barren Land"
+    },
+    {
+      "index": 135,
+      "text": "Cadoan Meet"
+    },
+    {
+      "index": 136,
+      "text": "Sprohm Meet"
+    },
+    {
+      "index": 137,
+      "text": "Run For Fun"
+    },
+    {
+      "index": 138,
+      "text": "Hungry Ghost"
+    },
+    {
+      "index": 139,
+      "text": "Pirates Ahoy"
+    },
+    {
+      "index": 140,
+      "text": "Castle Sit-In"
+    },
+    {
+      "index": 141,
+      "text": "Wine Delivery"
+    },
+    {
+      "index": 142,
+      "text": "Broken Tunes"
+    },
+    {
+      "index": 143,
+      "text": "Falcon Flown"
+    },
+    {
+      "index": 144,
+      "text": "Danger Pass"
+    },
+    {
+      "index": 145,
+      "text": "Mist Stars"
+    },
+    {
+      "index": 146,
+      "text": "Adaman Alloy"
+    },
+    {
+      "index": 147,
+      "text": "Mysidia Alloy"
+    },
+    {
+      "index": 148,
+      "text": "Crusite Alloy"
+    },
+    {
+      "index": 149,
+      "text": "Faceless Dolls"
+    },
+    {
+      "index": 150,
+      "text": "Faithful Fairy"
+    },
+    {
+      "index": 151,
+      "text": "For The Lady"
+    },
+    {
+      "index": 152,
+      "text": "Seven Nights"
+    },
+    {
+      "index": 153,
+      "text": "Shady Deals"
+    },
+    {
+      "index": 154,
+      "text": "Earthy Colors"
+    },
+    {
+      "index": 155,
+      "text": "Lost Heirloom"
+    },
+    {
+      "index": 156,
+      "text": "Young Love"
+    },
+    {
+      "index": 157,
+      "text": "Ghosts Of War"
+    },
+    {
+      "index": 158,
+      "text": "The Last Day"
+    },
+    {
+      "index": 159,
+      "text": "The Bell Tolls"
+    },
+    {
+      "index": 160,
+      "text": "Goblin Town"
+    },
+    {
+      "index": 161,
+      "text": "Secret Books"
+    },
+    {
+      "index": 162,
+      "text": "Words Of Love"
+    },
+    {
+      "index": 163,
+      "text": "You! Immortal"
+    },
+    {
+      "index": 164,
+      "text": "Clocktower"
+    },
+    {
+      "index": 165,
+      "text": "An Education"
+    },
+    {
+      "index": 166,
+      "text": "Morning Woes"
+    },
+    {
+      "index": 167,
+      "text": "Down To Earth"
+    },
+    {
+      "index": 168,
+      "text": "To Meden"
+    },
+    {
+      "index": 169,
+      "text": "Neighbor!"
+    },
+    {
+      "index": 170,
+      "text": "Honor Lost"
+    },
+    {
+      "index": 171,
+      "text": "Inspiration"
+    },
+    {
+      "index": 172,
+      "text": "Coo's Break"
+    },
+    {
+      "index": 173,
+      "text": "The Match"
+    },
+    {
+      "index": 174,
+      "text": "The Deep Sea"
+    },
+    {
+      "index": 175,
+      "text": "A Worthy Eye"
+    },
+    {
+      "index": 176,
+      "text": "Lost In Mist"
+    },
+    {
+      "index": 177,
+      "text": "Darn Kids"
+    },
+    {
+      "index": 178,
+      "text": "Stage Fright"
+    },
+    {
+      "index": 179,
+      "text": "Diary Dilemma"
+    },
+    {
+      "index": 180,
+      "text": "Hundred-Eye"
+    },
+    {
+      "index": 181,
+      "text": "Runaway Boy"
+    },
+    {
+      "index": 182,
+      "text": "Mad Alchemist"
+    },
+    {
+      "index": 183,
+      "text": "Caravan Guard"
+    },
+    {
+      "index": 184,
+      "text": "Lifework"
+    },
+    {
+      "index": 185,
+      "text": "Cheap Laughs"
+    },
+    {
+      "index": 186,
+      "text": "T.L.C."
+    },
+    {
+      "index": 187,
+      "text": "Frozen Spring"
+    },
+    {
+      "index": 188,
+      "text": "No Scents"
+    },
+    {
+      "index": 189,
+      "text": "On The Waves"
+    },
+    {
+      "index": 190,
+      "text": "Spirited Boy"
+    },
+    {
+      "index": 191,
+      "text": "Powder Worries"
+    },
+    {
+      "index": 192,
+      "text": "The Blue Bolt"
+    },
+    {
+      "index": 193,
+      "text": "Sweet Talk"
+    },
+    {
+      "index": 194,
+      "text": "Scarface"
+    },
+    {
+      "index": 195,
+      "text": "Mirage Town"
+    },
+    {
+      "index": 196,
+      "text": "Soldier's Wish"
+    },
+    {
+      "index": 197,
+      "text": "Dry Spell"
+    },
+    {
+      "index": 198,
+      "text": "Swap Meet"
+    },
+    {
+      "index": 199,
+      "text": "Adaman Order"
+    },
+    {
+      "index": 200,
+      "text": "Magic Mysidia"
+    },
+    {
+      "index": 201,
+      "text": "Conundrum"
+    },
+    {
+      "index": 202,
+      "text": "Lucky Night"
+    },
+    {
+      "index": 203,
+      "text": "Tutor Search"
+    },
+    {
+      "index": 204,
+      "text": "Why Am I Wet?"
+    },
+    {
+      "index": 205,
+      "text": "Run With Us"
+    },
+    {
+      "index": 206,
+      "text": "Lucky Charm"
+    },
+    {
+      "index": 207,
+      "text": "Alchemist Boy"
+    },
+    {
+      "index": 208,
+      "text": "Thorny Dreams"
+    },
+    {
+      "index": 209,
+      "text": "Free Cyril?"
+    },
+    {
+      "index": 210,
+      "text": "Ship Needed"
+    },
+    {
+      "index": 211,
+      "text": "Mind Ceffyl"
+    },
+    {
+      "index": 212,
+      "text": "Body Ceffyl"
+    },
+    {
+      "index": 213,
+      "text": "The Spiritstone"
+    },
+    {
+      "index": 214,
+      "text": "Girl In Love"
+    },
+    {
+      "index": 215,
+      "text": "Chocobo Help?"
+    },
+    {
+      "index": 216,
+      "text": "The Skypole"
+    },
+    {
+      "index": 217,
+      "text": "Ruins Survey"
+    },
+    {
+      "index": 218,
+      "text": "Dig Dig Dig"
+    },
+    {
+      "index": 219,
+      "text": "Seeking Silver"
+    },
+    {
+      "index": 220,
+      "text": "Materite"
+    },
+    {
+      "index": 221,
+      "text": "The Wormhole"
+    },
+    {
+      "index": 222,
+      "text": "Metal Hunt"
+    },
+    {
+      "index": 223,
+      "text": "Math Is Hard"
+    },
+    {
+      "index": 224,
+      "text": "The Witness"
+    },
+    {
+      "index": 225,
+      "text": "Life Or Death"
+    },
+    {
+      "index": 226,
+      "text": "Karlos's Day"
+    },
+    {
+      "index": 227,
+      "text": "To Father"
+    },
+    {
+      "index": 228,
+      "text": "Oh Milese"
+    },
+    {
+      "index": 229,
+      "text": "Skinning Time"
+    },
+    {
+      "index": 230,
+      "text": "Wild River"
+    },
+    {
+      "index": 231,
+      "text": "Magic Cloth"
+    },
+    {
+      "index": 232,
+      "text": "Cotton Guard"
+    },
+    {
+      "index": 233,
+      "text": "Help Dad"
+    },
+    {
+      "index": 234,
+      "text": "Rubber or Real"
+    },
+    {
+      "index": 235,
+      "text": "Into The Wood"
+    },
+    {
+      "index": 236,
+      "text": "Jerky Days"
+    },
+    {
+      "index": 237,
+      "text": "New Fields"
+    },
+    {
+      "index": 238,
+      "text": "Strange Fires"
+    },
+    {
+      "index": 239,
+      "text": "Better Living"
+    },
+    {
+      "index": 240,
+      "text": "Malboro Hunt"
+    },
+    {
+      "index": 241,
+      "text": "Chocobo Work"
+    },
+    {
+      "index": 242,
+      "text": "Party Night"
+    },
+    {
+      "index": 243,
+      "text": "Mama's Taste"
+    },
+    {
+      "index": 244,
+      "text": "The Well Maze"
+    },
+    {
+      "index": 245,
+      "text": "She's Gone"
+    },
+    {
+      "index": 246,
+      "text": "Magic Vellum"
+    },
+    {
+      "index": 247,
+      "text": "Novel Ascent"
+    },
+    {
+      "index": 248,
+      "text": "Shiver"
+    },
+    {
+      "index": 249,
+      "text": "Bread Woes"
+    },
+    {
+      "index": 250,
+      "text": "Book Mess"
+    },
+    {
+      "index": 251,
+      "text": "One More Tail"
+    },
+    {
+      "index": 252,
+      "text": "Relax Time?"
+    },
+    {
+      "index": 253,
+      "text": "Foma Jungle"
+    },
+    {
+      "index": 254,
+      "text": "For A Flower"
+    },
+    {
+      "index": 255,
+      "text": "Giza Plains"
+    },
+    {
+      "index": 256,
+      "text": "Lutia Pass"
+    },
+    {
+      "index": 257,
+      "text": "The Nubswood"
+    },
+    {
+      "index": 258,
+      "text": "Eluut Sands"
+    },
+    {
+      "index": 259,
+      "text": "Ulei River"
+    },
+    {
+      "index": 260,
+      "text": "Aisenfield"
+    },
+    {
+      "index": 261,
+      "text": "Roda Volcano"
+    },
+    {
+      "index": 262,
+      "text": "Travel Aid"
+    },
+    {
+      "index": 263,
+      "text": "The Salikawood"
+    },
+    {
+      "index": 264,
+      "text": "Nargai Cave"
+    },
+    {
+      "index": 265,
+      "text": "Kudik Peaks"
+    },
+    {
+      "index": 266,
+      "text": "Jeraw Sands"
+    },
+    {
+      "index": 267,
+      "text": "Uladon Bog"
+    },
+    {
+      "index": 268,
+      "text": "Gotor Sands"
+    },
+    {
+      "index": 269,
+      "text": "Delia Dunes"
+    },
+    {
+      "index": 270,
+      "text": "Bugbusters"
+    },
+    {
+      "index": 271,
+      "text": "Tubola Cave"
+    },
+    {
+      "index": 272,
+      "text": "Deti Plains"
+    },
+    {
+      "index": 273,
+      "text": "Siena Gorge"
+    },
+    {
+      "index": 274,
+      "text": "Jagd Ahli"
+    },
+    {
+      "index": 275,
+      "text": "Jagd Helje"
+    },
+    {
+      "index": 276,
+      "text": "Jagd Dorsa"
+    },
+    {
+      "index": 277,
+      "text": "Ambervale"
+    },
+    {
+      "index": 278,
+      "text": "Ozmonfield"
+    },
+    {
+      "index": 279,
+      "text": "Swords In Cyril"
+    },
+    {
+      "index": 280,
+      "text": "Newbie Hall"
+    },
+    {
+      "index": 281,
+      "text": "Voodoo Doll"
+    },
+    {
+      "index": 282,
+      "text": "Come On Out"
+    },
+    {
+      "index": 283,
+      "text": "Food For Truth"
+    },
+    {
+      "index": 284,
+      "text": "Alba Cave"
+    },
+    {
+      "index": 285,
+      "text": "The Performer"
+    },
+    {
+      "index": 286,
+      "text": "One More Time"
+    },
+    {
+      "index": 287,
+      "text": "Spring Tree"
+    },
+    {
+      "index": 288,
+      "text": "Who Am I?"
+    },
+    {
+      "index": 289,
+      "text": "Reaper Rumors"
+    },
+    {
+      "index": 290,
+      "text": "Dog Days"
+    },
+    {
+      "index": 291,
+      "text": "Good Bread"
+    },
+    {
+      "index": 292,
+      "text": "Sword Needed"
+    },
+    {
+      "index": 293,
+      "text": "El Ritmo"
+    },
+    {
+      "index": 294,
+      "text": "Her Big Move"
+    },
+    {
+      "index": 295,
+      "text": "Don't Look?"
+    },
+    {
+      "index": 296,
+      "text": "Janitor Duty"
+    },
+    {
+      "index": 297,
+      "text": "Unlucky Star"
+    },
+    {
+      "index": 298,
+      "text": "Corral Care"
+    },
+    {
+      "index": 299,
+      "text": "Beastly Gun"
+    },
+    {
+      "index": 300,
+      "text": "Blade & Turtle"
+    },
+    {
+      "index": 301,
+      "text": "Valuable Fake"
+    },
+    {
+      "index": 302,
+      "text": "Weaver's War"
+    },
+    {
+      "index": 303,
+      "text": "Fabled Sword"
+    },
+    {
+      "index": 304,
+      "text": "Refurbishing"
+    },
+    {
+      "index": 305,
+      "text": "Stone Secret"
+    },
+    {
+      "index": 306,
+      "text": "Sword Stuff"
+    },
+    {
+      "index": 307,
+      "text": "A Stormy Night"
+    },
+    {
+      "index": 308,
+      "text": "Minstrel Song"
+    },
+    {
+      "index": 309,
+      "text": "Gun Crazy"
+    },
+    {
+      "index": 310,
+      "text": "Black Hat"
+    },
+    {
+      "index": 311,
+      "text": "Hat For A Girl"
+    },
+    {
+      "index": 312,
+      "text": "Armor & Turtle"
+    },
+    {
+      "index": 313,
+      "text": "Dark Armor"
+    },
+    {
+      "index": 314,
+      "text": "Fashion World"
+    },
+    {
+      "index": 315,
+      "text": "Fashion Hoopla"
+    },
+    {
+      "index": 316,
+      "text": "First Mission"
+    },
+    {
+      "index": 317,
+      "text": "Marche's "
+    },
+    {
+      "index": 318,
+      "text": "I'm Ezel?"
+    },
+    {
+      "index": 319,
+      "text": "MonBro"
+    },
+    {
+      "index": 320,
+      "text": "Bounty"
+    },
+    {
+      "index": 321,
+      "text": "Llednar"
+    },
+    {
+      "index": 322,
+      "text": "Into "
+    },
+    {
+      "index": 323,
+      "text": "Where's "
+    },
+    {
+      "index": 324,
+      "text": "Meeting Doned"
+    },
+    {
+      "index": 325,
+      "text": "Cid's Message"
+    },
+    {
+      "index": 326,
+      "text": "Shining Lake"
+    },
+    {
+      "index": 327,
+      "text": "Shining Lake"
+    },
+    {
+      "index": 328,
+      "text": "Sauce Recipe"
+    },
+    {
+      "index": 329,
+      "text": "Sauce Recipe"
+    },
+    {
+      "index": 330,
+      "text": "Hero Of Yore"
+    },
+    {
+      "index": 331,
+      "text": "Hero Of Yore"
+    },
+    {
+      "index": 332,
+      "text": "My Mission"
+    },
+    {
+      "index": 333,
+      "text": "My Mission"
+    },
+    {
+      "index": 334,
+      "text": "My Mission"
+    },
+    {
+      "index": 335,
+      "text": "Jade Dream"
+    },
+    {
+      "index": 336,
+      "text": "Help Nubs?"
+    },
+    {
+      "index": 337,
+      "text": "Help Giza?"
+    },
+    {
+      "index": 338,
+      "text": "Help Kudik?"
+    },
+    {
+      "index": 339,
+      "text": "Help Uladon?"
+    },
+    {
+      "index": 340,
+      "text": "Help Jeraw?"
+    },
+    {
+      "index": 341,
+      "text": "Help Lutia?"
+    },
+    {
+      "index": 342,
+      "text": "Help Koring?"
+    },
+    {
+      "index": 343,
+      "text": "Help Ulei?"
+    },
+    {
+      "index": 344,
+      "text": "Help Aisen?"
+    },
+    {
+      "index": 345,
+      "text": "Help Roda?"
+    },
+    {
+      "index": 346,
+      "text": "Help Eluut?"
+    },
+    {
+      "index": 347,
+      "text": "Help Nargai?"
+    },
+    {
+      "index": 348,
+      "text": "Help Salika?"
+    },
+    {
+      "index": 349,
+      "text": "Help Delia?"
+    },
+    {
+      "index": 350,
+      "text": "Help Gotor?"
+    },
+    {
+      "index": 351,
+      "text": "Help Ozmon?"
+    },
+    {
+      "index": 352,
+      "text": "Help Deti?"
+    },
+    {
+      "index": 353,
+      "text": "Help Siena?"
+    },
+    {
+      "index": 354,
+      "text": "Help M'wood"
+    },
+    {
+      "index": 355,
+      "text": "Help Tubola?"
+    },
+    {
+      "index": 356,
+      "text": "Help Dorsa?"
+    },
+    {
+      "index": 357,
+      "text": "Help Helje?"
+    },
+    {
+      "index": 358,
+      "text": "Help Ahli?"
+    },
+    {
+      "index": 359,
+      "text": "Encounter"
+    },
+    {
+      "index": 360,
+      "text": "Human Help?"
+    },
+    {
+      "index": 361,
+      "text": "Bangaa Help?"
+    },
+    {
+      "index": 362,
+      "text": "Nu Mou Help?"
+    },
+    {
+      "index": 363,
+      "text": "Viera Help?"
+    },
+    {
+      "index": 364,
+      "text": "Moogle Help?"
+    },
+    {
+      "index": 365,
+      "text": "Pam Le Fey"
+    },
+    {
+      "index": 366,
+      "text": "Dark Wanderer"
+    },
+    {
+      "index": 367,
+      "text": "Demon Redux"
+    },
+    {
+      "index": 368,
+      "text": "Newbie Hunt"
+    },
+    {
+      "index": 369,
+      "text": "Real Hunt"
+    },
+    {
+      "index": 370,
+      "text": "Expert Hunt"
+    },
+    {
+      "index": 371,
+      "text": "Ezel's Letter"
+    },
+    {
+      "index": 372,
+      "text": "Ritz's Letter"
+    },
+    {
+      "index": 373,
+      "text": "Cid's Letter"
+    },
+    {
+      "index": 374,
+      "text": "dummy"
+    },
+    {
+      "index": 375,
+      "text": "dummy"
+    },
+    {
+      "index": 376,
+      "text": "dummy"
+    },
+    {
+      "index": 377,
+      "text": "Reconcilliation"
+    },
+    {
+      "index": 378,
+      "text": "Left Behind"
+    },
+    {
+      "index": 379,
+      "text": "With Babus"
+    },
+    {
+      "index": 380,
+      "text": "Mortal Snow"
+    },
+    {
+      "index": 381,
+      "text": "A Maiden's Cry"
+    },
+    {
+      "index": 382,
+      "text": "Cleanup Time"
+    },
+    {
+      "index": 383,
+      "text": "Memories"
+    },
+    {
+      "index": 384,
+      "text": "Bored!"
+    },
+    {
+      "index": 385,
+      "text": "Doned Here?"
+    },
+    {
+      "index": 386,
+      "text": "Ritz's Offer"
+    },
+    {
+      "index": 387,
+      "text": "Cid's Mission"
+    },
+    {
+      "index": 388,
+      "text": "No Arms Rule"
+    },
+    {
+      "index": 389,
+      "text": "Kissing Rule"
+    },
+    {
+      "index": 390,
+      "text": "Immunity Pass"
+    },
+    {
+      "index": 391,
+      "text": "No Full HP"
+    },
+    {
+      "index": 392,
+      "text": "No Literacy"
+    },
+    {
+      "index": 393,
+      "text": "Favoritism"
+    },
+    {
+      "index": 394,
+      "text": "No Answers"
+    },
+    {
+      "index": 395,
+      "text": "No Jumping"
+    },
+    {
+      "index": 396,
+      "text": "Decision Time"
+    },
+    {
+      "index": 397,
+      "text": "dummy"
+    },
+    {
+      "index": 398,
+      "text": "dummy"
+    },
+    {
+      "index": 399,
+      "text": "dummy"
+    },
+    {
+      "index": 400,
+      "text": "dummy"
+    },
+    {
+      "index": 401,
+      "text": "dummy"
+    },
+    {
+      "index": 402,
+      "text": "dummy"
+    },
+    {
+      "index": 403,
+      "text": "dummy"
+    },
+    {
+      "index": 404,
+      "text": "dummy"
+    },
+    {
+      "index": 405,
+      "text": "dummy"
+    },
+    {
+      "index": 406,
+      "text": "dummy"
+    },
+    {
+      "index": 407,
+      "text": "dummy"
+    },
+    {
+      "index": 408,
+      "text": "dummy"
+    },
+    {
+      "index": 409,
+      "text": "dummy"
+    },
+    {
+      "index": 410,
+      "text": "dummy"
+    },
+    {
+      "index": 411,
+      "text": "dummy"
+    },
+    {
+      "index": 412,
+      "text": "dummy"
+    },
+    {
+      "index": 413,
+      "text": "dummy"
+    },
+    {
+      "index": 414,
+      "text": "dummy"
+    },
+    {
+      "index": 415,
+      "text": "dummy"
+    },
+    {
+      "index": 416,
+      "text": "dummy"
+    },
+    {
+      "index": 417,
+      "text": "dummy"
+    },
+    {
+      "index": 418,
+      "text": "dummy"
+    },
+    {
+      "index": 419,
+      "text": "dummy"
+    },
+    {
+      "index": 420,
+      "text": "dummy"
+    },
+    {
+      "index": 421,
+      "text": "dummy"
+    },
+    {
+      "index": 422,
+      "text": "dummy"
+    },
+    {
+      "index": 423,
+      "text": "dummy"
+    },
+    {
+      "index": 424,
+      "text": "dummy"
+    },
+    {
+      "index": 425,
+      "text": "dummy"
+    },
+    {
+      "index": 426,
+      "text": "dummy"
+    },
+    {
+      "index": 427,
+      "text": "dummy"
+    },
+    {
+      "index": 428,
+      "text": "dummy"
+    },
+    {
+      "index": 429,
+      "text": "dummy"
+    },
+    {
+      "index": 430,
+      "text": "dummy"
+    },
+    {
+      "index": 431,
+      "text": "dummy"
+    },
+    {
+      "index": 432,
+      "text": "dummy"
+    },
+    {
+      "index": 433,
+      "text": "dummy"
+    },
+    {
+      "index": 434,
+      "text": "dummy"
+    },
+    {
+      "index": 435,
+      "text": "dummy"
+    },
+    {
+      "index": 436,
+      "text": "dummy"
+    },
+    {
+      "index": 437,
+      "text": "dummy"
+    },
+    {
+      "index": 438,
+      "text": "dummy"
+    },
+    {
+      "index": 439,
+      "text": "dummy"
+    },
+    {
+      "index": 440,
+      "text": "dummy"
+    },
+    {
+      "index": 441,
+      "text": "dummy"
+    },
+    {
+      "index": 442,
+      "text": "dummy"
+    },
+    {
+      "index": 443,
+      "text": "dummy"
+    },
+    {
+      "index": 444,
+      "text": "dummy"
+    },
+    {
+      "index": 445,
+      "text": "dummy"
+    },
+    {
+      "index": 446,
+      "text": "dummy"
+    },
+    {
+      "index": 447,
+      "text": "dummy"
+    },
+    {
+      "index": 448,
+      "text": "dummy"
+    },
+    {
+      "index": 449,
+      "text": "dummy"
+    },
+    {
+      "index": 450,
+      "text": "dummy"
+    },
+    {
+      "index": 451,
+      "text": "dummy"
+    },
+    {
+      "index": 452,
+      "text": "dummy"
+    },
+    {
+      "index": 453,
+      "text": "dummy"
+    },
+    {
+      "index": 454,
+      "text": "dummy"
+    },
+    {
+      "index": 455,
+      "text": "dummy"
+    },
+    {
+      "index": 456,
+      "text": "dummy"
+    },
+    {
+      "index": 457,
+      "text": "dummy"
+    },
+    {
+      "index": 458,
+      "text": "dummy"
+    },
+    {
+      "index": 459,
+      "text": "dummy"
+    },
+    {
+      "index": 460,
+      "text": "dummy"
+    },
+    {
+      "index": 461,
+      "text": "dummy"
+    },
+    {
+      "index": 462,
+      "text": "dummy"
+    },
+    {
+      "index": 463,
+      "text": "dummy"
+    },
+    {
+      "index": 464,
+      "text": "dummy"
+    },
+    {
+      "index": 465,
+      "text": "dummy"
+    },
+    {
+      "index": 466,
+      "text": "dummy"
+    },
+    {
+      "index": 467,
+      "text": "dummy"
+    },
+    {
+      "index": 468,
+      "text": "dummy"
+    },
+    {
+      "index": 469,
+      "text": "dummy"
+    },
+    {
+      "index": 470,
+      "text": "dummy"
+    },
+    {
+      "index": 471,
+      "text": "dummy"
+    },
+    {
+      "index": 472,
+      "text": "dummy"
+    },
+    {
+      "index": 473,
+      "text": "dummy"
+    },
+    {
+      "index": 474,
+      "text": "dummy"
+    },
+    {
+      "index": 475,
+      "text": "dummy"
+    },
+    {
+      "index": 476,
+      "text": "dummy"
+    },
+    {
+      "index": 477,
+      "text": "dummy"
+    },
+    {
+      "index": 478,
+      "text": "dummy"
+    },
+    {
+      "index": 479,
+      "text": "dummy"
+    },
+    {
+      "index": 480,
+      "text": "dummy"
+    },
+    {
+      "index": 481,
+      "text": "dummy"
+    },
+    {
+      "index": 482,
+      "text": "dummy"
+    },
+    {
+      "index": 483,
+      "text": "dummy"
+    },
+    {
+      "index": 484,
+      "text": "dummy"
+    },
+    {
+      "index": 485,
+      "text": "dummy"
+    },
+    {
+      "index": 486,
+      "text": "dummy"
+    },
+    {
+      "index": 487,
+      "text": "dummy"
+    },
+    {
+      "index": 488,
+      "text": "dummy"
+    },
+    {
+      "index": 489,
+      "text": "dummy"
+    },
+    {
+      "index": 490,
+      "text": "dummy"
+    },
+    {
+      "index": 491,
+      "text": "dummy"
+    },
+    {
+      "index": 492,
+      "text": "dummy"
+    },
+    {
+      "index": 493,
+      "text": "dummy"
+    },
+    {
+      "index": 494,
+      "text": "dummy"
+    },
+    {
+      "index": 495,
+      "text": "dummy"
+    },
+    {
+      "index": 496,
+      "text": "dummy"
+    },
+    {
+      "index": 497,
+      "text": "dummy"
+    },
+    {
+      "index": 498,
+      "text": "dummy"
+    },
+    {
+      "index": 499,
+      "text": "dummy"
+    },
+    {
+      "index": 500,
+      "text": "dummy"
+    },
+    {
+      "index": 501,
+      "text": "dummy"
+    },
+    {
+      "index": 502,
+      "text": "dummy"
+    },
+    {
+      "index": 503,
+      "text": "dummy"
+    },
+    {
+      "index": 504,
+      "text": "dummy"
+    },
+    {
+      "index": 505,
+      "text": "dummy"
+    },
+    {
+      "index": 506,
+      "text": "dummy"
+    },
+    {
+      "index": 507,
+      "text": "dummy"
+    },
+    {
+      "index": 508,
+      "text": "dummy"
+    },
+    {
+      "index": 509,
+      "text": "dummy"
+    },
+    {
+      "index": 510,
+      "text": "dummy"
+    },
+    {
+      "index": 511,
+      "text": "dummy"
+    }
+  ]
+}

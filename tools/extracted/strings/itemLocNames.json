@@ -1,0 +1,3020 @@
+{
+  "table": "itemLocNames",
+  "note": "nomes de itens, jobs, monstros, areas e meses",
+  "pointerTableOffset": "0x526680",
+  "entryCount": 753,
+  "entries": [
+    {
+      "index": 0,
+      "text": "-"
+    },
+    {
+      "index": 1,
+      "text": "Ahriman"
+    },
+    {
+      "index": 2,
+      "text": "Ice Flan"
+    },
+    {
+      "index": 3,
+      "text": "Blue Mage"
+    },
+    {
+      "index": 4,
+      "text": "Red Mage"
+    },
+    {
+      "index": 5,
+      "text": "Assassin"
+    },
+    {
+      "index": 6,
+      "text": "Alchemist"
+    },
+    {
+      "index": 7,
+      "text": "Antlion"
+    },
+    {
+      "index": 8,
+      "text": "Cream"
+    },
+    {
+      "index": 9,
+      "text": "Vampire"
+    },
+    {
+      "index": 10,
+      "text": "Blade Biter"
+    },
+    {
+      "index": 11,
+      "text": "Defender"
+    },
+    {
+      "index": 12,
+      "text": "Gadgeteer"
+    },
+    {
+      "index": 13,
+      "text": "Coeurl"
+    },
+    {
+      "index": 14,
+      "text": "Gladiator"
+    },
+    {
+      "index": 15,
+      "text": "Grenade"
+    },
+    {
+      "index": 16,
+      "text": "Black Mage"
+    },
+    {
+      "index": 17,
+      "text": "Illusionist"
+    },
+    {
+      "index": 18,
+      "text": "Goblin"
+    },
+    {
+      "index": 19,
+      "text": "Thundrake"
+    },
+    {
+      "index": 20,
+      "text": "Thief"
+    },
+    {
+      "index": 21,
+      "text": "Elementalist"
+    },
+    {
+      "index": 22,
+      "text": "Juggler"
+    },
+    {
+      "index": 23,
+      "text": "Gunner"
+    },
+    {
+      "index": 24,
+      "text": "Summoner"
+    },
+    {
+      "index": 25,
+      "text": "White Mage"
+    },
+    {
+      "index": 26,
+      "text": "Sniper"
+    },
+    {
+      "index": 27,
+      "text": "Sprite"
+    },
+    {
+      "index": 28,
+      "text": "Sage"
+    },
+    {
+      "index": 29,
+      "text": "Soldier"
+    },
+    {
+      "index": 30,
+      "text": "Zombie"
+    },
+    {
+      "index": 31,
+      "text": "Titania"
+    },
+    {
+      "index": 32,
+      "text": "Fighter"
+    },
+    {
+      "index": 33,
+      "text": "Animist"
+    },
+    {
+      "index": 34,
+      "text": "Time Mage"
+    },
+    {
+      "index": 35,
+      "text": "Morpher"
+    },
+    {
+      "index": 36,
+      "text": "Tonberry"
+    },
+    {
+      "index": 37,
+      "text": "Masterberry"
+    },
+    {
+      "index": 38,
+      "text": "Ninja"
+    },
+    {
+      "index": 39,
+      "text": "Paladin"
+    },
+    {
+      "index": 40,
+      "text": "Templar"
+    },
+    {
+      "index": 41,
+      "text": "Hunter"
+    },
+    {
+      "index": 42,
+      "text": "Bishop"
+    },
+    {
+      "index": 43,
+      "text": "Warrior"
+    },
+    {
+      "index": 44,
+      "text": "Jawbreaker"
+    },
+    {
+      "index": 45,
+      "text": "Fencer"
+    },
+    {
+      "index": 46,
+      "text": "Icedrake"
+    },
+    {
+      "index": 47,
+      "text": "Toughskin"
+    },
+    {
+      "index": 48,
+      "text": "Floateye"
+    },
+    {
+      "index": 49,
+      "text": "Bomb"
+    },
+    {
+      "index": 50,
+      "text": "White Monk"
+    },
+    {
+      "index": 51,
+      "text": "Beastmaster"
+    },
+    {
+      "index": 52,
+      "text": "Mog Knight"
+    },
+    {
+      "index": 53,
+      "text": "Malboro"
+    },
+    {
+      "index": 54,
+      "text": "Big Malboro"
+    },
+    {
+      "index": 55,
+      "text": "Archer"
+    },
+    {
+      "index": 56,
+      "text": "Lamia"
+    },
+    {
+      "index": 57,
+      "text": "Dragoon"
+    },
+    {
+      "index": 58,
+      "text": "Lilith"
+    },
+    {
+      "index": 59,
+      "text": "Red Cap"
+    },
+    {
+      "index": 60,
+      "text": "Firewyrm"
+    },
+    {
+      "index": 61,
+      "text": "Red Panther"
+    },
+    {
+      "index": 62,
+      "text": "Jelly"
+    },
+    {
+      "index": 63,
+      "text": "Runeseeker"
+    },
+    {
+      "index": 64,
+      "text": "Hermetic"
+    },
+    {
+      "index": 65,
+      "text": "Biskmatar"
+    },
+    {
+      "index": 66,
+      "text": "Li-grim"
+    },
+    {
+      "index": 67,
+      "text": "Totema"
+    },
+    {
+      "index": 68,
+      "text": "Judgemaster"
+    },
+    {
+      "index": 69,
+      "text": "Judge"
+    },
+    {
+      "index": 70,
+      "text": "New Kid"
+    },
+    {
+      "index": 71,
+      "text": "Librarian"
+    },
+    {
+      "index": 72,
+      "text": "Class Head"
+    },
+    {
+      "index": 73,
+      "text": "PE Head"
+    },
+    {
+      "index": 74,
+      "text": "D.J."
+    },
+    {
+      "index": 75,
+      "text": "Nurse"
+    },
+    {
+      "index": 76,
+      "text": "Custodian"
+    },
+    {
+      "index": 77,
+      "text": "Mr. Leslaie"
+    },
+    {
+      "index": 78,
+      "text": "Battle Queen"
+    },
+    {
+      "index": 79,
+      "text": "Avatar"
+    },
+    {
+      "index": 80,
+      "text": "Dephs"
+    },
+    {
+      "index": 81,
+      "text": "dummy"
+    },
+    {
+      "index": 82,
+      "text": "dummy"
+    },
+    {
+      "index": 83,
+      "text": "Burglar"
+    },
+    {
+      "index": 84,
+      "text": "Box"
+    },
+    {
+      "index": 85,
+      "text": "Statue"
+    },
+    {
+      "index": 86,
+      "text": "Sphere"
+    },
+    {
+      "index": 87,
+      "text": "Borzoi Capo"
+    },
+    {
+      "index": 88,
+      "text": "Borzoi Boss"
+    },
+    {
+      "index": 89,
+      "text": "Falgabird"
+    },
+    {
+      "index": 90,
+      "text": "Naga"
+    },
+    {
+      "index": 91,
+      "text": "Dark Knight"
+    },
+    {
+      "index": 92,
+      "text": "Ark Knight"
+    },
+    {
+      "index": 93,
+      "text": "Rukavi"
+    },
+    {
+      "index": 94,
+      "text": "World Wyrm"
+    },
+    {
+      "index": 95,
+      "text": "Ba Boss"
+    },
+    {
+      "index": 96,
+      "text": "Swordman"
+    },
+    {
+      "index": 97,
+      "text": "Inverlilith"
+    },
+    {
+      "index": 98,
+      "text": "Top Malboro"
+    },
+    {
+      "index": 99,
+      "text": "Blacksmith"
+    },
+    {
+      "index": 100,
+      "text": "Bladesmith"
+    },
+    {
+      "index": 101,
+      "text": "Top Coeurl"
+    },
+    {
+      "index": 102,
+      "text": "Lost One"
+    },
+    {
+      "index": 103,
+      "text": "Ruin Ward"
+    },
+    {
+      "index": 104,
+      "text": "Dread Raven"
+    },
+    {
+      "index": 105,
+      "text": "Mombomb"
+    },
+    {
+      "index": 106,
+      "text": "Redwings"
+    },
+    {
+      "index": 107,
+      "text": "Rune Knight"
+    },
+    {
+      "index": 108,
+      "text": "Queen Lamia"
+    },
+    {
+      "index": 109,
+      "text": "Adamantoise"
+    },
+    {
+      "index": 110,
+      "text": "Ochu"
+    },
+    {
+      "index": 111,
+      "text": "Neochu"
+    },
+    {
+      "index": 112,
+      "text": "Dread Lord"
+    },
+    {
+      "index": 113,
+      "text": "Kin"
+    },
+    {
+      "index": 114,
+      "text": "Hel Boss"
+    },
+    {
+      "index": 115,
+      "text": "Gelm Boss"
+    },
+    {
+      "index": 116,
+      "text": "Kagle Boss"
+    },
+    {
+      "index": 117,
+      "text": "Fes Boss"
+    },
+    {
+      "index": 118,
+      "text": "Swordmaster"
+    },
+    {
+      "index": 119,
+      "text": "Mamaflan"
+    },
+    {
+      "index": 120,
+      "text": "Devilboro"
+    },
+    {
+      "index": 121,
+      "text": "Clan Borzoi"
+    },
+    {
+      "index": 122,
+      "text": "Official"
+    },
+    {
+      "index": 123,
+      "text": "dummy"
+    },
+    {
+      "index": 124,
+      "text": "Shortsword"
+    },
+    {
+      "index": 125,
+      "text": "Silver Sword"
+    },
+    {
+      "index": 126,
+      "text": "Buster Sword"
+    },
+    {
+      "index": 127,
+      "text": "Burglar Sword"
+    },
+    {
+      "index": 128,
+      "text": "Gale Sword"
+    },
+    {
+      "index": 129,
+      "text": "Blood Sword"
+    },
+    {
+      "index": 130,
+      "text": "Restorer"
+    },
+    {
+      "index": 131,
+      "text": "Vitanova"
+    },
+    {
+      "index": 132,
+      "text": "Mythril Sword"
+    },
+    {
+      "index": 133,
+      "text": "Victor Sword"
+    },
+    {
+      "index": 134,
+      "text": "Onion Sword"
+    },
+    {
+      "index": 135,
+      "text": "Chirijiraden"
+    },
+    {
+      "index": 136,
+      "text": "Laglace Sword"
+    },
+    {
+      "index": 137,
+      "text": "Sweep Blade"
+    },
+    {
+      "index": 138,
+      "text": "Shadow Blade"
+    },
+    {
+      "index": 139,
+      "text": "Sun Blade"
+    },
+    {
+      "index": 140,
+      "text": "Atmos Blade"
+    },
+    {
+      "index": 141,
+      "text": "Flametongue"
+    },
+    {
+      "index": 142,
+      "text": "Air Blade"
+    },
+    {
+      "index": 143,
+      "text": "Icebrand"
+    },
+    {
+      "index": 144,
+      "text": "Kwigon Blade"
+    },
+    {
+      "index": 145,
+      "text": "Ogun Blade"
+    },
+    {
+      "index": 146,
+      "text": "Pearl Blade"
+    },
+    {
+      "index": 147,
+      "text": "Paraiba Blade"
+    },
+    {
+      "index": 148,
+      "text": "Venus Blade"
+    },
+    {
+      "index": 149,
+      "text": "Materia Blade"
+    },
+    {
+      "index": 150,
+      "text": "Mythril Blade"
+    },
+    {
+      "index": 151,
+      "text": "Ebon Blade"
+    },
+    {
+      "index": 152,
+      "text": "Adaman Blade"
+    },
+    {
+      "index": 153,
+      "text": "Ayvuir Red"
+    },
+    {
+      "index": 154,
+      "text": "Ayvuir Blue"
+    },
+    {
+      "index": 155,
+      "text": "Blue Saber"
+    },
+    {
+      "index": 156,
+      "text": "Shamshir"
+    },
+    {
+      "index": 157,
+      "text": "Aqua Saber"
+    },
+    {
+      "index": 158,
+      "text": "Harpe"
+    },
+    {
+      "index": 159,
+      "text": "Manganese"
+    },
+    {
+      "index": 160,
+      "text": "Mythril Saber"
+    },
+    {
+      "index": 161,
+      "text": "Tulwar"
+    },
+    {
+      "index": 162,
+      "text": "Soulsaber"
+    },
+    {
+      "index": 163,
+      "text": "Defender"
+    },
+    {
+      "index": 164,
+      "text": "Apocalypse"
+    },
+    {
+      "index": 165,
+      "text": "Lionheart"
+    },
+    {
+      "index": 166,
+      "text": "Ragnarok"
+    },
+    {
+      "index": 167,
+      "text": "Lohengrin"
+    },
+    {
+      "index": 168,
+      "text": "SaveTheQueen"
+    },
+    {
+      "index": 169,
+      "text": "Arch Sword"
+    },
+    {
+      "index": 170,
+      "text": "Excalibur"
+    },
+    {
+      "index": 171,
+      "text": "Mythril Brand"
+    },
+    {
+      "index": 172,
+      "text": "Excalibur2"
+    },
+    {
+      "index": 173,
+      "text": "Nagrarok"
+    },
+    {
+      "index": 174,
+      "text": "Sequence"
+    },
+    {
+      "index": 175,
+      "text": "Barong"
+    },
+    {
+      "index": 176,
+      "text": "Ancient Sword"
+    },
+    {
+      "index": 177,
+      "text": "Diamond Sword"
+    },
+    {
+      "index": 178,
+      "text": "Hardedge"
+    },
+    {
+      "index": 179,
+      "text": "Vigilante"
+    },
+    {
+      "index": 180,
+      "text": "Zankplus"
+    },
+    {
+      "index": 181,
+      "text": "Master Sword"
+    },
+    {
+      "index": 182,
+      "text": "Oblige"
+    },
+    {
+      "index": 183,
+      "text": "Iceprism"
+    },
+    {
+      "index": 184,
+      "text": "Lurebreaker"
+    },
+    {
+      "index": 185,
+      "text": "Samson Sword"
+    },
+    {
+      "index": 186,
+      "text": "Falchion"
+    },
+    {
+      "index": 187,
+      "text": "Predator"
+    },
+    {
+      "index": 188,
+      "text": "Striborg"
+    },
+    {
+      "index": 189,
+      "text": "El Cid Sword"
+    },
+    {
+      "index": 190,
+      "text": "Claymore"
+    },
+    {
+      "index": 191,
+      "text": "Vajra"
+    },
+    {
+      "index": 192,
+      "text": "Tabarise"
+    },
+    {
+      "index": 193,
+      "text": "Rhomphaia"
+    },
+    {
+      "index": 194,
+      "text": "Beastsword"
+    },
+    {
+      "index": 195,
+      "text": "Eclipse"
+    },
+    {
+      "index": 196,
+      "text": "Estreledge"
+    },
+    {
+      "index": 197,
+      "text": "Jack Knife"
+    },
+    {
+      "index": 198,
+      "text": "Kris Knife"
+    },
+    {
+      "index": 199,
+      "text": "Khukuri"
+    },
+    {
+      "index": 200,
+      "text": "Kard"
+    },
+    {
+      "index": 201,
+      "text": "Scramasax"
+    },
+    {
+      "index": 202,
+      "text": "Rondell Dagger"
+    },
+    {
+      "index": 203,
+      "text": "Jambiya"
+    },
+    {
+      "index": 204,
+      "text": "Zorlin Shape"
+    },
+    {
+      "index": 205,
+      "text": "Sword Breaker"
+    },
+    {
+      "index": 206,
+      "text": "Orichalcum"
+    },
+    {
+      "index": 207,
+      "text": "Cinquedea"
+    },
+    {
+      "index": 208,
+      "text": "Mythril Knife"
+    },
+    {
+      "index": 209,
+      "text": "Tonberrian"
+    },
+    {
+      "index": 210,
+      "text": "Tiptaptwo"
+    },
+    {
+      "index": 211,
+      "text": "Stinger"
+    },
+    {
+      "index": 212,
+      "text": "Estoc"
+    },
+    {
+      "index": 213,
+      "text": "Fleuret"
+    },
+    {
+      "index": 214,
+      "text": "Scarlette"
+    },
+    {
+      "index": 215,
+      "text": "Flamberge"
+    },
+    {
+      "index": 216,
+      "text": "Silver Rapier"
+    },
+    {
+      "index": 217,
+      "text": "Djinn Flyssa"
+    },
+    {
+      "index": 218,
+      "text": "Joyeuse"
+    },
+    {
+      "index": 219,
+      "text": "Mage Masher"
+    },
+    {
+      "index": 220,
+      "text": "Colichemarde"
+    },
+    {
+      "index": 221,
+      "text": "Gupti Aga"
+    },
+    {
+      "index": 222,
+      "text": "Madu"
+    },
+    {
+      "index": 223,
+      "text": "Epeprism"
+    },
+    {
+      "index": 224,
+      "text": "Mythril Rapier"
+    },
+    {
+      "index": 225,
+      "text": "Last Letter"
+    },
+    {
+      "index": 226,
+      "text": "Diabolique"
+    },
+    {
+      "index": 227,
+      "text": "Femme Fatale"
+    },
+    {
+      "index": 228,
+      "text": "Aerial Hole"
+    },
+    {
+      "index": 229,
+      "text": "Ninja Knife"
+    },
+    {
+      "index": 230,
+      "text": "Murasame"
+    },
+    {
+      "index": 231,
+      "text": "Ashura"
+    },
+    {
+      "index": 232,
+      "text": "Osafune"
+    },
+    {
+      "index": 233,
+      "text": "Petalchaser"
+    },
+    {
+      "index": 234,
+      "text": "Kotetsu"
+    },
+    {
+      "index": 235,
+      "text": "Kikuichimonji"
+    },
+    {
+      "index": 236,
+      "text": "Heaven's Cloud"
+    },
+    {
+      "index": 237,
+      "text": "Nosada"
+    },
+    {
+      "index": 238,
+      "text": "Masamune"
+    },
+    {
+      "index": 239,
+      "text": "Zanmato"
+    },
+    {
+      "index": 240,
+      "text": "Mythril Epee"
+    },
+    {
+      "index": 241,
+      "text": "Masamune 100"
+    },
+    {
+      "index": 242,
+      "text": "Charfire"
+    },
+    {
+      "index": 243,
+      "text": "Silkmoon"
+    },
+    {
+      "index": 244,
+      "text": "White Staff"
+    },
+    {
+      "index": 245,
+      "text": "Guard Staff"
+    },
+    {
+      "index": 246,
+      "text": "Judge Staff"
+    },
+    {
+      "index": 247,
+      "text": "Cure Staff"
+    },
+    {
+      "index": 248,
+      "text": "Pure Staff"
+    },
+    {
+      "index": 249,
+      "text": "Bless Staff"
+    },
+    {
+      "index": 250,
+      "text": "Snake Staff"
+    },
+    {
+      "index": 251,
+      "text": "Spring Staff"
+    },
+    {
+      "index": 252,
+      "text": "Garnet Staff"
+    },
+    {
+      "index": 253,
+      "text": "Cheer Staff"
+    },
+    {
+      "index": 254,
+      "text": "Nirvana Staff"
+    },
+    {
+      "index": 255,
+      "text": "Mythril Staff"
+    },
+    {
+      "index": 256,
+      "text": "Power Staff"
+    },
+    {
+      "index": 257,
+      "text": "Dream Watcher"
+    },
+    {
+      "index": 258,
+      "text": "Rod"
+    },
+    {
+      "index": 259,
+      "text": "Firewheel Rod"
+    },
+    {
+      "index": 260,
+      "text": "Thunder Rod"
+    },
+    {
+      "index": 261,
+      "text": "Sleet Rod"
+    },
+    {
+      "index": 262,
+      "text": "Terre Rod"
+    },
+    {
+      "index": 263,
+      "text": "Force Rod"
+    },
+    {
+      "index": 264,
+      "text": "Flame Rod"
+    },
+    {
+      "index": 265,
+      "text": "Thor Rod"
+    },
+    {
+      "index": 266,
+      "text": "Chill Rod"
+    },
+    {
+      "index": 267,
+      "text": "Stardust Rod"
+    },
+    {
+      "index": 268,
+      "text": "Princess Rod"
+    },
+    {
+      "index": 269,
+      "text": "Mythril Rod"
+    },
+    {
+      "index": 270,
+      "text": "Heretic Rod"
+    },
+    {
+      "index": 271,
+      "text": "Sapere Aude"
+    },
+    {
+      "index": 272,
+      "text": "Battle Mace"
+    },
+    {
+      "index": 273,
+      "text": "Energy Mace"
+    },
+    {
+      "index": 274,
+      "text": "Druid Mace"
+    },
+    {
+      "index": 275,
+      "text": "Sage Crosier"
+    },
+    {
+      "index": 276,
+      "text": "Morning Star"
+    },
+    {
+      "index": 277,
+      "text": "Mandragora"
+    },
+    {
+      "index": 278,
+      "text": "Life Crosier"
+    },
+    {
+      "index": 279,
+      "text": "Lotus Mace"
+    },
+    {
+      "index": 280,
+      "text": "Scorpion Tail"
+    },
+    {
+      "index": 281,
+      "text": "Zeus Mace"
+    },
+    {
+      "index": 282,
+      "text": "Mythril Mace"
+    },
+    {
+      "index": 283,
+      "text": "Cactus Stick"
+    },
+    {
+      "index": 284,
+      "text": "Vesper"
+    },
+    {
+      "index": 285,
+      "text": "Longbow"
+    },
+    {
+      "index": 286,
+      "text": "Char Bow"
+    },
+    {
+      "index": 287,
+      "text": "Thorn Bow"
+    },
+    {
+      "index": 288,
+      "text": "Nail Bow"
+    },
+    {
+      "index": 289,
+      "text": "Silver Bow"
+    },
+    {
+      "index": 290,
+      "text": "Artemis Bow"
+    },
+    {
+      "index": 291,
+      "text": "Yoichi Bow"
+    },
+    {
+      "index": 292,
+      "text": "Target Bow"
+    },
+    {
+      "index": 293,
+      "text": "Perseus Bow"
+    },
+    {
+      "index": 294,
+      "text": "Mythril Bow"
+    },
+    {
+      "index": 295,
+      "text": "Crescent Bow"
+    },
+    {
+      "index": 296,
+      "text": "Malbow"
+    },
+    {
+      "index": 297,
+      "text": "Windslash Bow"
+    },
+    {
+      "index": 298,
+      "text": "Ranger Bow"
+    },
+    {
+      "index": 299,
+      "text": "Cranequin"
+    },
+    {
+      "index": 300,
+      "text": "Twin Bow"
+    },
+    {
+      "index": 301,
+      "text": "Hunt Bow"
+    },
+    {
+      "index": 302,
+      "text": "Fey Bow"
+    },
+    {
+      "index": 303,
+      "text": "Hades Bow"
+    },
+    {
+      "index": 304,
+      "text": "Nike Bow"
+    },
+    {
+      "index": 305,
+      "text": "Master Bow"
+    },
+    {
+      "index": 306,
+      "text": "Max's Oathbow"
+    },
+    {
+      "index": 307,
+      "text": "Seventh Heaven"
+    },
+    {
+      "index": 308,
+      "text": "Mythril Shot"
+    },
+    {
+      "index": 309,
+      "text": "Marduk Bow"
+    },
+    {
+      "index": 310,
+      "text": "Gastra Bow"
+    },
+    {
+      "index": 311,
+      "text": "Arbalest"
+    },
+    {
+      "index": 312,
+      "text": "Javelin"
+    },
+    {
+      "index": 313,
+      "text": "Lava Spear"
+    },
+    {
+      "index": 314,
+      "text": "Gae Bolg"
+    },
+    {
+      "index": 315,
+      "text": "Ice Lance"
+    },
+    {
+      "index": 316,
+      "text": "Partisan"
+    },
+    {
+      "index": 317,
+      "text": "Kain's Lance"
+    },
+    {
+      "index": 318,
+      "text": "Trident"
+    },
+    {
+      "index": 319,
+      "text": "Dragon Whisker"
+    },
+    {
+      "index": 320,
+      "text": "Mythril Spear"
+    },
+    {
+      "index": 321,
+      "text": "Odin Lance"
+    },
+    {
+      "index": 322,
+      "text": "Beastspear"
+    },
+    {
+      "index": 323,
+      "text": "Bangaa Spike"
+    },
+    {
+      "index": 324,
+      "text": "Demon Bell"
+    },
+    {
+      "index": 325,
+      "text": "Glass Bell"
+    },
+    {
+      "index": 326,
+      "text": "War Trumpet"
+    },
+    {
+      "index": 327,
+      "text": "Conch Shell"
+    },
+    {
+      "index": 328,
+      "text": "Earth Bell"
+    },
+    {
+      "index": 329,
+      "text": "Black Quena"
+    },
+    {
+      "index": 330,
+      "text": "Satyr Flute"
+    },
+    {
+      "index": 331,
+      "text": "Fairy Harp"
+    },
+    {
+      "index": 332,
+      "text": "Aona Flute"
+    },
+    {
+      "index": 333,
+      "text": "Heal Chime"
+    },
+    {
+      "index": 334,
+      "text": "Blood Strings"
+    },
+    {
+      "index": 335,
+      "text": "Mythril Bell"
+    },
+    {
+      "index": 336,
+      "text": "Dark Fiddle"
+    },
+    {
+      "index": 337,
+      "text": "Fell Castanets"
+    },
+    {
+      "index": 338,
+      "text": "Hard Knuckles"
+    },
+    {
+      "index": 339,
+      "text": "Rising Sun"
+    },
+    {
+      "index": 340,
+      "text": "Sick Knuckles"
+    },
+    {
+      "index": 341,
+      "text": "Dream Claws"
+    },
+    {
+      "index": 342,
+      "text": "Kaiser Knuckles"
+    },
+    {
+      "index": 343,
+      "text": "Cat Claws"
+    },
+    {
+      "index": 344,
+      "text": "Survivor"
+    },
+    {
+      "index": 345,
+      "text": "White Fangs"
+    },
+    {
+      "index": 346,
+      "text": "Godhand"
+    },
+    {
+      "index": 347,
+      "text": "Tiger Fangs"
+    },
+    {
+      "index": 348,
+      "text": "Death Claws"
+    },
+    {
+      "index": 349,
+      "text": "Mythril Claws"
+    },
+    {
+      "index": 350,
+      "text": "Greaseburst"
+    },
+    {
+      "index": 351,
+      "text": "Magic Hands"
+    },
+    {
+      "index": 352,
+      "text": "Goblin Soul"
+    },
+    {
+      "index": 353,
+      "text": "Flan Soul"
+    },
+    {
+      "index": 354,
+      "text": "Bomb Soul"
+    },
+    {
+      "index": 355,
+      "text": "Dragon Soul"
+    },
+    {
+      "index": 356,
+      "text": "Lamia Soul"
+    },
+    {
+      "index": 357,
+      "text": "Bug Soul"
+    },
+    {
+      "index": 358,
+      "text": "Panther Soul"
+    },
+    {
+      "index": 359,
+      "text": "Malboro Soul"
+    },
+    {
+      "index": 360,
+      "text": "Eye Soul"
+    },
+    {
+      "index": 361,
+      "text": "Mythril Soul"
+    },
+    {
+      "index": 362,
+      "text": "Dread Soul"
+    },
+    {
+      "index": 363,
+      "text": "Rukavi Soul"
+    },
+    {
+      "index": 364,
+      "text": "Aiot Gun"
+    },
+    {
+      "index": 365,
+      "text": "Silver Cannon"
+    },
+    {
+      "index": 366,
+      "text": "Riot Gun"
+    },
+    {
+      "index": 367,
+      "text": "Chaos Rifle"
+    },
+    {
+      "index": 368,
+      "text": "Lost Gun"
+    },
+    {
+      "index": 369,
+      "text": "Peacemaker"
+    },
+    {
+      "index": 370,
+      "text": "Giot Gun"
+    },
+    {
+      "index": 371,
+      "text": "Longbarrel"
+    },
+    {
+      "index": 372,
+      "text": "Outsider"
+    },
+    {
+      "index": 373,
+      "text": "Mythril Gun"
+    },
+    {
+      "index": 374,
+      "text": "Bindsnipe"
+    },
+    {
+      "index": 375,
+      "text": "Calling Gun"
+    },
+    {
+      "index": 376,
+      "text": "Bronze Shield"
+    },
+    {
+      "index": 377,
+      "text": "Round Shield"
+    },
+    {
+      "index": 378,
+      "text": "Opal Shield"
+    },
+    {
+      "index": 379,
+      "text": "Ice Shield"
+    },
+    {
+      "index": 380,
+      "text": "Flame Shield"
+    },
+    {
+      "index": 381,
+      "text": "Aegis Shield"
+    },
+    {
+      "index": 382,
+      "text": "Genji Shield"
+    },
+    {
+      "index": 383,
+      "text": "Sacri Shield"
+    },
+    {
+      "index": 384,
+      "text": "Shijin Shield"
+    },
+    {
+      "index": 385,
+      "text": "Choco Shield"
+    },
+    {
+      "index": 386,
+      "text": "La Seraphica"
+    },
+    {
+      "index": 387,
+      "text": "Reverie Shield"
+    },
+    {
+      "index": 388,
+      "text": "Bronze Helm"
+    },
+    {
+      "index": 389,
+      "text": "Iron Helm"
+    },
+    {
+      "index": 390,
+      "text": "Opal Helm"
+    },
+    {
+      "index": 391,
+      "text": "Cross Helm"
+    },
+    {
+      "index": 392,
+      "text": "Diamond Helm"
+    },
+    {
+      "index": 393,
+      "text": "Genji Helm"
+    },
+    {
+      "index": 394,
+      "text": "Parade Helm"
+    },
+    {
+      "index": 395,
+      "text": "Hanya Helm"
+    },
+    {
+      "index": 396,
+      "text": "Bangaa Helm"
+    },
+    {
+      "index": 397,
+      "text": "Cachusha"
+    },
+    {
+      "index": 398,
+      "text": "Barette"
+    },
+    {
+      "index": 399,
+      "text": "Ribbon"
+    },
+    {
+      "index": 400,
+      "text": "Feather Cap"
+    },
+    {
+      "index": 401,
+      "text": "Circlet"
+    },
+    {
+      "index": 402,
+      "text": "Green Beret"
+    },
+    {
+      "index": 403,
+      "text": "Headband"
+    },
+    {
+      "index": 404,
+      "text": "Wizard Hat"
+    },
+    {
+      "index": 405,
+      "text": "Gold Hairpin"
+    },
+    {
+      "index": 406,
+      "text": "Thief Hat"
+    },
+    {
+      "index": 407,
+      "text": "Black Hat"
+    },
+    {
+      "index": 408,
+      "text": "White Hat"
+    },
+    {
+      "index": 409,
+      "text": "Acacia Hat"
+    },
+    {
+      "index": 410,
+      "text": "Tiara"
+    },
+    {
+      "index": 411,
+      "text": "Cuirass"
+    },
+    {
+      "index": 412,
+      "text": "Bronze Armor"
+    },
+    {
+      "index": 413,
+      "text": "Iron Armor"
+    },
+    {
+      "index": 414,
+      "text": "Platemail"
+    },
+    {
+      "index": 415,
+      "text": "Gold Armor"
+    },
+    {
+      "index": 416,
+      "text": "Diamond Armor"
+    },
+    {
+      "index": 417,
+      "text": "Opal Armor"
+    },
+    {
+      "index": 418,
+      "text": "Carabini Mail"
+    },
+    {
+      "index": 419,
+      "text": "Mirror Mail"
+    },
+    {
+      "index": 420,
+      "text": "Dragon Mail"
+    },
+    {
+      "index": 421,
+      "text": "Genji Armor"
+    },
+    {
+      "index": 422,
+      "text": "Maximillian"
+    },
+    {
+      "index": 423,
+      "text": "Adaman Armor"
+    },
+    {
+      "index": 424,
+      "text": "Materia Armor"
+    },
+    {
+      "index": 425,
+      "text": "Peytral"
+    },
+    {
+      "index": 426,
+      "text": "Leather Garb"
+    },
+    {
+      "index": 427,
+      "text": "Chain Plate"
+    },
+    {
+      "index": 428,
+      "text": "Adaman Vest"
+    },
+    {
+      "index": 429,
+      "text": "Survival Vest"
+    },
+    {
+      "index": 430,
+      "text": "Brigandine"
+    },
+    {
+      "index": 431,
+      "text": "Judo Uniform"
+    },
+    {
+      "index": 432,
+      "text": "Power Sash"
+    },
+    {
+      "index": 433,
+      "text": "Gaia Gear"
+    },
+    {
+      "index": 434,
+      "text": "Minerva Plate"
+    },
+    {
+      "index": 435,
+      "text": "Ninja Gear"
+    },
+    {
+      "index": 436,
+      "text": "Dark Gear"
+    },
+    {
+      "index": 437,
+      "text": "Wygar"
+    },
+    {
+      "index": 438,
+      "text": "Mirage Vest"
+    },
+    {
+      "index": 439,
+      "text": "Rubber Suit"
+    },
+    {
+      "index": 440,
+      "text": "Bone Plate"
+    },
+    {
+      "index": 441,
+      "text": "Onlyone"
+    },
+    {
+      "index": 442,
+      "text": "Brint Set"
+    },
+    {
+      "index": 443,
+      "text": "Galmia Set"
+    },
+    {
+      "index": 444,
+      "text": "Judge Coat"
+    },
+    {
+      "index": 445,
+      "text": "Temple Cloth"
+    },
+    {
+      "index": 446,
+      "text": "Hempen Robe"
+    },
+    {
+      "index": 447,
+      "text": "Silken Robe"
+    },
+    {
+      "index": 448,
+      "text": "Magus Robe"
+    },
+    {
+      "index": 449,
+      "text": "Mistle Robe"
+    },
+    {
+      "index": 450,
+      "text": "Blaze Robe"
+    },
+    {
+      "index": 451,
+      "text": "Thunder Robe"
+    },
+    {
+      "index": 452,
+      "text": "Flurry Robe"
+    },
+    {
+      "index": 453,
+      "text": "White Robe"
+    },
+    {
+      "index": 454,
+      "text": "Black Robe"
+    },
+    {
+      "index": 455,
+      "text": "Light Robe"
+    },
+    {
+      "index": 456,
+      "text": "Lordly Robe"
+    },
+    {
+      "index": 457,
+      "text": "Silver Coat"
+    },
+    {
+      "index": 458,
+      "text": "Red Robe"
+    },
+    {
+      "index": 459,
+      "text": "Sage Robe"
+    },
+    {
+      "index": 460,
+      "text": "Magic Robe"
+    },
+    {
+      "index": 461,
+      "text": "Reaper Cloak"
+    },
+    {
+      "index": 462,
+      "text": "Battle Boots"
+    },
+    {
+      "index": 463,
+      "text": "Spiked Boots"
+    },
+    {
+      "index": 464,
+      "text": "Dash Boots"
+    },
+    {
+      "index": 465,
+      "text": "Red Boots"
+    },
+    {
+      "index": 466,
+      "text": "Feather Boots"
+    },
+    {
+      "index": 467,
+      "text": "Germinas"
+    },
+    {
+      "index": 468,
+      "text": "Galmia Shoes"
+    },
+    {
+      "index": 469,
+      "text": "Fairy Shoes"
+    },
+    {
+      "index": 470,
+      "text": "Caligula"
+    },
+    {
+      "index": 471,
+      "text": "Ninja Tabi"
+    },
+    {
+      "index": 472,
+      "text": "Gauntlets"
+    },
+    {
+      "index": 473,
+      "text": "Thief Armlets"
+    },
+    {
+      "index": 474,
+      "text": "Bracers"
+    },
+    {
+      "index": 475,
+      "text": "Genji Armlets"
+    },
+    {
+      "index": 476,
+      "text": "Fire Mitts"
+    },
+    {
+      "index": 477,
+      "text": "Bone Armlets"
+    },
+    {
+      "index": 478,
+      "text": "Fortune Ring"
+    },
+    {
+      "index": 479,
+      "text": "Magic Ring"
+    },
+    {
+      "index": 480,
+      "text": "Angel Ring"
+    },
+    {
+      "index": 481,
+      "text": "Scarab"
+    },
+    {
+      "index": 482,
+      "text": "Ruby Earring"
+    },
+    {
+      "index": 483,
+      "text": "Star Armlet"
+    },
+    {
+      "index": 484,
+      "text": "Mindu Gem"
+    },
+    {
+      "index": 485,
+      "text": "Potion"
+    },
+    {
+      "index": 486,
+      "text": "Hi-Potion"
+    },
+    {
+      "index": 487,
+      "text": "X-Potion"
+    },
+    {
+      "index": 488,
+      "text": "Ether"
+    },
+    {
+      "index": 489,
+      "text": "Elixir"
+    },
+    {
+      "index": 490,
+      "text": "Antidote"
+    },
+    {
+      "index": 491,
+      "text": "Eye Drops"
+    },
+    {
+      "index": 492,
+      "text": "Echo Screen"
+    },
+    {
+      "index": 493,
+      "text": "Maiden Kiss"
+    },
+    {
+      "index": 494,
+      "text": "Soft"
+    },
+    {
+      "index": 495,
+      "text": "Holy Water"
+    },
+    {
+      "index": 496,
+      "text": "Bandage"
+    },
+    {
+      "index": 497,
+      "text": "Cureall"
+    },
+    {
+      "index": 498,
+      "text": "Phoenix Down"
+    },
+    {
+      "index": 499,
+      "text": "Magic Trophy"
+    },
+    {
+      "index": 500,
+      "text": "Fight Trophy"
+    },
+    {
+      "index": 501,
+      "text": "Sport Trophy"
+    },
+    {
+      "index": 502,
+      "text": "Elda's Cup"
+    },
+    {
+      "index": 503,
+      "text": "Ogma's Seal"
+    },
+    {
+      "index": 504,
+      "text": "Gold Vessel"
+    },
+    {
+      "index": 505,
+      "text": "Magic Medal"
+    },
+    {
+      "index": 506,
+      "text": "Ancient Medal"
+    },
+    {
+      "index": 507,
+      "text": "Coast Medal"
+    },
+    {
+      "index": 508,
+      "text": "Guard Medal"
+    },
+    {
+      "index": 509,
+      "text": "Friend Pin"
+    },
+    {
+      "index": 510,
+      "text": "Master Brave"
+    },
+    {
+      "index": 511,
+      "text": "Badge"
+    },
+    {
+      "index": 512,
+      "text": "Rainbowite"
+    },
+    {
+      "index": 513,
+      "text": "Delta Fang"
+    },
+    {
+      "index": 514,
+      "text": "Cat's Tears"
+    },
+    {
+      "index": 515,
+      "text": "Dame's Blush"
+    },
+    {
+      "index": 516,
+      "text": "Thunderstone"
+    },
+    {
+      "index": 517,
+      "text": "Stormstone"
+    },
+    {
+      "index": 518,
+      "text": "Esteroth"
+    },
+    {
+      "index": 519,
+      "text": "Ahriman Eye"
+    },
+    {
+      "index": 520,
+      "text": "Wyrmstone"
+    },
+    {
+      "index": 521,
+      "text": "Topaz Armring"
+    },
+    {
+      "index": 522,
+      "text": "Zodiac Ore"
+    },
+    {
+      "index": 523,
+      "text": "Silvril"
+    },
+    {
+      "index": 524,
+      "text": "Materite"
+    },
+    {
+      "index": 525,
+      "text": "Leestone"
+    },
+    {
+      "index": 526,
+      "text": "Adamantite"
+    },
+    {
+      "index": 527,
+      "text": "Spiritstone"
+    },
+    {
+      "index": 528,
+      "text": "Amber"
+    },
+    {
+      "index": 529,
+      "text": "Adaman Alloy"
+    },
+    {
+      "index": 530,
+      "text": "Mysidia Alloy"
+    },
+    {
+      "index": 531,
+      "text": "Crusite Alloy"
+    },
+    {
+      "index": 532,
+      "text": "Lodestone"
+    },
+    {
+      "index": 533,
+      "text": "Black Thread"
+    },
+    {
+      "index": 534,
+      "text": "White Thread"
+    },
+    {
+      "index": 535,
+      "text": "Chocobo Skin"
+    },
+    {
+      "index": 536,
+      "text": "Magic Cloth"
+    },
+    {
+      "index": 537,
+      "text": "Magic Cotton"
+    },
+    {
+      "index": 538,
+      "text": "Blood Shawl"
+    },
+    {
+      "index": 539,
+      "text": "Ahriman Wing"
+    },
+    {
+      "index": 540,
+      "text": "Fairy Wing"
+    },
+    {
+      "index": 541,
+      "text": "Bomb Shell"
+    },
+    {
+      "index": 542,
+      "text": "Panther Hide"
+    },
+    {
+      "index": 543,
+      "text": "Tiger Hide"
+    },
+    {
+      "index": 544,
+      "text": "Jerky"
+    },
+    {
+      "index": 545,
+      "text": "Gysahl Greens"
+    },
+    {
+      "index": 546,
+      "text": "Chocobo Egg"
+    },
+    {
+      "index": 547,
+      "text": "Goldcap"
+    },
+    {
+      "index": 548,
+      "text": "Life Water"
+    },
+    {
+      "index": 549,
+      "text": "Eldagusto"
+    },
+    {
+      "index": 550,
+      "text": "Cyril Ice"
+    },
+    {
+      "index": 551,
+      "text": "Choco Bread"
+    },
+    {
+      "index": 552,
+      "text": "Choco Gratin"
+    },
+    {
+      "index": 553,
+      "text": "Kiddy Bread"
+    },
+    {
+      "index": 554,
+      "text": "Grownup Bread"
+    },
+    {
+      "index": 555,
+      "text": "Malboro Wine"
+    },
+    {
+      "index": 556,
+      "text": "Gedegg Soup"
+    },
+    {
+      "index": 557,
+      "text": "Ancient Text"
+    },
+    {
+      "index": 558,
+      "text": "Magic Vellum"
+    },
+    {
+      "index": 559,
+      "text": "Justice Badge"
+    },
+    {
+      "index": 560,
+      "text": "Friend Badge"
+    },
+    {
+      "index": 561,
+      "text": "Runba's Tale"
+    },
+    {
+      "index": 562,
+      "text": "The Hero Gaol"
+    },
+    {
+      "index": 563,
+      "text": "Edaroya Tome"
+    },
+    {
+      "index": 564,
+      "text": "Homework"
+    },
+    {
+      "index": 565,
+      "text": "Encyclopedia"
+    },
+    {
+      "index": 566,
+      "text": "Dictionary"
+    },
+    {
+      "index": 567,
+      "text": "Monster Guide"
+    },
+    {
+      "index": 568,
+      "text": "Secret Books"
+    },
+    {
+      "index": 569,
+      "text": "Sketchbook"
+    },
+    {
+      "index": 570,
+      "text": "Stuffed Bear"
+    },
+    {
+      "index": 571,
+      "text": "Rat Tail"
+    },
+    {
+      "index": 572,
+      "text": "Rabbit Tail"
+    },
+    {
+      "index": 573,
+      "text": "Danbukwood"
+    },
+    {
+      "index": 574,
+      "text": "Moonwood"
+    },
+    {
+      "index": 575,
+      "text": "Stradivari"
+    },
+    {
+      "index": 576,
+      "text": "Clock Post"
+    },
+    {
+      "index": 577,
+      "text": "Fountain Pen"
+    },
+    {
+      "index": 578,
+      "text": "Earplugs"
+    },
+    {
+      "index": 579,
+      "text": "Crystal"
+    },
+    {
+      "index": 580,
+      "text": "Old Statue"
+    },
+    {
+      "index": 581,
+      "text": "Neighbor Pin"
+    },
+    {
+      "index": 582,
+      "text": "Trichord"
+    },
+    {
+      "index": 583,
+      "text": "Rusty Sword"
+    },
+    {
+      "index": 584,
+      "text": "Broken Sword"
+    },
+    {
+      "index": 585,
+      "text": "Bent Sword"
+    },
+    {
+      "index": 586,
+      "text": "Rusty Spear"
+    },
+    {
+      "index": 587,
+      "text": "Fire Sigil"
+    },
+    {
+      "index": 588,
+      "text": "Water Sigil"
+    },
+    {
+      "index": 589,
+      "text": "Wind Sigil"
+    },
+    {
+      "index": 590,
+      "text": "Earth Sigil"
+    },
+    {
+      "index": 591,
+      "text": "Mind Ceffyl"
+    },
+    {
+      "index": 592,
+      "text": "Body Ceffyl"
+    },
+    {
+      "index": 593,
+      "text": "Feather Badge"
+    },
+    {
+      "index": 594,
+      "text": "Insignia"
+    },
+    {
+      "index": 595,
+      "text": "Ally Finder"
+    },
+    {
+      "index": 596,
+      "text": "Ally Finder2"
+    },
+    {
+      "index": 597,
+      "text": "Tranquil Box"
+    },
+    {
+      "index": 598,
+      "text": "Loaded Dice"
+    },
+    {
+      "index": 599,
+      "text": "Snake Shield"
+    },
+    {
+      "index": 600,
+      "text": "Stasis Rope"
+    },
+    {
+      "index": 601,
+      "text": "Mythril Pick"
+    },
+    {
+      "index": 602,
+      "text": "Caravan Musk"
+    },
+    {
+      "index": 603,
+      "text": "Love Potion"
+    },
+    {
+      "index": 604,
+      "text": "Tonberry Lamp"
+    },
+    {
+      "index": 605,
+      "text": "Stilpool Scroll"
+    },
+    {
+      "index": 606,
+      "text": "Flower Vase"
+    },
+    {
+      "index": 607,
+      "text": "Dragon Bone"
+    },
+    {
+      "index": 608,
+      "text": "Animal Bone"
+    },
+    {
+      "index": 609,
+      "text": "Skull"
+    },
+    {
+      "index": 610,
+      "text": "Helje Key"
+    },
+    {
+      "index": 611,
+      "text": "Clock Gear"
+    },
+    {
+      "index": 612,
+      "text": "Gun Gear"
+    },
+    {
+      "index": 613,
+      "text": "Sprinkler"
+    },
+    {
+      "index": 614,
+      "text": "Silk Bloom"
+    },
+    {
+      "index": 615,
+      "text": "Moon Bloom"
+    },
+    {
+      "index": 616,
+      "text": "Telaq Flower"
+    },
+    {
+      "index": 617,
+      "text": "Blue Rose"
+    },
+    {
+      "index": 618,
+      "text": "White Flowers"
+    },
+    {
+      "index": 619,
+      "text": "Blood Apple"
+    },
+    {
+      "index": 620,
+      "text": "Magic Fruit"
+    },
+    {
+      "index": 621,
+      "text": "Power Fruit"
+    },
+    {
+      "index": 622,
+      "text": "Vermillion"
+    },
+    {
+      "index": 623,
+      "text": "Stolen Gil"
+    },
+    {
+      "index": 624,
+      "text": "Ancient Bills"
+    },
+    {
+      "index": 625,
+      "text": "Ancient Coins"
+    },
+    {
+      "index": 626,
+      "text": "Skills"
+    },
+    {
+      "index": 627,
+      "text": "Techniques"
+    },
+    {
+      "index": 628,
+      "text": "Color Magic"
+    },
+    {
+      "index": 629,
+      "text": "Chivalry"
+    },
+    {
+      "index": 630,
+      "text": "Prayer"
+    },
+    {
+      "index": 631,
+      "text": "Defend"
+    },
+    {
+      "index": 632,
+      "text": "Elementals"
+    },
+    {
+      "index": 633,
+      "text": "Hunt"
+    },
+    {
+      "index": 634,
+      "text": "Charge"
+    },
+    {
+      "index": 635,
+      "text": "Time Magic"
+    },
+    {
+      "index": 636,
+      "text": "Aim"
+    },
+    {
+      "index": 637,
+      "text": "Sharpshoot"
+    },
+    {
+      "index": 638,
+      "text": "Gunmanship"
+    },
+    {
+      "index": 639,
+      "text": "Steal"
+    },
+    {
+      "index": 640,
+      "text": "Corner"
+    },
+    {
+      "index": 641,
+      "text": "Control"
+    },
+    {
+      "index": 642,
+      "text": "Morph"
+    },
+    {
+      "index": 643,
+      "text": "Call"
+    },
+    {
+      "index": 644,
+      "text": "Summon"
+    },
+    {
+      "index": 645,
+      "text": "Items"
+    },
+    {
+      "index": 646,
+      "text": "Fire"
+    },
+    {
+      "index": 647,
+      "text": "Ice"
+    },
+    {
+      "index": 648,
+      "text": "Lightning"
+    },
+    {
+      "index": 649,
+      "text": "Holy"
+    },
+    {
+      "index": 650,
+      "text": "Wind"
+    },
+    {
+      "index": 651,
+      "text": "xxxx"
+    },
+    {
+      "index": 652,
+      "text": "xxxx"
+    },
+    {
+      "index": 653,
+      "text": "xxxx"
+    },
+    {
+      "index": 654,
+      "text": "xxxx"
+    },
+    {
+      "index": 655,
+      "text": "Ganging Up"
+    },
+    {
+      "index": 656,
+      "text": "Full HP"
+    },
+    {
+      "index": 657,
+      "text": "HP > 1&2"
+    },
+    {
+      "index": 658,
+      "text": "Copycat"
+    },
+    {
+      "index": 659,
+      "text": "Fight"
+    },
+    {
+      "index": 660,
+      "text": "Target Area"
+    },
+    {
+      "index": 661,
+      "text": "Target All"
+    },
+    {
+      "index": 662,
+      "text": "Swords"
+    },
+    {
+      "index": 663,
+      "text": "Blades"
+    },
+    {
+      "index": 664,
+      "text": "Sabers"
+    },
+    {
+      "index": 665,
+      "text": "Knightswords"
+    },
+    {
+      "index": 666,
+      "text": "Greatswords"
+    },
+    {
+      "index": 667,
+      "text": "Broadswords"
+    },
+    {
+      "index": 668,
+      "text": "Knives"
+    },
+    {
+      "index": 669,
+      "text": "Rapiers"
+    },
+    {
+      "index": 670,
+      "text": "Katanas"
+    },
+    {
+      "index": 671,
+      "text": "Spears"
+    },
+    {
+      "index": 672,
+      "text": "Instruments"
+    },
+    {
+      "index": 673,
+      "text": "Knuckles"
+    },
+    {
+      "index": 674,
+      "text": "Soul"
+    },
+    {
+      "index": 675,
+      "text": "Missile"
+    },
+    {
+      "index": 676,
+      "text": "Dark"
+    },
+    {
+      "index": 677,
+      "text": "Staves"
+    },
+    {
+      "index": 678,
+      "text": "Rods"
+    },
+    {
+      "index": 679,
+      "text": "Maces"
+    },
+    {
+      "index": 680,
+      "text": "Bare Hands"
+    },
+    {
+      "index": 681,
+      "text": "Damage > 100"
+    },
+    {
+      "index": 682,
+      "text": "Heal < 50"
+    },
+    {
+      "index": 683,
+      "text": "Heal < 100"
+    },
+    {
+      "index": 684,
+      "text": "Heal > 50"
+    },
+    {
+      "index": 685,
+      "text": "Heal > 100"
+    },
+    {
+      "index": 686,
+      "text": "Healing"
+    },
+    {
+      "index": 687,
+      "text": "Petrify"
+    },
+    {
+      "index": 688,
+      "text": "Frog"
+    },
+    {
+      "index": 689,
+      "text": "Poison"
+    },
+    {
+      "index": 690,
+      "text": "Confuse"
+    },
+    {
+      "index": 691,
+      "text": "Berserk"
+    },
+    {
+      "index": 692,
+      "text": "Silence"
+    },
+    {
+      "index": 693,
+      "text": "Charm"
+    },
+    {
+      "index": 694,
+      "text": "Bind"
+    },
+    {
+      "index": 695,
+      "text": "Addle"
+    },
+    {
+      "index": 696,
+      "text": "Slow"
+    },
+    {
+      "index": 697,
+      "text": "Stop"
+    },
+    {
+      "index": 698,
+      "text": "Status"
+    },
+    {
+      "index": 699,
+      "text": "Shell"
+    },
+    {
+      "index": 700,
+      "text": "Protect"
+    },
+    {
+      "index": 701,
+      "text": "Haste"
+    },
+    {
+      "index": 702,
+      "text": "Dmg2: Human"
+    },
+    {
+      "index": 703,
+      "text": "Dmg2: Bangaa"
+    },
+    {
+      "index": 704,
+      "text": "Dmg2: Nu Mou"
+    },
+    {
+      "index": 705,
+      "text": "Dmg2: Viera"
+    },
+    {
+      "index": 706,
+      "text": "Dmg2: Moogle"
+    },
+    {
+      "index": 707,
+      "text": "Dmg2: Animal"
+    },
+    {
+      "index": 708,
+      "text": "Law Cards"
+    },
+    {
+      "index": 709,
+      "text": "NoClr Magic"
+    },
+    {
+      "index": 710,
+      "text": "\"not used\""
+    },
+    {
+      "index": 711,
+      "text": "R1 Antilaw"
+    },
+    {
+      "index": 712,
+      "text": "R2 Antilaw"
+    },
+    {
+      "index": 713,
+      "text": "R3 Antilaw"
+    },
+    {
+      "index": 714,
+      "text": "R4 Antilaw"
+    },
+    {
+      "index": 715,
+      "text": "R5 Antilaw"
+    },
+    {
+      "index": 716,
+      "text": "R6 Antilaw"
+    },
+    {
+      "index": 717,
+      "text": "Allmighty"
+    },
+    {
+      "index": 718,
+      "text": "Bervenia Palace"
+    },
+    {
+      "index": 719,
+      "text": "Cyril"
+    },
+    {
+      "index": 720,
+      "text": "Sprohm"
+    },
+    {
+      "index": 721,
+      "text": "Muscadet"
+    },
+    {
+      "index": 722,
+      "text": "Cadoan"
+    },
+    {
+      "index": 723,
+      "text": "Baguba Port"
+    },
+    {
+      "index": 724,
+      "text": "Nubswood"
+    },
+    {
+      "index": 725,
+      "text": "Giza Plains"
+    },
+    {
+      "index": 726,
+      "text": "Kudik Peaks"
+    },
+    {
+      "index": 727,
+      "text": "Uladon Bog"
+    },
+    {
+      "index": 728,
+      "text": "Jeraw Sands"
+    },
+    {
+      "index": 729,
+      "text": "Lutia Pass"
+    },
+    {
+      "index": 730,
+      "text": "Koringwood"
+    },
+    {
+      "index": 731,
+      "text": "Ulei River"
+    },
+    {
+      "index": 732,
+      "text": "Aisenfield"
+    },
+    {
+      "index": 733,
+      "text": "Roda Volcano"
+    },
+    {
+      "index": 734,
+      "text": "Eluut Sands"
+    },
+    {
+      "index": 735,
+      "text": "Nargai Cave"
+    },
+    {
+      "index": 736,
+      "text": "Salikawood"
+    },
+    {
+      "index": 737,
+      "text": "Delia Dunes"
+    },
+    {
+      "index": 738,
+      "text": "Gotor Sands"
+    },
+    {
+      "index": 739,
+      "text": "Ozmonfield"
+    },
+    {
+      "index": 740,
+      "text": "Deti Plains"
+    },
+    {
+      "index": 741,
+      "text": "Siena Gorge"
+    },
+    {
+      "index": 742,
+      "text": "Materiwood"
+    },
+    {
+      "index": 743,
+      "text": "Tubola Cave"
+    },
+    {
+      "index": 744,
+      "text": "Jagd Dorsa"
+    },
+    {
+      "index": 745,
+      "text": "Jagd Helje"
+    },
+    {
+      "index": 746,
+      "text": "Jagd Ahli"
+    },
+    {
+      "index": 747,
+      "text": "Ambervale"
+    },
+    {
+      "index": 748,
+      "text": "Kingmoon"
+    },
+    {
+      "index": 749,
+      "text": "Madmoon"
+    },
+    {
+      "index": 750,
+      "text": "Sagemoon"
+    },
+    {
+      "index": 751,
+      "text": "Huntmoon"
+    },
+    {
+      "index": 752,
+      "text": "Bardmoon"
+    }
+  ]
+}
