@@ -321,18 +321,37 @@ function checkSpr(file, spritesUsed) {
  * O erro do commit 796a29f: o server aceita qualquer id (o items.otb e a fonte
  * da verdade dele), mas sem ThingType no .dat o chao some -- e parece bug da
  * projecao. Este cruzamento pega isso na hora de gerar.
+ *
+ * Faltar ThingAttrGround e um caso mais sutil, entao e AVISO e nao erro: o
+ * item continua aparecendo na tela, desenhado como item comum na passada
+ * reversa de Tile::drawBottom (tile.cpp:89-107) -- Tile::drawGround da break,
+ * mas nao e ele que decide se algo e desenhado. O que quebra e o resto:
+ * Tile::getGround() exige isGround() (tile.cpp:515-523) e devolve null, logo
+ * Tile::isWalkable() e false para TODO tile (tile.cpp:757-760) e o
+ * click-to-walk nao acha caminho nenhum. Tambem some o groundSpeed e o
+ * setFieldBrightness do LightView.
  */
 function checkGroundsHaveThingTypes(groundIds, things) {
+  let avisos = 0;
   for (const id of groundIds) {
     const t = things.items.get(id);
     if (!t) {
       throw new Error(`id ${id} existe no items.otb mas nao tem ThingType no Tibia.dat -> chao invisivel`);
     }
-    if (!t.attrs.has(ATTR_GROUND)) {
-      throw new Error(`id ${id} nao tem ThingAttrGround -> Tile::drawGround da break e nada e desenhado`);
-    }
     const d = t.attrs.get(ATTR_DISPLACEMENT) || [0, 0];
-    console.log(`    id=${id} ground=sim displacement=(${d[0]},${d[1]})  OK`);
+    const temGround = t.attrs.has(ATTR_GROUND);
+    console.log(
+      `    id=${id} ground=${temGround ? 'sim' : 'NAO'} displacement=(${d[0]},${d[1]})` +
+      `  ${temGround ? 'OK' : '<<< AVISO'}`
+    );
+    if (!temGround) avisos++;
+  }
+  if (avisos > 0) {
+    console.log(
+      `\n  AVISO: ${avisos} chao(s) sem ThingAttrGround. Renderizam (via drawBottom),\n` +
+      '  mas Tile::getGround() devolve null -> isWalkable() falso -> click-to-walk\n' +
+      '  morto em todo tile. Corrigir com: node tools/datapack-gen/fix-dat.js'
+    );
   }
 }
 
