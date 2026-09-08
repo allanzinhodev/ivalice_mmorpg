@@ -143,6 +143,40 @@ docker run -d --name ivalice-db -e MARIADB_ROOT_PASSWORD=ivalice \
 Porta **3316** de proposito, para nao conflitar com um MySQL local na 3306.
 No `config.lua`: `mysqlUser/Pass/Database = "ivalice"`, `mysqlPort = 3316`.
 
+## Projecao isometrica: armadilhas ja enfrentadas
+
+A projecao vive em `MapView::transformPositionTo2D` e as constantes em
+`client/src/client/const.h` (`TILE_HALF_W/H`, `FLOOR_LIFT`).
+
+Tres bugs custaram tempo e valem lembrar:
+
+- **Tela preta com a projecao correta.** O `Tibia.dat` tinha displacement
+  `(0, 65520)` -- o -16 lido como unsigned, porque `ThingType::unserialize`
+  usa `getU16()`. Esse valor entra no `screenRect` (thingtype.cpp:540) e joga
+  o sprite para fora da tela. Rode `node tools/datapack-gen/fix-dat.js`.
+
+- **Chao invisivel.** Itens sem `ThingAttrGround` (atributo 0) fazem
+  `Tile::drawGround` dar `break` na primeira iteracao. Mesmo script corrige.
+
+- **Metade do mapa cortada.** A origem da projecao fica DENTRO do campo de
+  tiles, nao no topo. Os extremos tem que vir dos quatro cantos projetados,
+  tanto em `updateGeometry` quanto em `calcFramebufferSource`.
+
+Para diagnosticar: instrumente `Tile::drawGround` logando `dest`. Se as
+coordenadas variam +-16 em X e +8 em Y, a projecao esta certa e o problema
+esta depois (sprite, displacement, framebuffer).
+
+### Ids de item
+
+O formato `.dat` reserva os ids 1..99: itens comecam em **100**
+(`thingtypemanager.cpp`, `firstId = 100`). Ids abaixo disso existem no
+server mas nao no client.
+
+### Automacao do client
+
+`SendKeys`/`mouse_event` **nao chegam** de forma confiavel ao client OpenGL.
+Caminhada, picking e projeteis precisam de teste manual.
+
 ## Não versionar
 
 `tools/rom.gba` é a ROM comercial de FFTA — mantida **fora** do repositório
