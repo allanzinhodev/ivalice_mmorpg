@@ -82,9 +82,20 @@ void Missile::setPath(const Position& fromPosition, const Position& toPosition)
     m_direction = fromPosition.getDirectionFromPosition(toPosition);
 
     m_position = fromPosition;
-    m_delta = Point(toPosition.x - fromPosition.x, toPosition.y - fromPosition.y);
-    m_duration = 150 * std::sqrt(m_delta.length());
-    m_delta *= g_sprites.spriteSize();
+
+    // A duracao segue a distancia no MUNDO, nao na tela. Se fosse calculada
+    // sobre o delta ja projetado, flechas na diagonal da tela ficariam com
+    // velocidade diferente das cardinais para a mesma distancia real.
+    const Point tileDelta(toPosition.x - fromPosition.x, toPosition.y - fromPosition.y);
+    m_duration = 150 * std::sqrt(tileDelta.length());
+
+    // Projeta so o vetor de pixels (mesma formula de transformPositionTo2D).
+    // A interpolacao linear em Missile::draw continua valida porque a
+    // projecao e afim: uma reta no mundo continua reta na tela.
+    const int dz = fromPosition.z - toPosition.z;
+    m_delta = Point((tileDelta.x - tileDelta.y) * Otc::TILE_HALF_W,
+                    (tileDelta.x + tileDelta.y) * Otc::TILE_HALF_H - dz * Otc::FLOOR_LIFT);
+
     m_animationTimer.restart();
 
     // schedule removal

@@ -112,8 +112,11 @@ void Tile::drawBottom(const Point& dest, LightView* lightView)
                 if (x == 0 && y == 0)
                     continue;
                 if (const TilePtr& tile = g_map.getTile(m_position.translated(x, y))) {
-                    tile->drawCreatures(dest + Point(x * g_sprites.spriteSize(), y * g_sprites.spriteSize()), lightView);
-                    tile->drawTop(dest + Point(x * g_sprites.spriteSize(), y * g_sprites.spriteSize()), lightView);
+                    // Offset ate o tile vizinho, projetado no espaco diamante.
+                    const Point neighborOffset((x - y) * Otc::TILE_HALF_W,
+                                               (x + y) * Otc::TILE_HALF_H);
+                    tile->drawCreatures(dest + neighborOffset, lightView);
+                    tile->drawTop(dest + neighborOffset, lightView);
                 }
             }
         }
@@ -135,8 +138,11 @@ void Tile::drawCreatures(const Point& dest, LightView* lightView)
     for (const CreaturePtr& creature : m_walkingCreatures) {
         if (creature->isHidden())
             continue;
-        Point creatureDest(dest.x + ((creature->getPrewalkingPosition().x - m_position.x) * g_sprites.spriteSize() - m_drawElevation * g_sprites.getOffsetFactor()),
-                           dest.y + ((creature->getPrewalkingPosition().y - m_position.y) * g_sprites.spriteSize() - m_drawElevation * g_sprites.getOffsetFactor()));
+        // Delta ate o tile da criatura, projetado no espaco diamante.
+        const int cdx = creature->getPrewalkingPosition().x - m_position.x;
+        const int cdy = creature->getPrewalkingPosition().y - m_position.y;
+        Point creatureDest(dest.x + (cdx - cdy) * Otc::TILE_HALF_W,
+                           dest.y + (cdx + cdy) * Otc::TILE_HALF_H - m_drawElevation * g_sprites.getOffsetFactor());
         creature->draw(creatureDest, true, lightView);
     }
 
@@ -166,8 +172,11 @@ void Tile::drawTop(const Point& dest, LightView* lightView)
     for (const CreaturePtr& creature : m_walkingCreatures) {
         if (creature->isHidden())
             continue;
-        Point creatureDest(dest.x + ((creature->getPrewalkingPosition().x - m_position.x) * g_sprites.spriteSize() - m_drawElevation * g_sprites.getOffsetFactor()),
-                   dest.y + ((creature->getPrewalkingPosition().y - m_position.y) * g_sprites.spriteSize() - m_drawElevation * g_sprites.getOffsetFactor()));
+        // Delta ate o tile da criatura, projetado no espaco diamante.
+        const int cdx = creature->getPrewalkingPosition().x - m_position.x;
+        const int cdy = creature->getPrewalkingPosition().y - m_position.y;
+        Point creatureDest(dest.x + (cdx - cdy) * Otc::TILE_HALF_W,
+                           dest.y + (cdx + cdy) * Otc::TILE_HALF_H - m_drawElevation * g_sprites.getOffsetFactor());
         creature->draw(creatureDest, true, lightView);
     }
 

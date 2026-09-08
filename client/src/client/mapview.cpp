@@ -21,6 +21,7 @@
  */
 
 #include "mapview.h"
+#include <cmath>
 
 #include "creature.h"
 #include "map.h"
@@ -406,8 +407,18 @@ void MapView::updateVisibleTilesCache()
                 // position on current floor
                 //TODO: check position limits
                 Position tilePos = cameraPosition.translated(ix - m_virtualCenterOffset.x, iy - m_virtualCenterOffset.y);
-                // adjust tilePos to the wanted floor
-                tilePos.coveredUp(cameraPosition.z - iz);
+                // Ajusta para o andar desejado.
+                //
+                // O original usava coveredUp(), que codifica a equivalencia de
+                // celula do Tibia: (x+1, y+1, z-1). Isso so vale porque la
+                // subir um andar desloca uma diagonal. Com o lift vertical da
+                // projecao isometrica a mesma celula (col,row) de outro andar
+                // e (x, y, z-1) -- so muda o z.
+                //
+                // Position::coveredUp/coveredDown NAO foram alteradas: elas
+                // seguem corretas para logica de linha de visao / teto
+                // (map.cpp, calcFirstVisibleFloor), que e semantica de mundo.
+                tilePos.z = static_cast<short>(iz);
                 if (const TilePtr& tile = g_map.getTile(tilePos)) {
                     if (!tile->isDrawable())
                         continue;
@@ -426,7 +437,28 @@ void MapView::updateGeometry(const Size& visibleDimension, const Size& optimized
     m_drawDimension = visibleDimension + Size(3, 3);
     m_virtualCenterOffset = (m_drawDimension / 2 - Size(1, 1)).toPoint();
     m_visibleCenterOffset = m_virtualCenterOffset;
-    m_optimizedSize = m_drawDimension * g_sprites.spriteSize();
+
+    // --- Geometria isometrica ---
+    // Um campo diamante de W x H tiles ocupa (W+H)*TILE_HALF_W de largura por
+    // (W+H)*TILE_HALF_H de altura. Isso e bem diferente do W*32 x H*32 da
+    // grade ortogonal, entao o framebuffer precisa ser redimensionado.
+    const int w = m_drawDimension.width();
+    const int h = m_drawDimension.height();
+    const int diamondW = (w + h) * Otc::TILE_HALF_W;
+    const int diamondH = (w + h) * Otc::TILE_HALF_H;
+
+    // Margens: sprites sao mais altos que a celula e ficam ancorados pela
+    // base, o lift de andares sobe a cena, e itens empilhados usam elevacao.
+    const int marginTop = g_gameConfig.getMapMaxZ() * Otc::FLOOR_LIFT + g_sprites.spriteSize() + Otc::MAX_ELEVATION;
+    const int marginBottom = g_sprites.spriteSize();
+    const int marginX = g_sprites.spriteSize();
+
+    m_optimizedSize = Size(diamondW + marginX * 2, diamondH + marginTop + marginBottom);
+
+    // Origem da projecao dentro do framebuffer. O tile (0,0) relativo a camera
+    // fica no centro horizontal; em Y descontamos a margem de topo.
+    m_projectionOffset = Point(m_optimizedSize.width() / 2, marginTop);
+
     requestVisibleTilesCacheUpdate();
 }
 
@@ -503,9 +535,22 @@ Position MapView::getPosition(const Point& point, const Size& mapSize)
 
     Point framebufferPos = Point(point.x * sh, point.y * sv);
     Point realPos = (framebufferPos + srcRect.topLeft());
-    Point centerOffset = realPos / g_sprites.spriteSize();
 
-    Point tilePos2D = getVisibleCenterOffset() - m_drawDimension.toPoint() + centerOffset + Point(2,2);
+    // Inversa da projecao isometrica (ver transformPositionTo2D).
+    // De  sx = (col-row)*HW  e  sy = (col+row)*HH  segue:
+    //   col = (sx/HW + sy/HH) / 2
+    //   row = (sy/HH - sx/HW) / 2
+    //
+    // Usar std::floor em float: divisao inteira trunca em direcao a zero e
+    // erraria o tile a esquerda/acima da camera (coordenadas negativas).
+    const float sx = static_cast<float>(realPos.x - m_projectionOffset.x);
+    const float sy = static_cast<float>(realPos.y - m_projectionOffset.y);
+    const float fx = sx / static_cast<float>(Otc::TILE_HALF_W);
+    const float fy = sy / static_cast<float>(Otc::TILE_HALF_H);
+
+    Point tilePos2D(static_cast<int>(std::floor((fx + fy) / 2.0f)),
+                    static_cast<int>(std::floor((fy - fx) / 2.0f)));
+
     if(tilePos2D.x + cameraPosition.x < 0 && tilePos2D.y + cameraPosition.y < 0)
         return Position();
 
@@ -531,7 +576,20 @@ Point MapView::getPositionOffset(const Point& point, const Size& mapSize)
 
     Point framebufferPos = Point(point.x * sh, point.y * sv);
     Point realPos = (framebufferPos + srcRect.topLeft());
-    return Point(realPos.x % g_sprites.spriteSize(), realPos.y % g_sprites.spriteSize());
+
+    // Offset dentro da celula. O antigo "% spriteSize" assumia celula
+    // quadrada; no losango medimos em relacao ao vertice superior do tile
+    // que contem o ponto (reusa a inversa de getPosition).
+    const float sx = static_cast<float>(realPos.x - m_projectionOffset.x);
+    const float sy = static_cast<float>(realPos.y - m_projectionOffset.y);
+    const float fx = sx / static_cast<float>(Otc::TILE_HALF_W);
+    const float fy = sy / static_cast<float>(Otc::TILE_HALF_H);
+    const int col = static_cast<int>(std::floor((fx + fy) / 2.0f));
+    const int row = static_cast<int>(std::floor((fy - fx) / 2.0f));
+
+    const Point tileOrigin(m_projectionOffset.x + (col - row) * Otc::TILE_HALF_W,
+                           m_projectionOffset.y + (col + row) * Otc::TILE_HALF_H);
+    return realPos - tileOrigin;
 }
 
 void MapView::move(int x, int y)
@@ -539,18 +597,22 @@ void MapView::move(int x, int y)
     m_moveOffset.x += x;
     m_moveOffset.y += y;
 
-    int32_t tmp = m_moveOffset.x / g_sprites.spriteSize();
-    bool requestTilesUpdate = false;
-    if(tmp != 0) {
-        m_customCameraPosition.x += tmp;
-        m_moveOffset.x %= g_sprites.spriteSize();
-        requestTilesUpdate = true;
-    }
+    // Converte o pan em pixels para passos de tile no espaco diamante.
+    // Um passo em +x vale (+TILE_HALF_W, +TILE_HALF_H) na tela; em +y vale
+    // (-TILE_HALF_W, +TILE_HALF_H). Invertendo, como em getPosition():
+    //   dcol = (px/HW + py/HH) / 2      drow = (py/HH - px/HW) / 2
+    const float fx = m_moveOffset.x / static_cast<float>(Otc::TILE_HALF_W);
+    const float fy = m_moveOffset.y / static_cast<float>(Otc::TILE_HALF_H);
+    const int dcol = static_cast<int>((fx + fy) / 2.0f);
+    const int drow = static_cast<int>((fy - fx) / 2.0f);
 
-    tmp = m_moveOffset.y / g_sprites.spriteSize();
-    if(tmp != 0) {
-        m_customCameraPosition.y += tmp;
-        m_moveOffset.y %= g_sprites.spriteSize();
+    bool requestTilesUpdate = false;
+    if(dcol != 0 || drow != 0) {
+        m_customCameraPosition.x += dcol;
+        m_customCameraPosition.y += drow;
+        // Desconta o que virou passo inteiro, preservando o resto sub-tile.
+        m_moveOffset.x -= (dcol - drow) * Otc::TILE_HALF_W;
+        m_moveOffset.y -= (dcol + drow) * Otc::TILE_HALF_H;
         requestTilesUpdate = true;
     }
 
@@ -560,13 +622,24 @@ void MapView::move(int x, int y)
 
 Rect MapView::calcFramebufferSource(const Size& destSize, bool inNextFrame)
 {
-    float scaleFactor = g_sprites.spriteSize()/(float)g_sprites.spriteSize();
-    Point drawOffset = ((m_drawDimension - m_visibleDimension - Size(1,1)).toPoint()/2) * g_sprites.spriteSize();
-    if(isFollowingCreature())
-        drawOffset += m_followingCreature->getWalkOffset(inNextFrame) * scaleFactor;
+    // Janela visivel em espaco diamante: os tiles visiveis formam um losango
+    // de (W+H)*TILE_HALF_W por (W+H)*TILE_HALF_H.
+    const int vw = m_visibleDimension.width();
+    const int vh = m_visibleDimension.height();
+    Size srcVisible((vw + vh) * Otc::TILE_HALF_W, (vh + vw) * Otc::TILE_HALF_H);
+
+    // Canto superior-esquerdo do losango visivel dentro do framebuffer.
+    // O centro da area visivel coincide com a origem da projecao em X.
+    Point drawOffset(m_projectionOffset.x - srcVisible.width() / 2,
+                     m_projectionOffset.y - Otc::TILE_HALF_H);
+
+    if(isFollowingCreature()) {
+        // O walk offset ja vem projetado em espaco diamante (ver
+        // Creature::updateWalkOffset), entao acompanha direto.
+        drawOffset += m_followingCreature->getWalkOffset(inNextFrame);
+    }
 
     Size srcSize = destSize;
-    Size srcVisible = m_visibleDimension * g_sprites.spriteSize();
     srcSize.scale(srcVisible, Fw::KeepAspectRatio);
     drawOffset.x += (srcVisible.width() - srcSize.width()) / 2;
     drawOffset.y += (srcVisible.height() - srcSize.height()) / 2;
@@ -660,8 +733,19 @@ int MapView::calcLastVisibleFloor()
 }
 
 Point MapView::transformPositionTo2D(const Position& position, const Position& relativePosition) {
-    return Point((m_virtualCenterOffset.x + (position.x - relativePosition.x) - (relativePosition.z - position.z)) * g_sprites.spriteSize(),
-        (m_virtualCenterOffset.y + (position.y - relativePosition.y) - (relativePosition.z - position.z)) * g_sprites.spriteSize());
+    // Projecao isometrica (losango 32x16). Ver Otc::TILE_HALF_W/H em const.h.
+    //   screenX = offsetX + (col - row) * 16
+    //   screenY = offsetY + (col + row) * 8
+    const int col = position.x - relativePosition.x;
+    const int row = position.y - relativePosition.y;
+
+    // Altura: levantamento vertical puro, ao contrario do Tibia (que desloca
+    // um tile na diagonal por andar). Por isso o termo de z sai de dentro do
+    // parenteses e vira subtracao so em Y.
+    const int dz = relativePosition.z - position.z;
+
+    return Point(m_projectionOffset.x + (col - row) * Otc::TILE_HALF_W,
+                 m_projectionOffset.y + (col + row) * Otc::TILE_HALF_H - dz * Otc::FLOOR_LIFT);
 }
 
 

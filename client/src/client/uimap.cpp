@@ -175,13 +175,17 @@ TilePtr UIMap::getTile(const Point& mousePos)
         return nullptr;
 
     // we must check every floor, from top to bottom to check for a clickable tile
+    //
+    // Com a projecao isometrica a mesma celula de tela em outro andar e
+    // (x, y, z+-1) -- so o z muda. O coveredUp/coveredDown original assumia a
+    // equivalencia diagonal do Tibia, (x+1, y+1, z-1), que aqui nao vale.
     TilePtr tile;
-    tilePos.coveredUp(tilePos.z - m_mapView->getCachedFirstVisibleFloor());
+    tilePos.z = static_cast<short>(m_mapView->getCachedFirstVisibleFloor());
     for(int i = m_mapView->getCachedFirstVisibleFloor(); i <= m_mapView->getCachedLastVisibleFloor(); i++) {
+        tilePos.z = static_cast<short>(i);
         tile = g_map.getTile(tilePos);
         if(tile && tile->isClickable())
             break;
-        tilePos.coveredDown();
     }
 
     if(!tile || !tile->isClickable())
