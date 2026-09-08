@@ -1,7 +1,7 @@
 'use strict';
 /*
  * Gera data/world/world.otbm -- mapa plano 1024x1024, 1 andar (z=7),
- * em quadrantes de grass/sand/stone, sem monstros e sem houses.
+ * com grass/sand/stone embaralhados por tile, sem monstros e sem houses.
  *
  * Referencias no server:
  *   iomap.h:38-56    OTBM_NodeTypes_t
@@ -57,16 +57,37 @@ const GRASS = 100;
 const SAND = 101;
 const STONE = 102;
 
+const GROUNDS = [GRASS, SAND, STONE];
+
 /**
- * Quadrantes: divide o mapa em faixas verticais de um terco.
- * Contiguo de proposito -- fica obvio na tela se a projecao/alinhamento
- * estiver errado.
+ * Mistura os 3 chaos tile a tile, de forma DETERMINISTICA.
+ *
+ * Antes eram tres faixas verticais contiguas de um terco do mapa. Aquilo servia
+ * para conferir alinhamento -- uma emenda reta denuncia projecao torta -- mas
+ * atrapalha o teste de CAMINHADA: dentro de uma faixa todos os tiles sao
+ * iguais, entao andar nao muda nada na tela e nao da para saber se o passo foi
+ * para a direcao certa, nem se foi um passo so.
+ *
+ * Com o padrao embaralhado cada vizinhanca fica visualmente unica: um passo
+ * desloca o padrao inteiro em exatamente uma celula, e a direcao do
+ * deslocamento diz a direcao do passo. Na projecao isometrica isso importa
+ * mais que no grid quadrado, porque +x e +y viram diagonais na tela
+ * ((+16,+8) e (-16,+8)) e sao faceis de confundir uma com a outra.
+ *
+ * Deterministico de proposito (hash de x,y, sem Math.random): regerar o mapa
+ * produz exatamente o mesmo arquivo, entao da para comparar dois runs e o
+ * verify.js continua reprodutivel.
  */
-function groundIdFor(x, _y) {
-  const third = MAP_WIDTH / 3;
-  if (x < third) return GRASS;
-  if (x < third * 2) return SAND;
-  return STONE;
+function groundIdFor(x, y) {
+  // Hash inteiro de 32 bits no estilo do finalizador do MurmurHash3. O
+  // objetivo e so descorrelacionar x e y -- um `(x + y) % 3` faria faixas
+  // diagonais, que na projecao isometrica sairiam alinhadas com os eixos da
+  // tela e voltariam a nao dar referencia nenhuma.
+  let h = (x * 0x1f1f1f1f) ^ y;
+  h = Math.imul(h ^ (h >>> 16), 0x85ebca6b);
+  h = Math.imul(h ^ (h >>> 13), 0xc2b2ae35);
+  h = (h ^ (h >>> 16)) >>> 0;
+  return GROUNDS[h % GROUNDS.length];
 }
 
 function buildOtbm() {
