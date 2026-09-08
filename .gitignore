@@ -49,6 +49,7 @@ theforgottenserver*.exe
 server/tools/imbuments_scroll.gif
 
 # --- Logs e saidas temporarias ---
+server/build-out.txt
 *.log
 output.log
 otclientv8.log

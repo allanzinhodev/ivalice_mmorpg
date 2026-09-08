@@ -110,6 +110,39 @@ Notas:
   não o container. São dois fluxos distintos.
 - O `Dockerfile` copia `key.pem` para a imagem — é a chave do protocolo do TFS.
 
+## Build do server no Windows (validado)
+
+Use `server/build-ivalice.bat` — ele chama o vcvars64, poe cmake/ninja no PATH
+e roda configure + build. Gera `server/build/tfs.exe`.
+
+Toolchain confirmado nesta maquina: **Visual Studio 18 (2026) Community** em
+`C:\Program Files\Microsoft Visual Studio\18\Community`, com MSVC 14.51,
+CMake 4.2.3 e Ninja 1.13.2 embutidos (nao ha cmake/ninja no PATH global).
+Triplet: `x64-windows` (dinamico) — e o que existe no backlands.
+
+### Armadilhas ja enfrentadas
+
+- **O .bat precisa de CRLF.** Com LF o `cmd.exe` nao interpreta as linhas e o
+  script sai sem fazer nada, sem mensagem de erro.
+- **`cmd.exe /c` a partir do bash** pode abrir o shell interativo em vez de
+  executar. Rodar via PowerShell, com `.\` antes do nome do .bat.
+- Para rodar, o binario precisa de `data/`, `config.lua` e `key.pem` no
+  diretorio de trabalho (o build so copia as DLLs).
+- Warnings `Loot:setIdFromName Unknown loot item` sao esperados no datapack
+  minimo: os monstros referenciam itens que nao existem mais no items.otb.
+  Inofensivo (nao ha spawns), so ruidoso.
+
+### Banco para teste
+
+```
+docker run -d --name ivalice-db -e MARIADB_ROOT_PASSWORD=ivalice \
+  -e MARIADB_DATABASE=ivalice -e MARIADB_USER=ivalice \
+  -e MARIADB_PASSWORD=ivalice -p 3316:3306 mariadb:11
+```
+
+Porta **3316** de proposito, para nao conflitar com um MySQL local na 3306.
+No `config.lua`: `mysqlUser/Pass/Database = "ivalice"`, `mysqlPort = 3316`.
+
 ## Não versionar
 
 `tools/rom.gba` é a ROM comercial de FFTA — mantida **fora** do repositório
