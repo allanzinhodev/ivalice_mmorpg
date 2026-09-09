@@ -47,7 +47,22 @@ enum NewDrawType : uint8 {
 enum FrameGroupType : uint8 {
     FrameGroupDefault = 0,
     FrameGroupIdle = FrameGroupDefault,
-    FrameGroupMoving
+    FrameGroupMoving,
+
+    // Frame groups estendidos, para animacoes de acao (ver o mesmo enum em
+    // tools/ObjectBuilder/src/otlib/things/FrameGroupType.as -- os valores
+    // TEM que bater com os que o editor grava no .dat).
+    //
+    // O formato sempre aceitou N grupos: o groupCount e um byte e o parser
+    // ja itera por ele. O que faltava era o client guardar os animators dos
+    // grupos alem de 0 e 1, que eram silenciosamente descartados.
+    FrameGroupAttacking,
+    FrameGroupCasting,
+    FrameGroupHurt,
+    FrameGroupDying,
+
+    FrameGroupLast = FrameGroupDying,
+    FrameGroupCount = FrameGroupLast + 1
 };
 
 enum ThingCategory : uint8 {
@@ -235,6 +250,38 @@ public:
     int getAnimationPhases() { return m_animationPhases; }
     AnimatorPtr getAnimator() { return m_animator; }
     AnimatorPtr getIdleAnimator() { return m_idleAnimator; }
+
+    /// Animator de um frame group qualquer (nullptr se o grupo nao existe).
+    AnimatorPtr getGroupAnimator(uint8 groupType) {
+        if (groupType >= m_groupAnimators.size())
+            return nullptr;
+        return m_groupAnimators[groupType];
+    }
+
+    /// Quantos frame groups este thing declarou no .dat.
+    int getGroupCount() { return (int)m_groupPhaseBegin.size(); }
+
+    bool hasFrameGroup(uint8 groupType) {
+        return groupType < m_groupPhaseBegin.size() && m_groupPhaseCount[groupType] > 0;
+    }
+
+    /// Primeira fase (no range plano de m_animationPhases) do grupo.
+    ///
+    /// As fases de todos os grupos sao CONCATENADAS num unico range -- e assim
+    /// que getSpriteIndex enxerga. Para tocar "grupo 3, fase 0" e preciso
+    /// somar este offset.
+    int getGroupPhaseBegin(uint8 groupType) {
+        if (groupType >= m_groupPhaseBegin.size())
+            return 0;
+        return m_groupPhaseBegin[groupType];
+    }
+
+    /// Quantidade de fases do grupo (0 se nao existe).
+    int getGroupPhaseCount(uint8 groupType) {
+        if (groupType >= m_groupPhaseCount.size())
+            return 0;
+        return m_groupPhaseCount[groupType];
+    }
     Point getDisplacement() { return m_displacement; }
     int getDisplacementX() { return getDisplacement().x; }
     int getDisplacementY() { return getDisplacement().y; }
@@ -323,6 +370,13 @@ private:
     Point m_displacement;
     AnimatorPtr m_animator;
     AnimatorPtr m_idleAnimator;
+
+    // Indexados pelo tipo do frame group. m_animator/m_idleAnimator continuam
+    // existindo como atalho para os grupos 1 e 0, para nao mexer no codigo que
+    // ja os usa (outfit.cpp, creature.cpp).
+    std::vector<AnimatorPtr> m_groupAnimators;
+    std::vector<int> m_groupPhaseBegin;
+    std::vector<int> m_groupPhaseCount;
     std::vector<Point> m_bones;
     int m_animationPhases;
     int m_exactSize;

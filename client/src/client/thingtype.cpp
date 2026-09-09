@@ -307,6 +307,9 @@ void ThingType::unserialize(uint16 clientId, ThingCategory category, const FileS
     uint8 groupCount = hasFrameGroups ? fin->getU8() : 1;
 
     m_animationPhases = 0;
+    m_groupAnimators.clear();
+    m_groupPhaseBegin.clear();
+    m_groupPhaseCount.clear();
     int totalSpritesCount = 0;
 
     std::vector<Size> sizes;
@@ -337,11 +340,30 @@ void ThingType::unserialize(uint16 clientId, ThingCategory category, const FileS
             m_numPatternZ = 1;
         
         int groupAnimationsPhases = fin->getU8();
+
+        // Onde este grupo comeca no range PLANO de fases. As fases de todos os
+        // grupos sao concatenadas, e e assim que getSpriteIndex as enxerga.
+        // Sem guardar este offset nao ha como converter "grupo N, fase 0" na
+        // fase plana correspondente.
+        const int groupPhaseBegin = m_animationPhases;
         m_animationPhases += groupAnimationsPhases;
+
+        if((size_t)frameGroupType >= m_groupPhaseBegin.size()) {
+            m_groupPhaseBegin.resize(frameGroupType + 1, 0);
+            m_groupPhaseCount.resize(frameGroupType + 1, 0);
+            m_groupAnimators.resize(frameGroupType + 1);
+        }
+        m_groupPhaseBegin[frameGroupType] = groupPhaseBegin;
+        m_groupPhaseCount[frameGroupType] = groupAnimationsPhases;
 
         if(groupAnimationsPhases > 1 && g_game.getFeature(Otc::GameEnhancedAnimations)) {
             auto animator = std::make_shared<Animator>();
             animator->unserialize(groupAnimationsPhases, fin);
+
+            // Guarda o animator de QUALQUER grupo. Antes o switch so tratava 0
+            // e 1, e o animator de um grupo 2+ era silenciosamente descartado
+            // -- os sprites entravam, a animacao nao.
+            m_groupAnimators[frameGroupType] = animator;
 
             switch (frameGroupType) {
             case FrameGroupIdle:
@@ -404,6 +426,10 @@ void ThingType::unserialize(uint16 clientId, ThingCategory category, const FileS
         }
     }
 
+    // Thing com um grupo so: o que foi lido como "idle" e na verdade a
+    // animacao unica, entao vira o animator principal. Isto NAO mexe em
+    // m_groupAnimators de proposito -- la o indice continua sendo o tipo real
+    // do grupo lido do arquivo.
     if (m_idleAnimator && !m_animator) {
         m_animator = m_idleAnimator;
         m_idleAnimator = nullptr;

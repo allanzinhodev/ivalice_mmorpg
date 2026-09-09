@@ -536,7 +536,12 @@ namespace Otc
         GameAstraItemMetadata = 143,
         GameZoneWeather = 144,
 
-        LastGameFeature = 145
+        // Byte de frame group ativo no fim do outfit de criatura, para
+        // animacoes de acao visiveis por todos os jogadores. O servidor so o
+        // envia quando esta feature esta ligada (ver AddOutfit, withAnimation).
+        GameCreatureAnimationGroup = 145,
+
+        LastGameFeature = 146
     };
 
     enum PathFindResult {

@@ -42,6 +42,9 @@ public:
 
     void setId(int id) { m_id = id; }
     void setAuxId(int id) { m_auxId = id; }
+    /// Frame group ativo: 0 = idle, 1 = andando, 2+ = acao. Vem do servidor
+    /// junto do outfit, entao todos os jogadores veem a mesma animacao.
+    void setAnimationGroup(int group) { m_animationGroup = group; }
     void setHead(int head) { m_head = head; }
     void setBody(int body) { m_body = body; }
     void setLegs(int legs) { m_legs = legs; }
@@ -62,6 +65,7 @@ public:
 
     int getId() const { return m_id; }
     int getAuxId() const { return m_auxId; }
+    int getAnimationGroup() const { return m_animationGroup; }
     int getHead() const { return m_head; }
     int getBody() const { return m_body; }
     int getLegs() const { return m_legs; }
@@ -78,7 +82,7 @@ public:
 
 private:
     ThingCategory m_category;
-    int m_id, m_auxId, m_head, m_body, m_legs, m_feet, m_addons, m_mount = 0, m_familiar = 0, m_wings = 0, m_aura = 0;
+    int m_id, m_auxId, m_head, m_body, m_legs, m_feet, m_addons, m_mount = 0, m_familiar = 0, m_wings = 0, m_aura = 0, m_animationGroup = 0;
     int m_healthBar = 0, m_manaBar = 0;
     std::string m_shader;
     bool m_center = false;

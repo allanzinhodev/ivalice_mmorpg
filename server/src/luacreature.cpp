@@ -805,6 +805,43 @@ int luaCreatureSetOutfit(lua_State* L)
 	return 1;
 }
 
+int luaCreatureGetAnimation(lua_State* L)
+{
+	// creature:getAnimation()
+	const Creature* creature = getUserdata<const Creature>(L, 1);
+	if (creature) {
+		lua_pushnumber(L, creature->getCurrentOutfit().lookAnimation);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int luaCreatureSetAnimation(lua_State* L)
+{
+	// creature:setAnimation(frameGroup)
+	//
+	// Troca o frame group ativo: 0 = idle, 1 = andando, 2+ = grupos de acao
+	// (atacar, castar, tomar dano, morrer).
+	//
+	// Reusa internalCreatureChangeOutfit, que ja envia o outfit a TODOS os
+	// espectadores -- por isso a animacao e vista por todos os jogadores, e
+	// tambem por quem entrar no alcance depois, ja que o estado viaja junto
+	// do outfit em qualquer criatura enviada.
+	Creature* creature = getUserdata<Creature>(L, 1);
+	if (!creature) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	Outfit_t outfit = creature->getDefaultOutfit();
+	outfit.lookAnimation = getNumber<uint8_t>(L, 2);
+	creature->setDefaultOutfit(outfit);
+	g_game.internalCreatureChangeOutfit(creature, outfit);
+	pushBoolean(L, true);
+	return 1;
+}
+
 int luaCreatureGetCondition(lua_State* L)
 {
 	// creature:getCondition(conditionType[, conditionId = CONDITIONID_COMBAT[, subId = 0]])
@@ -1521,6 +1558,8 @@ void LuaScriptInterface::registerCreature()
 
 	registerMethod("Creature", "getOutfit", luaCreatureGetOutfit);
 	registerMethod("Creature", "setOutfit", luaCreatureSetOutfit);
+	registerMethod("Creature", "getAnimation", luaCreatureGetAnimation);
+	registerMethod("Creature", "setAnimation", luaCreatureSetAnimation);
 
 	registerMethod("Creature", "getCondition", luaCreatureGetCondition);
 	registerMethod("Creature", "addCondition", luaCreatureAddCondition);

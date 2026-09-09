@@ -122,6 +122,28 @@ void Outfit::draw(Point dest, Otc::Direction direction, uint walkAnimationPhase,
         if (g_game.getFeature(Otc::GameWingOffset) && m_wings) {
             wingBounce();
         }
+
+        // Grupo de acao ativo (atacar, castar, etc): a fase sai do range
+        // daquele grupo, sobrepondo o idle/andando calculado acima.
+        //
+        // As fases de todos os grupos sao concatenadas num range plano, entao
+        // e preciso somar o offset inicial do grupo -- e isso que
+        // getGroupPhaseBegin devolve.
+        if (m_animationGroup > FrameGroupMoving && type->hasFrameGroup(m_animationGroup)) {
+            const int groupPhases = type->getGroupPhaseCount(m_animationGroup);
+            int localPhase = 0;
+            if (groupPhases > 1) {
+                if (auto groupAnimator = type->getGroupAnimator(m_animationGroup)) {
+                    localPhase = groupAnimator->getPhase();
+                } else {
+                    const int ticks = std::max<int>(1, 1000 / groupPhases);
+                    localPhase = (g_clock.millis() % (ticks * groupPhases)) / ticks;
+                }
+                localPhase = std::max<int>(0, std::min<int>(localPhase, groupPhases - 1));
+            }
+            animationPhase = type->getGroupPhaseBegin(m_animationGroup) + localPhase;
+        }
+
         const int animationPhases = type->getAnimationPhases();
         if (animationPhases > 0) {
             animationPhase = std::max<int>(0, std::min<int>(animationPhase, animationPhases - 1));

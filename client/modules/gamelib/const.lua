@@ -350,8 +350,12 @@ GameAstraQuiverCountU16 = 141
 GameAstraOutfitStoreMode = 142
 GameAstraItemMetadata = 143
 GameZoneWeather = 144
+-- Byte de frame group ativo no outfit de criatura, para animacoes de acao
+-- visiveis por todos os jogadores. Tem que casar com GameFeature::
+-- CreatureAnimationGroup no servidor e Otc::GameCreatureAnimationGroup no C++.
+GameCreatureAnimationGroup = 145
 
-LastGameFeature = 145
+LastGameFeature = 146
 
 TextColors = {
   red        = '#F55E5E',

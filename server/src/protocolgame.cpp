@@ -2813,7 +2813,7 @@ void ProtocolGame::sendCreatureOutfit(const Creature* creature, const Outfit_t& 
 	NetworkMessage msg;
 	msg.addByte(0x8E);
 	msg.add<uint32_t>(creature->getID());
-	AddOutfit(msg, outfit);
+	AddOutfit(msg, outfit, true);
 	writeToOutputBuffer(msg);
 }
 
@@ -5263,10 +5263,10 @@ void ProtocolGame::AddCreature(NetworkMessage& msg, const Creature* creature, bo
 	msg.addByte(direction);
 
 	if (!creature->isInGhostMode() && !creature->isInvisible()) {
-		AddOutfit(msg, creature->getCurrentOutfit());
+		AddOutfit(msg, creature->getCurrentOutfit(), true);
 	} else {
 		static Outfit_t outfit;
-		AddOutfit(msg, outfit);
+		AddOutfit(msg, outfit, true);
 	}
 
 	LightInfo lightInfo = creature->getCreatureLight();
@@ -5445,7 +5445,7 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage& msg)
 	}
 }
 
-void ProtocolGame::AddOutfit(NetworkMessage& msg, const Outfit_t& outfit)
+void ProtocolGame::AddOutfit(NetworkMessage& msg, const Outfit_t& outfit, bool withAnimation)
 {
 	msg.add<uint16_t>(outfit.lookType);
 
@@ -5461,6 +5461,13 @@ void ProtocolGame::AddOutfit(NetworkMessage& msg, const Outfit_t& outfit)
 
 	if (isOTC || getVersion() != 861) {
 		msg.add<uint16_t>(outfit.lookMount);
+	}
+
+	// Frame group ativo. So para clientes OTC (um cliente Tibia original nao
+	// espera este byte) e so nos caminhos de criatura -- ver o comentario de
+	// withAnimation na declaracao.
+	if (isOTC && withAnimation && creatureAnimationGroupEnabled) {
+		msg.addByte(outfit.lookAnimation);
 	}
 }
 
@@ -5738,6 +5745,9 @@ void ProtocolGame::sendFeatures(bool advertiseAstraItemState)
 	features[GameFeature::CreatureIcons] = true;
 	features[GameFeature::ContainerPagination] = true;
 	features[GameFeature::BrowseField] = true;
+	// Anima recursos de acao no outfit (ver AddOutfit / withAnimation).
+	features[GameFeature::CreatureAnimationGroup] = true;
+	creatureAnimationGroupEnabled = true;
 	if (isAstraClient) {
 		features[GameFeature::PlayerRegenerationTime] = true;
 		features[GameFeature::ExperienceBonus] = true;

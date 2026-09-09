@@ -13,6 +13,10 @@ tools/rom.gba
 *.gba
 *.nds
 
+# ObjectBuilder: repositorio proprio (allanzinhodev/backlands-objectbuilder),
+# clonado aqui como ferramenta. Tem seu proprio git e seus proprios commits.
+tools/ObjectBuilder/
+
 # --- Dependencias compiladas (vcpkg) ---
 vcpkg_installed/
 .vcpkg_installed/
