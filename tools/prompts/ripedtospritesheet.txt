@@ -1,0 +1,23 @@
+passo a passo 
+essa sprites heet tem 1032 x 1104
+
+O resultado terá
+2 z-index
+x Frame Groups ( Idle, Idle weak,m Andando, Esquiva,  
+ 
+Passos
+1- Pegar a cor do primeiro pixel e substituir essa cor por #ff00ff
+
+Regras
+- Cada sequência de coluna é composta por 4 frames, nessa ordem, Norte, Leste, Sul, Oeste
+- A posição norte é a posição Oeste invertida horizontalmente
+- A posição Leste é a posição Sul invertida horizontalmente
+- Cada frame na entrada tem 24x48
+- Cada frame na saída tem 32x64 e deve ser alinha a esquerda e pra baixo a partir dessas medidas.
+
+Entrada
+Idle Sul Col 2 Linha 1
+Idle Oeste Col 6 Linha 1
+Idle Weak  
+
+Regras de sistema de animação de combates
