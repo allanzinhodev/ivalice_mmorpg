@@ -60,6 +60,10 @@ theforgottenserver*.exe
 # E versionado de proposito pelo upstream.
 server/tools/imbuments_scroll.gif
 
+# Backups locais do .dat feitos antes de mexer nos frame groups.
+*.dat.bak
+*.dat.pre-groups
+
 # --- Logs e saidas temporarias ---
 server/build-out.txt
 *.log
