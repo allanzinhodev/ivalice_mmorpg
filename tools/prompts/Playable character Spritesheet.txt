@@ -1,0 +1,27 @@
+Playable character Spritesheet
+
+Cada frame será convertido em  
+Especificações
+Width: 1
+Height: 2
+Layers: 1
+Pattern x: 4
+Pattern y: 1
+Pattern Z: 2 ( o Z-index 2 é quando o personagem está na água ).
+
+1. idle ( 2 frames ) 
+2. walk ( 2 frames )
+3. evade ( 1 frame ) O evade é a mesma lógica do hit, mas pra quando bloqueia, esquiva e afins.
+4. jump ( 2  frame ) O jump só faz sentido quando o player for trocar de andar.
+5. hit ( 1 frame ) Hit só não é priorizado no attack.
+6. dead ( 2 frames ) O Dead será o corpo do Personagem morto.
+7. attack ( 3 frames ) Animação de ataque é prioridade.
+8. weak ( 2 frames ) Weak é apenas quando o player tiver com o hp no vermelho e parado é a ultima prioridade.
+Cada frame deve ter 300ms
+
+Cada frame na entrade tem 24x48 e a ordem da spritesheet nas colunas estão Sul, Oeste, Na Água Sul e na Água Oeste.
+A saída deve ser Norte, Leste, Sul, Oeste, Ná água Norte, Na Água Leste, Ná Água Sul, Ná Água Oeste. Com saída de 32x64 alinha a esquerda baixo pra cada frame.
+
+
+os últimos 96x96 é o faceset 3x3
+
