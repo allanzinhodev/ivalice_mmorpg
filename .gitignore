@@ -4,11 +4,14 @@
 # suas proprias pastas; aqui ficam so as regras transversais.
 # ============================================================
 
-# --- ROM comercial de Final Fantasy Tactics Advance ---
+# --- ROMs comerciais de Final Fantasy Tactics ---
 # Nao versionar: risco de DMCA. O FFTAUtils espera que o usuario
 # forneca a ROM (ver tools/FFTAUtils/BIN/rom/PLACE_ROMFILE_ffta.gba_HERE).
+# .gba cobre o FFTA; .nds cobre o FFTA2 (Grimoire of the Rift), que e o mesmo
+# risco e passava batido -- tools/ffta2.nds ja tinha aparecido como untracked.
 tools/rom.gba
 *.gba
+*.nds
 
 # --- Dependencias compiladas (vcpkg) ---
 vcpkg_installed/
