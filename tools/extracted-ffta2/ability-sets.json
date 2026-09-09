@@ -1,0 +1,680 @@
+{
+  "generatedAt": "2026-09-09T04:49:26.753Z",
+  "delta": "0x200",
+  "source": "ffta2.nds @ 0x53d983c",
+  "count": 96,
+  "sets": [
+    {
+      "index": 0,
+      "firstAbility": 0,
+      "lastAbility": 0,
+      "count": 1,
+      "name": "None"
+    },
+    {
+      "index": 1,
+      "firstAbility": 52,
+      "lastAbility": 59,
+      "count": 8,
+      "name": "Arts of War"
+    },
+    {
+      "index": 2,
+      "firstAbility": 60,
+      "lastAbility": 67,
+      "count": 8,
+      "name": "Thievery"
+    },
+    {
+      "index": 3,
+      "firstAbility": 68,
+      "lastAbility": 75,
+      "count": 8,
+      "name": "White Magick"
+    },
+    {
+      "index": 4,
+      "firstAbility": 76,
+      "lastAbility": 84,
+      "count": 9,
+      "name": "Black Magick"
+    },
+    {
+      "index": 5,
+      "firstAbility": 85,
+      "lastAbility": 92,
+      "count": 8,
+      "name": "Precision"
+    },
+    {
+      "index": 6,
+      "firstAbility": 93,
+      "lastAbility": 100,
+      "count": 8,
+      "name": "Chivalry"
+    },
+    {
+      "index": 7,
+      "firstAbility": 101,
+      "lastAbility": 108,
+      "count": 8,
+      "name": "Pugilism"
+    },
+    {
+      "index": 8,
+      "firstAbility": 109,
+      "lastAbility": 116,
+      "count": 8,
+      "name": "Flair"
+    },
+    {
+      "index": 9,
+      "firstAbility": 117,
+      "lastAbility": 124,
+      "count": 8,
+      "name": "Ninjutsu"
+    },
+    {
+      "index": 10,
+      "firstAbility": 125,
+      "lastAbility": 132,
+      "count": 8,
+      "name": "Illusion"
+    },
+    {
+      "index": 11,
+      "firstAbility": 133,
+      "lastAbility": 152,
+      "count": 20,
+      "name": "Blue Magick"
+    },
+    {
+      "index": 12,
+      "firstAbility": 153,
+      "lastAbility": 160,
+      "count": 8,
+      "name": "Trapping"
+    },
+    {
+      "index": 13,
+      "firstAbility": 161,
+      "lastAbility": 168,
+      "count": 8,
+      "name": "High Magick"
+    },
+    {
+      "index": 14,
+      "firstAbility": 185,
+      "lastAbility": 192,
+      "count": 8,
+      "name": "Arts of War"
+    },
+    {
+      "index": 15,
+      "firstAbility": 193,
+      "lastAbility": 200,
+      "count": 8,
+      "name": "Discipline"
+    },
+    {
+      "index": 16,
+      "firstAbility": 201,
+      "lastAbility": 208,
+      "count": 8,
+      "name": "Dragon Soul"
+    },
+    {
+      "index": 17,
+      "firstAbility": 209,
+      "lastAbility": 216,
+      "count": 8,
+      "name": "Warding"
+    },
+    {
+      "index": 18,
+      "firstAbility": 217,
+      "lastAbility": 224,
+      "count": 8,
+      "name": "Sparring"
+    },
+    {
+      "index": 19,
+      "firstAbility": 225,
+      "lastAbility": 232,
+      "count": 8,
+      "name": "Martial Arts"
+    },
+    {
+      "index": 20,
+      "firstAbility": 233,
+      "lastAbility": 240,
+      "count": 8,
+      "name": "Intercession"
+    },
+    {
+      "index": 21,
+      "firstAbility": 241,
+      "lastAbility": 248,
+      "count": 8,
+      "name": "Sacred Blade"
+    },
+    {
+      "index": 22,
+      "firstAbility": 249,
+      "lastAbility": 256,
+      "count": 8,
+      "name": "Cannonry"
+    },
+    {
+      "index": 23,
+      "firstAbility": 257,
+      "lastAbility": 264,
+      "count": 8,
+      "name": "Sleight of Hand"
+    },
+    {
+      "index": 24,
+      "firstAbility": 323,
+      "lastAbility": 343,
+      "count": 21,
+      "name": "Beast Lore"
+    },
+    {
+      "index": 25,
+      "firstAbility": 265,
+      "lastAbility": 272,
+      "count": 8,
+      "name": "Time Magick"
+    },
+    {
+      "index": 26,
+      "firstAbility": 273,
+      "lastAbility": 279,
+      "count": 7,
+      "name": "Alchemy"
+    },
+    {
+      "index": 27,
+      "firstAbility": 280,
+      "lastAbility": 287,
+      "count": 8,
+      "name": "Arcane Magick"
+    },
+    {
+      "index": 28,
+      "firstAbility": 288,
+      "lastAbility": 295,
+      "count": 8,
+      "name": "Sagacity"
+    },
+    {
+      "index": 29,
+      "firstAbility": 296,
+      "lastAbility": 303,
+      "count": 8,
+      "name": "Lore"
+    },
+    {
+      "index": 30,
+      "firstAbility": 304,
+      "lastAbility": 322,
+      "count": 19,
+      "name": "Turning"
+    },
+    {
+      "index": 31,
+      "firstAbility": 344,
+      "lastAbility": 351,
+      "count": 8,
+      "name": "Fencing"
+    },
+    {
+      "index": 32,
+      "firstAbility": 352,
+      "lastAbility": 359,
+      "count": 8,
+      "name": "Green Magick"
+    },
+    {
+      "index": 33,
+      "firstAbility": 360,
+      "lastAbility": 367,
+      "count": 8,
+      "name": "Elemental Magick"
+    },
+    {
+      "index": 34,
+      "firstAbility": 368,
+      "lastAbility": 375,
+      "count": 8,
+      "name": "Red Magick"
+    },
+    {
+      "index": 35,
+      "firstAbility": 376,
+      "lastAbility": 383,
+      "count": 8,
+      "name": "Blade Arts"
+    },
+    {
+      "index": 36,
+      "firstAbility": 384,
+      "lastAbility": 391,
+      "count": 8,
+      "name": "Summoning Magick"
+    },
+    {
+      "index": 37,
+      "firstAbility": 392,
+      "lastAbility": 399,
+      "count": 8,
+      "name": "Assassination"
+    },
+    {
+      "index": 38,
+      "firstAbility": 400,
+      "lastAbility": 407,
+      "count": 8,
+      "name": "Sharpshooting"
+    },
+    {
+      "index": 39,
+      "firstAbility": 408,
+      "lastAbility": 415,
+      "count": 8,
+      "name": "Calling"
+    },
+    {
+      "index": 40,
+      "firstAbility": 416,
+      "lastAbility": 423,
+      "count": 8,
+      "name": "Onslaught"
+    },
+    {
+      "index": 41,
+      "firstAbility": 424,
+      "lastAbility": 431,
+      "count": 8,
+      "name": "Gunmanship"
+    },
+    {
+      "index": 42,
+      "firstAbility": 432,
+      "lastAbility": 438,
+      "count": 7,
+      "name": "Acrobatics"
+    },
+    {
+      "index": 43,
+      "firstAbility": 439,
+      "lastAbility": 446,
+      "count": 8,
+      "name": "Clockwork"
+    },
+    {
+      "index": 44,
+      "firstAbility": 447,
+      "lastAbility": 454,
+      "count": 8,
+      "name": "Chococraft"
+    },
+    {
+      "index": 45,
+      "firstAbility": 455,
+      "lastAbility": 462,
+      "count": 8,
+      "name": "Ballistics"
+    },
+    {
+      "index": 46,
+      "firstAbility": 463,
+      "lastAbility": 470,
+      "count": 8,
+      "name": "Savagery"
+    },
+    {
+      "index": 47,
+      "firstAbility": 471,
+      "lastAbility": 478,
+      "count": 8,
+      "name": "Survivalism"
+    },
+    {
+      "index": 48,
+      "firstAbility": 479,
+      "lastAbility": 486,
+      "count": 8,
+      "name": "Astutia"
+    },
+    {
+      "index": 49,
+      "firstAbility": 487,
+      "lastAbility": 494,
+      "count": 8,
+      "name": "Brutality"
+    },
+    {
+      "index": 50,
+      "firstAbility": 495,
+      "lastAbility": 502,
+      "count": 8,
+      "name": "Devastation"
+    },
+    {
+      "index": 51,
+      "firstAbility": 503,
+      "lastAbility": 510,
+      "count": 8,
+      "name": "Feralism"
+    },
+    {
+      "index": 52,
+      "firstAbility": 511,
+      "lastAbility": 518,
+      "count": 8,
+      "name": "Geomancy"
+    },
+    {
+      "index": 53,
+      "firstAbility": 550,
+      "lastAbility": 552,
+      "count": 3,
+      "name": "Taktak"
+    },
+    {
+      "index": 54,
+      "firstAbility": 553,
+      "lastAbility": 557,
+      "count": 5,
+      "name": "Mischief"
+    },
+    {
+      "index": 55,
+      "firstAbility": 558,
+      "lastAbility": 564,
+      "count": 7,
+      "name": "Darkness"
+    },
+    {
+      "index": 56,
+      "firstAbility": 565,
+      "lastAbility": 570,
+      "count": 6,
+      "name": "Maw"
+    },
+    {
+      "index": 57,
+      "firstAbility": 571,
+      "lastAbility": 574,
+      "count": 4,
+      "name": "Enticement"
+    },
+    {
+      "index": 58,
+      "firstAbility": 575,
+      "lastAbility": 579,
+      "count": 5,
+      "name": "Call of the Wild"
+    },
+    {
+      "index": 59,
+      "firstAbility": 580,
+      "lastAbility": 586,
+      "count": 7,
+      "name": "Sands"
+    },
+    {
+      "index": 60,
+      "firstAbility": 587,
+      "lastAbility": 593,
+      "count": 7,
+      "name": "Shell Crush"
+    },
+    {
+      "index": 61,
+      "firstAbility": 594,
+      "lastAbility": 602,
+      "count": 9,
+      "name": "Halitosis"
+    },
+    {
+      "index": 62,
+      "firstAbility": 603,
+      "lastAbility": 605,
+      "count": 3,
+      "name": "Impale"
+    },
+    {
+      "index": 63,
+      "firstAbility": 606,
+      "lastAbility": 608,
+      "count": 3,
+      "name": "Deadly Nightshade"
+    },
+    {
+      "index": 64,
+      "firstAbility": 609,
+      "lastAbility": 619,
+      "count": 11,
+      "name": "Territorialism"
+    },
+    {
+      "index": 65,
+      "firstAbility": 620,
+      "lastAbility": 627,
+      "count": 8,
+      "name": "Chocobo Wiles"
+    },
+    {
+      "index": 66,
+      "firstAbility": 628,
+      "lastAbility": 632,
+      "count": 5,
+      "name": "Metamorphosis"
+    },
+    {
+      "index": 67,
+      "firstAbility": 633,
+      "lastAbility": 635,
+      "count": 3,
+      "name": "Volatility"
+    },
+    {
+      "index": 68,
+      "firstAbility": 636,
+      "lastAbility": 637,
+      "count": 2,
+      "name": "Death"
+    },
+    {
+      "index": 69,
+      "firstAbility": 638,
+      "lastAbility": 641,
+      "count": 4,
+      "name": "s Grasp"
+    },
+    {
+      "index": 70,
+      "firstAbility": 642,
+      "lastAbility": 645,
+      "count": 4,
+      "name": "Ghostly Touch"
+    },
+    {
+      "index": 71,
+      "firstAbility": 646,
+      "lastAbility": 649,
+      "count": 4,
+      "name": "Nightmare"
+    },
+    {
+      "index": 72,
+      "firstAbility": 650,
+      "lastAbility": 655,
+      "count": 6,
+      "name": "Parasite"
+    },
+    {
+      "index": 73,
+      "firstAbility": 656,
+      "lastAbility": 660,
+      "count": 5,
+      "name": "Enthrallment"
+    },
+    {
+      "index": 74,
+      "firstAbility": 661,
+      "lastAbility": 665,
+      "count": 5,
+      "name": "Revenge"
+    },
+    {
+      "index": 75,
+      "firstAbility": 666,
+      "lastAbility": 668,
+      "count": 3,
+      "name": "Brute Force"
+    },
+    {
+      "index": 76,
+      "firstAbility": 669,
+      "lastAbility": 671,
+      "count": 3,
+      "name": "Bestial Force"
+    },
+    {
+      "index": 77,
+      "firstAbility": 672,
+      "lastAbility": 677,
+      "count": 6,
+      "name": "Breath"
+    },
+    {
+      "index": 78,
+      "firstAbility": 678,
+      "lastAbility": 683,
+      "count": 6,
+      "name": "Wyrmcraft"
+    },
+    {
+      "index": 79,
+      "firstAbility": 684,
+      "lastAbility": 685,
+      "count": 2,
+      "name": "Paper"
+    },
+    {
+      "index": 80,
+      "firstAbility": 571,
+      "lastAbility": 574,
+      "count": 4,
+      "name": "Rock"
+    },
+    {
+      "index": 81,
+      "firstAbility": 689,
+      "lastAbility": 691,
+      "count": 3,
+      "name": "Scissors"
+    },
+    {
+      "index": 82,
+      "firstAbility": 692,
+      "lastAbility": 697,
+      "count": 6,
+      "name": "Pom"
+    },
+    {
+      "index": 83,
+      "firstAbility": 698,
+      "lastAbility": 701,
+      "count": 4,
+      "name": "pom Pur"
+    },
+    {
+      "index": 84,
+      "firstAbility": 702,
+      "lastAbility": 714,
+      "count": 13,
+      "name": "Ambush"
+    },
+    {
+      "index": 85,
+      "firstAbility": 715,
+      "lastAbility": 718,
+      "count": 4,
+      "name": "Ambrosia"
+    },
+    {
+      "index": 86,
+      "firstAbility": 1,
+      "lastAbility": 19,
+      "count": 19,
+      "name": "Elimination"
+    },
+    {
+      "index": 87,
+      "firstAbility": 20,
+      "lastAbility": 38,
+      "count": 19,
+      "name": "Abyss"
+    },
+    {
+      "index": 88,
+      "firstAbility": 39,
+      "lastAbility": 51,
+      "count": 13,
+      "name": "Dark Magicks"
+    },
+    {
+      "index": 89,
+      "firstAbility": 169,
+      "lastAbility": 176,
+      "count": 8,
+      "name": "Items"
+    },
+    {
+      "index": 90,
+      "firstAbility": 519,
+      "lastAbility": 526,
+      "count": 8,
+      "name": "Gyakuten Item"
+    },
+    {
+      "index": 91,
+      "firstAbility": 527,
+      "lastAbility": 534,
+      "count": 8,
+      "name": "Scion"
+    },
+    {
+      "index": 92,
+      "firstAbility": 177,
+      "lastAbility": 184,
+      "count": 8,
+      "name": "s Wrath"
+    },
+    {
+      "index": 93,
+      "firstAbility": 535,
+      "lastAbility": 541,
+      "count": 7,
+      "name": "Piracy"
+    },
+    {
+      "index": 94,
+      "firstAbility": 542,
+      "lastAbility": 549,
+      "count": 8,
+      "name": "Dance"
+    },
+    {
+      "index": 95,
+      "firstAbility": 719,
+      "lastAbility": 721,
+      "count": 3,
+      "name": "Song"
+    }
+  ]
+}
