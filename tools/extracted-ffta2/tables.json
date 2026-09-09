@@ -1,0 +1,59 @@
+{
+  "rom": "ffta2.nds",
+  "region": "Europa",
+  "gameCode": "A6FP",
+  "note": "O ROM map publicado e da versao americana. Nesta ROM as tabelas estao em publishedUS + delta.",
+  "delta": "0x200",
+  "tables": {
+    "specialUnitGraphics": {
+      "publishedUS": "0x53d5bec",
+      "thisRom": "0x53d5dec",
+      "entrySize": 28,
+      "entryCount": 114,
+      "bytes": 3192
+    },
+    "jobData": {
+      "publishedUS": "0x53d6864",
+      "thisRom": "0x53d6a64",
+      "entrySize": 72,
+      "entryCount": 163,
+      "bytes": 11736
+    },
+    "abilitySets": {
+      "publishedUS": "0x53d963c",
+      "thisRom": "0x53d983c",
+      "entrySize": 12,
+      "entryCount": 96,
+      "bytes": 1152
+    },
+    "abilityTable": {
+      "publishedUS": "0x53d9abc",
+      "thisRom": "0x53d9cbc",
+      "entrySize": 12,
+      "entryCount": 722,
+      "bytes": 8664
+    },
+    "abilityData": {
+      "publishedUS": "0x53dbc94",
+      "thisRom": "0x53dbe94",
+      "entrySize": 52,
+      "entryCount": 822,
+      "bytes": 42744
+    },
+    "abilityAnimations": {
+      "publishedUS": "0x53e638c",
+      "thisRom": "0x53e658c",
+      "entrySize": 24,
+      "entryCount": 822,
+      "bytes": 19728
+    },
+    "equipmentData": {
+      "publishedUS": "0x53fb748",
+      "thisRom": "0x53fb948",
+      "entrySize": 40,
+      "entryCount": 412,
+      "bytes": 16480
+    }
+  },
+  "generatedAt": "2026-09-09T03:05:28.483Z"
+}
