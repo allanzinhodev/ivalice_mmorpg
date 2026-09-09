@@ -7,8 +7,11 @@ description: Frame groups estendidos do ivalice - animações de ação (atacar,
 
 O ivalice suporta mais de 2 frame groups por criatura, para animações de ação
 num jogo de tactics. A implementação está **completa e compilando nos três
-lados**, mas a **validação end-to-end ainda não foi feita** — falta um `.dat`
-com 3+ grupos, que depende do Object Builder compilado.
+lados**, e o `.dat` com 4 grupos **já foi validado carregando no client**.
+
+Falta a validação **em tela**: a animação tocando (passo 3) e sendo vista por
+outro jogador (passo 4) — os dois precisam de interação manual, porque
+`SendKeys`/`mouse_event` não chegam de forma confiável ao client OpenGL.
 
 ## O que já está pronto
 
@@ -16,6 +19,7 @@ com 3+ grupos, que depende do Object Builder compilado.
 |---|---|---|
 | Formato `.dat` | Sempre aceitou N grupos | `groupCount` é um byte; reader/writer já iteram por ele |
 | Object Builder | Corrigido, **não compilado** | `allanzinhodev/backlands-objectbuilder`, commit `5dc4213` |
+| `.dat` com 4 grupos | **Validado** | `tools/datapack-gen/add-frame-groups.js` |
 | Client (leitura) | Pronto | `ThingType::unserialize` guarda animator/fases por grupo |
 | Client (desenho) | Pronto | `Outfit::draw` usa o range do grupo ativo |
 | Rede | Pronto | `lookAnimation` no `Outfit_t`, feature 145 |
@@ -40,24 +44,29 @@ e `GameCreatureAnimationGroup` (client/modules/gamelib/const.lua).
 
 ## Próximos passos da validação
 
-### Passo 1 — compilar o Object Builder (BLOQUEIO ATUAL)
+### Passo 1 — compilar o Object Builder (contornado)
 
 Exige **Adobe AIR SDK 51.2.2.6**, que não está instalado nesta máquina
 (`asconfig.json` na raiz de `tools/ObjectBuilder`). Sem isso não há como gerar
 um `.dat` com grupos extras pela interface.
 
-Alternativa se o SDK continuar indisponível: escrever um gerador em Node que
-emita um `.dat` com 3+ grupos, no espírito de `tools/datapack-gen`. O formato
-está documentado — o parser do client em `ThingType::unserialize` é a
-referência. Isso destrava os passos 2 a 5 sem depender do editor.
+**Contornado**: `tools/datapack-gen/add-frame-groups.js` adiciona os grupos
+direto no `.dat`, sem passar pelo editor. Os 4 outfits ja tem 4 grupos (idle,
+andando, atacar, castar), reusando sprites existentes -- valida o caminho, nao
+a arte. Com os sprites prontos, trocar os ids no script.
 
-### Passo 2 — o `.dat` carrega com 3+ grupos
+O editor continua necessario para trabalho de arte de verdade.
+
+### Passo 2 — o `.dat` carrega com 3+ grupos — CONCLUIDO
 
 Gerar um `.dat` com pelo menos 3 grupos e conferir que o client:
 
 - lê todos os grupos (não só 2),
 - soma as fases corretamente em `m_animationPhases`,
 - guarda um animator para cada grupo.
+
+Verificado: `.dat` de 695 -> 1231 bytes, parse independente confirma 4 grupos
+por outfit, e o client carrega e renderiza in-game sem nenhum erro.
 
 O ponto exato que estava quebrado antes: um `switch` só tratava os tipos 0 e 1,
 e o animator de um grupo 2+ era **silenciosamente descartado** — os sprites
