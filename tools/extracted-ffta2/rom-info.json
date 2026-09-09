@@ -1,0 +1,40 @@
+{
+  "file": "ffta2.nds",
+  "bytes": 134217728,
+  "internalTitle": "FFTA2-EU",
+  "gameCode": "A6FP",
+  "makerCode": "GD",
+  "romVersion": 0,
+  "region": "Europa",
+  "game": "Final Fantasy Tactics A2: Grimoire of the Rift",
+  "platform": "Nintendo DS",
+  "md5": "54a3e8694acf490357a1d32a407e03b1",
+  "sha1": "09a4a90eb05d187e7cd896497866d58da36353b0",
+  "matchesKnownGoodDump": null,
+  "arm9": {
+    "romOffset": 16384,
+    "entry": 33556480,
+    "ram": 33554432,
+    "size": 1185400
+  },
+  "arm7": {
+    "romOffset": 1581568,
+    "entry": 37224448,
+    "ram": 37224448,
+    "size": 159192
+  },
+  "fnt": {
+    "offset": 1740800,
+    "size": 233
+  },
+  "fat": {
+    "offset": 1741312,
+    "size": 296
+  },
+  "fileCount": 37,
+  "dirCount": 3,
+  "namedFiles": 19,
+  "usedRomSize": 128955180,
+  "generatedAt": "2026-09-09T01:33:07.833Z",
+  "source": "GBATEK (DS Cartridge Header / NitroROM e NitroARC File Systems)"
+}

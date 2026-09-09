@@ -1,0 +1,345 @@
+{
+  "generatedAt": "2026-09-09T01:33:07.833Z",
+  "fileCount": 37,
+  "narcSubFileCount": 0,
+  "byGuess": {
+    "desconhecido": 20,
+    "RIFF/WAV": 16,
+    "comprimido LZ77 (descomprime para ~15281472 bytes)": 1
+  },
+  "files": [
+    {
+      "id": 0,
+      "name": null,
+      "offset": 1203200,
+      "offsetHex": "0x125c00",
+      "size": 20608,
+      "magic": null,
+      "guess": "desconhecido"
+    },
+    {
+      "id": 1,
+      "name": null,
+      "offset": 1224192,
+      "offsetHex": "0x12ae00",
+      "size": 32,
+      "magic": null,
+      "guess": "desconhecido"
+    },
+    {
+      "id": 2,
+      "name": null,
+      "offset": 1224704,
+      "offsetHex": "0x12b000",
+      "size": 416,
+      "magic": null,
+      "guess": "comprimido LZ77 (descomprime para ~15281472 bytes)"
+    },
+    {
+      "id": 3,
+      "name": null,
+      "offset": 1225216,
+      "offsetHex": "0x12b200",
+      "size": 49376,
+      "magic": null,
+      "guess": "desconhecido"
+    },
+    {
+      "id": 4,
+      "name": null,
+      "offset": 1274880,
+      "offsetHex": "0x137400",
+      "size": 45472,
+      "magic": null,
+      "guess": "desconhecido"
+    },
+    {
+      "id": 5,
+      "name": null,
+      "offset": 1320448,
+      "offsetHex": "0x142600",
+      "size": 24064,
+      "magic": null,
+      "guess": "desconhecido"
+    },
+    {
+      "id": 6,
+      "name": null,
+      "offset": 1344512,
+      "offsetHex": "0x148400",
+      "size": 12864,
+      "magic": null,
+      "guess": "desconhecido"
+    },
+    {
+      "id": 7,
+      "name": null,
+      "offset": 1357824,
+      "offsetHex": "0x14b800",
+      "size": 63904,
+      "magic": null,
+      "guess": "desconhecido"
+    },
+    {
+      "id": 8,
+      "name": null,
+      "offset": 1421824,
+      "offsetHex": "0x15b200",
+      "size": 27520,
+      "magic": "8@-i",
+      "guess": "desconhecido"
+    },
+    {
+      "id": 9,
+      "name": null,
+      "offset": 1449472,
+      "offsetHex": "0x161e00",
+      "size": 7840,
+      "magic": "pG-i",
+      "guess": "desconhecido"
+    },
+    {
+      "id": 10,
+      "name": null,
+      "offset": 1457664,
+      "offsetHex": "0x163e00",
+      "size": 10304,
+      "magic": null,
+      "guess": "desconhecido"
+    },
+    {
+      "id": 11,
+      "name": null,
+      "offset": 1468416,
+      "offsetHex": "0x166800",
+      "size": 68832,
+      "magic": "xO-i",
+      "guess": "desconhecido"
+    },
+    {
+      "id": 12,
+      "name": null,
+      "offset": 1537536,
+      "offsetHex": "0x177600",
+      "size": 17920,
+      "magic": "p@-i",
+      "guess": "desconhecido"
+    },
+    {
+      "id": 13,
+      "name": null,
+      "offset": 1555456,
+      "offsetHex": "0x17bc00",
+      "size": 21024,
+      "magic": null,
+      "guess": "desconhecido"
+    },
+    {
+      "id": 14,
+      "name": null,
+      "offset": 1576960,
+      "offsetHex": "0x181000",
+      "size": 1120,
+      "magic": "x@-i",
+      "guess": "desconhecido"
+    },
+    {
+      "id": 15,
+      "name": null,
+      "offset": 1578496,
+      "offsetHex": "0x181600",
+      "size": 1728,
+      "magic": null,
+      "guess": "desconhecido"
+    },
+    {
+      "id": 16,
+      "name": null,
+      "offset": 1580544,
+      "offsetHex": "0x181e00",
+      "size": 32,
+      "magic": null,
+      "guess": "desconhecido"
+    },
+    {
+      "id": 17,
+      "name": null,
+      "offset": 1581056,
+      "offsetHex": "0x182000",
+      "size": 32,
+      "magic": null,
+      "guess": "desconhecido"
+    },
+    {
+      "id": 18,
+      "name": "/master/effect_file.bin",
+      "offset": 1744384,
+      "offsetHex": "0x1a9e00",
+      "size": 54,
+      "magic": null,
+      "guess": "desconhecido"
+    },
+    {
+      "id": 19,
+      "name": "/master/pc.bin",
+      "offset": 1744896,
+      "offsetHex": "0x1aa000",
+      "size": 86510888,
+      "magic": null,
+      "guess": "desconhecido"
+    },
+    {
+      "id": 20,
+      "name": "/master/pc.idx",
+      "offset": 88256000,
+      "offsetHex": "0x542ae00",
+      "size": 20424,
+      "magic": null,
+      "guess": "desconhecido"
+    },
+    {
+      "id": 21,
+      "name": "/strm/bgm18.bin",
+      "offset": 88276480,
+      "offsetHex": "0x542fe00",
+      "size": 2265644,
+      "magic": "RIFF",
+      "guess": "RIFF/WAV"
+    },
+    {
+      "id": 22,
+      "name": "/strm/bgm19.bin",
+      "offset": 90542592,
+      "offsetHex": "0x5659200",
+      "size": 2707244,
+      "magic": "RIFF",
+      "guess": "RIFF/WAV"
+    },
+    {
+      "id": 23,
+      "name": "/strm/bgm20.bin",
+      "offset": 93250048,
+      "offsetHex": "0x58ee200",
+      "size": 2124844,
+      "magic": "RIFF",
+      "guess": "RIFF/WAV"
+    },
+    {
+      "id": 24,
+      "name": "/strm/bgm21.bin",
+      "offset": 95375360,
+      "offsetHex": "0x5af5000",
+      "size": 2003244,
+      "magic": "RIFF",
+      "guess": "RIFF/WAV"
+    },
+    {
+      "id": 25,
+      "name": "/strm/bgm22.bin",
+      "offset": 97378816,
+      "offsetHex": "0x5cde200",
+      "size": 2022444,
+      "magic": "RIFF",
+      "guess": "RIFF/WAV"
+    },
+    {
+      "id": 26,
+      "name": "/strm/bgm23.bin",
+      "offset": 99401728,
+      "offsetHex": "0x5ecc000",
+      "size": 3072044,
+      "magic": "RIFF",
+      "guess": "RIFF/WAV"
+    },
+    {
+      "id": 27,
+      "name": "/strm/bgm24.bin",
+      "offset": 102474240,
+      "offsetHex": "0x61ba200",
+      "size": 2508844,
+      "magic": "RIFF",
+      "guess": "RIFF/WAV"
+    },
+    {
+      "id": 28,
+      "name": "/strm/bgm25.bin",
+      "offset": 104983552,
+      "offsetHex": "0x641ec00",
+      "size": 3033644,
+      "magic": "RIFF",
+      "guess": "RIFF/WAV"
+    },
+    {
+      "id": 29,
+      "name": "/strm/bgm26.bin",
+      "offset": 108017664,
+      "offsetHex": "0x6703800",
+      "size": 3628844,
+      "magic": "RIFF",
+      "guess": "RIFF/WAV"
+    },
+    {
+      "id": 30,
+      "name": "/strm/bgm27.bin",
+      "offset": 111646720,
+      "offsetHex": "0x6a79800",
+      "size": 2265644,
+      "magic": "RIFF",
+      "guess": "RIFF/WAV"
+    },
+    {
+      "id": 31,
+      "name": "/strm/bgm28.bin",
+      "offset": 113912832,
+      "offsetHex": "0x6ca2c00",
+      "size": 2624044,
+      "magic": "RIFF",
+      "guess": "RIFF/WAV"
+    },
+    {
+      "id": 32,
+      "name": "/strm/bgm29.bin",
+      "offset": 116537344,
+      "offsetHex": "0x6f23800",
+      "size": 2323244,
+      "magic": "RIFF",
+      "guess": "RIFF/WAV"
+    },
+    {
+      "id": 33,
+      "name": "/strm/bgm32.bin",
+      "offset": 118860800,
+      "offsetHex": "0x715ac00",
+      "size": 2380844,
+      "magic": "RIFF",
+      "guess": "RIFF/WAV"
+    },
+    {
+      "id": 34,
+      "name": "/strm/bgm35.bin",
+      "offset": 121242112,
+      "offsetHex": "0x73a0200",
+      "size": 3174444,
+      "magic": "RIFF",
+      "guess": "RIFF/WAV"
+    },
+    {
+      "id": 35,
+      "name": "/strm/bgm52.bin",
+      "offset": 124417024,
+      "offsetHex": "0x76a7400",
+      "size": 2099244,
+      "magic": "RIFF",
+      "guess": "RIFF/WAV"
+    },
+    {
+      "id": 36,
+      "name": "/strm/bgm53.bin",
+      "offset": 126516736,
+      "offsetHex": "0x78a7e00",
+      "size": 2438444,
+      "magic": "RIFF",
+      "guess": "RIFF/WAV"
+    }
+  ]
+}
