@@ -41,7 +41,7 @@
     "Monstro 0x27": 5,
     "Monstro 0x28": 1
   },
-  "generatedAt": "2026-09-09T03:05:28.490Z",
+  "generatedAt": "2026-09-09T04:49:26.595Z",
   "jobs": [
     {
       "index": 0,
@@ -107,7 +107,9 @@
       "gender": "Ambiguo",
       "topScreenSprite": 0,
       "enemyTopScreenSprite": 0,
-      "equipment": []
+      "equipment": [],
+      "name": "None",
+      "abilitySetName": null
     },
     {
       "index": 1,
@@ -184,7 +186,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Soldier",
+      "abilitySetName": "Arts of War"
     },
     {
       "index": 2,
@@ -257,7 +261,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Thief",
+      "abilitySetName": "Thievery"
     },
     {
       "index": 3,
@@ -331,7 +337,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "White Mage",
+      "abilitySetName": "White Magick"
     },
     {
       "index": 4,
@@ -405,7 +413,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Black Mage",
+      "abilitySetName": "Black Magick"
     },
     {
       "index": 5,
@@ -478,7 +488,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Archer",
+      "abilitySetName": "Precision"
     },
     {
       "index": 6,
@@ -554,7 +566,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Paladin",
+      "abilitySetName": "Chivalry"
     },
     {
       "index": 7,
@@ -627,7 +641,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Fighter",
+      "abilitySetName": "Pugilism"
     },
     {
       "index": 8,
@@ -700,7 +716,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Parivir",
+      "abilitySetName": "Flair"
     },
     {
       "index": 9,
@@ -773,7 +791,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Ninja",
+      "abilitySetName": "Ninjutsu"
     },
     {
       "index": 10,
@@ -847,7 +867,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Illusionist",
+      "abilitySetName": "Illusion"
     },
     {
       "index": 11,
@@ -921,7 +943,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Blue Mage",
+      "abilitySetName": "Blue Magick"
     },
     {
       "index": 12,
@@ -995,7 +1019,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Hunter",
+      "abilitySetName": "Trapping"
     },
     {
       "index": 13,
@@ -1069,7 +1095,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Seer",
+      "abilitySetName": "High Magick"
     },
     {
       "index": 14,
@@ -1146,7 +1174,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Warrior",
+      "abilitySetName": "Arts of War"
     },
     {
       "index": 15,
@@ -1218,7 +1248,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "White Monk",
+      "abilitySetName": "Discipline"
     },
     {
       "index": 16,
@@ -1292,7 +1324,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Dragoon",
+      "abilitySetName": "Dragon Soul"
     },
     {
       "index": 17,
@@ -1368,7 +1402,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Defender",
+      "abilitySetName": "Warding"
     },
     {
       "index": 18,
@@ -1441,7 +1477,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Gladiator",
+      "abilitySetName": "Sparring"
     },
     {
       "index": 19,
@@ -1514,7 +1552,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Master Monk",
+      "abilitySetName": "Martial Arts"
     },
     {
       "index": 20,
@@ -1588,7 +1628,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Bishop",
+      "abilitySetName": "Intercession"
     },
     {
       "index": 21,
@@ -1664,7 +1706,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Templar",
+      "abilitySetName": "Sacred Blade"
     },
     {
       "index": 22,
@@ -1737,7 +1781,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Cannoneer",
+      "abilitySetName": "Cannonry"
     },
     {
       "index": 23,
@@ -1810,7 +1856,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Trickster",
+      "abilitySetName": "Sleight of Hand"
     },
     {
       "index": 24,
@@ -1884,7 +1932,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "White Mage",
+      "abilitySetName": "White Magick"
     },
     {
       "index": 25,
@@ -1958,7 +2008,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Black Mage",
+      "abilitySetName": "Black Magick"
     },
     {
       "index": 26,
@@ -2031,7 +2083,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Beastmaster",
+      "abilitySetName": "Beast Lore"
     },
     {
       "index": 27,
@@ -2105,7 +2159,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Time Mage",
+      "abilitySetName": "Time Magick"
     },
     {
       "index": 28,
@@ -2179,7 +2235,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Illusionist",
+      "abilitySetName": "Illusion"
     },
     {
       "index": 29,
@@ -2252,7 +2310,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Alchemist",
+      "abilitySetName": "Alchemy"
     },
     {
       "index": 30,
@@ -2326,7 +2386,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Arcanist",
+      "abilitySetName": "Arcane Magick"
     },
     {
       "index": 31,
@@ -2401,7 +2463,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Sage",
+      "abilitySetName": "Sagacity"
     },
     {
       "index": 32,
@@ -2474,7 +2538,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Scholar",
+      "abilitySetName": "Lore"
     },
     {
       "index": 33,
@@ -2554,7 +2620,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Keeper",
+      "abilitySetName": "Turning"
     },
     {
       "index": 34,
@@ -2629,7 +2697,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Fencer",
+      "abilitySetName": "Fencing"
     },
     {
       "index": 35,
@@ -2704,7 +2774,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "White Mage",
+      "abilitySetName": "White Magick"
     },
     {
       "index": 36,
@@ -2780,7 +2852,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Green Mage",
+      "abilitySetName": "Green Magick"
     },
     {
       "index": 37,
@@ -2854,7 +2928,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Archer",
+      "abilitySetName": "Precision"
     },
     {
       "index": 38,
@@ -2928,7 +3004,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Elementalist",
+      "abilitySetName": "Elemental Magick"
     },
     {
       "index": 39,
@@ -3003,7 +3081,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Red Mage",
+      "abilitySetName": "Red Magick"
     },
     {
       "index": 40,
@@ -3077,7 +3157,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Spellblade",
+      "abilitySetName": "Blade Arts"
     },
     {
       "index": 41,
@@ -3152,7 +3234,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Summoner",
+      "abilitySetName": "Summoning Magick"
     },
     {
       "index": 42,
@@ -3227,7 +3311,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Assassin",
+      "abilitySetName": "Assassination"
     },
     {
       "index": 43,
@@ -3301,7 +3387,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Sniper",
+      "abilitySetName": "Sharpshooting"
     },
     {
       "index": 44,
@@ -3374,7 +3462,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Animist",
+      "abilitySetName": "Calling"
     },
     {
       "index": 45,
@@ -3447,7 +3537,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Thief",
+      "abilitySetName": "Thievery"
     },
     {
       "index": 46,
@@ -3521,7 +3613,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Black Mage",
+      "abilitySetName": "Black Magick"
     },
     {
       "index": 47,
@@ -3596,7 +3690,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Moogle Knight",
+      "abilitySetName": "Onslaught"
     },
     {
       "index": 48,
@@ -3669,7 +3765,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Fusilier",
+      "abilitySetName": "Gunmanship"
     },
     {
       "index": 49,
@@ -3742,7 +3840,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Juggler",
+      "abilitySetName": "Acrobatics"
     },
     {
       "index": 50,
@@ -3815,7 +3915,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Tinker",
+      "abilitySetName": "Clockwork"
     },
     {
       "index": 51,
@@ -3889,7 +3991,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Time Mage",
+      "abilitySetName": "Time Magick"
     },
     {
       "index": 52,
@@ -3980,7 +4084,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Chocobo Knight",
+      "abilitySetName": "Chococraft"
     },
     {
       "index": 53,
@@ -4053,7 +4159,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Flintlock",
+      "abilitySetName": "Ballistics"
     },
     {
       "index": 54,
@@ -4126,7 +4234,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Berserker",
+      "abilitySetName": "Savagery"
     },
     {
       "index": 55,
@@ -4200,7 +4310,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Ranger",
+      "abilitySetName": "Survivalism"
     },
     {
       "index": 56,
@@ -4275,7 +4387,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Lanista",
+      "abilitySetName": "Astutia"
     },
     {
       "index": 57,
@@ -4352,7 +4466,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Viking",
+      "abilitySetName": "Brutality"
     },
     {
       "index": 58,
@@ -4427,7 +4543,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Hunter",
+      "abilitySetName": "Trapping"
     },
     {
       "index": 59,
@@ -4504,7 +4622,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Raptor",
+      "abilitySetName": "Devastation"
     },
     {
       "index": 60,
@@ -4580,7 +4700,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Ravager",
+      "abilitySetName": "Feralism"
     },
     {
       "index": 61,
@@ -4655,7 +4777,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Geomancer",
+      "abilitySetName": "Geomancy"
     },
     {
       "index": 62,
@@ -4732,7 +4856,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Baknamy",
+      "abilitySetName": "Taktak"
     },
     {
       "index": 63,
@@ -4809,7 +4935,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Luchorpan",
+      "abilitySetName": "Taktak"
     },
     {
       "index": 64,
@@ -4886,7 +5014,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Sprite",
+      "abilitySetName": "Mischief"
     },
     {
       "index": 65,
@@ -4963,7 +5093,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Banshee",
+      "abilitySetName": "Mischief"
     },
     {
       "index": 66,
@@ -5040,7 +5172,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Lamia",
+      "abilitySetName": "Darkness"
     },
     {
       "index": 67,
@@ -5117,7 +5251,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Lilith",
+      "abilitySetName": "Darkness"
     },
     {
       "index": 68,
@@ -5194,7 +5330,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Lamashtu",
+      "abilitySetName": "Darkness"
     },
     {
       "index": 69,
@@ -5271,7 +5409,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Wolf",
+      "abilitySetName": "Maw"
     },
     {
       "index": 70,
@@ -5348,7 +5488,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Worgen",
+      "abilitySetName": "Maw"
     },
     {
       "index": 71,
@@ -5425,7 +5567,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Hellhound",
+      "abilitySetName": "Maw"
     },
     {
       "index": 72,
@@ -5502,7 +5646,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Dreamhare",
+      "abilitySetName": "Enticement"
     },
     {
       "index": 73,
@@ -5579,7 +5725,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Hoppy Bunny",
+      "abilitySetName": "Enticement"
     },
     {
       "index": 74,
@@ -5656,7 +5804,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Werewolf",
+      "abilitySetName": "Call of the Wild"
     },
     {
       "index": 75,
@@ -5733,7 +5883,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Zaghnal",
+      "abilitySetName": "Call of the Wild"
     },
     {
       "index": 76,
@@ -5810,7 +5962,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Loup",
+      "abilitySetName": "Call of the Wild"
     },
     {
       "index": 77,
@@ -5887,7 +6041,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "garou",
+      "abilitySetName": "Sands"
     },
     {
       "index": 78,
@@ -5964,7 +6120,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Antlion",
+      "abilitySetName": "Sands"
     },
     {
       "index": 79,
@@ -6041,7 +6199,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Pit Beast",
+      "abilitySetName": "Shell Crush"
     },
     {
       "index": 80,
@@ -6118,7 +6278,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Great Tortoise",
+      "abilitySetName": "Shell Crush"
     },
     {
       "index": 81,
@@ -6195,7 +6357,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Rocktitan",
+      "abilitySetName": "Shell Crush"
     },
     {
       "index": 82,
@@ -6272,7 +6436,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Adamantitan",
+      "abilitySetName": "Shell Crush"
     },
     {
       "index": 83,
@@ -6349,7 +6515,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Toughskin",
+      "abilitySetName": "Halitosis"
     },
     {
       "index": 84,
@@ -6426,7 +6594,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Malboro",
+      "abilitySetName": "Halitosis"
     },
     {
       "index": 85,
@@ -6503,7 +6673,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Great Malboro",
+      "abilitySetName": "Halitosis"
     },
     {
       "index": 86,
@@ -6580,7 +6752,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Malboro King",
+      "abilitySetName": "Halitosis"
     },
     {
       "index": 87,
@@ -6657,7 +6831,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Cassie",
+      "abilitySetName": "Impale"
     },
     {
       "index": 88,
@@ -6734,7 +6910,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Alraune",
+      "abilitySetName": "Deadly Nightshade"
     },
     {
       "index": 89,
@@ -6811,7 +6989,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Deadly Nightshade",
+      "abilitySetName": "Territorialism"
     },
     {
       "index": 90,
@@ -6888,7 +7068,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Cockatrice",
+      "abilitySetName": "Territorialism"
     },
     {
       "index": 91,
@@ -6965,7 +7147,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Axebeak",
+      "abilitySetName": "Territorialism"
     },
     {
       "index": 92,
@@ -7042,7 +7226,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Cluckatrice",
+      "abilitySetName": "Chocobo Wiles"
     },
     {
       "index": 93,
@@ -7119,7 +7305,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Chocobo",
+      "abilitySetName": "Chocobo Wiles"
     },
     {
       "index": 94,
@@ -7196,7 +7384,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Red Chocobo",
+      "abilitySetName": "Chocobo Wiles"
     },
     {
       "index": 95,
@@ -7273,7 +7463,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Black Chocobo",
+      "abilitySetName": "Chocobo Wiles"
     },
     {
       "index": 96,
@@ -7350,7 +7542,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Green Chocobo",
+      "abilitySetName": "Chocobo Wiles"
     },
     {
       "index": 97,
@@ -7427,7 +7621,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Brown Chocobo",
+      "abilitySetName": "Chocobo Wiles"
     },
     {
       "index": 98,
@@ -7504,7 +7700,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "White Chocobo",
+      "abilitySetName": "Metamorphosis"
     },
     {
       "index": 99,
@@ -7581,7 +7779,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Red Marshmallow",
+      "abilitySetName": "Metamorphosis"
     },
     {
       "index": 100,
@@ -7658,7 +7858,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Yellow Jelly",
+      "abilitySetName": "Metamorphosis"
     },
     {
       "index": 101,
@@ -7735,7 +7937,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Ice Flan",
+      "abilitySetName": "Metamorphosis"
     },
     {
       "index": 102,
@@ -7812,7 +8016,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "White Pudding",
+      "abilitySetName": "Volatility"
     },
     {
       "index": 103,
@@ -7889,7 +8095,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Bomb",
+      "abilitySetName": "Volatility"
     },
     {
       "index": 104,
@@ -7966,7 +8174,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Grenade",
+      "abilitySetName": "Death"
     },
     {
       "index": 105,
@@ -8043,7 +8253,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Zombie",
+      "abilitySetName": "Death"
     },
     {
       "index": 106,
@@ -8120,7 +8332,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Ghoul",
+      "abilitySetName": "s Grasp"
     },
     {
       "index": 107,
@@ -8197,7 +8411,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Ghost",
+      "abilitySetName": "s Grasp"
     },
     {
       "index": 108,
@@ -8274,7 +8490,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Wraith",
+      "abilitySetName": "Ghostly Touch"
     },
     {
       "index": 109,
@@ -8351,7 +8569,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Deathscythe",
+      "abilitySetName": "Ghostly Touch"
     },
     {
       "index": 110,
@@ -8428,7 +8648,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Oversoul",
+      "abilitySetName": "Nightmare"
     },
     {
       "index": 111,
@@ -8505,7 +8727,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Floating Eye",
+      "abilitySetName": "Nightmare"
     },
     {
       "index": 112,
@@ -8582,7 +8806,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Bloody Orb",
+      "abilitySetName": "Parasite"
     },
     {
       "index": 113,
@@ -8659,7 +8885,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Ahriman",
+      "abilitySetName": "Parasite"
     },
     {
       "index": 114,
@@ -8736,7 +8964,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Plague",
+      "abilitySetName": "Enthrallment"
     },
     {
       "index": 115,
@@ -8813,7 +9043,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Tonberry",
+      "abilitySetName": "Enthrallment"
     },
     {
       "index": 116,
@@ -8890,7 +9122,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Tonberry King",
+      "abilitySetName": "Revenge"
     },
     {
       "index": 117,
@@ -8967,7 +9201,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Headless",
+      "abilitySetName": "Revenge"
     },
     {
       "index": 118,
@@ -9044,7 +9280,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Wendigo",
+      "abilitySetName": "Revenge"
     },
     {
       "index": 119,
@@ -9121,7 +9359,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Golem",
+      "abilitySetName": "Brute Force"
     },
     {
       "index": 120,
@@ -9198,7 +9438,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Behemoth",
+      "abilitySetName": "Brute Force"
     },
     {
       "index": 121,
@@ -9275,7 +9517,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Reaver",
+      "abilitySetName": "Bestial Force"
     },
     {
       "index": 122,
@@ -9352,7 +9596,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Magick Pot",
+      "abilitySetName": "Breath"
     },
     {
       "index": 123,
@@ -9429,7 +9675,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Fire Drake",
+      "abilitySetName": "Breath"
     },
     {
       "index": 124,
@@ -9506,7 +9754,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Ice Drake",
+      "abilitySetName": "Breath"
     },
     {
       "index": 125,
@@ -9583,7 +9833,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Thunder Drake",
+      "abilitySetName": "Breath"
     },
     {
       "index": 126,
@@ -9660,7 +9912,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Nagaraja",
+      "abilitySetName": "Breath"
     },
     {
       "index": 127,
@@ -9737,7 +9991,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Nidhogg",
+      "abilitySetName": "Breath"
     },
     {
       "index": 128,
@@ -9814,7 +10070,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Zahak",
+      "abilitySetName": "Paper"
     },
     {
       "index": 129,
@@ -9891,7 +10149,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Mimic",
+      "abilitySetName": "Rock"
     },
     {
       "index": 130,
@@ -9968,7 +10228,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Mooglebane",
+      "abilitySetName": "Scissors"
     },
     {
       "index": 131,
@@ -10045,7 +10307,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Yowie",
+      "abilitySetName": "Pom"
     },
     {
       "index": 132,
@@ -10122,7 +10386,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Rafflesia",
+      "abilitySetName": "pom Pur"
     },
     {
       "index": 133,
@@ -10199,7 +10465,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Demon Wall",
+      "abilitySetName": "Ambush"
     },
     {
       "index": 134,
@@ -10276,7 +10544,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Neukhia",
+      "abilitySetName": "Ambush"
     },
     {
       "index": 135,
@@ -10353,7 +10623,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Neukhia Pod",
+      "abilitySetName": "Territorialism"
     },
     {
       "index": 136,
@@ -10430,7 +10702,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Crushatrice",
+      "abilitySetName": "Song"
     },
     {
       "index": 137,
@@ -10507,7 +10781,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Upsilon",
+      "abilitySetName": "Ambush"
     },
     {
       "index": 138,
@@ -10584,7 +10860,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Neukhia Core",
+      "abilitySetName": "Ambush"
     },
     {
       "index": 139,
@@ -10661,7 +10939,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Neukhia Wisp",
+      "abilitySetName": "Ambush"
     },
     {
       "index": 140,
@@ -10727,7 +11007,9 @@
       "gender": "Ambiguo",
       "topScreenSprite": 0,
       "enemyTopScreenSprite": 1,
-      "equipment": []
+      "equipment": [],
+      "name": "NOT USED",
+      "abilitySetName": null
     },
     {
       "index": 141,
@@ -10802,7 +11084,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Sky Pirate",
+      "abilitySetName": "Items"
     },
     {
       "index": 142,
@@ -10879,7 +11163,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Dancer",
+      "abilitySetName": "Gyakuten Item"
     },
     {
       "index": 143,
@@ -10952,7 +11238,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Bard",
+      "abilitySetName": "Scion"
     },
     {
       "index": 144,
@@ -11037,7 +11325,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Heritor",
+      "abilitySetName": "s Wrath"
     },
     {
       "index": 145,
@@ -11110,7 +11400,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Agent",
+      "abilitySetName": "Dance"
     },
     {
       "index": 146,
@@ -11189,7 +11481,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Nightshade",
+      "abilitySetName": "Piracy"
     },
     {
       "index": 147,
@@ -11255,7 +11549,9 @@
       "gender": "Ambiguo",
       "topScreenSprite": 0,
       "enemyTopScreenSprite": 1,
-      "equipment": []
+      "equipment": [],
+      "name": "Gimmick Unit",
+      "abilitySetName": null
     },
     {
       "index": 148,
@@ -11321,7 +11617,9 @@
       "gender": "Ambiguo",
       "topScreenSprite": 0,
       "enemyTopScreenSprite": 1,
-      "equipment": []
+      "equipment": [],
+      "name": "Gimmick Unit",
+      "abilitySetName": null
     },
     {
       "index": 149,
@@ -11387,7 +11685,9 @@
       "gender": "Ambiguo",
       "topScreenSprite": 0,
       "enemyTopScreenSprite": 1,
-      "equipment": []
+      "equipment": [],
+      "name": "Gimmick Unit",
+      "abilitySetName": null
     },
     {
       "index": 150,
@@ -11453,7 +11753,9 @@
       "gender": "Ambiguo",
       "topScreenSprite": 0,
       "enemyTopScreenSprite": 1,
-      "equipment": []
+      "equipment": [],
+      "name": "Gimmick Unit",
+      "abilitySetName": null
     },
     {
       "index": 151,
@@ -11519,7 +11821,9 @@
       "gender": "Ambiguo",
       "topScreenSprite": 0,
       "enemyTopScreenSprite": 1,
-      "equipment": []
+      "equipment": [],
+      "name": "Gimmick Unit",
+      "abilitySetName": null
     },
     {
       "index": 152,
@@ -11585,7 +11889,9 @@
       "gender": "Ambiguo",
       "topScreenSprite": 0,
       "enemyTopScreenSprite": 1,
-      "equipment": []
+      "equipment": [],
+      "name": "Gimmick Unit",
+      "abilitySetName": null
     },
     {
       "index": 153,
@@ -11651,7 +11957,9 @@
       "gender": "Ambiguo",
       "topScreenSprite": 0,
       "enemyTopScreenSprite": 1,
-      "equipment": []
+      "equipment": [],
+      "name": "Gimmick Unit",
+      "abilitySetName": null
     },
     {
       "index": 154,
@@ -11717,7 +12025,9 @@
       "gender": "Ambiguo",
       "topScreenSprite": 0,
       "enemyTopScreenSprite": 225,
-      "equipment": []
+      "equipment": [],
+      "name": "Moogletron",
+      "abilitySetName": null
     },
     {
       "index": 155,
@@ -11783,7 +12093,9 @@
       "gender": "Ambiguo",
       "topScreenSprite": 0,
       "enemyTopScreenSprite": 1,
-      "equipment": []
+      "equipment": [],
+      "name": "Gimmick Unit",
+      "abilitySetName": null
     },
     {
       "index": 156,
@@ -11849,7 +12161,9 @@
       "gender": "Ambiguo",
       "topScreenSprite": 0,
       "enemyTopScreenSprite": 1,
-      "equipment": []
+      "equipment": [],
+      "name": "Rider",
+      "abilitySetName": null
     },
     {
       "index": 157,
@@ -11940,7 +12254,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Red Rider",
+      "abilitySetName": "Chococraft"
     },
     {
       "index": 158,
@@ -12031,7 +12347,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Black Rider",
+      "abilitySetName": "Chococraft"
     },
     {
       "index": 159,
@@ -12122,7 +12440,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Green Rider",
+      "abilitySetName": "Chococraft"
     },
     {
       "index": 160,
@@ -12213,7 +12533,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Brown Rider",
+      "abilitySetName": "Chococraft"
     },
     {
       "index": 161,
@@ -12304,7 +12626,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "White Rider",
+      "abilitySetName": "Chococraft"
     },
     {
       "index": 162,
@@ -12395,7 +12719,9 @@
         "Shoes",
         "Armguards",
         "Accessories"
-      ]
+      ],
+      "name": "Nightfall",
+      "abilitySetName": "Chococraft"
     }
   ]
 }

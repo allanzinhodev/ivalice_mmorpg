@@ -139,6 +139,44 @@ function lerJob(buf, base, indice) {
   };
 }
 
+/**
+ * Acha a tabela de nomes de job e a le em ordem.
+ *
+ * A tabela e localizada procurando "Soldier" JA CODIFICADO no alfabeto do
+ * FFTA2 (ver extract-strings.js: 0x01 espaco, 0x02-0x1B A-Z, 0x1C-0x35 a-z),
+ * e nao por offset fixo -- assim funciona em qualquer versao da ROM.
+ *
+ * O casamento com o Job Data e `nome[i] -> jobs[i+1]`, porque a entrada 0 do
+ * Job Data e o placeholder "None", zerado. Isso foi confirmado em TODAS as
+ * fronteiras de raca: Bangaa comeca em Warrior, Nu Mou em White Mage, Viera em
+ * Fencer, Moogle em Animist, Seeq em Berserker e Gria em Hunter -- que sao os
+ * primeiros jobs de cada raca no jogo. Os monstros seguem na mesma tabela
+ * (Baknamy, Sprite, Lamia, Wolf...).
+ */
+function lerNomesDeJob(buf, quantos) {
+  const { decodeString, ehLetra } = require('./extract-strings');
+
+  const codificar = (s) => Buffer.from([...s].map((ch) => {
+    const c = ch.charCodeAt(0);
+    if (ch === ' ') return 0x01;
+    if (c >= 65 && c <= 90) return 0x02 + c - 65;
+    return 0x1c + c - 97;
+  }));
+
+  const inicio = buf.indexOf(codificar('Soldier'));
+  if (inicio < 0) return { inicio: -1, nomes: [] };
+
+  const nomes = [];
+  for (let o = inicio; o < buf.length && nomes.length < quantos; o++) {
+    if (!ehLetra(buf[o])) continue;
+    const r = decodeString(buf, o, 3);
+    if (!r || r.texto.length < 3) continue;
+    nomes.push(r.texto);
+    o = r.fim - 1;
+  }
+  return { inicio, nomes };
+}
+
 function main() {
   if (!fs.existsSync(ROM)) {
     console.error(`nao encontrei ${ROM} (a ROM nao e versionada)`);
@@ -150,6 +188,36 @@ function main() {
   const inicio = t.us + DELTA_EU;
   const jobs = [];
   for (let i = 0; i < t.entradas; i++) jobs.push(lerJob(buf, inicio + i * t.entrada, i));
+
+  // --- nomes
+  const { inicio: iniNomes, nomes } = lerNomesDeJob(buf, jobs.length);
+  for (let i = 0; i < jobs.length; i++) {
+    jobs[i].name = i === 0 ? 'None' : (nomes[i - 1] || null);
+  }
+
+  // --- nome do conjunto de habilidades de cada job.
+  // "Arts of War" e ancora: e o primeiro nome do bloco e o set 1 do jogo.
+  const { decodeString, ehLetra } = require('./extract-strings');
+  const codificar = (s) => Buffer.from([...s].map((ch) => {
+    const c = ch.charCodeAt(0);
+    if (ch === ' ') return 0x01;
+    if (c >= 65 && c <= 90) return 0x02 + c - 65;
+    return 0x1c + c - 97;
+  }));
+  const iniSets = buf.indexOf(codificar('Arts of War'));
+  const nomesSets = [];
+  if (iniSets >= 0) {
+    for (let o = iniSets; o < buf.length && nomesSets.length < 128; o++) {
+      if (!ehLetra(buf[o])) continue;
+      const r = decodeString(buf, o, 2);
+      if (!r || r.texto.length < 1) continue;
+      nomesSets.push(r.texto);
+      o = r.fim - 1;
+    }
+  }
+  for (const j of jobs) {
+    j.abilitySetName = j.abilitySet > 0 ? (nomesSets[j.abilitySet - 1] || null) : null;
+  }
 
   const porRaca = {};
   for (const j of jobs) porRaca[j.raceName] = (porRaca[j.raceName] || 0) + 1;
