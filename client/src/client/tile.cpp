@@ -559,6 +559,27 @@ uint8 Tile::getMinimapColorByte()
     return color;
 }
 
+/*
+ * CENARIO NAO E ALVO.
+ *
+ * As funcoes getTop*Thing abaixo tem todas a mesma forma: um laco principal
+ * que ja pula chao e borda, e um FALLBACK que devolve m_things[0] (ou o
+ * ultimo) quando nada serve. O fallback existe para o caso de um tile so com
+ * chao -- olhar o chao e uma acao legitima no Tibia.
+ *
+ * Com o mapa em mosaico isso deixa de valer: a maior parte dos ids passa a
+ * ser pedaco de cenario, marcado com ThingAttrVisualOnly, e devolver um deles
+ * como alvo do clique nao ajuda ninguem. Este filtro fica so no fallback --
+ * um item visual que por algum motivo nao seja chao continua sendo pulado
+ * pelos lacos principais como qualquer outro.
+ */
+static ThingPtr seNaoForCenario(const ThingPtr& thing)
+{
+    if(!thing || thing->isVisualOnly())
+        return nullptr;
+    return thing;
+}
+
 ThingPtr Tile::getTopLookThing()
 {
     if(isEmpty())
@@ -570,7 +591,7 @@ ThingPtr Tile::getTopLookThing()
             return thing;
     }
 
-    return m_things[0];
+    return seNaoForCenario(m_things[0]);
 }
 
 ThingPtr Tile::getTopLookThingEx(Point offset)
@@ -588,7 +609,7 @@ ThingPtr Tile::getTopLookThingEx(Point offset)
             return thing;
     }
 
-    return m_things[0];
+    return seNaoForCenario(m_things[0]);
 }
 
 ThingPtr Tile::getTopUseThing()
@@ -608,7 +629,7 @@ ThingPtr Tile::getTopUseThing()
             return thing;
     }
 
-    return m_things[0];
+    return seNaoForCenario(m_things[0]);
 }
 
 CreaturePtr Tile::getTopCreature()
@@ -693,7 +714,7 @@ ThingPtr Tile::getTopMoveThing()
             return thing;
     }
 
-    return m_things[0];
+    return seNaoForCenario(m_things[0]);
 }
 
 ThingPtr Tile::getTopMultiUseThing()
@@ -719,7 +740,7 @@ ThingPtr Tile::getTopMultiUseThing()
         }
     }
 
-    return m_things.back();
+    return seNaoForCenario(m_things.back());
 }
 
 ThingPtr Tile::getTopMultiUseThingEx(Point offset)
@@ -751,7 +772,7 @@ ThingPtr Tile::getTopMultiUseThingEx(Point offset)
             return thing;
     }
 
-    return m_things[0];
+    return seNaoForCenario(m_things[0]);
 }
 
 ThingPtr Tile::getTopWrapableThing()

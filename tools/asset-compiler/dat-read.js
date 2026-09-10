@@ -11,7 +11,7 @@
  */
 
 const {
-  ATTR_GROUND, ATTR_DISPLACEMENT, ATTR_ELEVATION, ATTR_FULL_GROUND, ATTR_LAST,
+  ATTR_GROUND, ATTR_DISPLACEMENT, ATTR_ELEVATION, ATTR_FULL_GROUND, ATTR_VISUAL_ONLY, ATTR_LAST,
 } = require('./dat.js');
 
 class Reader {
@@ -33,6 +33,7 @@ function readAttributes(r) {
       case ATTR_DISPLACEMENT: attrs.displacement = [r.i16(), r.i16()]; break;
       case ATTR_ELEVATION: attrs.elevation = r.u16(); break;
       case ATTR_FULL_GROUND: attrs.fullGround = true; break;
+      case ATTR_VISUAL_ONLY: attrs.visualOnly = true; break;
       default:
         throw new Error(`atributo ${a} inesperado em 0x${(r.p - 1).toString(16)} -- ` +
           'dat.js nao emite este, entao o arquivo ou o parser estao errados');

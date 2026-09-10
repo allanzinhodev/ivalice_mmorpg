@@ -310,6 +310,20 @@ function compileItems(table) {
         //
         // TILE_HALF_H = 8: uma unidade de altura do FFTA vale meio tile em Y.
         elevation: /-map[0-9]+-/.test(file) ? 8 : 0,
+        /*
+         * MERAMENTE VISUAL: tudo em assets/items/ hoje e chao -- pedaco de
+         * cenario, nao objeto de jogo. Sem esta marca o alvo do clique cai
+         * no chao pelo fallback das funcoes getTop*Thing do client
+         * (tile.cpp), que devolvem m_things[0] quando nada mais serve.
+         *
+         * A marca e do lado do CLIENT. Nao ha nada a fazer no items.otb:
+         * gen-items.js ja emite estes ids sem FLAG_MOVEABLE e sem
+         * FLAG_PICKUPABLE, entao o server nunca os tratou como objeto.
+         *
+         * Quando entrarem itens de verdade (os que se pega e usa), eles
+         * simplesmente nao levam este atributo.
+         */
+        visualOnly: true,
       },
       groups: [{
         type: 0,

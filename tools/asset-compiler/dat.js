@@ -33,6 +33,16 @@ const ATTR_GROUND = 0;
 const ATTR_ELEVATION = 25;
 const ATTR_DISPLACEMENT = 24;
 const ATTR_FULL_GROUND = 30;
+/*
+ * MERAMENTE VISUAL -- extensao nossa, ver ThingAttrVisualOnly em
+ * client/src/client/thingtype.h.
+ *
+ * Nao tem carga: o `default` de ThingType::unserialize registra qualquer
+ * atributo desconhecido como `true`, entao basta o byte. E por isso mesmo que
+ * escrever um numero errado aqui NAO da erro -- o client aceita calado e
+ * registra um atributo que ninguem le. O numero tem que casar com o enum.
+ */
+const ATTR_VISUAL_ONLY = 102;
 const ATTR_LAST = 0xff;
 
 // --- frame groups. TEM que bater com FrameGroupType no client e no
@@ -114,6 +124,7 @@ function writeAttributes(w, attrs) {
   if (attrs.displacement) { w.u8(ATTR_DISPLACEMENT); w.i16(attrs.displacement[0]); w.i16(attrs.displacement[1]); }
   if (attrs.elevation !== undefined) { w.u8(ATTR_ELEVATION); w.u16(attrs.elevation); }
   if (attrs.fullGround) w.u8(ATTR_FULL_GROUND);
+  if (attrs.visualOnly) w.u8(ATTR_VISUAL_ONLY);
   w.u8(ATTR_LAST);
 }
 
@@ -149,6 +160,6 @@ function buildDat({ signature, items, outfits, effects, missiles }) {
 
 module.exports = {
   FrameGroup, FRAME_GROUP_NAMES,
-  ATTR_GROUND, ATTR_DISPLACEMENT, ATTR_ELEVATION, ATTR_FULL_GROUND, ATTR_LAST,
+  ATTR_GROUND, ATTR_DISPLACEMENT, ATTR_ELEVATION, ATTR_FULL_GROUND, ATTR_VISUAL_ONLY, ATTR_LAST,
   buildDat, Writer,
 };

@@ -129,6 +129,19 @@ enum ThingAttr : uint8 {
     ThingAttrOpacity          = 100,
     ThingAttrNotPreWalkable   = 101,
 
+    // MERAMENTE VISUAL: o thing so compoe o cenario, nao e objeto de jogo.
+    //
+    // Com o mapa em mosaico, a maior parte dos ids do .dat passa a existir so
+    // para desenhar chao -- nada ali e para olhar, usar ou mover. Sem marcar
+    // isso, o alvo do clique cai em pedaco de cenario.
+    //
+    // O numero e 102 e nao 43 de proposito. O 43 fica colado no bloco padrao
+    // 0..42 e seria atropelado se essa faixa crescesse; 100 e 101 ja sao a
+    // area de extensoes do proprio OTClient, entao 102 e a continuacao
+    // natural. Nao precisa de caso em ThingType::unserialize: atributo sem
+    // carga cai no `default`, que o registra como true.
+    ThingAttrVisualOnly       = 102,
+
     ThingAttrFloorChange      = 252,
     ThingAttrNoMoveAnimation  = 253, // 10.10: real value is 16, but we need to do this for backwards compatibility
     ThingAttrChargeable       = 254, // deprecated
@@ -342,6 +355,7 @@ public:
     bool hasLensHelp() { return m_attribs.has(ThingAttrLensHelp); }
     bool isFullGround() { return m_attribs.has(ThingAttrFullGround); }
     bool isIgnoreLook() { return m_attribs.has(ThingAttrLook); }
+    bool isVisualOnly() { return m_attribs.has(ThingAttrVisualOnly); }
     bool isCloth() { return m_attribs.has(ThingAttrCloth); }
     bool isMarketable() { return m_attribs.has(ThingAttrMarket); }
     bool isUsable() { return m_attribs.has(ThingAttrUsable); }
