@@ -69,7 +69,15 @@ const HM_TERRAIN_COLS = 14; // as 2 ultimas sao enderecos, nao terreno
  * SCALE x SCALE de tiles do OTBM: sem isso o mundo inteiro caberia dentro da
  * area visivel do client (18x14) e nao daria para andar.
  */
-const SCALE = 4;
+// Isto ja foi 4. A escala fazia sentido quando o chao eram 3 texturas
+// genericas e o mapa 16x13 cabia inteiro na area visivel do client (18x14):
+// replicar cada celula num bloco 4x4 dava espaco para andar.
+//
+// Com os tiles recortados da referencia a escala passou a ATRAPALHAR. Cada
+// celula tem a sua propria arte de 32x32, entao estampa-la em 16 tiles
+// repete o desenho e destroi a correspondencia 1:1 com o Aisenfield -- na
+// tela vira um descampado chapado, sem relevo e sem as bordas de pedra.
+const SCALE = 1;
 
 /*
  * Altura do FFTA -> andar do OTBM.
@@ -150,16 +158,35 @@ function loadHeightMap(mapIndex) {
   const cells = (data.length - 4) / 2;
   const rows = Math.floor(cells / HM_STRIDE);
 
+  // Quantas colunas sao terreno de verdade.
+  //
+  // Isto era fixo em 14 ("as 2 ultimas sao enderecos"), o que vale para o
+  // mapa 0 mas NAO para todos: o mapa 150 tem terreno nas 16 colunas, e
+  // cortar duas deixava o OTBM mais estreito que a arte extraida -- as duas
+  // ultimas colunas do Aisenfield simplesmente nao existiam no mundo.
+  //
+  // Uma coluna de ENDERECO cresce de 32 em 32 a cada linha (mod 256).
+  // Terreno nao faz isso. Mesma deteccao do extract-map-tiles.js.
+  const at = (r, c) => data[4 + (r * HM_STRIDE + c) * 2];
+  let cols = HM_STRIDE;
+  if (rows > 2) {
+    for (let c = HM_STRIDE - 1; c >= 8; c--) {
+      let isAddr = true;
+      for (let r = 1; r < rows; r++) {
+        if (((at(r - 1, c) + 32) & 0xff) !== at(r, c)) { isAddr = false; break; }
+      }
+      if (isAddr) cols = c; else break;
+    }
+  }
+
   const grid = [];
   for (let r = 0; r < rows; r++) {
     const row = [];
-    for (let c = 0; c < HM_TERRAIN_COLS; c++) {
-      row.push(data[4 + (r * HM_STRIDE + c) * 2]);
-    }
+    for (let c = 0; c < cols; c++) row.push(at(r, c));
     grid.push(row);
   }
 
-  return { grid, rows, cols: HM_TERRAIN_COLS, offset: rec.heightMapOffset };
+  return { grid, rows, cols, offset: rec.heightMapOffset };
 }
 
 function buildOtbm(hm, refData, tileIds) {
@@ -205,11 +232,25 @@ function buildOtbm(hm, refData, tileIds) {
         const t = refData.grid[r][c].tile;
         if (t !== null && tileIds.has(t)) ground = tileIds.get(t);
       }
+      // Altura DENTRO do andar -> itens empilhados.
+      //
+      // O server conta ITENS, nao pixels: Tile::hasHeight(n) percorre a pilha
+      // e conta os que tem CONST_PROP_HASHEIGHT (server/src/tile.cpp:127), e
+      // Game::internalMoveCreature compara esse contador com o jump do
+      // personagem para decidir subir ou descer.
+      //
+      // Sem isto o OTBM escrevia UM ground por tile, hasHeight() sempre
+      // devolvia 1 e o relevo interno do andar nunca aparecia -- foi o que
+      // deixou o mapa chapado na tela mesmo com o elevation ja no .dat.
+      const stack = refData && refData.grid[r] && refData.grid[r][c]
+        ? (refData.grid[r][c].elevation || 0)
+        : 0;
+
       if (!byZ.has(z)) byZ.set(z, []);
       const list = byZ.get(z);
       for (let sy = 0; sy < SCALE; sy++) {
         for (let sx = 0; sx < SCALE; sx++) {
-          list.push({ x: c * SCALE + sx, y: r * SCALE + sy, ground });
+          list.push({ x: c * SCALE + sx, y: r * SCALE + sy, ground, stack });
         }
       }
     }
@@ -226,6 +267,13 @@ function buildOtbm(hm, refData, tileIds) {
       tile.props.u8(t.x).u8(t.y);
       const item = tile.child(OTBM_ITEM);
       item.props.u16(t.ground);
+      // Os itens de altura vao DEPOIS do ground, na mesma tile. O client
+      // soma o elevation de cada um e desenha o proximo mais acima
+      // (client/src/client/tile.cpp:62-63).
+      for (let i = 0; i < t.stack; i++) {
+        const extra = tile.child(OTBM_ITEM);
+        extra.props.u16(t.ground);
+      }
       tileCount++;
     }
   }
