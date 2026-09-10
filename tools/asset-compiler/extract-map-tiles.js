@@ -158,12 +158,51 @@ function calibrate(ref, hm) {
   return { x: bx0 - relMinX, y: by0 - relMinY };
 }
 
-/** Recorta a celula 32x32, com a base do losango encostada embaixo. */
+/**
+ * Recorta a celula 32x32, mascarando o que esta FORA do losango.
+ *
+ * Sem a mascara o recorte quadrado leva junto pedacos das celulas vizinhas,
+ * e praticamente nada deduplica -- 197 tiles unicos para 208 celulas. Com a
+ * mascara, duas celulas de chao igual viram o MESMO tile.
+ *
+ * A mascara e o losango de 32x16 encostado na base, mais a coluna vertical
+ * acima dele (a face lateral do bloco, que e o que da o visual do FFTA).
+ */
 function cutCell(ref, col, row, z, origin) {
   const p = project(col, row, z, origin);
   // O losango de 32x16 fica na PARTE DE BAIXO do sprite de 32x32: os 16px de
   // cima sao a face lateral / o que o bloco projeta para cima.
-  return ref.crop(p.x, p.y - (SPRITE - 2 * TILE_HALF_H), SPRITE, SPRITE);
+  const top = p.y - (SPRITE - 2 * TILE_HALF_H);
+  const cell = ref.crop(p.x, top, SPRITE, SPRITE);
+
+  const out = Image.blank(SPRITE, SPRITE);
+
+  // A mascara e o BLOCO isometrico: o losango do topo mais as duas faces
+  // laterais que descem dele ate a base do sprite.
+  //
+  // Tentei antes uma "faixa vertical" estreitando para cima, e saiu em forma
+  // de cone -- cortava justamente a face lateral, que e o que da o visual de
+  // bloco do FFTA.
+  const cy = (SPRITE - 2 * TILE_HALF_H) + TILE_HALF_H;  // centro do losango
+  for (let y = 0; y < SPRITE; y++) {
+    for (let x = 0; x < SPRITE; x++) {
+      const dx = x - TILE_HALF_W;
+      const dy = y - cy;
+
+      // largura do losango naquela altura: cheia no centro, zero nas pontas
+      const halfAt = TILE_HALF_W * (1 - Math.abs(dy) / TILE_HALF_H);
+
+      const inTop = dy <= 0 && Math.abs(dx) <= halfAt;          // metade de cima
+      const inBottomDiamond = dy > 0 && Math.abs(dx) <= halfAt; // metade de baixo
+      // face lateral: abaixo do centro, dentro da largura CHEIA do losango
+      const inFace = dy > 0 && Math.abs(dx) <= TILE_HALF_W;
+
+      if (!inTop && !inBottomDiamond && !inFace) continue;
+      const o = cell.offset(x, y);
+      cell.pixels.copy(out.pixels, out.offset(x, y), o, o + 4);
+    }
+  }
+  return out;
 }
 
 class TileTable {
