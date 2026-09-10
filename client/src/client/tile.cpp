@@ -52,6 +52,17 @@ void Tile::drawGround(const Point& dest, LightView* lightView)
         return;
     }
 
+    // ELEVACAO EM PIXELS DE TELA, nao em unidades de sprite.
+    //
+    // Isto multiplicava por g_sprites.getOffsetFactor(), que e
+    // spriteSize/32 (spritemanager.h:56). Com o sprite de 8x8 do mosaico
+    // isometrico o fator vira 0.25, e uma elevacao de 8 apareceria como 2px
+    // na tela -- o degrau sumiria.
+    //
+    // Aqui a elevacao E a altura do terreno (cada nivel desloca -8y por
+    // definicao do projeto), entao nao deve escalar com o tamanho do sprite.
+    // O displacement continua escalando, porque aquele e mesmo relativo a
+    // arte (thingtype.cpp:575).
     // ground
     for (const ThingPtr& thing : m_things) {
         if (!thing->isGround() && !thing->isGroundBorder() && (g_game.getFeature(Otc::GameMapDrawGroundFirst) || !thing->isOnBottom()))
@@ -59,7 +70,7 @@ void Tile::drawGround(const Point& dest, LightView* lightView)
         if (thing->isHidden())
             continue;
 
-        thing->draw(dest - m_drawElevation * g_sprites.getOffsetFactor(), true, lightView);
+        thing->draw(dest - m_drawElevation, true, lightView);
         m_drawElevation = std::min<uint8_t>(m_drawElevation + thing->getElevation(), Otc::MAX_ELEVATION);
     }
 }
@@ -80,7 +91,7 @@ void Tile::drawBottom(const Point& dest, LightView* lightView)
             if (thing->isHidden() || !afterBottom)
                 continue;
 
-            thing->draw(dest - m_drawElevation * g_sprites.getOffsetFactor(), true, lightView);
+            thing->draw(dest - m_drawElevation, true, lightView);
             m_drawElevation = std::min<uint8_t>(m_drawElevation + thing->getElevation(), Otc::MAX_ELEVATION);
         }
     }
@@ -102,7 +113,7 @@ void Tile::drawBottom(const Point& dest, LightView* lightView)
         if (thing->isHidden())
             continue;
 
-        thing->draw(dest - m_drawElevation * g_sprites.getOffsetFactor() , true, lightView);
+        thing->draw(dest - m_drawElevation , true, lightView);
         m_drawElevation = std::min<uint8_t>(m_drawElevation + thing->getElevation(), Otc::MAX_ELEVATION);
     }
 
@@ -142,7 +153,7 @@ void Tile::drawCreatures(const Point& dest, LightView* lightView)
         const int cdx = creature->getPrewalkingPosition().x - m_position.x;
         const int cdy = creature->getPrewalkingPosition().y - m_position.y;
         Point creatureDest(dest.x + (cdx - cdy) * Otc::TILE_HALF_W,
-                           dest.y + (cdx + cdy) * Otc::TILE_HALF_H - m_drawElevation * g_sprites.getOffsetFactor());
+                           dest.y + (cdx + cdy) * Otc::TILE_HALF_H - m_drawElevation);
         creature->draw(creatureDest, true, lightView);
     }
 
@@ -157,7 +168,7 @@ void Tile::drawCreatures(const Point& dest, LightView* lightView)
         CreaturePtr creature = thing->static_self_cast<Creature>();
         if (!creature || creature->isWalking())
             continue;
-        creature->draw(dest - m_drawElevation * g_sprites.getOffsetFactor(), true, lightView);
+        creature->draw(dest - m_drawElevation, true, lightView);
     }
 }
 
@@ -176,7 +187,7 @@ void Tile::drawTop(const Point& dest, LightView* lightView)
         const int cdx = creature->getPrewalkingPosition().x - m_position.x;
         const int cdy = creature->getPrewalkingPosition().y - m_position.y;
         Point creatureDest(dest.x + (cdx - cdy) * Otc::TILE_HALF_W,
-                           dest.y + (cdx + cdy) * Otc::TILE_HALF_H - m_drawElevation * g_sprites.getOffsetFactor());
+                           dest.y + (cdx + cdy) * Otc::TILE_HALF_H - m_drawElevation);
         creature->draw(creatureDest, true, lightView);
     }
 
@@ -191,7 +202,7 @@ void Tile::drawTop(const Point& dest, LightView* lightView)
         CreaturePtr creature = thing->static_self_cast<Creature>();
         if (!creature || creature->isWalking())
             continue;
-        creature->draw(dest - m_drawElevation * g_sprites.getOffsetFactor(), true, lightView);
+        creature->draw(dest - m_drawElevation, true, lightView);
     }
 
     // effects
@@ -199,7 +210,7 @@ void Tile::drawTop(const Point& dest, LightView* lightView)
     for (int i = limit; i >= 0; --i) {
         if (m_effects[i]->isHidden())
             continue;
-        m_effects[i]->draw(dest - m_drawElevation * g_sprites.getOffsetFactor(), m_position.x - g_map.getCentralPosition().x, m_position.y - g_map.getCentralPosition().y, true, lightView);
+        m_effects[i]->draw(dest - m_drawElevation, m_position.x - g_map.getCentralPosition().x, m_position.y - g_map.getCentralPosition().y, true, lightView);
     }
 
     // top
