@@ -100,9 +100,15 @@ function palToRGBA(buf, count) {
   const pal = [];
   for (let i = 0; i < count; i++) {
     const v = buf[i * 2] | (buf[i * 2 + 1] << 8);
-    const r = (v & 0x1F) * 255 / 31 | 0;
-    const g = ((v >> 5) & 0x1F) * 255 / 31 | 0;
-    const b = ((v >> 10) & 0x1F) * 255 / 31 | 0;
+    // 5 bits -> 8 bits por deslocamento, NAO por regra de tres.
+    //
+    // O jogo (e o hardware do GBA) usa v<<3: o valor 21 vira 168, nao 173.
+    // Conferido contra assets/mapref/aisenfield.png, que veio do jogo: com
+    // <<3 as cores batem EXATAMENTE (168,136,72 / 40,64,80 / 104,152,0);
+    // com *255/31 saem todas alguns pontos acima e nada casa.
+    const r = (v & 0x1F) << 3;
+    const g = ((v >> 5) & 0x1F) << 3;
+    const b = ((v >> 10) & 0x1F) << 3;
     pal.push([r, g, b, i === 0 ? 0 : 255]);
   }
   return pal;
