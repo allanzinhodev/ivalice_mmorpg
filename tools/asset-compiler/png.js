@@ -90,7 +90,15 @@ function paeth(a, b, c) {
 }
 
 function readPNG(file) {
-  const buf = fs.readFileSync(file);
+  return decodePNG(fs.readFileSync(file), file);
+}
+
+/*
+ * Mesmo decodificador, a partir de um buffer. E assim que os sprites chegam
+ * no .cwm, que guarda PNG empacotado em vez de pixels crus -- ler de volta o
+ * que escrevemos exige decodificar sem passar por arquivo.
+ */
+function decodePNG(buf, file = '<buffer>') {
   if (buf.readUInt32BE(0) !== 0x89504e47) {
     throw new Error(`${file}: nao e um PNG`);
   }
@@ -180,7 +188,7 @@ function chunk(type, data) {
 }
 
 /** Escreve RGBA sem filtro (type 0) -- basta para os facesets. */
-function writePNG(file, img) {
+function encodePNG(img) {
   const ihdr = Buffer.alloc(13);
   ihdr.writeUInt32BE(img.width, 0);
   ihdr.writeUInt32BE(img.height, 4);
@@ -197,12 +205,16 @@ function writePNG(file, img) {
     img.pixels.copy(raw, y * (stride + 1) + 1, y * stride, (y + 1) * stride);
   }
 
-  fs.writeFileSync(file, Buffer.concat([
+  return Buffer.concat([
     Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
     chunk('IHDR', ihdr),
     chunk('IDAT', zlib.deflateSync(raw, { level: 9 })),
     chunk('IEND', Buffer.alloc(0)),
-  ]));
+  ]);
 }
 
-module.exports = { Image, readPNG, writePNG };
+function writePNG(file, img) {
+  fs.writeFileSync(file, encodePNG(img));
+}
+
+module.exports = { Image, readPNG, decodePNG, writePNG, encodePNG };

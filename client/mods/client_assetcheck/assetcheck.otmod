@@ -1,0 +1,10 @@
+Module
+  name: client_assetcheck
+  description: Confere o datapack pelo caminho de codigo REAL do client
+  author: ivalice
+  reloadable: false
+  sandboxed: true
+  scripts: [ assetcheck ]
+  @onLoad: init()
+  autoload: true
+  autoload-priority: 1000

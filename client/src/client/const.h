@@ -70,6 +70,16 @@ namespace Otc
         // valor precisa ser reconferido.
         HUD_SHIFT_X = 8,
 
+        // Teto do atlas de textura de um ThingType, em PIXELS por eixo.
+        //
+        // ThingType::getBestTextureDimension monta o atlas contando SPRITES,
+        // e o limite vinha de g_sprites.spriteSize() -- que valia 32 por
+        // coincidencia, nao por relacao. Com sprite 8x8 o teto viraria 8 e
+        // nada maior que um tile caberia. O limite real e este, em pixels;
+        // a contagem por eixo se deriva dele (1024/32 = 32 sprites como
+        // antes, 1024/8 = 128 no mosaico).
+        MAX_ATLAS_PIXELS = 1024,
+
         INVISIBLE_TICKS_PER_FRAME = 500,
         INVISIBLE_TICKS_PER_FRAME_FAST = 100,
         ITEM_TICKS_PER_FRAME = 500,

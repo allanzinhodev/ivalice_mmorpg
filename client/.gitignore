@@ -149,3 +149,8 @@ _ReSharper*/
 !data/things/860/Tibia.dat
 !data/things/860/Tibia.spr
 !data/things/860/Tibia.otfi
+!data/things/860/Tibia.cwm
+
+# Marcador local do modo de conferencia (client/mods/client_assetcheck).
+# Criado a mao para rodar a checagem, nunca versionado.
+data/assetcheck.request

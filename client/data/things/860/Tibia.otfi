@@ -5,6 +5,6 @@ DatSpr
   frame-groups: true
   metadata-controller: Default
   metadata-file: Tibia.dat
-  sprites-file: Tibia.spr
-  sprite-size: 32
-  sprite-data-size: 4096
+  sprites-file: Tibia.cwm
+  sprite-size: 8
+  sprite-data-size: 256

@@ -24,11 +24,34 @@ const fs = require('fs');
 const path = require('path');
 const { readPNG, writePNG, Image } = require('./png.js');
 const { buildSpr, SPRITE_SIZE } = require('./spr.js');
+const { buildCwm } = require('./cwm.js');
+const { slice } = require('./mosaic.js');
 const { buildDat, FrameGroup, FRAME_GROUP_NAMES } = require('./dat.js');
 
 const ROOT = path.resolve(__dirname, '../..');
 const ASSETS = path.join(ROOT, 'assets');
 const OUT_DIR = path.join(ROOT, 'client/data/things/860');
+
+/*
+ * TAMANHO DA CELULA DE SPRITE
+ *
+ * A arte continua sendo autorada no mesmo tamanho de sempre (tile 32x32,
+ * frame de personagem 32x64). O que muda e em quantos SPRITES cada quadro e
+ * fatiado antes de ir para o arquivo:
+ *
+ *   --cell=32  (padrao)  um sprite por quadro, como sempre -> Tibia.spr
+ *   --cell=8             mosaico de 8x8, como o GBA monta  -> Tibia.cwm
+ *
+ * O 8x8 existe para deduplicar: pedacos iguais entre tiles diferentes viram
+ * um sprite so. O `.spr` classico nao aceita outro tamanho (o 32 esta cravado
+ * no loader), por isso o mosaico sai em CWM -- ver cwm.js.
+ */
+const CELL = (() => {
+  const arg = process.argv.find((a) => a.startsWith('--cell='));
+  const v = arg ? Number(arg.slice('--cell='.length)) : SPRITE_SIZE;
+  if (![8, 16, 32].includes(v)) throw new Error(`--cell=${v} invalido (use 8, 16 ou 32)`);
+  return v;
+})();
 
 // Assinaturas: mantidas iguais as atuais para nao invalidar caches do client.
 const DAT_SIGNATURE = 0x4c2c7993;
@@ -77,7 +100,7 @@ const DIRECTIONS = [
 
 const WATER_COL = { [COL_SOUTH]: COL_WATER_SOUTH, [COL_WEST]: COL_WATER_WEST };
 
-/** Coleta os sprites 32x32 e devolve ids, deduplicando os repetidos. */
+/** Coleta as celulas de sprite e devolve ids, deduplicando as repetidas. */
 class SpriteTable {
   constructor() {
     this.sprites = [null];   // indice 0 nao e usado pelo formato
@@ -95,6 +118,43 @@ class SpriteTable {
     this.byHash.set(key, id);
     return id;
   }
+}
+
+/**
+ * Converte a ANCORA (onde o canto superior-esquerdo do quadro deve cair, em
+ * pixels relativos a `dest`) no valor de displacement que vai no .dat.
+ *
+ * Existe porque o displacement do .dat nao e uma medida de tela: o client faz
+ *
+ *   boxTopLeft = dest - displacement * (cell/32) - (cols-1, rows-1) * cell
+ *
+ * (ThingType::draw, client/src/client/thingtype.cpp). Os dois termos que
+ * dependem do tamanho da celula sao justamente os que mudam quando a mesma
+ * arte e fatiada em 8x8 em vez de 32x32 -- um tile de 32x32 sai de 1x1 para
+ * 4x4 celulas, e o termo (cols-1, rows-1)*cell salta de 0 para 24px.
+ *
+ * Escrever o displacement a mao daria um numero certo para um tamanho de
+ * celula e silenciosamente errado para o outro. Autoramos a ancora, que e o
+ * que de fato queremos ver na tela, e derivamos o resto:
+ *
+ *   displacement = (-ancora - (cols-1, rows-1) * cell) * 32/cell
+ */
+function displacementFor(anchor, cols, rows, cell) {
+  const escala = 32 / cell;
+  return [
+    Math.round((-anchor[0] - (cols - 1) * cell) * escala),
+    Math.round((-anchor[1] - (rows - 1) * cell) * escala),
+  ];
+}
+
+/**
+ * Fatia um quadro ja pronto nas celulas do .dat e devolve os ids na ordem em
+ * que o client os espera. Ver mosaic.js -- a ordem comeca na celula
+ * INFERIOR-DIREITA, e nao e a que parece.
+ */
+function sliceToIds(img, table) {
+  const { cells, cols, rows } = slice(img, CELL);
+  return { ids: cells.map((c) => table.add(c)), cols, rows };
 }
 
 /**
@@ -168,18 +228,6 @@ function extractFrame(sheet, col, row, mirror, baseline) {
 }
 
 /**
- * Fatia o frame 32x64 nos dois sprites de 32x32 que o .dat espera.
- *
- * Com height=2 o client percorre h de 0 a 1 e o indice do sprite cresce com
- * h -- ou seja, a ordem e de CIMA para baixo.
- */
-function sliceFrame(frame, table) {
-  const top = frame.crop(0, 0, SPRITE_SIZE, SPRITE_SIZE);
-  const bottom = frame.crop(0, SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE);
-  return [table.add(top), table.add(bottom)];
-}
-
-/**
  * Monta um frame group do outfit.
  *
  * A ordem dos sprites tem que casar com ThingType::getSpriteIndex:
@@ -189,6 +237,7 @@ function sliceFrame(frame, table) {
  */
 function buildOutfitGroup(sheet, table, groupType, firstRow, phases, baseline) {
   const sprites = [];
+  let cols = 0, rows = 0;
 
   for (let phase = 0; phase < phases; phase++) {
     const row = firstRow + phase;
@@ -196,19 +245,22 @@ function buildOutfitGroup(sheet, table, groupType, firstRow, phases, baseline) {
       for (const dir of DIRECTIONS) {         // patternX: as 4 direcoes
         const col = z === 0 ? dir.col : WATER_COL[dir.col];
         const frame = extractFrame(sheet, col, row, dir.mirror, baseline);
-        const [top, bottom] = sliceFrame(frame, table);
-        // width=1, height=2, layers=1 -> por frame saem 2 sprites, de cima
-        // para baixo.
-        sprites.push(top, bottom);
+        const fatiado = sliceToIds(frame, table);
+        cols = fatiado.cols;
+        rows = fatiado.rows;
+        sprites.push(...fatiado.ids);
       }
     }
   }
 
   return {
     type: groupType,
-    width: 1,
-    height: 2,
-    exactSize: 32,
+    width: cols,
+    height: rows,
+    // O client sobrescreve isto em tempo de execucao (ThingType::getExactSize
+    // recalcula a partir da textura), mas o byte precisa existir e ser
+    // coerente para o stream nao dessincronizar.
+    exactSize: Math.max(OUT_FRAME_W, OUT_FRAME_H),
     layers: 1,
     patternX: 4,
     patternY: 1,
@@ -236,16 +288,18 @@ function compileItems(table) {
     if (img.width !== SPRITE_SIZE || img.height !== SPRITE_SIZE) {
       throw new Error(`${file}: item tem que ser ${SPRITE_SIZE}x${SPRITE_SIZE}, veio ${img.width}x${img.height}`);
     }
-    const id = table.add(img);
+    const { ids, cols, rows } = sliceToIds(img, table);
     items.push({
       name: file,
       attrs: {
         // ThingAttrGround e obrigatorio: sem ele Tile::drawGround para na
         // primeira iteracao e o chao nao aparece.
         ground: 110,
-        // Sobe o tile meio losango. Negativo de proposito -- o client
-        // reinterpreta o u16 como int16.
-        displacement: [0, -16],
+        // Ancora: o quadro de 32x32 cai meio losango ABAIXO de `dest`, que e
+        // o vertice superior da celula. Antes isto era displacement [0,-16]
+        // cravado, que so vale enquanto o tile for UM sprite de 32x32 -- em
+        // mosaico o mesmo numero apontaria 24px fora. Ver displacementFor.
+        displacement: displacementFor([0, 16], cols, rows, CELL),
         fullGround: true,
         // Elevation faz o client empilhar: cada item com elevation soma
         // m_drawElevation e desenha o proximo mais acima
@@ -259,10 +313,11 @@ function compileItems(table) {
       },
       groups: [{
         type: 0,
-        width: 1, height: 1, layers: 1,
+        width: cols, height: rows, layers: 1,
+        exactSize: SPRITE_SIZE,
         patternX: 1, patternY: 1, patternZ: 1,
         phases: 1,
-        sprites: [id],
+        sprites: ids,
       }],
     });
   }
@@ -296,13 +351,65 @@ function compileOutfits(table) {
       row += phases;
     }
 
-    outfits.push({ name: file, attrs: { displacement: [8, 4] }, groups });
+    /*
+     * ANCORA DO PERSONAGEM: o canto superior-esquerdo do quadro de 32x64 cai
+     * 8px a esquerda e 68px acima de `dest`.
+     *
+     * O numero vem de reproduzir exatamente o que estava na tela antes, e nao
+     * de uma medida nova. O valor antigo era displacement [8, 4] com height=2
+     * -- so que o compilador emitia as duas metades TROCADAS (ver mosaic.js),
+     * entao o boneco era desenhado 32px acima do que aquele displacement
+     * dizia. Corrigida a ordem, a ancora abaixo devolve o mesmo pixel:
+     *   -(8, 4) - (0, 32) = (-8, -68)
+     *
+     * Ou seja: a troca de ordem e a ancora se cancelam de proposito. A
+     * correcao e estrutural, e a tela nao muda.
+     */
+    outfits.push({
+      name: file,
+      attrs: {
+        displacement: displacementFor([-8, -68], groups[0].width, groups[0].height, CELL),
+      },
+      groups,
+    });
 
     // Faceset: recortado e exportado, mas ainda NAO usado no jogo.
     facesets.push({ name: file, image: sheet.crop(0, FACESET_Y, FACESET_SIZE, FACESET_SIZE) });
   }
 
   return { outfits, facesets };
+}
+
+/*
+ * O Tibia.otfi. Passou a ser gerado porque com o mosaico ele mentia: dizia
+ * `sprites-file: Tibia.spr` e `sprite-size: 32` enquanto o client carregava
+ * um .cwm de 8x8.
+ *
+ * Vale saber o que aqui e LIDO e o que e enfeite. O client so faz casamento
+ * de string sobre tres campos (game_things/things.lua:31-70):
+ *
+ *   frame-groups: true      \ qualquer um dos dois liga os recursos modernos
+ *   sprite-data-size: 4096  /
+ *   transparency: true      -> liga GameSpritesAlphaChannel
+ *
+ * `sprites-file` e `sprite-size` NAO sao lidos por ninguem -- quem escolhe o
+ * arquivo e a extensao (ver o comentario no main), e o tamanho do sprite vem
+ * de dentro do proprio .cwm. Ficam aqui como documentacao, e agora corretos.
+ */
+function buildOtfi(nomeDoArquivoDeSprites) {
+  return [
+    'DatSpr',
+    '  extended: true',
+    '  transparency: true',
+    '  frame-durations: true',
+    '  frame-groups: true',
+    '  metadata-controller: Default',
+    '  metadata-file: Tibia.dat',
+    `  sprites-file: ${nomeDoArquivoDeSprites}`,
+    `  sprite-size: ${CELL}`,
+    `  sprite-data-size: ${CELL * CELL * 4}`,
+    '',
+  ].join('\n');
 }
 
 /** Effect e missile minimos -- o formato exige ao menos um de cada. */
@@ -338,16 +445,35 @@ function main() {
   }];
 
   const dat = buildDat({ signature: DAT_SIGNATURE, items, outfits, effects, missiles });
-  const spr = buildSpr(table.sprites, SPR_SIGNATURE);
+
+  /*
+   * O client escolhe o arquivo de sprites por EXTENSAO, nao por configuracao:
+   * SpriteManager::loadSpr procura Tibia.cwm antes de Tibia.spr. Entao os dois
+   * nao podem coexistir -- um .cwm esquecido no diretorio silenciosamente
+   * ganha de um .spr recem-compilado, e o sintoma (sprites velhos) nao aponta
+   * para a causa. Gravamos um e APAGAMOS o outro.
+   */
+  const usaCwm = CELL !== SPRITE_SIZE;
+  const sprites = usaCwm
+    ? { nome: 'Tibia.cwm', dados: buildCwm(table.sprites, CELL), obsoleto: 'Tibia.spr' }
+    : { nome: 'Tibia.spr', dados: buildSpr(table.sprites, SPR_SIGNATURE), obsoleto: 'Tibia.cwm' };
 
   // Backup antes de sobrescrever.
-  for (const f of ['Tibia.dat', 'Tibia.spr']) {
+  for (const f of ['Tibia.dat', sprites.nome]) {
     const p = path.join(OUT_DIR, f);
     if (fs.existsSync(p)) fs.copyFileSync(p, p + '.bak');
   }
 
   fs.writeFileSync(path.join(OUT_DIR, 'Tibia.dat'), dat);
-  fs.writeFileSync(path.join(OUT_DIR, 'Tibia.spr'), spr);
+  fs.writeFileSync(path.join(OUT_DIR, sprites.nome), sprites.dados);
+
+  const obsoleto = path.join(OUT_DIR, sprites.obsoleto);
+  if (fs.existsSync(obsoleto)) {
+    fs.renameSync(obsoleto, obsoleto + '.bak');
+    console.log(`${sprites.obsoleto} removido (viraria o arquivo escolhido pelo client) -> .bak`);
+  }
+
+  fs.writeFileSync(path.join(OUT_DIR, 'Tibia.otfi'), buildOtfi(sprites.nome));
 
   const faceDir = path.join(ASSETS, 'facesets');
   if (!fs.existsSync(faceDir)) fs.mkdirSync(faceDir, { recursive: true });
@@ -358,10 +484,11 @@ function main() {
   for (const [type, phases] of SHEET_ROWS) {
     console.log(`           ${String(type).padStart(2)} ${FRAME_GROUP_NAMES[type].padEnd(7)} ${phases} fase(s)`);
   }
+  console.log(`celula   ${CELL}x${CELL}${usaCwm ? ' (mosaico)' : ''}`);
   console.log(`sprites  ${table.sprites.length - 1} unicos`);
   console.log(`facesets ${facesets.length} -> assets/facesets/ (nao usados no jogo ainda)`);
   console.log(`Tibia.dat ${dat.length} bytes`);
-  console.log(`Tibia.spr ${spr.length} bytes`);
+  console.log(`${sprites.nome} ${sprites.dados.length} bytes`);
 }
 
 if (require.main === module) main();

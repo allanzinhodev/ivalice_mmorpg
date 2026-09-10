@@ -873,7 +873,17 @@ const TexturePtr& ThingType::getTexture(int animationPhase)
 
 Size ThingType::getBestTextureDimension(int w, int h, int count)
 {
-    const int MAX = g_sprites.spriteSize();
+    // MAX conta SPRITES por eixo do atlas, nao pixels. Vinha de spriteSize(),
+    // que so por coincidencia valia o mesmo 32 -- as duas grandezas nao tem
+    // relacao. Com sprite 8x8 o teto caia para 8 e o VALIDATE abaixo derrubava
+    // qualquer coisa maior que um tile: um outfit vira 4x8 sprites, que com 8
+    // frames da 256 > 8*8.
+    //
+    // O que o numero de fato limita e o tamanho do atlas em PIXELS: 32 sprites
+    // de 32px = 1024. Fixar o teto em pixels e derivar a contagem reproduz
+    // exatamente o comportamento antigo em 32x32 (1024/32 = 32) e libera o
+    // mosaico 8x8, onde cabem 128 sprites por eixo no mesmo atlas.
+    const int MAX = Otc::MAX_ATLAS_PIXELS / g_sprites.spriteSize();
 
     int k = 1;
     while(k < w)
