@@ -98,15 +98,72 @@ class SpriteTable {
 }
 
 /**
- * Recorta um frame da folha e converte 24x48 -> 32x64.
- * A spec manda alinhar a ESQUERDA e EMBAIXO.
+ * Descobre a BASE da folha: o maior y com pixel opaco em qualquer celula.
+ *
+ * O alinhamento "embaixo" da spec tem que ser feito pelo CONTEUDO, nao pela
+ * celula: dentro dos 48px de cada celula sobra uma margem transparente (5-6px
+ * no soldier), e blitar a celula inteira faz o personagem flutuar acima do
+ * chao e o corte de 32px cair no meio do corpo.
+ *
+ * A base e UMA SO para a folha inteira, de proposito. Alinhar cada frame pelo
+ * seu proprio conteudo faria o personagem "pular" entre frames de alturas
+ * diferentes -- e, pior, destruiria uma diferenca que e INTENCIONAL na arte:
+ * as colunas de agua terminam ~7px mais alto que as de terra, porque o
+ * personagem esta submerso. Com base unica esse deslocamento e preservado.
  */
-function extractFrame(sheet, col, row, mirror) {
+function findSheetBaseline(sheet, rows) {
+  let baseline = -1;
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < 4; col++) {
+      const cell = sheet.crop(col * SRC_FRAME_W, row * SRC_FRAME_H, SRC_FRAME_W, SRC_FRAME_H);
+      for (let y = SRC_FRAME_H - 1; y > baseline; y--) {
+        let has = false;
+        for (let x = 0; x < SRC_FRAME_W; x++) {
+          if (cell.alphaAt(x, y) !== 0) { has = true; break; }
+        }
+        if (has) { baseline = y; break; }
+      }
+    }
+  }
+  return baseline < 0 ? SRC_FRAME_H - 1 : baseline;
+}
+
+/**
+ * Recorta um frame da folha e converte 24x48 -> 32x64.
+ * A spec manda alinhar a ESQUERDA e EMBAIXO -- ver findSheetBaseline para o
+ * que "embaixo" significa aqui.
+ */
+function extractFrame(sheet, col, row, mirror, baseline) {
   const src = sheet.crop(col * SRC_FRAME_W, row * SRC_FRAME_H, SRC_FRAME_W, SRC_FRAME_H);
-  const shaped = mirror ? src.flipX() : src;
+
+  // Limites horizontais do conteudo dentro da celula.
+  //
+  // O desenho NAO esta centrado na celula de 24px: no soldier ele ocupa
+  // x 9..23, colado na borda direita. Espelhar a celula inteira jogaria o
+  // personagem para a borda ESQUERDA, e ele "pularia" 9px de lado ao trocar
+  // de direcao. Por isso recortamos o conteudo antes de espelhar.
+  let x0 = SRC_FRAME_W, x1 = -1;
+  for (let y = 0; y < SRC_FRAME_H; y++) {
+    for (let x = 0; x < SRC_FRAME_W; x++) {
+      if (src.alphaAt(x, y) !== 0) {
+        if (x < x0) x0 = x;
+        if (x > x1) x1 = x;
+      }
+    }
+  }
 
   const out = Image.blank(OUT_FRAME_W, OUT_FRAME_H);
-  out.blit(shaped, 0, OUT_FRAME_H - SRC_FRAME_H);
+  if (x1 < 0) return out; // celula vazia (ex.: attack nao tem versao na agua)
+
+  const contentW = x1 - x0 + 1;
+  const content = src.crop(x0, 0, contentW, SRC_FRAME_H);
+  const shaped = mirror ? content.flipX() : content;
+
+  // Centraliza na horizontal e encosta a base do conteudo na base do frame:
+  // a linha `baseline` da celula vai para a ultima linha do frame de saida.
+  const base = baseline === undefined ? SRC_FRAME_H - 1 : baseline;
+  const dx = Math.floor((OUT_FRAME_W - contentW) / 2);
+  out.blit(shaped, dx, OUT_FRAME_H - 1 - base);
   return out;
 }
 
@@ -130,7 +187,7 @@ function sliceFrame(frame, table) {
  * ou seja, o indice mais rapido e a largura, depois altura, layer, patternX,
  * patternY, patternZ, e o mais lento e a fase.
  */
-function buildOutfitGroup(sheet, table, groupType, firstRow, phases) {
+function buildOutfitGroup(sheet, table, groupType, firstRow, phases, baseline) {
   const sprites = [];
 
   for (let phase = 0; phase < phases; phase++) {
@@ -138,7 +195,7 @@ function buildOutfitGroup(sheet, table, groupType, firstRow, phases) {
     for (let z = 0; z < 2; z++) {            // patternZ: 0 = seco, 1 = agua
       for (const dir of DIRECTIONS) {         // patternX: as 4 direcoes
         const col = z === 0 ? dir.col : WATER_COL[dir.col];
-        const frame = extractFrame(sheet, col, row, dir.mirror);
+        const frame = extractFrame(sheet, col, row, dir.mirror, baseline);
         const [top, bottom] = sliceFrame(frame, table);
         // width=1, height=2, layers=1 -> por frame saem 2 sprites, de cima
         // para baixo.
@@ -221,10 +278,12 @@ function compileOutfits(table) {
       throw new Error(`${file}: altura ${sheet.height}, precisa de ao menos ${FACESET_Y} (${TOTAL_ROWS} linhas de ${SRC_FRAME_H})`);
     }
 
+    const baseline = findSheetBaseline(sheet, TOTAL_ROWS);
+
     const groups = [];
     let row = 0;
     for (const [groupType, phases] of SHEET_ROWS) {
-      groups.push(buildOutfitGroup(sheet, table, groupType, row, phases));
+      groups.push(buildOutfitGroup(sheet, table, groupType, row, phases, baseline));
       row += phases;
     }
 
@@ -298,4 +357,4 @@ function main() {
 
 if (require.main === module) main();
 
-module.exports = { SHEET_ROWS, DIRECTIONS, extractFrame };
+module.exports = { SHEET_ROWS, DIRECTIONS, extractFrame, findSheetBaseline, TOTAL_ROWS };
