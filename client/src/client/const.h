@@ -28,7 +28,15 @@
 namespace Otc
 {
     enum : int {
-        MAX_ELEVATION = 24,
+        // Teto do empilhamento de elevation, em pixels (Tile::drawGround
+        // satura m_drawElevation aqui).
+        //
+        // Era 24, o valor do Tibia -- suficiente para uma pilha de parcels,
+        // curto demais para relevo. No FFTA a altura vai de 0 a 31 e cada
+        // unidade vale TILE_HALF_H = 8px, entao o curso vertical chega a
+        // 31 * 8 = 248px. Com 24 o mapa saturava no primeiro degrau e o
+        // relevo sumia.
+        MAX_ELEVATION = 248,
 
         // --- Projecao isometrica (estilo Final Fantasy Tactics Advance) ---
         // Meias-extensoes do losango de uma celula: 32x16 px.
