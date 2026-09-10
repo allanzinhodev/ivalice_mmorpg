@@ -91,6 +91,43 @@ function groundForHeight(h) {
   return STONE;               // partes altas
 }
 
+/**
+ * Carrega assets/mapdata/mapN.json, se existir.
+ *
+ * E o que o extract-map-tiles.js gera: por celula, o indice do tile
+ * recortado da imagem de referencia. Com isso o mapa usa a ARTE do FFTA em
+ * vez dos 3 chaos genericos.
+ */
+function loadMapData(mapIndex) {
+  const f = path.resolve(__dirname, "../../assets/mapdata/map" + mapIndex + ".json");
+  if (!fs.existsSync(f)) return null;
+  return JSON.parse(fs.readFileSync(f, "utf8"));
+}
+
+/**
+ * Descobre o id de item de cada tile do mapa.
+ *
+ * O compile.js atribui os ids na ordem alfabetica de assets/items/,
+ * comecando em 100 (os ids 1..99 sao reservados pelo formato .dat). Em vez
+ * de fixar os numeros -- que quebrariam ao adicionar qualquer arquivo --
+ * lemos o diretorio e achamos a posicao dos arquivos do mapa.
+ */
+function mapTileIds(mapIndex) {
+  const dir = path.resolve(__dirname, "../../assets/items");
+  const files = fs.readdirSync(dir).filter(function (f) {
+    return f.toLowerCase().slice(-4) === ".png";
+  }).sort();
+  const suffix = "-map" + mapIndex + "-";
+  const ids = new Map();
+  files.forEach(function (f, i) {
+    const at = f.indexOf(suffix);
+    if (at < 0) return;
+    const n = parseInt(f.slice(at + suffix.length), 10);
+    if (!isNaN(n)) ids.set(n, 100 + i);
+  });
+  return ids;
+}
+
 function loadHeightMap(mapIndex) {
   const romPath = path.resolve(__dirname, '../rom.gba');
   const idxPath = path.resolve(__dirname, '../extracted/maps-index.json');
@@ -125,7 +162,7 @@ function loadHeightMap(mapIndex) {
   return { grid, rows, cols: HM_TERRAIN_COLS, offset: rec.heightMapOffset };
 }
 
-function buildOtbm(hm) {
+function buildOtbm(hm, refData, tileIds) {
   const mapW = hm.cols * SCALE;
   const mapH = hm.rows * SCALE;
 
@@ -161,7 +198,13 @@ function buildOtbm(hm) {
   for (let r = 0; r < hm.rows; r++) {
     for (let c = 0; c < hm.cols; c++) {
       const z = zOf[r][c];
-      const ground = groundForHeight(hm.grid[r][c]);
+      // Usa o tile recortado da referencia quando existir; senao cai nos
+      // 3 chaos genericos por faixa de altura.
+      let ground = groundForHeight(hm.grid[r][c]);
+      if (refData && tileIds && refData.grid[r] && refData.grid[r][c]) {
+        const t = refData.grid[r][c].tile;
+        if (t !== null && tileIds.has(t)) ground = tileIds.get(t);
+      }
       if (!byZ.has(z)) byZ.set(z, []);
       const list = byZ.get(z);
       for (let sy = 0; sy < SCALE; sy++) {
@@ -217,7 +260,15 @@ function main() {
     console.log('  ' + row.map((h) => String(h).padStart(2)).join(' '));
   }
 
-  const r = buildOtbm(hm);
+  const mapData = loadMapData(mapIndex);
+  const tileIds = mapData ? mapTileIds(mapIndex) : null;
+  if (mapData) {
+    console.log("mapdata: " + mapData.cols + "x" + mapData.rows + " celulas, " + tileIds.size + " tiles com id");
+  } else {
+    console.log("sem assets/mapdata -- usando os 3 chaos genericos");
+  }
+
+  const r = buildOtbm(hm, mapData, tileIds);
 
   const outDir = path.resolve(__dirname, '../../server/data/world');
   fs.writeFileSync(path.join(outDir, 'world.otbm'), r.buffer);

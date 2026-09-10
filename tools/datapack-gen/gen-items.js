@@ -42,21 +42,33 @@ const OTB_DESCRIPTION = 'OTB 3.20.1-8.60';
 // O Tibia.dat deste projeto declara 3 itens, que sao portanto 100, 101 e 102.
 // Usar 1/2/3 daria chao invisivel: o server aceitaria, mas o client nao teria
 // ThingType para esses ids.
-const ITEMS = [
-  { id: 100, name: 'grass', speed: 110 },
-  { id: 101, name: 'sand', speed: 110 },
-  { id: 102, name: 'stone', speed: 110 },
+/**
+ * Os itens saem de assets/items/, na MESMA ordem que o compile.js usa para
+ * atribuir os ids do .dat: nome de arquivo, alfabetico, comecando em 100.
+ *
+ * Antes os 3 chaos eram fixos aqui. Quando o extract-map-tiles.js passou a
+ * gerar ~200 tiles, o client tinha todos e o SERVER so tres -- e o mapa
+ * referenciava ids que o items.otb nao conhecia. O sintoma no server e
+ * "Failed to create item." e o mapa nem carrega.
+ *
+ * Lendo o mesmo diretorio, os dois lados nao tem como divergir.
+ */
+function loadItems() {
+  const dir = path.resolve(__dirname, "../../assets/items");
+  const files = fs.readdirSync(dir).filter(function (f) {
+    return f.toLowerCase().slice(-4) === ".png";
+  }).sort();
 
-  // O store inbox (ITEM_STORE_INBOX = 23396) NAO entra aqui de proposito.
-  // O Player o cria no construtor (player.cpp) e o server o enviava a todo
-  // cliente OTC no login (protocolgame.cpp), mas o Tibia.dat deste projeto so
-  // vai ate o id 102 -- o client lancaria "unable to create item with invalid
-  // id 23396" e ABORTARIA o parse do pacote, entrando sem receber o mapa.
-  //
-  // A correcao esta no server: o envio agora e condicionado a existencia do
-  // item no items.otb. Declarar 23396 aqui reativaria o bug, porque o lado do
-  // client continua sem o ThingType.
-];
+  return files.map(function (f, i) {
+    return {
+      id: 100 + i,
+      name: f.replace(/\.png$/i, "").replace(/^\d+-/, ""),
+      speed: 110,
+    };
+  });
+}
+
+const ITEMS = loadItems();
 
 function buildOtb() {
   const root = new Node(0); // o no raiz do items.otb tem type byte 0
