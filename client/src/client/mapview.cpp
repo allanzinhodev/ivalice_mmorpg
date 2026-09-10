@@ -290,8 +290,28 @@ void MapView::drawMapForeground(const Rect& rect)
 
         // Otc::HUD_SHIFT_X corrige o termo `16 - displacementX`, que foi escrito
         // para celula quadrada e nao serve para o losango. Ver const.h.
-        Point creatureOffset = Point((16 + Otc::HUD_SHIFT_X) * g_sprites.getOffsetFactor() - creature->getDisplacementX(),
-                                     -creature->getDisplacementY() - 2 * g_sprites.getOffsetFactor() - extraHeight);
+        //
+        // O offset tem duas naturezas, e misturar as duas quebra com sprite de
+        // 8x8 (mesma armadilha da elevacao, ver tile.cpp):
+        //
+        //   - ONDE O QUADRO COMECA: acompanha o desenho, entao usa as mesmas
+        //     parcelas de ThingType::draw -- displacement (que ja vem
+        //     multiplicado pelo offsetFactor) e (tamanho-1) * spriteSize. O
+        //     eixo Y ja fazia isso com extraHeight; o X nao, e por isso o HUD
+        //     saía do lugar quando o mesmo boneco era fatiado em 4 colunas de
+        //     8px em vez de 1 de 32px.
+        //
+        //   - AJUSTE EM PIXELS DE TELA: os 16 (meio tile) mais HUD_SHIFT_X sao
+        //     medidos na tela e NAO escalam com o tamanho do sprite. Estavam
+        //     multiplicados por offsetFactor, o que so passava despercebido
+        //     porque o fator valia 1 com sprite de 32x32.
+        int extraWidth = 0;
+        if (ThingType* type = creature->rawGetThingType()) {
+            extraWidth = (type->getWidth() - 1) * g_sprites.spriteSize();
+        }
+
+        Point creatureOffset = Point(-creature->getDisplacementX() - extraWidth + (16 + Otc::HUD_SHIFT_X),
+                                     -creature->getDisplacementY() - extraHeight - 2);
         Position pos = creature->getPrewalkingPosition();
         Point p = transformPositionTo2D(pos, cameraPosition) - drawOffset;
         p += (creature->getDrawOffset() + creatureOffset) - Point(jumpOffset.x, jumpOffset.y);
@@ -329,7 +349,9 @@ void MapView::drawMapForeground(const Rect& rect)
             } else if (i == 1)
                 continue;
 
-            Point p = transformPositionTo2D(pos, cameraPosition) - drawOffset + Point(8, 0) * g_sprites.getOffsetFactor();
+            // Ajuste em pixels de TELA, relativo a celula -- nao escala com o
+            // tamanho do sprite. Ver a nota em drawCreatureInformation.
+            Point p = transformPositionTo2D(pos, cameraPosition) - drawOffset + Point(8, 0);
             p.x *= horizontalStretchFactor;
             p.y *= verticalStretchFactor;
             p += rect.topLeft();
@@ -346,7 +368,9 @@ void MapView::drawMapForeground(const Rect& rect)
         if (pos.z != cameraPosition.z)
             continue;
 
-        Point p = transformPositionTo2D(pos, cameraPosition) - drawOffset + Point(16, 8) * g_sprites.getOffsetFactor();
+        // Centro da celula em pixels de TELA (TILE_HALF_W, TILE_HALF_H) -- nao
+        // escala com o tamanho do sprite.
+        Point p = transformPositionTo2D(pos, cameraPosition) - drawOffset + Point(Otc::TILE_HALF_W, Otc::TILE_HALF_H);
         p.x *= horizontalStretchFactor;
         p.y *= verticalStretchFactor;
         p += rect.topLeft();

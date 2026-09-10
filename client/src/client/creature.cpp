@@ -1011,15 +1011,23 @@ void Creature::cancelShieldBlinkEvent()
 
 Point Creature::getDrawOffset()
 {
+    // ELEVACAO EM PIXELS DE TELA -- mesma correcao que tile.cpp recebeu, e
+    // pelo mesmo motivo: m_drawElevation e altura de TERRENO, e nao escala
+    // com o tamanho do sprite.
+    //
+    // Este ponto ficou de fora daquela passagem, e a assimetria seria pior
+    // que o bug original: o tile subiria os 8px do degrau e o personagem
+    // sobre ele apenas 2, entao o boneco afundaria no relevo em vez de
+    // simplesmente ficar plano. Os dois lados TEM que usar a mesma unidade.
     Point drawOffset;
     if (m_walking) {
         if (m_walkingTile)
-            drawOffset -= Point(1, 1) * m_walkingTile->getDrawElevation() * g_sprites.getOffsetFactor();
+            drawOffset -= Point(1, 1) * m_walkingTile->getDrawElevation();
         drawOffset += m_walkOffset;
     } else {
         const TilePtr& tile = getTile();
         if (tile)
-            drawOffset -= Point(1, 1) * tile->getDrawElevation() * g_sprites.getOffsetFactor();
+            drawOffset -= Point(1, 1) * tile->getDrawElevation();
     }
     return drawOffset;
 }
