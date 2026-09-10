@@ -36,8 +36,14 @@ const OTBM_ATTR_EXT_SPAWN_FILE = 11;
 const OTBM_ATTR_EXT_HOUSE_FILE = 13;
 
 // --- parametros do mapa ---
-const MAP_WIDTH = 1024;
-const MAP_HEIGHT = 1024;
+// Mundo pequeno de teste. Com 1024x1024 eram 1.048.576 tiles e ~10 MB de
+// OTBM, o que deixava a geracao e o boot do server lentos sem necessidade
+// para testar render/caminhada. 128x128 = 16.384 tiles, gera na hora.
+//
+// A aware range do client e 18x14, entao 128x128 ja e MUITO maior que a
+// area visivel -- da para andar bastante sem chegar na borda.
+const MAP_WIDTH = 128;
+const MAP_HEIGHT = 128;
 const MAP_Z = 7; // andar do "chao" no padrao Tibia
 const AREA_SIZE = 256; // offsets de tile sao u8 -> chunk 256x256
 
@@ -50,7 +56,10 @@ const HOUSE_FILE = 'world-house.xml';
 
 const TOWN_ID = 1;
 const TOWN_NAME = 'Temple';
-const TEMPLE = { x: 512, y: 512, z: MAP_Z };
+// Centro do mapa. Derivado do tamanho de proposito: um valor fixo cairia
+// fora se o mapa encolhesse, e a temple TEM que estar num tile andavel --
+// senao loadPlayer falha e ninguem loga.
+const TEMPLE = { x: Math.floor(MAP_WIDTH / 2), y: Math.floor(MAP_HEIGHT / 2), z: MAP_Z };
 
 // ids de chao (client id == server id, ver gen-items.js)
 const GRASS = 100;
@@ -113,8 +122,15 @@ function buildOtbm() {
       const area = mapData.child(OTBM_TILE_AREA);
       area.props.u16(baseX).u16(baseY).u8(MAP_Z);
 
-      for (let dy = 0; dy < AREA_SIZE; dy++) {
-        for (let dx = 0; dx < AREA_SIZE; dx++) {
+      // Clampa ao tamanho do mapa. Sem isto, um mapa que nao seja multiplo
+      // exato de AREA_SIZE gera tiles FORA dos limites declarados no header
+      // -- com 128x128 e AREA_SIZE 256 saiam 65.536 tiles em vez de 16.384.
+      // Nao aparecia com 1024 porque 1024 e multiplo de 256.
+      const areaH = Math.min(AREA_SIZE, MAP_HEIGHT - baseY);
+      const areaW = Math.min(AREA_SIZE, MAP_WIDTH - baseX);
+
+      for (let dy = 0; dy < areaH; dy++) {
+        for (let dx = 0; dx < areaW; dx++) {
           const tile = area.child(OTBM_TILE);
           tile.props.u8(dx).u8(dy);
           const item = tile.child(OTBM_ITEM);
