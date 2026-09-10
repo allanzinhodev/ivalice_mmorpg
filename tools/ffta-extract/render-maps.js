@@ -153,8 +153,17 @@ function renderMap(index) {
   const gfx = G.decompress(d, gOff);
   if (!gfx || !gfx.data) return { index, error: `tileset tipo ${hex(d[gOff])} nao descomprimiu` };
 
-  const arr = G.decompress(d, aOff);
-  if (!arr || !arr.data) return { index, error: `arrangement tipo ${hex(d[aOff])} nao descomprimiu` };
+  // Tipo 0x01 e "packed": nao comprimido, os dados vem logo apos o header de
+  // 4 bytes. O decompress do gfx.js devolve null nesse caso (ele so trata os
+  // formatos comprimidos), entao fatiamos direto -- sao 47 dos 163 mapas.
+  let arrData;
+  if (d[aOff] === 0x01) {
+    arrData = d.subarray(aOff + 4);
+  } else {
+    const arr = G.decompress(d, aOff);
+    if (!arr || !arr.data) return { index, error: `arrangement tipo ${hex(d[aOff])} nao descomprimiu` };
+    arrData = arr.data;
+  }
 
   const palBuf = readPalette(rec);
   if (!palBuf) return { index, error: 'paleta nao lida' };
@@ -178,7 +187,7 @@ function renderMap(index) {
   const tileCount = a.tileCount;
   const atlas = new Image(a.width, a.height, a.rgba);
 
-  const { layer1, layer2, maxTile } = parseArrangement(arr.data);
+  const { layer1, layer2, maxTile } = parseArrangement(arrData);
 
   const out = Image.blank(GRID_W * STEP_X + TILE, A_HEIGHT * STEP_Y + TILE);
 
