@@ -67,6 +67,43 @@ not values". Ler so 14 colunas.
 
 `gen-map-ffta.js` ja usa isso: altura -> z invertido, 3 unidades por andar.
 
+### Quantos valores de altura existem: 32 (0 a 31)
+
+Medido nos 159 mapas que descomprimem, 25.936 celulas de terreno. Cabem
+exatamente em 5 bits -- a altura e gravada num byte, mas o jogo so usa os
+5 bits baixos.
+
+| Faixa | Cobertura |
+|---|---|
+| 0-4 | 42% |
+| 0-10 | 75% |
+| 0-16 | 88% |
+| 17-31 | 12% |
+
+A altura 2 sozinha e 17% das celulas -- e o "chao padrao". Valores como 27 e
+29 aparecem em 2-3 celulas no jogo INTEIRO.
+
+Por mapa, a altura maxima vai de 7 a 31. O Aisenfield (150) usa 2..7, um dos
+mais planos.
+
+**Cuidado ao contar**: sem filtrar as colunas de endereco aparecem 118
+valores distintos ate 252. Os multiplos de 32 (32, 64, 96, 128, 160, 192,
+224) sao endereco, nao altura. Filtrar por "multiplo de 32 e >= 32" e mais
+robusto que exigir a progressao exata +32 por linha -- o detector do
+extract-map-tiles.js usa a progressao e falha em 4 mapas.
+
+### HEIGHT_PER_FLOOR e o limite de z
+
+O OTBM so tem z de 0 a 15. Com o intervalo real 0..31:
+
+- **3 por andar** (atual) -> ate 11 andares. Cabe, mas aperta num mapa que
+  use altura 31.
+- 2 por andar -> ate 16 andares, ESTOURA.
+- 4 por andar -> ate 8 andares, com folga.
+
+Decisao: fica em 3. So vale mexer quando aparecer um mapa alto de verdade --
+para o Aisenfield (2..7) qualquer valor serve.
+
 ## O que FALTA
 
 **A ordem dos tiles dentro do arrangement.** As cores, a separacao de camadas
