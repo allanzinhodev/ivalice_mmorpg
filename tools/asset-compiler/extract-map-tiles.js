@@ -57,6 +57,20 @@ const FLOOR_LIFT = 16;
 // tambem a face lateral do bloco -- e o que da o visual do FFTA.
 const SPRITE = 32;
 
+// Quanto UMA unidade de altura do FFTA vale em pixels na tela.
+//
+// Medido, nao chutado: recortando o Aisenfield com varios valores e contando
+// os tiles unicos por conteudo RGBA, k=8 e o unico que deixa as 208 celulas
+// inteiramente dentro da arte (208/208 opacas) e o que mais deduplica:
+//
+//   k=0 -> 29 tiles unicos, 202/208 opacas
+//   k=4 -> 25 tiles unicos, 205/208 opacas
+//   k=8 -> 22 tiles unicos, 208/208 opacas
+//
+// E TILE_HALF_H, o que faz sentido: no losango 32x16 um degrau de altura
+// desloca meio tile em Y.
+const PX_PER_HEIGHT = TILE_HALF_H;
+
 // Altura do FFTA -> andar. Ver gen-map-ffta.js, que usa a mesma constante.
 const HEIGHT_PER_FLOOR = 3;
 
@@ -106,12 +120,39 @@ function loadHeightMap(rom, mapIndex) {
   return grid;
 }
 
-/** Projecao identica a MapView::transformPositionTo2D do client. */
-function project(col, row, z, origin) {
+/**
+ * Projecao identica a MapView::transformPositionTo2D do client, mas com a
+ * altura CRUA em vez do andar quantizado.
+ *
+ * Antes isto recebia z (= altura/3) e multiplicava por FLOOR_LIFT. Isso
+ * achatava tudo dentro do andar: no Aisenfield as alturas 3, 4 e 5 caem todas
+ * em z=1 e eram recortadas da MESMA linha da imagem -- o relevo interno
+ * simplesmente sumia.
+ *
+ * Com a altura crua x PX_PER_HEIGHT o recorte segue a arte pixel a pixel. O
+ * andar continua saindo de HEIGHT_PER_FLOOR, e a diferenca dentro do andar
+ * vira elevation (itens empilhados), nao z.
+ */
+function project(col, row, height, origin) {
   return {
     x: origin.x + (col - row) * TILE_HALF_W,
-    y: origin.y + (col + row) * TILE_HALF_H - z * FLOOR_LIFT,
+    y: origin.y + (col + row) * TILE_HALF_H - height * PX_PER_HEIGHT,
   };
+}
+
+/**
+ * Quantos itens com hasHeight a celula precisa empilhar.
+ *
+ * O server conta ITENS, nao pixels: Tile::hasHeight(n) percorre o stack e
+ * conta os que tem CONST_PROP_HASHEIGHT (server/src/tile.cpp:127). O
+ * Game::internalMoveCreature usa esse mesmo contador para decidir subir ou
+ * descer de andar (game.cpp:1676).
+ *
+ * Entao a altura DENTRO do andar (0, 1 ou 2, com HEIGHT_PER_FLOOR=3) vira
+ * exatamente essa quantidade de itens empilhados.
+ */
+function elevationFor(height) {
+  return height % HEIGHT_PER_FLOOR;
 }
 
 /**
@@ -145,11 +186,9 @@ function calibrate(ref, hm) {
   let relMinX = Infinity, relMinY = Infinity;
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
-      const z = Math.floor(hm[r][c] / HEIGHT_PER_FLOOR);
       const x = (c - r) * TILE_HALF_W;
-      // o topo do bloco: a celula sobe z*FLOOR_LIFT e o sprite tem a face
-      // lateral acima do losango
-      const y = (c + r) * TILE_HALF_H - z * FLOOR_LIFT - (SPRITE - 2 * TILE_HALF_H);
+      // o topo do bloco e o proprio topo do losango (o sprite comeca ali)
+      const y = (c + r) * TILE_HALF_H - hm[r][c] * PX_PER_HEIGHT;
       if (x < relMinX) relMinX = x;
       if (y < relMinY) relMinY = y;
     }
@@ -165,39 +204,54 @@ function calibrate(ref, hm) {
  * e praticamente nada deduplica -- 197 tiles unicos para 208 celulas. Com a
  * mascara, duas celulas de chao igual viram o MESMO tile.
  *
- * A mascara e o losango de 32x16 encostado na base, mais a coluna vertical
- * acima dele (a face lateral do bloco, que e o que da o visual do FFTA).
+ * A mascara e o losango de 32x16 no TOPO do sprite, mais a face lateral que
+ * desce dele ate a base -- o bloco isometrico do FFTA.
  */
-function cutCell(ref, col, row, z, origin) {
-  const p = project(col, row, z, origin);
-  // O losango de 32x16 fica na PARTE DE BAIXO do sprite de 32x32: os 16px de
-  // cima sao a face lateral / o que o bloco projeta para cima.
-  const top = p.y - (SPRITE - 2 * TILE_HALF_H);
-  const cell = ref.crop(p.x, top, SPRITE, SPRITE);
+function cutCell(ref, col, row, height, origin) {
+  const p = project(col, row, height, origin);
+  // project() devolve o canto ESQUERDO do losango, e o losango e o topo do
+  // sprite. Entao o recorte comeca exatamente ali: nada de deslocar em Y.
+  //
+  // Isto ja esteve deslocado -(SPRITE - 2*TILE_HALF_H) por assumir o losango
+  // na base. Com a mascara no topo, aquele shift recortava 16px acima da
+  // celula -- pegando o vizinho de tras em vez da propria face.
+  const cell = ref.crop(p.x, p.y, SPRITE, SPRITE);
 
   const out = Image.blank(SPRITE, SPRITE);
 
-  // A mascara e o BLOCO isometrico: o losango do topo mais as duas faces
+  // A mascara e o BLOCO isometrico: o losango do TOPO mais as duas faces
   // laterais que descem dele ate a base do sprite.
   //
-  // Tentei antes uma "faixa vertical" estreitando para cima, e saiu em forma
-  // de cone -- cortava justamente a face lateral, que e o que da o visual de
-  // bloco do FFTA.
-  const cy = (SPRITE - 2 * TILE_HALF_H) + TILE_HALF_H;  // centro do losango
+  // O losango de 32x16 fica na METADE DE CIMA do sprite (y 0..15) -- e o
+  // topo do bloco, onde a criatura pisa. Os 16px de baixo (y 16..31) sao a
+  // face lateral, que e o que da o visual de bloco do FFTA.
+  //
+  // Duas tentativas anteriores falharam aqui:
+  //   - "faixa vertical estreitando para cima" saiu em forma de cone e
+  //     cortava a face lateral;
+  //   - a versao seguinte centrava o losango em y=24, invertendo a geometria:
+  //     a largura ficava NEGATIVA acima de y=16 e a face era descartada. So
+  //     376 dos 1024 pixels sobreviviam, e a deduplicacao ia para 151 tiles.
   for (let y = 0; y < SPRITE; y++) {
     for (let x = 0; x < SPRITE; x++) {
-      const dx = x - TILE_HALF_W;
-      const dy = y - cy;
-
-      // largura do losango naquela altura: cheia no centro, zero nas pontas
-      const halfAt = TILE_HALF_W * (1 - Math.abs(dy) / TILE_HALF_H);
-
-      const inTop = dy <= 0 && Math.abs(dx) <= halfAt;          // metade de cima
-      const inBottomDiamond = dy > 0 && Math.abs(dx) <= halfAt; // metade de baixo
-      // face lateral: abaixo do centro, dentro da largura CHEIA do losango
-      const inFace = dy > 0 && Math.abs(dx) <= TILE_HALF_W;
-
-      if (!inTop && !inBottomDiamond && !inFace) continue;
+      const dx = Math.abs(x - TILE_HALF_W + 0.5);
+      let inside;
+      if (y < TILE_HALF_H) {
+        // Metade DE CIMA do losango: a meia-largura cresce 2px por linha,
+        // de 2 (na ponta) ate 32 (na linha do meio).
+        //
+        // Antes isto usava min(y, 15-y), o que fazia o losango INTEIRO em
+        // 16px e depois estreitava de volta ate 6px de largura. O resultado
+        // foi o padrao de buracos em losango no render-demo: cada celula
+        // cobria menos area do que o passo da grade.
+        inside = dx <= (y + 1) * 2;
+      } else {
+        // Da linha do meio do losango para baixo e a FACE LATERAL do
+        // bloco: largura cheia ate a base do sprite. E o que encosta na
+        // celula da frente e fecha o mosaico.
+        inside = dx <= TILE_HALF_W - 0.5;
+      }
+      if (!inside) continue;
       const o = cell.offset(x, y);
       cell.pixels.copy(out.pixels, out.offset(x, y), o, o + 4);
     }
@@ -229,8 +283,7 @@ function drawGridOverlay(ref, hm, origin) {
   };
   for (let r = 0; r < hm.length; r++) {
     for (let c = 0; c < hm[0].length; c++) {
-      const z = Math.floor(hm[r][c] / HEIGHT_PER_FLOOR);
-      const p = project(c, r, z, origin);
+      const p = project(c, r, hm[r][c], origin);
       // desenha o losango da celula
       for (let i = 0; i < TILE_HALF_W; i++) {
         const dy = Math.floor(i / 2);
@@ -278,8 +331,8 @@ function main() {
     for (let c = 0; c < hm[0].length; c++) {
       const h = hm[r][c];
       const z = Math.floor(h / HEIGHT_PER_FLOOR);
-      const cell = cutCell(ref, c, r, z, origin);
-      row.push({ tile: table.add(cell), height: h, z });
+      const cell = cutCell(ref, c, r, h, origin);
+      row.push({ tile: table.add(cell), height: h, z, elevation: elevationFor(h) });
     }
     grid.push(row);
   }
@@ -304,4 +357,4 @@ function main() {
 
 if (require.main === module) main();
 
-module.exports = { project, loadHeightMap, TILE_HALF_W, TILE_HALF_H, FLOOR_LIFT, HEIGHT_PER_FLOOR };
+module.exports = { project, elevationFor, loadHeightMap, TILE_HALF_W, TILE_HALF_H, FLOOR_LIFT, HEIGHT_PER_FLOOR, PX_PER_HEIGHT };

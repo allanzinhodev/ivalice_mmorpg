@@ -247,6 +247,15 @@ function compileItems(table) {
         // reinterpreta o u16 como int16.
         displacement: [0, -16],
         fullGround: true,
+        // Elevation faz o client empilhar: cada item com elevation soma
+        // m_drawElevation e desenha o proximo mais acima
+        // (client/src/client/tile.cpp:62-63). E o lado visual do
+        // FLAG_HAS_HEIGHT que o gen-items.js poe no items.otb -- os dois
+        // precisam andar juntos, senao o server deixa subir num degrau que a
+        // tela mostra plano.
+        //
+        // TILE_HALF_H = 8: uma unidade de altura do FFTA vale meio tile em Y.
+        elevation: /-map[0-9]+-/.test(file) ? 8 : 0,
       },
       groups: [{
         type: 0,

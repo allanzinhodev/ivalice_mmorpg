@@ -22,6 +22,10 @@ const ROOT_ATTR_VERSION = 0x01;
 const ITEM_GROUP_GROUND = 1; // itemloader.h:9-29
 const ITEM_GROUP_CONTAINER = 2;
 
+// itemloader.h:104-108. O server so sabe que um item tem altura por este
+// bit; nao existe forma de declarar isso pelo items.xml.
+const FLAG_HAS_HEIGHT = 1 << 3;
+
 const ITEM_ATTR_SERVERID = 0x10; // itemloader.h:62+
 const ITEM_ATTR_CLIENTID = 0x11;
 const ITEM_ATTR_SPEED = 0x14;
@@ -64,6 +68,10 @@ function loadItems() {
       id: 100 + i,
       name: f.replace(/\.png$/i, "").replace(/^\d+-/, ""),
       speed: 110,
+      // Todo tile de mapa carrega altura. E o que faz Tile::hasHeight(n)
+      // contar, e por consequencia o que faz o personagem subir e descer de
+      // andar em Game::internalMoveCreature (server/src/game.cpp:1676).
+      hasHeight: f.indexOf('-map') >= 0,
     };
   });
 }
@@ -90,8 +98,9 @@ function buildOtb() {
     // O byte de tipo do no E o itemgroup_t (items.cpp:707).
     const group = item.group === 'container' ? ITEM_GROUP_CONTAINER : ITEM_GROUP_GROUND;
     const n = root.child(group);
-    // flags = 0: sem FLAG_BLOCK_SOLID -> chao andavel.
-    n.props.u32(0);
+    // Sem FLAG_BLOCK_SOLID -> chao andavel. FLAG_HAS_HEIGHT entra nos tiles
+    // de mapa para o server poder contar o empilhamento.
+    n.props.u32(item.hasHeight ? FLAG_HAS_HEIGHT : 0);
     const u16 = (v) => {
       const b = Buffer.alloc(2);
       b.writeUInt16LE(v, 0);
