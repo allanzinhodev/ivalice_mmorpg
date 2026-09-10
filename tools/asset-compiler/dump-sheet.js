@@ -3,9 +3,10 @@
  * Exporta uma folha de conferencia com os frames JA CONVERTIDOS, do jeito
  * exato que o compilador os monta.
  *
- *   node tools/asset-compiler/dump-sheet.js [arquivo.png]
+ *   node tools/asset-compiler/dump-sheet.js [arquivo.png] [--grid]
  *
- * Saida: assets/debug/<nome>-converted.png
+ * Saida: assets/debug/<nome>-converted.png       (limpa, fundo transparente)
+ *        assets/debug/<nome>-converted-grid.png  (com --grid)
  *
  * Layout da saida: uma LINHA por frame da spritesheet (na ordem dos frame
  * groups) e uma COLUNA por combinacao direcao x patternZ, na mesma ordem em
@@ -14,9 +15,15 @@
  *   seco:  Norte  Leste  Sul  Oeste
  *   agua:  Norte  Leste  Sul  Oeste
  *
- * Cada celula e o frame 32x64 final. As linhas de grade separam as celulas e
- * a linha vermelha marca onde termina o primeiro sprite de 32x32 -- com
- * height=2 cada frame vira DOIS sprites, e e util ver o corte.
+ * Cada celula e o frame 32x64 final.
+ *
+ * Por padrao a saida e LIMPA: fundo transparente, so os frames. E o que serve
+ * para julgar a arte -- fundo e linhas atrapalham na hora de olhar cor e
+ * contorno.
+ *
+ * Com --grid vem o fundo escuro e uma linha vermelha em y+32, marcando o corte
+ * entre os dois sprites de 32x32 (height=2). Util para conferir alinhamento,
+ * nao a arte.
  */
 
 const fs = require('fs');
@@ -48,7 +55,7 @@ function drawLine(img, x0, y0, x1, y1, rgba) {
   }
 }
 
-function dump(file) {
+function dump(file, grid) {
   const sheet = readPNG(file);
   const name = path.basename(file, '.png');
   const baseline = findSheetBaseline(sheet, TOTAL_ROWS);
@@ -61,9 +68,13 @@ function dump(file) {
   const cellH = OUT_H + PAD;
   const out = Image.blank(LABEL_W + cols * cellW + PAD, totalFrames * cellH + PAD);
 
-  // fundo cinza escuro, para enxergar os limites de cada frame
-  for (let i = 0; i < out.pixels.length; i += 4) {
-    out.pixels[i] = 24; out.pixels[i + 1] = 24; out.pixels[i + 2] = 32; out.pixels[i + 3] = 255;
+  // Fundo e linhas de corte so no modo --grid. Por padrao a saida sai
+  // LIMPA (fundo transparente), que e o que serve para conferir a arte:
+  // qualquer decoracao atrapalha na hora de julgar cor e contorno.
+  if (grid) {
+    for (let i = 0; i < out.pixels.length; i += 4) {
+      out.pixels[i] = 24; out.pixels[i + 1] = 24; out.pixels[i + 2] = 32; out.pixels[i + 3] = 255;
+    }
   }
 
   const lines = [];
@@ -83,7 +94,8 @@ function dump(file) {
           out.blit(frame, x, y);
 
           // corte entre os dois sprites de 32x32
-          drawLine(out, x, y + 32, x + OUT_W - 1, y + 32, [200, 40, 40, 255]);
+          // marca o corte entre os dois sprites de 32x32
+          if (grid) drawLine(out, x, y + 32, x + OUT_W - 1, y + 32, [200, 40, 40, 255]);
           col++;
         }
       }
@@ -94,7 +106,7 @@ function dump(file) {
   }
 
   if (!fs.existsSync(OUT_DIR)) fs.mkdirSync(OUT_DIR, { recursive: true });
-  const outFile = path.join(OUT_DIR, `${name}-converted.png`);
+  const outFile = path.join(OUT_DIR, `${name}-converted${grid ? '-grid' : ''}.png`);
   writePNG(outFile, out);
 
   console.log(`${name}: ${sheet.width}x${sheet.height} -> ${out.width}x${out.height}  (baseline y=${baseline})`);
@@ -104,12 +116,15 @@ function dump(file) {
 }
 
 function main() {
-  const arg = process.argv[2];
-  if (arg) { dump(path.resolve(arg)); return; }
+  const args = process.argv.slice(2);
+  const grid = args.includes('--grid');
+  const file = args.find((a) => !a.startsWith('--'));
+
+  if (file) { dump(path.resolve(file), grid); return; }
 
   const dir = path.join(ROOT, 'assets/outfits');
   for (const f of fs.readdirSync(dir).filter((x) => x.endsWith('.png'))) {
-    dump(path.join(dir, f));
+    dump(path.join(dir, f), grid);
     console.log();
   }
 }
