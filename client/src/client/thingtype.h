@@ -47,7 +47,8 @@ enum NewDrawType : uint8 {
 enum FrameGroupType : uint8 {
     FrameGroupDefault = 0,
     FrameGroupIdle = FrameGroupDefault,
-    FrameGroupMoving,
+    FrameGroupWalk,
+    FrameGroupMoving = FrameGroupWalk,
 
     // Frame groups estendidos, para animacoes de acao (ver o mesmo enum em
     // tools/ObjectBuilder/src/otlib/things/FrameGroupType.as -- os valores
@@ -56,12 +57,17 @@ enum FrameGroupType : uint8 {
     // O formato sempre aceitou N grupos: o groupCount e um byte e o parser
     // ja itera por ele. O que faltava era o client guardar os animators dos
     // grupos alem de 0 e 1, que eram silenciosamente descartados.
-    FrameGroupAttacking,
-    FrameGroupCasting,
-    FrameGroupHurt,
-    FrameGroupDying,
+    // A ordem TEM que bater com tools/asset-compiler/dat.js e com
+    // FrameGroupType.as do ObjectBuilder -- e a ordem das linhas da
+    // spritesheet em tools/prompts/Playable character Spritesheet.txt.
+    FrameGroupEvade,
+    FrameGroupJump,
+    FrameGroupHit,
+    FrameGroupDead,
+    FrameGroupAttack,
+    FrameGroupWeak,
 
-    FrameGroupLast = FrameGroupDying,
+    FrameGroupLast = FrameGroupWeak,
     FrameGroupCount = FrameGroupLast + 1
 };
 
