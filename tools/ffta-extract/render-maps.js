@@ -49,9 +49,17 @@ const BASE = 0x569104, REC = 0x58, COUNT = 163;
 // Form1.cs: A_WIDTH / A_HEIGHT
 const A_WIDTH = 0x80;   // 128 colunas
 const A_HEIGHT = 0x40;  // 64 linhas por camada
-const STEP_X = 4;       // passo horizontal (tiles se sobrepoem)
+// O endereco avanca 4 por tile na horizontal, mas cada tile ocupa 8px.
+// Por isso a coluna do tile e (addr % A_WIDTH) / 4, e o passo de desenho e 8.
+//
+// Usar (addr % A_WIDTH) direto com passo 4 -- como o RenderArrangeMap do
+// FFTAUtils faz -- espalha os tiles de 16 em 16px e deixa 8px de buraco entre
+// eles. Com passo 2 eles encostam, mas o mapa sai espremido na horizontal.
+const ADDR_PER_TILE = 4;
+const STEP_X = 8;
 const STEP_Y = 8;
 
+const GRID_W = A_WIDTH / 4;   // colunas de tile (o endereco avanca 4 por tile)
 const TILE = 8;
 
 // Subpaleta usada para colorir os tiles. Ver o comentario em renderMap.
@@ -90,8 +98,8 @@ function readPalette(rec) {
  * convertToPlanarArray em Form1.cs.
  */
 function parseArrangement(buf) {
-  const layer1 = new Int32Array(A_WIDTH * A_HEIGHT).fill(-1);
-  const layer2 = new Int32Array(A_WIDTH * A_HEIGHT).fill(-1);
+  const layer1 = new Int32Array(GRID_W * A_HEIGHT).fill(-1);
+  const layer2 = new Int32Array(GRID_W * A_HEIGHT).fill(-1);
 
   let p = 4; // pula o header u32
   let maxTile = 0;
@@ -112,14 +120,15 @@ function parseArrangement(buf) {
       // Tentei addr/2 + i (tratando addr como byte e a entrada como u16):
       // a faixa cabe melhor na grade, mas o desenho se parte em quatro
       // quadrantes. O stride 4 e o correto.
-      const cell = addr + i * 4;
+      const cell = addr + i * ADDR_PER_TILE;
       const y = Math.floor(cell / A_WIDTH);
-      const x = cell % A_WIDTH;
+      const x = Math.floor((cell % A_WIDTH) / ADDR_PER_TILE);
+      if (x >= GRID_W) continue;
       if (y >= A_HEIGHT) {
-        const idx = (y % A_HEIGHT) * A_WIDTH + x;
+        const idx = (y % A_HEIGHT) * GRID_W + x;
         if (idx < layer1.length) layer1[idx] = tileNo;
       } else {
-        const idx = y * A_WIDTH + x;
+        const idx = y * GRID_W + x;
         if (idx < layer2.length) layer2[idx] = tileNo;
       }
     }
@@ -171,7 +180,7 @@ function renderMap(index) {
 
   const { layer1, layer2, maxTile } = parseArrangement(arr.data);
 
-  const out = Image.blank(A_WIDTH * STEP_X + TILE, A_HEIGHT * STEP_Y + TILE);
+  const out = Image.blank(GRID_W * STEP_X + TILE, A_HEIGHT * STEP_Y + TILE);
 
   // Camada 1 (fundo) primeiro, camada 2 por cima -- a ordem de Form1.cs.
   let drawn = 0;
@@ -179,8 +188,8 @@ function renderMap(index) {
     for (let i = 0; i < layer.length; i++) {
       const n = layer[i];
       if (n < 0 || n >= tileCount) continue;
-      const y = Math.floor(i / A_WIDTH);
-      const x = i % A_WIDTH;
+      const y = Math.floor(i / GRID_W);
+      const x = i % GRID_W;
       const { tx, ty } = tileFromAtlas(atlas, ATLAS_COLS, n);
       const tile = atlas.crop(tx, ty, TILE, TILE);
       out.blit(tile, x * STEP_X, y * STEP_Y);
@@ -220,4 +229,4 @@ function main() {
 
 if (require.main === module) main();
 
-module.exports = { renderMap, parseArrangement, A_WIDTH, A_HEIGHT, STEP_X, STEP_Y };
+module.exports = { renderMap, parseArrangement, A_WIDTH, A_HEIGHT, GRID_W, STEP_X, STEP_Y };
