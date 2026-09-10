@@ -92,6 +92,66 @@ valores distintos ate 252. Os multiplos de 32 (32, 64, 96, 128, 160, 192,
 robusto que exigir a progressao exata +32 por linha -- o detector do
 extract-map-tiles.js usa a progressao e falha em 4 mapas.
 
+### Altura -> pixels: 8px por unidade (PX_PER_HEIGHT)
+
+Uma unidade de altura do FFTA vale **8px** na tela, que e `TILE_HALF_H`.
+Medido, nao chutado: recortando o Aisenfield com varios valores e contando
+tiles unicos por conteudo RGBA,
+
+| k | tiles unicos | celulas 100% dentro da arte |
+|---|---|---|
+| 0 | 29 | 202/208 |
+| 4 | 25 | 205/208 |
+| 8 | **22** | **208/208** |
+| 16 | 32 | 156/208 |
+
+Faz sentido geometricamente: no losango 32x16 um degrau desloca meio tile em Y.
+
+CUIDADO: `PX_PER_HEIGHT` (8) e `FLOOR_LIFT` (16) NAO sao a mesma coisa e nao
+devem ser unificados. O primeiro e o degrau de altura dentro do andar; o
+segundo e o salto de um andar inteiro do OTBM. Com `HEIGHT_PER_FLOOR = 3`,
+3 unidades = 24px de arte, mas o andar sobe 16px -- a diferenca e absorvida
+pelo elevation dos itens empilhados.
+
+### Os tres bugs de geometria da extracao
+
+Estavam empilhados e cada um mascarava o proximo. O `render-demo.js` e o que
+permite achar esse tipo de coisa: redesenha o mapa com o mesmo algoritmo do
+client e emite `referencia | demo | diff`.
+
+1. **Projecao achatada** -- `project()` recebia `z` (= altura/3) e
+   multiplicava por `FLOOR_LIFT`. Alturas 3, 4 e 5 caem todas em z=1 e eram
+   recortadas da MESMA linha da imagem. O relevo interno sumia.
+2. **Mascara invertida** -- centrava o losango em y=24, a meia-largura ficava
+   negativa acima de y=16 e a face lateral do bloco era descartada. So 376
+   dos 1024 pixels sobreviviam.
+3. **`Image.blit` apaga o vizinho** -- copia TODOS os pixels, inclusive os
+   transparentes. Com passo de 16px para sprites de 32px os vizinhos se
+   sobrepoem muito, e os cantos transparentes do losango apagavam quem ja
+   estava desenhado. O sintoma era um mosaico de buracos triangulares que
+   PARECIA erro de recorte: os tiles estavam certos, 166 de 201 totalmente
+   opacos. Use composicao com alpha (`blitOver`), como o client faz no OpenGL.
+
+Estado atual: **97,0% de cobertura**, 0px desenhados fora. O resto e franja
+na borda externa, onde o recorte passa do limite da imagem de referencia.
+
+### Altura no server: elevation + hasHeight andam juntos
+
+O mecanismo e o do parcel do Tibia, e ja existia dos dois lados:
+
+| Lado | O que le | Onde |
+|---|---|---|
+| server | `FLAG_HAS_HEIGHT` (bit 3) do items.otb | `items.cpp:738` |
+| client | `ThingAttrElevation` (25) do .dat | `thingtype.cpp:269` |
+
+`Tile::hasHeight(n)` **conta** os itens da pilha com `CONST_PROP_HASHEIGHT`
+(`tile.cpp:127`) -- nao e booleano. `Game::internalMoveCreature` usava
+`hasHeight(3)` com o 3 fixo; agora e `player->getJump()`, o parametro Jump
+do FFTA (`player:getJump()` / `player:setJump(n)` no Lua).
+
+Emitir so um dos dois e bug silencioso: o server deixa subir num degrau que
+a tela mostra plano, ou o contrario.
+
 ### HEIGHT_PER_FLOOR e o limite de z
 
 O OTBM so tem z de 0 a 15. Com o intervalo real 0..31:
