@@ -278,9 +278,20 @@ void MapView::drawMapForeground(const Rect& rect)
             continue;
 
         PointF jumpOffset = creature->getJumpOffset();
+        // Sprites de mais de um tile de altura sao ancorados pela BASE:
+        // ThingType::draw desconta (m_size - 1) * spriteSize, entao um outfit
+        // com height=2 ocupa 32px A MAIS para cima. Sem somar isso aqui o nome
+        // e a barra de vida ficam sobre o corpo (ou abaixo dele), em vez de
+        // acima da cabeca.
+        int extraHeight = 0;
+        if (ThingType* type = creature->rawGetThingType()) {
+            extraHeight = (type->getHeight() - 1) * g_sprites.spriteSize();
+        }
+
         // Otc::HUD_SHIFT_X corrige o termo `16 - displacementX`, que foi escrito
         // para celula quadrada e nao serve para o losango. Ver const.h.
-        Point creatureOffset = Point((16 + Otc::HUD_SHIFT_X) * g_sprites.getOffsetFactor() - creature->getDisplacementX(), -creature->getDisplacementY() - 2 * g_sprites.getOffsetFactor());
+        Point creatureOffset = Point((16 + Otc::HUD_SHIFT_X) * g_sprites.getOffsetFactor() - creature->getDisplacementX(),
+                                     -creature->getDisplacementY() - 2 * g_sprites.getOffsetFactor() - extraHeight);
         Position pos = creature->getPrewalkingPosition();
         Point p = transformPositionTo2D(pos, cameraPosition) - drawOffset;
         p += (creature->getDrawOffset() + creatureOffset) - Point(jumpOffset.x, jumpOffset.y);
