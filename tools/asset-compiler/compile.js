@@ -26,7 +26,7 @@ const { readPNG, writePNG, Image } = require('./png.js');
 const { buildSpr, SPRITE_SIZE } = require('./spr.js');
 const { buildCwm } = require('./cwm.js');
 const { slice } = require('./mosaic.js');
-const { isDecoration } = require('./map-assets.js');
+const { isDecoration, mapIndexOf } = require('./map-assets.js');
 const { buildDat, FrameGroup, FRAME_GROUP_NAMES } = require('./dat.js');
 
 const ROOT = path.resolve(__dirname, '../..');
@@ -279,7 +279,55 @@ function listAssets(dir) {
     .sort();
 }
 
+/**
+ * Deslocamento de tela por tile, vindo do mapdata.
+ *
+ * O editor grava dois: `offset` por celula e `gridOffset` para a grade
+ * inteira. Os dois viram displacement no .dat, somados.
+ *
+ * ISTO SO FUNCIONA PORQUE O DISPLACEMENT E POR THINGTYPE, E CADA TILE E DE
+ * UMA CELULA SO. Medido no mapa 150: 207 tiles para 208 celulas, e ZERO
+ * tiles cujas celulas tenham andares diferentes. Se um tile passasse a ser
+ * compartilhado por celulas que precisam de deslocamentos distintos, elas
+ * teriam que virar tiles separados -- nao ha onde guardar isso por celula,
+ * porque o OTBM nao tem atributo de deslocamento (iomap.h: as unicas opcoes
+ * sao TILE_FLAGS, ACTION_ID, UNIQUE_ID e afins).
+ */
+function carregarDeslocamentos() {
+  const dir = path.join(ASSETS, 'mapdata');
+  const porTile = new Map();
+  if (!fs.existsSync(dir)) return porTile;
+
+  for (const f of fs.readdirSync(dir)) {
+    if (!f.endsWith('.json')) continue;
+    let md;
+    try { md = JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8')); }
+    catch (e) { continue; }
+    if (!md.grid) continue;
+
+    const gx = (md.gridOffset && md.gridOffset[0]) || 0;
+    const gy = (md.gridOffset && md.gridOffset[1]) || 0;
+
+    for (let r = 0; r < md.rows; r++) {
+      for (let c = 0; c < md.cols; c++) {
+        const cel = md.grid[r] && md.grid[r][c];
+        if (!cel) continue;
+        const ox = gx + (cel.offset ? cel.offset[0] : 0);
+        const oy = gy + (cel.offset ? cel.offset[1] : 0);
+        if (cel.tile !== null && cel.tile !== undefined) {
+          porTile.set(md.map + ':1:' + cel.tile, [ox, oy]);
+        }
+        if (cel.tile2 !== null && cel.tile2 !== undefined) {
+          porTile.set(md.map + ':2:' + cel.tile2, [ox, oy]);
+        }
+      }
+    }
+  }
+  return porTile;
+}
+
 function compileItems(table) {
+  const deslocamentos = carregarDeslocamentos();
   const dir = path.join(ASSETS, 'items');
   const files = listAssets(dir);
   const items = [];
@@ -315,11 +363,23 @@ function compileItems(table) {
      */
     const decoracao = isDecoration(file);
 
+    /*
+     * A ANCORA E O DESLOCAMENTO DA CELULA.
+     *
+     * displacementFor recebe onde o canto do quadro deve cair relativo a
+     * `dest`, entao mover a arte 3px para a direita e ancorar em +3 em x. O
+     * editor ja grava nessa convencao (as setas movem a celula na direcao
+     * esperada), e a ancora sai igual ao offset.
+     */
+    const info = mapIndexOf(file);
+    const chave = info ? (info.map + ':' + info.layer + ':' + info.tile) : null;
+    const ancora = (chave && deslocamentos.get(chave)) || [0, 0];
+
     items.push({
       name: file,
       attrs: decoracao ? {
         onTop: true,
-        displacement: displacementFor([0, 0], cols, rows, CELL),
+        displacement: displacementFor(ancora, cols, rows, CELL),
         dontHide: true,
         visualOnly: true,
       } : {
@@ -353,7 +413,7 @@ function compileItems(table) {
          * devolve o displacement que a produz, seja qual for o tamanho da
          * celula.
          */
-        displacement: displacementFor([0, 0], cols, rows, CELL),
+        displacement: displacementFor(ancora, cols, rows, CELL),
         fullGround: true,
         /*
          * ELEVATION ZERO: quem carrega a altura sao os itens invisiveis.
