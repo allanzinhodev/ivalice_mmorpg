@@ -52,6 +52,35 @@ truncamento erra o tile por um.
 - **Água → `zPattern` 2** — `Tile::isWater()`, `ThingAttrWater = 103`
 - **115 tiles classificados** — `tools/asset-compiler/tile-spec.js`
 
+## Altura: o "bloco", e por que o terreno não empilha
+
+**Um tile de terreno não pode ser empilhado.** `Tile::internalAddThing` do
+server aceita **um** ground por tile e descarta os demais
+(`server/src/tile.cpp:1718-1724`) — uma pilha de 13 grounds vira 1 no
+carregamento, sem erro.
+
+Por isso cada tile que é degrau gera **dois** itens no datapack:
+
+| | `ThingAttrGround` | `onBottom` | empilha |
+|---|---|---|---|
+| terreno | sim | não | não |
+| `#bloco` | **não** | **sim** | **sim** |
+
+Mesma arte, mesma elevação (8). A expansão mora em
+`tile-spec.js:expandirItens` porque o `.dat` e o `.otb` precisam gerar a
+mesma lista **na mesma ordem** — id divergente entre os dois faz o client
+abortar o parse do mapa inteiro.
+
+O `onBottom` não é decorativo: `Tile::drawGround` percorre a pilha até achar
+algo que não seja ground, groundBorder **ou** onBottom, e para
+(`client/src/client/tile.cpp:57`). Sem ele o loop para no primeiro bloco e a
+elevação trava em 8px.
+
+Dois tetos foram subidos de 10 para 64, e precisam continuar casados:
+`Tile::MAX_THINGS` (client) e `MAX_TILE_STACK` (`protocolgame.cpp`). No
+server o corte acontecia **antes das criaturas**, então um personagem sobre
+pilha alta nem era enviado.
+
 ## Cinco armadilhas que já custaram caro
 
 **1. Canal alfa.** O `.otfi` declara `transparency: true` (RGBA), mas se
@@ -112,14 +141,35 @@ Build: ver a skill `vcpkg`. Login **1/1**; a conta já existe em
 - **(6,10)–(10,12)** — poça de água, para o `zPattern` 2
 - **y=20** — muro de pedra que bloqueia; **y=22** — pedra andável ao lado
 
-## O que falta validar na tela
+## Como validar sem interação
 
-Precisa de interação manual — `SendKeys` não alcança o client OpenGL.
+**`SendKeys` e `PostMessage` não alcançam o client OpenGL** — os dois foram
+tentados e o personagem não se move. Duas peças contornam isso:
 
-- [ ] Mapa centrado no personagem, sem distorcer ao andar
-- [ ] Tiles empilhados empurrando o personagem 8px por nível
-- [ ] `JUMP=4` barrando o degrau de 5
-- [ ] Água trocando a outfit para o terceiro padrão
+- **`client/mods/client_autologin/`** — loga com 1/1. Só dispara se existir
+  `client/data/autologin.request`.
+- **`server/.../creaturescripts/others/autotest.lua`** — teleporta no login
+  para a coordenada em `data/autotest.request` (conteúdo: `"x y"`).
+
+Alvos úteis: `8 8` chão plano, `13 8` degrau de 4, `14 8` degrau de 5
+(barra), `14 14` pilha de 12, `8 11` água.
+
+Para medir a elevação, compare capturas do **mesmo tile** antes e depois —
+o Y absoluto do boneco não serve, porque a câmera o segue.
+
+## Validado na tela
+
+- [x] Mapa centrado no personagem, escala 1:1, sem distorcer
+- [x] Tiles empilhados desenhando relevo com faces laterais
+- [x] Elevação acumulando sem teto (5 itens = 40px, 7 = 56px)
+- [x] Água renderizando, personagem em pé sobre ela
+
+## Falta validar
+
+- [ ] `JUMP=4` barrando o degrau de 5 (precisa andar)
+- [ ] Água trocando a outfit para o terceiro padrão — **só funciona se as
+      outfits tiverem 3 colunas de `patternZ`**; com 2 o código cai no
+      padrão da montaria e nada muda na tela
 - [ ] Caminhada nas 8 direções com velocidade uniforme
 - [ ] Picking à esquerda/acima da câmera
 
