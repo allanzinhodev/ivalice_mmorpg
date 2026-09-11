@@ -48,7 +48,6 @@ ThingType::ThingType()
     m_animationPhases = 0;
     m_layers = 0;
     m_elevation = 0;
-    m_standOffset = Point();
     m_upgradeClassification = 0;
     m_opacity = 1.0f;
 }
@@ -82,17 +81,9 @@ void ThingType::serialize(const FileStreamPtr& fin)
 
         fin->addU8(attr);
         switch(attr) {
-            case ThingAttrStandOffset: {
-                fin->addU16(static_cast<uint16_t>(m_standOffset.x));
-                fin->addU16(static_cast<uint16_t>(m_standOffset.y));
-                break;
-            }
             case ThingAttrDisplacement: {
-                // Grava de volta como u16 em complemento de dois, para que um
-                // displacement negativo sobreviva ao round-trip (ver a leitura
-                // em unserialize, que reinterpreta como int16).
-                fin->addU16(static_cast<uint16_t>(static_cast<int16_t>(m_displacement.x)));
-                fin->addU16(static_cast<uint16_t>(static_cast<int16_t>(m_displacement.y)));
+                fin->addU16(m_displacement.x);
+                fin->addU16(m_displacement.y);
                 break;
             }
             case ThingAttrLight: {
@@ -237,29 +228,10 @@ void ThingType::unserialize(uint16 clientId, ThingCategory category, const FileS
         }
 
         switch(attr) {
-            case ThingAttrStandOffset: {
-                // Dois int16 com sinal, como o displacement: o .dat guarda
-                // u16 e o negativo chega como complemento de dois.
-                //
-                // PRECISA de caso proprio: atributo sem carga cai no
-                // `default`, e os 4 bytes seguintes dessincronizariam a
-                // leitura do arquivo inteiro -- foi exatamente o que
-                // aconteceu, com "corrupt data (id: 103, lastAttr: 79)".
-                m_standOffset.x = static_cast<int16_t>(fin->getU16());
-                m_standOffset.y = static_cast<int16_t>(fin->getU16());
-                m_attribs.set(attr, true);
-                break;
-            }
             case ThingAttrDisplacement: {
                 if(g_game.getClientVersion() >= 755) {
-                    // O displacement e gravado como u16 no .dat, mas o valor e
-                    // logicamente COM SINAL: editores gravam -16 como 65520.
-                    // Reinterpretar como int16 preserva offsets negativos, que
-                    // sao necessarios para posicionar o chao corretamente na
-                    // projecao isometrica. Sem isso, um -16 vira 65520 e o
-                    // sprite e jogado para fora da tela (ver screenRect abaixo).
-                    m_displacement.x = static_cast<int16_t>(fin->getU16());
-                    m_displacement.y = static_cast<int16_t>(fin->getU16());
+                    m_displacement.x = fin->getU16();
+                    m_displacement.y = fin->getU16();
                 } else {
                     m_displacement.x = 8;
                     m_displacement.y = 8;
@@ -326,9 +298,6 @@ void ThingType::unserialize(uint16 clientId, ThingCategory category, const FileS
     uint8 groupCount = hasFrameGroups ? fin->getU8() : 1;
 
     m_animationPhases = 0;
-    m_groupAnimators.clear();
-    m_groupPhaseBegin.clear();
-    m_groupPhaseCount.clear();
     int totalSpritesCount = 0;
 
     std::vector<Size> sizes;
@@ -359,30 +328,11 @@ void ThingType::unserialize(uint16 clientId, ThingCategory category, const FileS
             m_numPatternZ = 1;
         
         int groupAnimationsPhases = fin->getU8();
-
-        // Onde este grupo comeca no range PLANO de fases. As fases de todos os
-        // grupos sao concatenadas, e e assim que getSpriteIndex as enxerga.
-        // Sem guardar este offset nao ha como converter "grupo N, fase 0" na
-        // fase plana correspondente.
-        const int groupPhaseBegin = m_animationPhases;
         m_animationPhases += groupAnimationsPhases;
-
-        if((size_t)frameGroupType >= m_groupPhaseBegin.size()) {
-            m_groupPhaseBegin.resize(frameGroupType + 1, 0);
-            m_groupPhaseCount.resize(frameGroupType + 1, 0);
-            m_groupAnimators.resize(frameGroupType + 1);
-        }
-        m_groupPhaseBegin[frameGroupType] = groupPhaseBegin;
-        m_groupPhaseCount[frameGroupType] = groupAnimationsPhases;
 
         if(groupAnimationsPhases > 1 && g_game.getFeature(Otc::GameEnhancedAnimations)) {
             auto animator = std::make_shared<Animator>();
             animator->unserialize(groupAnimationsPhases, fin);
-
-            // Guarda o animator de QUALQUER grupo. Antes o switch so tratava 0
-            // e 1, e o animator de um grupo 2+ era silenciosamente descartado
-            // -- os sprites entravam, a animacao nao.
-            m_groupAnimators[frameGroupType] = animator;
 
             switch (frameGroupType) {
             case FrameGroupIdle:
@@ -445,10 +395,6 @@ void ThingType::unserialize(uint16 clientId, ThingCategory category, const FileS
         }
     }
 
-    // Thing com um grupo so: o que foi lido como "idle" e na verdade a
-    // animacao unica, entao vira o animator principal. Isto NAO mexe em
-    // m_groupAnimators de proposito -- la o indice continua sendo o tipo real
-    // do grupo lido do arquivo.
     if (m_idleAnimator && !m_animator) {
         m_animator = m_idleAnimator;
         m_idleAnimator = nullptr;
@@ -892,17 +838,7 @@ const TexturePtr& ThingType::getTexture(int animationPhase)
 
 Size ThingType::getBestTextureDimension(int w, int h, int count)
 {
-    // MAX conta SPRITES por eixo do atlas, nao pixels. Vinha de spriteSize(),
-    // que so por coincidencia valia o mesmo 32 -- as duas grandezas nao tem
-    // relacao. Com sprite 8x8 o teto caia para 8 e o VALIDATE abaixo derrubava
-    // qualquer coisa maior que um tile: um outfit vira 4x8 sprites, que com 8
-    // frames da 256 > 8*8.
-    //
-    // O que o numero de fato limita e o tamanho do atlas em PIXELS: 32 sprites
-    // de 32px = 1024. Fixar o teto em pixels e derivar a contagem reproduz
-    // exatamente o comportamento antigo em 32x32 (1024/32 = 32) e libera o
-    // mosaico 8x8, onde cabem 128 sprites por eixo no mesmo atlas.
-    const int MAX = Otc::MAX_ATLAS_PIXELS / g_sprites.spriteSize();
+    const int MAX = g_sprites.spriteSize();
 
     int k = 1;
     while(k < w)

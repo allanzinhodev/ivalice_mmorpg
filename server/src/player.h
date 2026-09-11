@@ -604,15 +604,6 @@ public:
 	}
 	uint16_t getXpBoostTime() const { return xpBoostTime; }
 	uint32_t getBaseMagicLevel() const { return magLevel; }
-
-	// Quantas unidades de altura o personagem consegue subir de uma vez.
-	//
-	// E o parametro Jump do Final Fantasy Tactics. Vira o `n` de
-	// Tile::hasHeight(n): com jump 3 o personagem sobe um degrau de 3 itens
-	// empilhados, com jump 2 so sobe degraus de ate 2. Antes esse 3 era fixo
-	// dentro de Game::internalMoveCreature.
-	uint8_t getJump() const { return jump; }
-	void setJump(uint8_t value) { jump = value; }
 	uint8_t getMagicLevelPercent() const { return magLevelPercent; }
 	uint8_t getSoul() const { return soul; }
 	bool isAccessPlayer() const { return group->access; }
@@ -1894,23 +1885,6 @@ private:
 	uint32_t staminaTrainerDelayMs = 0;
 
 	uint8_t soul = 0;
-	/*
-	 * FFTA: quantas unidades de altura o personagem sobe de uma vez.
-	 *
-	 * HOJE ISTO NAO TEM EFEITO NENHUM, e vale saber por que antes de tentar
-	 * ajustar o numero. Game::internalMoveCreature so troca de andar cruzando
-	 * z (game.cpp:1676), e o mapa passou a ser gerado num z SO -- toda a
-	 * altura virou pilha de itens (ver tools/datapack-gen/gen-map-ffta.js).
-	 * Sem z para cruzar, os dois ramos que consultam hasHeight(jump) nunca
-	 * disparam.
-	 *
-	 * O dado continua la: Tile::hasHeight(n) conta os itens com
-	 * CONST_PROP_HASHEIGHT, e a pilha agora E a altura da celula em unidades
-	 * do FFTA. A regra de subir degrau precisa ser reescrita comparando a
-	 * altura da celula de origem com a do destino, que e como o FFTA faz --
-	 * e nao cruzando andar.
-	 */
-	uint8_t jump = 2;
 	std::array<uint8_t, PLAYER_MAX_BLESSINGS + 1> blessings{};
 	std::vector<DeathLogEntry> m_deathLog;
 	uint8_t levelPercent = 0;

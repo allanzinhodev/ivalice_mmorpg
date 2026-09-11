@@ -21,7 +21,6 @@
  */
 
 #include "creature.h"
-#include <cmath>
 #include "thingtypemanager.h"
 #include "localplayer.h"
 #include "map.h"
@@ -139,9 +138,7 @@ void Creature::draw(const Point& dest, bool animate, LightView* lightView)
 
     const int sprSize = g_sprites.spriteSize();
     Point jumpOffset = Point(m_jumpOffset.x, m_jumpOffset.y);
-    // Centro da celula: no losango fica TILE_HALF_H abaixo do vertice
-    // superior, e nao (sprSize/2, sprSize/2) como na grade quadrada.
-    Point creatureCenter = dest - jumpOffset + m_walkOffset - getDisplacement() + Point(0, Otc::TILE_HALF_H);
+    Point creatureCenter = dest - jumpOffset + m_walkOffset - getDisplacement() + Point(sprSize / 2, sprSize / 2);
     drawBottomWidgets(creatureCenter, m_walking ? m_walkDirection : m_direction);
 
     Point animationOffset = animate ? m_walkOffset : Point(0, 0);
@@ -466,8 +463,7 @@ void Creature::updateJump()
 
     // schedules next update
     if (m_jumpTimer.ticksElapsed() < m_jumpDuration) {
-        // Altura e levantamento vertical puro (FFTA), nao diagonal (Tibia).
-        m_jumpOffset = PointF(0, height);
+        m_jumpOffset = PointF(height, height);
 
         int diff = 0;
         if (m_jumpTimer.ticksElapsed() < halfJumpDuration)
@@ -613,55 +609,34 @@ void Creature::updateWalkAnimation(uint8 totalPixelsWalked)
 void Creature::updateWalkOffset(uint8 totalPixelsWalked, bool inNextFrame)
 {
     Point& walkOffset = inNextFrame ? m_walkOffsetInNextFrame : m_walkOffset;
-
-    // Delta do passo em TILES, a partir da direcao.
-    int dx = 0, dy = 0;
+    walkOffset = Point(0, 0);
     if (m_walkDirection == Otc::North || m_walkDirection == Otc::NorthEast || m_walkDirection == Otc::NorthWest)
-        dy = -1;
+        walkOffset.y = g_sprites.spriteSize() - totalPixelsWalked;
     else if (m_walkDirection == Otc::South || m_walkDirection == Otc::SouthEast || m_walkDirection == Otc::SouthWest)
-        dy = 1;
+        walkOffset.y = totalPixelsWalked - g_sprites.spriteSize();
 
     if (m_walkDirection == Otc::East || m_walkDirection == Otc::NorthEast || m_walkDirection == Otc::SouthEast)
-        dx = 1;
+        walkOffset.x = totalPixelsWalked - g_sprites.spriteSize();
     else if (m_walkDirection == Otc::West || m_walkDirection == Otc::NorthWest || m_walkDirection == Otc::SouthWest)
-        dx = -1;
-
-    // Projeta o delta para o espaco diamante (mesma formula de
-    // MapView::transformPositionTo2D). Um passo em +x vale (+16,+8) na tela,
-    // e nao 32px num eixo so como na grade ortogonal.
-    const int stepX = (dx - dy) * Otc::TILE_HALF_W;
-    const int stepY = (dx + dy) * Otc::TILE_HALF_H;
-
-    // Progresso do passo como FRACAO normalizada (0..1). O contador original
-    // media pixels com spriteSize() como total, o que nao serve aqui: no
-    // losango o comprimento em px de um passo depende da direcao (diagonal e
-    // mais longo que cardinal), e isso faria a velocidade parecer irregular.
-    const float progress = std::min<float>(totalPixelsWalked / static_cast<float>(g_sprites.spriteSize()), 1.0f);
-
-    // O offset e o quanto FALTA para chegar (por isso 1 - progress): a
-    // criatura e desenhada a partir do tile de destino.
-    const float remaining = 1.0f - progress;
-    walkOffset = Point(static_cast<int>(-stepX * remaining),
-                       static_cast<int>(-stepY * remaining));
+        walkOffset.x = g_sprites.spriteSize() - totalPixelsWalked;
 }
 
 void Creature::updateWalkingTile()
 {
-    // Determina em qual tile a criatura e desenhada durante o passo.
-    //
-    // O original testava o canto inferior-direito contra um grid 3x3 de
-    // RETANGULOS de spriteSize(). Com celulas losango isso troca de tile na
-    // hora errada (a criatura pisca na frente/atras de obstaculos), entao
-    // invertemos a projecao do walk offset para descobrir o deslocamento em
-    // tiles -- mesma formula de MapView::getPosition.
+    // determine new walking tile
     TilePtr newWalkingTile;
-    const float fx = m_walkOffset.x / static_cast<float>(Otc::TILE_HALF_W);
-    const float fy = m_walkOffset.y / static_cast<float>(Otc::TILE_HALF_H);
-    const int xi = static_cast<int>(std::floor((fx + fy) / 2.0f + 0.5f));
-    const int yi = static_cast<int>(std::floor((fy - fx) / 2.0f + 0.5f));
+    Rect virtualCreatureRect(g_sprites.spriteSize() + (m_walkOffset.x - getDisplacementX()),
+        g_sprites.spriteSize() + (m_walkOffset.y - getDisplacementY()),
+        g_sprites.spriteSize(), g_sprites.spriteSize());
+    for (int xi = -1; xi <= 1 && !newWalkingTile; ++xi) {
+        for (int yi = -1; yi <= 1 && !newWalkingTile; ++yi) {
+            Rect virtualTileRect((xi + 1) * g_sprites.spriteSize(), (yi + 1) * g_sprites.spriteSize(), g_sprites.spriteSize(), g_sprites.spriteSize());
 
-    if (xi >= -1 && xi <= 1 && yi >= -1 && yi <= 1) {
-        newWalkingTile = g_map.getOrCreateTile(getPrewalkingPosition().translated(xi, yi, 0));
+            // only render creatures where bottom right is inside tile rect
+            if (virtualTileRect.contains(virtualCreatureRect.bottomRight())) {
+                newWalkingTile = g_map.getOrCreateTile(getPrewalkingPosition().translated(xi, yi, 0));
+            }
+        }
     }
 
     if (newWalkingTile != m_walkingTile) {
@@ -1011,25 +986,15 @@ void Creature::cancelShieldBlinkEvent()
 
 Point Creature::getDrawOffset()
 {
-    // ELEVACAO EM PIXELS DE TELA -- mesma correcao que tile.cpp recebeu, e
-    // pelo mesmo motivo: m_drawElevation e altura de TERRENO, e nao escala
-    // com o tamanho do sprite.
-    //
-    // Este ponto ficou de fora daquela passagem, e a assimetria seria pior
-    // que o bug original: o tile subiria os 8px do degrau e o personagem
-    // sobre ele apenas 2, entao o boneco afundaria no relevo em vez de
-    // simplesmente ficar plano. Os dois lados TEM que usar a mesma unidade.
-    // E levantamento VERTICAL: o Point(1,1) daqui empurrava na diagonal, que
-    // e a regra do Tibia e nao a deste projeto. Ver elevationOffset em tile.h.
     Point drawOffset;
     if (m_walking) {
         if (m_walkingTile)
-            drawOffset -= elevationOffset(m_walkingTile->getDrawElevation());
+            drawOffset -= Point(1, 1) * m_walkingTile->getDrawElevation() * g_sprites.getOffsetFactor();
         drawOffset += m_walkOffset;
     } else {
         const TilePtr& tile = getTile();
         if (tile)
-            drawOffset -= elevationOffset(tile->getDrawElevation());
+            drawOffset -= Point(1, 1) * tile->getDrawElevation() * g_sprites.getOffsetFactor();
     }
     return drawOffset;
 }

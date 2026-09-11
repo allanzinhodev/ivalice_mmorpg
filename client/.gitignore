@@ -136,21 +136,3 @@ _ReSharper*/
 
 # JetBrain tools
 /.idea
-
-# --- Datapack minimo do ivalice: versionado de proposito ---
-# As regras acima (data/things/*, *.dat, *.spr) existem para nao versionar o
-# datapack completo de 8.60, que e enorme e nao e nosso. O datapack MINIMO
-# deste projeto e outra coisa: 3 chaos, outfit e um punhado de sprites, ~30 KB
-# no total, e sem ele um clone novo nao tem o que desenhar.
-# Estas regras vem por ultimo de proposito -- no gitignore o ultimo padrao que
-# casa e o que vale, entao elas sobrepoem *.dat e *.spr. O `!` no diretorio e
-# obrigatorio: nao da para reincluir um arquivo cujo diretorio-pai foi excluido.
-!data/things/860/
-!data/things/860/Tibia.dat
-!data/things/860/Tibia.spr
-!data/things/860/Tibia.otfi
-!data/things/860/Tibia.cwm
-
-# Marcador local do modo de conferencia (client/mods/client_assetcheck).
-# Criado a mao para rodar a checagem, nunca versionado.
-data/assetcheck.request

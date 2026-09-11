@@ -152,9 +152,6 @@ private:
     Size m_optimizedSize;
     Point m_virtualCenterOffset;
     Point m_visibleCenterOffset;
-    // Origem da projecao isometrica dentro do framebuffer, em pixels.
-    // Calculado em updateGeometry(); e o offsetX/offsetY da formula.
-    Point m_projectionOffset;
     Point m_moveOffset;
     Position m_customCameraPosition;
     Position m_lastCameraPosition;

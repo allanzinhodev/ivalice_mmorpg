@@ -52,17 +52,6 @@ void Tile::drawGround(const Point& dest, LightView* lightView)
         return;
     }
 
-    // ELEVACAO EM PIXELS DE TELA, nao em unidades de sprite.
-    //
-    // Isto multiplicava por g_sprites.getOffsetFactor(), que e
-    // spriteSize/32 (spritemanager.h:56). Com o sprite de 8x8 do mosaico
-    // isometrico o fator vira 0.25, e uma elevacao de 8 apareceria como 2px
-    // na tela -- o degrau sumiria.
-    //
-    // Aqui a elevacao E a altura do terreno (cada nivel desloca -8y por
-    // definicao do projeto), entao nao deve escalar com o tamanho do sprite.
-    // O displacement continua escalando, porque aquele e mesmo relativo a
-    // arte (thingtype.cpp:575).
     // ground
     for (const ThingPtr& thing : m_things) {
         if (!thing->isGround() && !thing->isGroundBorder() && (g_game.getFeature(Otc::GameMapDrawGroundFirst) || !thing->isOnBottom()))
@@ -70,7 +59,7 @@ void Tile::drawGround(const Point& dest, LightView* lightView)
         if (thing->isHidden())
             continue;
 
-        thing->draw(dest - elevationOffset(m_drawElevation), true, lightView);
+        thing->draw(dest - m_drawElevation * g_sprites.getOffsetFactor(), true, lightView);
         m_drawElevation = std::min<uint8_t>(m_drawElevation + thing->getElevation(), Otc::MAX_ELEVATION);
     }
 }
@@ -91,7 +80,7 @@ void Tile::drawBottom(const Point& dest, LightView* lightView)
             if (thing->isHidden() || !afterBottom)
                 continue;
 
-            thing->draw(dest - elevationOffset(m_drawElevation), true, lightView);
+            thing->draw(dest - m_drawElevation * g_sprites.getOffsetFactor(), true, lightView);
             m_drawElevation = std::min<uint8_t>(m_drawElevation + thing->getElevation(), Otc::MAX_ELEVATION);
         }
     }
@@ -113,7 +102,7 @@ void Tile::drawBottom(const Point& dest, LightView* lightView)
         if (thing->isHidden())
             continue;
 
-        thing->draw(dest - elevationOffset(m_drawElevation), true, lightView);
+        thing->draw(dest - m_drawElevation * g_sprites.getOffsetFactor() , true, lightView);
         m_drawElevation = std::min<uint8_t>(m_drawElevation + thing->getElevation(), Otc::MAX_ELEVATION);
     }
 
@@ -123,11 +112,8 @@ void Tile::drawBottom(const Point& dest, LightView* lightView)
                 if (x == 0 && y == 0)
                     continue;
                 if (const TilePtr& tile = g_map.getTile(m_position.translated(x, y))) {
-                    // Offset ate o tile vizinho, projetado no espaco diamante.
-                    const Point neighborOffset((x - y) * Otc::TILE_HALF_W,
-                                               (x + y) * Otc::TILE_HALF_H);
-                    tile->drawCreatures(dest + neighborOffset, lightView);
-                    tile->drawTop(dest + neighborOffset, lightView);
+                    tile->drawCreatures(dest + Point(x * g_sprites.spriteSize(), y * g_sprites.spriteSize()), lightView);
+                    tile->drawTop(dest + Point(x * g_sprites.spriteSize(), y * g_sprites.spriteSize()), lightView);
                 }
             }
         }
@@ -136,27 +122,6 @@ void Tile::drawBottom(const Point& dest, LightView* lightView)
     if (lightView && hasTranslucentLight()) {
         lightView->addLight(dest + Point(16, 16), 215, 1);
     }
-}
-
-/*
- * Deslocamento de QUEM PISA nesta celula.
- *
- * Vem do chao (ThingAttrStandOffset) e move so a criatura -- a arte do tile
- * fica onde esta. E o oposto de ThingAttrDisplacement, que move a arte e
- * deixa quem pisa no lugar.
- *
- * Serve para o ajuste fino de onde o personagem apoia o pe: num bloco
- * isometrico desenhado a mao, o ponto de apoio raramente cai no centro
- * geometrico do losango.
- */
-Point Tile::getStandOffset()
-{
-    const ItemPtr& ground = getGround();
-    if (!ground)
-        return Point();
-    // rawGetThingType devolve um ponteiro CRU, nao um ThingTypePtr.
-    ThingType* type = ground->rawGetThingType();
-    return type ? type->getStandOffset() : Point();
 }
 
 void Tile::drawCreatures(const Point& dest, LightView* lightView)
@@ -170,16 +135,8 @@ void Tile::drawCreatures(const Point& dest, LightView* lightView)
     for (const CreaturePtr& creature : m_walkingCreatures) {
         if (creature->isHidden())
             continue;
-        // Delta ate o tile da criatura, projetado no espaco diamante.
-        const int cdx = creature->getPrewalkingPosition().x - m_position.x;
-        const int cdy = creature->getPrewalkingPosition().y - m_position.y;
-        Point creatureDest(dest.x + (cdx - cdy) * Otc::TILE_HALF_W,
-                           dest.y + (cdx + cdy) * Otc::TILE_HALF_H - m_drawElevation);
-        // A criatura caminhando ainda pertence a ESTA tile, mas o apoio dela
-        // e o da tile de DESTINO -- por isso o offset sai de la, nao daqui.
-        const TilePtr& destTile = g_map.getTile(creature->getPrewalkingPosition());
-        if (destTile)
-            creatureDest += destTile->getStandOffset();
+        Point creatureDest(dest.x + ((creature->getPrewalkingPosition().x - m_position.x) * g_sprites.spriteSize() - m_drawElevation * g_sprites.getOffsetFactor()),
+                           dest.y + ((creature->getPrewalkingPosition().y - m_position.y) * g_sprites.spriteSize() - m_drawElevation * g_sprites.getOffsetFactor()));
         creature->draw(creatureDest, true, lightView);
     }
 
@@ -194,7 +151,7 @@ void Tile::drawCreatures(const Point& dest, LightView* lightView)
         CreaturePtr creature = thing->static_self_cast<Creature>();
         if (!creature || creature->isWalking())
             continue;
-        creature->draw(dest - elevationOffset(m_drawElevation) + getStandOffset(), true, lightView);
+        creature->draw(dest - m_drawElevation * g_sprites.getOffsetFactor(), true, lightView);
     }
 }
 
@@ -209,15 +166,8 @@ void Tile::drawTop(const Point& dest, LightView* lightView)
     for (const CreaturePtr& creature : m_walkingCreatures) {
         if (creature->isHidden())
             continue;
-        // Delta ate o tile da criatura, projetado no espaco diamante.
-        const int cdx = creature->getPrewalkingPosition().x - m_position.x;
-        const int cdy = creature->getPrewalkingPosition().y - m_position.y;
-        Point creatureDest(dest.x + (cdx - cdy) * Otc::TILE_HALF_W,
-                           dest.y + (cdx + cdy) * Otc::TILE_HALF_H - m_drawElevation);
-        // Mesmo caso do drawCreatures: o apoio vem da tile de DESTINO.
-        const TilePtr& destTile = g_map.getTile(creature->getPrewalkingPosition());
-        if (destTile)
-            creatureDest += destTile->getStandOffset();
+        Point creatureDest(dest.x + ((creature->getPrewalkingPosition().x - m_position.x) * g_sprites.spriteSize() - m_drawElevation * g_sprites.getOffsetFactor()),
+                   dest.y + ((creature->getPrewalkingPosition().y - m_position.y) * g_sprites.spriteSize() - m_drawElevation * g_sprites.getOffsetFactor()));
         creature->draw(creatureDest, true, lightView);
     }
 
@@ -232,7 +182,7 @@ void Tile::drawTop(const Point& dest, LightView* lightView)
         CreaturePtr creature = thing->static_self_cast<Creature>();
         if (!creature || creature->isWalking())
             continue;
-        creature->draw(dest - elevationOffset(m_drawElevation) + getStandOffset(), true, lightView);
+        creature->draw(dest - m_drawElevation * g_sprites.getOffsetFactor(), true, lightView);
     }
 
     // effects
@@ -240,20 +190,14 @@ void Tile::drawTop(const Point& dest, LightView* lightView)
     for (int i = limit; i >= 0; --i) {
         if (m_effects[i]->isHidden())
             continue;
-        m_effects[i]->draw(dest - elevationOffset(m_drawElevation), m_position.x - g_map.getCentralPosition().x, m_position.y - g_map.getCentralPosition().y, true, lightView);
+        m_effects[i]->draw(dest - m_drawElevation * g_sprites.getOffsetFactor(), m_position.x - g_map.getCentralPosition().x, m_position.y - g_map.getCentralPosition().y, true, lightView);
     }
 
     // top
-    //
-    // COM A ELEVACAO, como todo o resto do tile. Isto desenhava em `dest`
-    // cru, o que no Tibia nao incomoda -- item onTop e porta, seta, marca de
-    // chao, coisas de tile plano. Aqui a camada 2 e decoracao de terreno
-    // (pedra, arbusto), e sem a elevacao ela descia para a base do bloco em
-    // vez de ficar em cima dele.
     for (const ThingPtr& thing : m_things) {
         if (!thing->isOnTop() || thing->isHidden())
             continue;
-        thing->draw(dest - elevationOffset(m_drawElevation), true, lightView);
+        thing->draw(dest, true, lightView);
     }
 }
 
@@ -335,13 +279,13 @@ bool Tile::drawToImage(const Point& dest, ImagePtr image)
             if (thing->getId() == 2322 || thing->getId() == 2323)
                 m_drawElevation = std::min<uint8_t>(m_drawElevation + thing->getElevation(), Otc::MAX_ELEVATION);
 
-            anythingDrawn |= thing->drawToImage(Point(x, y - m_drawElevation), image);
+            anythingDrawn |= thing->drawToImage(Point(x - m_drawElevation, y - m_drawElevation), image);
         }
 
         if (thing->getId() != 2322 && thing->getId() != 2323)
             m_drawElevation = std::min<uint8_t>(m_drawElevation + thing->getElevation(), Otc::MAX_ELEVATION);
 */
-        anythingDrawn |= thing->drawToImage(Point(x, y - m_drawElevation), image);
+        anythingDrawn |= thing->drawToImage(Point(x - m_drawElevation, y - m_drawElevation), image);
         m_drawElevation = std::min<uint8_t>(m_drawElevation + thing->getElevation(), Otc::MAX_ELEVATION);
     }
 
@@ -353,7 +297,7 @@ bool Tile::drawToImage(const Point& dest, ImagePtr image)
         if (thing->isHidden())
             continue;
 
-        anythingDrawn |= thing->drawToImage(Point(x, y - m_drawElevation), image);
+        anythingDrawn |= thing->drawToImage(Point(x - m_drawElevation, y - m_drawElevation), image);
         m_drawElevation = std::min<uint8_t>(m_drawElevation + thing->getElevation(), Otc::MAX_ELEVATION);
     }
 
@@ -362,7 +306,7 @@ bool Tile::drawToImage(const Point& dest, ImagePtr image)
         if (!thing->isOnTop() || !thing->isHidden())
             continue;
 
-        anythingDrawn |= thing->drawToImage(Point(x, y - m_drawElevation), image);
+        anythingDrawn |= thing->drawToImage(Point(x - m_drawElevation, y - m_drawElevation), image);
     }
 
     return anythingDrawn;
@@ -595,27 +539,6 @@ uint8 Tile::getMinimapColorByte()
     return color;
 }
 
-/*
- * CENARIO NAO E ALVO.
- *
- * As funcoes getTop*Thing abaixo tem todas a mesma forma: um laco principal
- * que ja pula chao e borda, e um FALLBACK que devolve m_things[0] (ou o
- * ultimo) quando nada serve. O fallback existe para o caso de um tile so com
- * chao -- olhar o chao e uma acao legitima no Tibia.
- *
- * Com o mapa em mosaico isso deixa de valer: a maior parte dos ids passa a
- * ser pedaco de cenario, marcado com ThingAttrVisualOnly, e devolver um deles
- * como alvo do clique nao ajuda ninguem. Este filtro fica so no fallback --
- * um item visual que por algum motivo nao seja chao continua sendo pulado
- * pelos lacos principais como qualquer outro.
- */
-static ThingPtr seNaoForCenario(const ThingPtr& thing)
-{
-    if(!thing || thing->isVisualOnly())
-        return nullptr;
-    return thing;
-}
-
 ThingPtr Tile::getTopLookThing()
 {
     if(isEmpty())
@@ -627,7 +550,7 @@ ThingPtr Tile::getTopLookThing()
             return thing;
     }
 
-    return seNaoForCenario(m_things[0]);
+    return m_things[0];
 }
 
 ThingPtr Tile::getTopLookThingEx(Point offset)
@@ -645,7 +568,7 @@ ThingPtr Tile::getTopLookThingEx(Point offset)
             return thing;
     }
 
-    return seNaoForCenario(m_things[0]);
+    return m_things[0];
 }
 
 ThingPtr Tile::getTopUseThing()
@@ -665,7 +588,7 @@ ThingPtr Tile::getTopUseThing()
             return thing;
     }
 
-    return seNaoForCenario(m_things[0]);
+    return m_things[0];
 }
 
 CreaturePtr Tile::getTopCreature()
@@ -750,7 +673,7 @@ ThingPtr Tile::getTopMoveThing()
             return thing;
     }
 
-    return seNaoForCenario(m_things[0]);
+    return m_things[0];
 }
 
 ThingPtr Tile::getTopMultiUseThing()
@@ -776,7 +699,7 @@ ThingPtr Tile::getTopMultiUseThing()
         }
     }
 
-    return seNaoForCenario(m_things.back());
+    return m_things.back();
 }
 
 ThingPtr Tile::getTopMultiUseThingEx(Point offset)
@@ -808,7 +731,7 @@ ThingPtr Tile::getTopMultiUseThingEx(Point offset)
             return thing;
     }
 
-    return seNaoForCenario(m_things[0]);
+    return m_things[0];
 }
 
 ThingPtr Tile::getTopWrapableThing()

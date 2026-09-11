@@ -46,23 +46,6 @@ function updateFeatures(version)
     g_game.enableFeature(GameIdleAnimations)
     g_game.enableFeature(GameEnhancedAnimations)
     g_game.enableFeature(GameExtendedClientPing)
-
-    -- Desenha TODO o chao antes de qualquer criatura/item.
-    --
-    -- Obrigatorio na projecao isometrica. Sem isto, MapView::drawFloor faz uma
-    -- passada unica por tile (chao, itens, criaturas, topo) na ordem das
-    -- diagonais, ou seja por `col + row` crescente. O tile ao SUL tem
-    -- `col + row` maior, entao e desenhado DEPOIS -- e como o sprite de chao
-    -- aqui e um bloco 32x32 estilo FFTA, cuja face de cima invade o espaco do
-    -- tile de tras, ele passa por cima do personagem que esta no tile ao norte.
-    --
-    -- No Tibia isso nunca aparecia porque o chao e um quadrado chato que nao
-    -- invade a celula vizinha. E o losango que cria o problema.
-    --
-    -- Com a feature ligada, drawFloor faz duas passadas: todo o chao primeiro,
-    -- depois itens/criaturas/topo -- estes ainda na ordem das diagonais, entao
-    -- a oclusao ENTRE eles continua correta. So o chao deixa de ocluir.
-    g_game.enableFeature(GameMapDrawGroundFirst)
     g_game.enableFeature(GameSpritesU32)
     g_game.enableFeature(GameDoublePlayerGoodsMoney)
     g_game.enableFeature(GameCreatureIcons)

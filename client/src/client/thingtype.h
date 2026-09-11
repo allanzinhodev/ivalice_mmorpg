@@ -47,28 +47,7 @@ enum NewDrawType : uint8 {
 enum FrameGroupType : uint8 {
     FrameGroupDefault = 0,
     FrameGroupIdle = FrameGroupDefault,
-    FrameGroupWalk,
-    FrameGroupMoving = FrameGroupWalk,
-
-    // Frame groups estendidos, para animacoes de acao (ver o mesmo enum em
-    // tools/ObjectBuilder/src/otlib/things/FrameGroupType.as -- os valores
-    // TEM que bater com os que o editor grava no .dat).
-    //
-    // O formato sempre aceitou N grupos: o groupCount e um byte e o parser
-    // ja itera por ele. O que faltava era o client guardar os animators dos
-    // grupos alem de 0 e 1, que eram silenciosamente descartados.
-    // A ordem TEM que bater com tools/asset-compiler/dat.js e com
-    // FrameGroupType.as do ObjectBuilder -- e a ordem das linhas da
-    // spritesheet em tools/prompts/Playable character Spritesheet.txt.
-    FrameGroupEvade,
-    FrameGroupJump,
-    FrameGroupHit,
-    FrameGroupDead,
-    FrameGroupAttack,
-    FrameGroupWeak,
-
-    FrameGroupLast = FrameGroupWeak,
-    FrameGroupCount = FrameGroupLast + 1
+    FrameGroupMoving
 };
 
 enum ThingCategory : uint8 {
@@ -128,31 +107,6 @@ enum ThingAttr : uint8 {
     // additional
     ThingAttrOpacity          = 100,
     ThingAttrNotPreWalkable   = 101,
-
-    // MERAMENTE VISUAL: o thing so compoe o cenario, nao e objeto de jogo.
-    //
-    // Com o mapa em mosaico, a maior parte dos ids do .dat passa a existir so
-    // para desenhar chao -- nada ali e para olhar, usar ou mover. Sem marcar
-    // isso, o alvo do clique cai em pedaco de cenario.
-    //
-    // O numero e 102 e nao 43 de proposito. O 43 fica colado no bloco padrao
-    // 0..42 e seria atropelado se essa faixa crescesse; 100 e 101 ja sao a
-    // area de extensoes do proprio OTClient, entao 102 e a continuacao
-    // natural. Nao precisa de caso em ThingType::unserialize: atributo sem
-    // carga cai no `default`, que o registra como true.
-    ThingAttrVisualOnly       = 102,
-
-    // Deslocamento de QUEM PISA na celula, em pixels de tela.
-    //
-    // Nao confundir com ThingAttrDisplacement (24), que move a ARTE do
-    // proprio item. Este move a criatura sobre o tile e deixa o chao onde
-    // esta -- e o ajuste fino de onde o personagem apoia o pe, para o boneco
-    // cair no lugar certo de um bloco isometrico desenhado a mao.
-    //
-    // Carrega dois int16 (x, y), entao PRECISA de um caso proprio em
-    // ThingType::unserialize: sem ele o `default` o trataria como atributo
-    // sem carga e os 4 bytes seguintes dessincronizariam a leitura inteira.
-    ThingAttrStandOffset      = 103,
 
     ThingAttrFloorChange      = 252,
     ThingAttrNoMoveAnimation  = 253, // 10.10: real value is 16, but we need to do this for backwards compatibility
@@ -281,38 +235,6 @@ public:
     int getAnimationPhases() { return m_animationPhases; }
     AnimatorPtr getAnimator() { return m_animator; }
     AnimatorPtr getIdleAnimator() { return m_idleAnimator; }
-
-    /// Animator de um frame group qualquer (nullptr se o grupo nao existe).
-    AnimatorPtr getGroupAnimator(uint8 groupType) {
-        if (groupType >= m_groupAnimators.size())
-            return nullptr;
-        return m_groupAnimators[groupType];
-    }
-
-    /// Quantos frame groups este thing declarou no .dat.
-    int getGroupCount() { return (int)m_groupPhaseBegin.size(); }
-
-    bool hasFrameGroup(uint8 groupType) {
-        return groupType < m_groupPhaseBegin.size() && m_groupPhaseCount[groupType] > 0;
-    }
-
-    /// Primeira fase (no range plano de m_animationPhases) do grupo.
-    ///
-    /// As fases de todos os grupos sao CONCATENADAS num unico range -- e assim
-    /// que getSpriteIndex enxerga. Para tocar "grupo 3, fase 0" e preciso
-    /// somar este offset.
-    int getGroupPhaseBegin(uint8 groupType) {
-        if (groupType >= m_groupPhaseBegin.size())
-            return 0;
-        return m_groupPhaseBegin[groupType];
-    }
-
-    /// Quantidade de fases do grupo (0 se nao existe).
-    int getGroupPhaseCount(uint8 groupType) {
-        if (groupType >= m_groupPhaseCount.size())
-            return 0;
-        return m_groupPhaseCount[groupType];
-    }
     Point getDisplacement() { return m_displacement; }
     int getDisplacementX() { return getDisplacement().x; }
     int getDisplacementY() { return getDisplacement().y; }
@@ -367,8 +289,6 @@ public:
     bool hasLensHelp() { return m_attribs.has(ThingAttrLensHelp); }
     bool isFullGround() { return m_attribs.has(ThingAttrFullGround); }
     bool isIgnoreLook() { return m_attribs.has(ThingAttrLook); }
-    bool isVisualOnly() { return m_attribs.has(ThingAttrVisualOnly); }
-    Point getStandOffset() { return m_standOffset; }
     bool isCloth() { return m_attribs.has(ThingAttrCloth); }
     bool isMarketable() { return m_attribs.has(ThingAttrMarket); }
     bool isUsable() { return m_attribs.has(ThingAttrUsable); }
@@ -401,16 +321,8 @@ private:
 
     Size m_size;
     Point m_displacement;
-    Point m_standOffset;
     AnimatorPtr m_animator;
     AnimatorPtr m_idleAnimator;
-
-    // Indexados pelo tipo do frame group. m_animator/m_idleAnimator continuam
-    // existindo como atalho para os grupos 1 e 0, para nao mexer no codigo que
-    // ja os usa (outfit.cpp, creature.cpp).
-    std::vector<AnimatorPtr> m_groupAnimators;
-    std::vector<int> m_groupPhaseBegin;
-    std::vector<int> m_groupPhaseCount;
     std::vector<Point> m_bones;
     int m_animationPhases;
     int m_exactSize;

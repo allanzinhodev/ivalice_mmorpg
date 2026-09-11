@@ -2813,7 +2813,7 @@ void ProtocolGame::sendCreatureOutfit(const Creature* creature, const Outfit_t& 
 	NetworkMessage msg;
 	msg.addByte(0x8E);
 	msg.add<uint32_t>(creature->getID());
-	AddOutfit(msg, outfit, true);
+	AddOutfit(msg, outfit);
 	writeToOutputBuffer(msg);
 }
 
@@ -4171,15 +4171,7 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position& pos
 	}
 
 	if (isOTC) {
-		// So envia o store inbox se o item existir no items.otb. Ele e criado
-		// incondicionalmente no construtor do Player (player.cpp, com o id fixo
-		// ITEM_STORE_INBOX), entao num datapack minimo que nao o declare o
-		// cliente recebe um id desconhecido, lanca "unable to create item with
-		// invalid id" e ABORTA o parse do pacote inteiro -- o jogador entra mas
-		// nunca recebe o mapa.
-		if (Item::items[ITEM_STORE_INBOX].id != 0) {
-			sendInventoryItem(CONST_SLOT_STORE_INBOX, player->getStoreInbox());
-		}
+		sendInventoryItem(CONST_SLOT_STORE_INBOX, player->getStoreInbox());
 	}
 
 	sendPlayerInventory();
@@ -5263,10 +5255,10 @@ void ProtocolGame::AddCreature(NetworkMessage& msg, const Creature* creature, bo
 	msg.addByte(direction);
 
 	if (!creature->isInGhostMode() && !creature->isInvisible()) {
-		AddOutfit(msg, creature->getCurrentOutfit(), true);
+		AddOutfit(msg, creature->getCurrentOutfit());
 	} else {
 		static Outfit_t outfit;
-		AddOutfit(msg, outfit, true);
+		AddOutfit(msg, outfit);
 	}
 
 	LightInfo lightInfo = creature->getCreatureLight();
@@ -5445,7 +5437,7 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage& msg)
 	}
 }
 
-void ProtocolGame::AddOutfit(NetworkMessage& msg, const Outfit_t& outfit, bool withAnimation)
+void ProtocolGame::AddOutfit(NetworkMessage& msg, const Outfit_t& outfit)
 {
 	msg.add<uint16_t>(outfit.lookType);
 
@@ -5461,13 +5453,6 @@ void ProtocolGame::AddOutfit(NetworkMessage& msg, const Outfit_t& outfit, bool w
 
 	if (isOTC || getVersion() != 861) {
 		msg.add<uint16_t>(outfit.lookMount);
-	}
-
-	// Frame group ativo. So para clientes OTC (um cliente Tibia original nao
-	// espera este byte) e so nos caminhos de criatura -- ver o comentario de
-	// withAnimation na declaracao.
-	if (isOTC && withAnimation && creatureAnimationGroupEnabled) {
-		msg.addByte(outfit.lookAnimation);
 	}
 }
 
@@ -5745,9 +5730,6 @@ void ProtocolGame::sendFeatures(bool advertiseAstraItemState)
 	features[GameFeature::CreatureIcons] = true;
 	features[GameFeature::ContainerPagination] = true;
 	features[GameFeature::BrowseField] = true;
-	// Anima recursos de acao no outfit (ver AddOutfit / withAnimation).
-	features[GameFeature::CreatureAnimationGroup] = true;
-	creatureAnimationGroupEnabled = true;
 	if (isAstraClient) {
 		features[GameFeature::PlayerRegenerationTime] = true;
 		features[GameFeature::ExperienceBonus] = true;

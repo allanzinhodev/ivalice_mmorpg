@@ -28,57 +28,7 @@
 namespace Otc
 {
     enum : int {
-        // Teto do empilhamento de elevation, em pixels (Tile::drawGround
-        // satura m_drawElevation aqui).
-        //
-        // Era 24, o valor do Tibia -- suficiente para uma pilha de parcels,
-        // curto demais para relevo. No FFTA a altura vai de 0 a 31 e cada
-        // unidade vale TILE_HALF_H = 8px, entao o curso vertical chega a
-        // 31 * 8 = 248px. Com 24 o mapa saturava no primeiro degrau e o
-        // relevo sumia.
-        MAX_ELEVATION = 248,
-
-        // --- Projecao isometrica (estilo Final Fantasy Tactics Advance) ---
-        // Meias-extensoes do losango de uma celula: 32x16 px.
-        //   screenX = offsetX + (col - row) * TILE_HALF_W
-        //   screenY = offsetY + (col + row) * TILE_HALF_H
-        // Os valores batem com o renderer de referencia do proprio repo,
-        // tools/FFTAUtils/RenderArrangeMap/Form1.cs:21-22 (PILE_WIDTH/HEIGHT).
-        //
-        // NAO confundir com g_sprites.spriteSize(): aquele e o tamanho do
-        // SPRITE, este e o tamanho da CELULA. Sao conceitos distintos.
-        TILE_HALF_W = 16,
-        TILE_HALF_H = 8,
-
-        // Quanto um andar sobe em screenY. No FFTA a altura e levantamento
-        // vertical puro (Form1.cs:41 usa Y - height), nao o deslocamento
-        // diagonal do Tibia.
-        FLOOR_LIFT = 16,
-
-        // Deslocamento horizontal do HUD da criatura -- barra de vida, nome,
-        // mana e icones -- em MapView::drawCreatureInformation.
-        //
-        // O termo original `16 * offsetFactor - displacementX` assume que
-        // `dest` e o canto superior-ESQUERDO de uma celula QUADRADA de 32x32,
-        // e por isso anda 16px para a direita para achar o centro. No losango
-        // `dest` e o VERTICE SUPERIOR, que ja e o centro horizontal da celula
-        // (ela abre +-16px em torno dele), entao aquele termo nao aterrissa
-        // mais onde aterrissava. Este e o ajuste, medido na tela.
-        //
-        // CUIDADO: o HUD tambem subtrai o displacement do outfit, entao mexer
-        // no displacement das criaturas no .dat move as barras junto e este
-        // valor precisa ser reconferido.
-        HUD_SHIFT_X = 8,
-
-        // Teto do atlas de textura de um ThingType, em PIXELS por eixo.
-        //
-        // ThingType::getBestTextureDimension monta o atlas contando SPRITES,
-        // e o limite vinha de g_sprites.spriteSize() -- que valia 32 por
-        // coincidencia, nao por relacao. Com sprite 8x8 o teto viraria 8 e
-        // nada maior que um tile caberia. O limite real e este, em pixels;
-        // a contagem por eixo se deriva dele (1024/32 = 32 sprites como
-        // antes, 1024/8 = 128 no mosaico).
-        MAX_ATLAS_PIXELS = 1024,
+        MAX_ELEVATION = 24,
 
         INVISIBLE_TICKS_PER_FRAME = 500,
         INVISIBLE_TICKS_PER_FRAME_FAST = 100,
@@ -554,12 +504,7 @@ namespace Otc
         GameAstraItemMetadata = 143,
         GameZoneWeather = 144,
 
-        // Byte de frame group ativo no fim do outfit de criatura, para
-        // animacoes de acao visiveis por todos os jogadores. O servidor so o
-        // envia quando esta feature esta ligada (ver AddOutfit, withAnimation).
-        GameCreatureAnimationGroup = 145,
-
-        LastGameFeature = 146
+        LastGameFeature = 145
     };
 
     enum PathFindResult {

@@ -137,7 +137,6 @@ public:
     bool hasLensHelp() { return rawGetThingType()->hasLensHelp(); }
     bool isFullGround() { return rawGetThingType()->isFullGround(); }
     bool isIgnoreLook() { return rawGetThingType()->isIgnoreLook(); }
-    bool isVisualOnly() { return rawGetThingType()->isVisualOnly(); }
     bool isCloth() { return rawGetThingType()->isCloth(); }
     bool isMarketable() { return rawGetThingType()->isMarketable(); }
     bool isUsable() { return rawGetThingType()->isUsable(); }

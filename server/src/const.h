@@ -994,12 +994,7 @@ enum class GameFeature : uint8_t {
 	AstraItemMetadata = 143,
 	ZoneWeather = 144,
 
-	// Byte de frame group ativo no fim do outfit de criatura, para animacoes
-	// de acao (atacar, castar, ...) visiveis por todos os jogadores.
-	// TEM que casar com Otc::GameCreatureAnimationGroup no client.
-	CreatureAnimationGroup = 145,
-
-	Last = 145
+	Last = 144
 };
 
 inline constexpr int32_t CHANNEL_GUILD = 0x00;

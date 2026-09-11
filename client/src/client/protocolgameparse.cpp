@@ -4758,14 +4758,6 @@ Outfit ProtocolGame::getOutfit(const InputMessagePtr& msg, bool ignoreMount)
             outfit.setHealthBar(msg->getU16());
             outfit.setManaBar(msg->getU16());
         }
-
-        // Frame group ativo (animacao). O servidor so envia este byte nos
-        // caminhos de criatura (0x8E e AddCreature) -- ver `withAnimation` em
-        // ProtocolGame::AddOutfit no servidor. E justamente esses caminhos que
-        // chamam getOutfit sem ignoreMount, por isso a leitura fica aqui.
-        if (g_game.getFeature(Otc::GameCreatureAnimationGroup)) {
-            outfit.setAnimationGroup(msg->getU8());
-        }
     }
 
     return outfit;

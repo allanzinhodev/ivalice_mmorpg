@@ -31,13 +31,6 @@ Servers = {
 --USE_NEW_ENERGAME = true -- uses entergamev2 based on websockets instead of entergame
 ALLOW_CUSTOM_SERVERS = false -- if true it shows option ANOTHER on server list
 
--- Recarrega modulos (.lua/.otui) e o datapack (Tibia.dat/.spr) ao vivo, sem
--- reabrir o client. Ver mods/client_autoreloadmodule. Custa uma varredura de
--- mtime por segundo em cada arquivo de modulo, entao e para DESENVOLVIMENTO --
--- deixe false ao empacotar para jogador.
--- Nao alcanca mudanca em C++ (const.h, mapview.cpp, ...): essas exigem rebuild.
-AUTO_RELOAD_MODULE = true
-
 g_app.setName("AstraClient - OTCv8")
 -- CONFIG END
 

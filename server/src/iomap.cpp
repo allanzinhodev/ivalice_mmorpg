@@ -534,7 +534,7 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 
                             if (tile) {
                                 transferMapItem(tile, item);
-                            } else if (item->isGroundTile() && !ground_item) {
+                            } else if (item->isGroundTile()) {
                                 ground_item = std::move(item);
                             } else {
                                 tilePtr = createTile(ground_item, item.get(), x, y, z);
@@ -593,28 +593,9 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
                         item->setItemCount(1);
                     }
 
-                    /*
-                     * SO O PRIMEIRO GROUND VIRA O CHAO DA TILE.
-                     *
-                     * Sem o `!ground_item`, cada ground seguinte SUBSTITUIA o
-                     * anterior e a tile terminava com um item so. Num mapa do
-                     * Tibia isso nunca aparece -- ha exatamente um ground por
-                     * tile --, mas aqui a ALTURA do terreno e uma pilha de
-                     * grounds (ver tools/datapack-gen/gen-map-ffta.js), e a
-                     * pilha inteira era descartada na carga do mapa.
-                     *
-                     * O sintoma enganava: os arquivos estavam certos dos dois
-                     * lados (o .otbm tinha as pilhas, o .dat tinha o
-                     * elevation) e mesmo assim o relevo nao aparecia na tela,
-                     * porque o que o client recebia ja vinha achatado.
-                     *
-                     * Com o guarda, o segundo ground em diante cai no ramo de
-                     * baixo e entra como item normal da tile -- que e o que o
-                     * client espera para somar elevation em Tile::drawGround.
-                     */
                     if (tile) {
                         transferMapItem(tile, item);
-                    } else if (item->isGroundTile() && !ground_item) {
+                    } else if (item->isGroundTile()) {
                         ground_item = std::move(item);
                     } else {
                         tilePtr = createTile(ground_item, item.get(), x, y, z);

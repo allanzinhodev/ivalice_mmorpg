@@ -735,14 +735,6 @@ struct Outfit_t
 	uint8_t lookLegs = 0;
 	uint8_t lookFeet = 0;
 	uint8_t lookAddons = 0;
-
-	// Frame group ativo -- a animacao que a criatura esta tocando.
-	// 0 = idle, 1 = andando, 2+ = grupos de acao (atacar, castar, etc).
-	//
-	// Viaja junto do outfit de proposito: assim a animacao chega a TODOS os
-	// espectadores via sendCreatureOutfit, e tambem a quem entrar no alcance
-	// depois, porque o estado vai no AddOutfit de qualquer criatura enviada.
-	uint8_t lookAnimation = 0;
 };
 
 struct LightInfo

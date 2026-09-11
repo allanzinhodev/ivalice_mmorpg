@@ -307,13 +307,7 @@ private:
 	void AddCreature(NetworkMessage& msg, const Creature* creature, bool known, uint32_t remove);
 	void AddPlayerStats(NetworkMessage& msg);
 	static uint16_t getRegenerationTimeSeconds(int32_t ticks);
-	// withAnimation: envia o byte de frame group ativo no fim do outfit.
-	//
-	// So vale para outfits de CRIATURA (0x8E e AddCreature), que o cliente le
-	// com getOutfit(msg) completo. A janela de outfits (sendOutfitWindow) usa
-	// getOutfit(msg, true) do outro lado, que para antes do mount -- mandar o
-	// byte la desincronizaria o pacote.
-	void AddOutfit(NetworkMessage& msg, const Outfit_t& outfit, bool withAnimation = false);
+	void AddOutfit(NetworkMessage& msg, const Outfit_t& outfit);
 	void AddPlayerSkills(NetworkMessage& msg);
 	void AddWorldLight(NetworkMessage& msg, LightInfo lightInfo);
 	void AddCreatureLight(NetworkMessage& msg, const Creature* creature);
@@ -425,8 +419,6 @@ private:
 	bool isAstraClient = false;
 	bool isFonticakClient = false;
 	bool supportsZoneWeather = false;
-	// Cliente negociou o byte de frame group no outfit (feature 145).
-	bool creatureAnimationGroupEnabled = false;
 	bool supportsDllZoneWeather = false;
 	bool zoneWeatherFeatureEnabled = false;
 	uint32_t dllWeatherSequence = 0;
