@@ -93,10 +93,42 @@ function classificar(n) {
   };
 }
 
-/** O numero do tile a partir do nome do arquivo, ou null. */
+/**
+ * O numero do tile a partir do nome do arquivo, ou null.
+ *
+ * Aceita o sufixo `#bloco`: o compilador emite, para cada tile que e degrau,
+ * um gemeo empilhavel com esse nome. Ele tem a mesma classificacao do
+ * original -- o que muda e nao ter ThingAttrGround, para o server aceitar
+ * mais de um na mesma tile.
+ */
 function numeroDe(arquivo) {
-  const m = /^tile_(\d+)\.png$/i.exec(arquivo);
+  const m = /^tile_(\d+)\.png(#bloco)?$/i.exec(arquivo);
   return m ? parseInt(m[1], 10) : null;
+}
+
+/** O arquivo e o gemeo empilhavel de um tile? */
+function ehBloco(arquivo) {
+  return /#bloco$/.test(arquivo);
+}
+
+/**
+ * A lista final de "arquivos" que viram itens, na ordem dos ids.
+ *
+ * Alem dos PNGs, inclui o gemeo `#bloco` de cada tile que e degrau. O
+ * compilador (.dat) e o gerador (.otb) precisam gerar a MESMA lista, na
+ * mesma ordem, senao os ids divergem entre client e server -- e um id
+ * trocado faz o client abortar o parse do mapa inteiro.
+ *
+ * Por isso a expansao mora aqui, e nao duplicada nos dois.
+ */
+function expandirItens(pngs) {
+  const out = [];
+  for (const f of pngs) {
+    out.push(f);
+    const spec = classificarArquivo(f);
+    if (spec && spec.displacement) out.push(f + '#bloco');
+  }
+  return out;
 }
 
 /** Classifica pelo nome do arquivo. null se nao for um tile_NNN.png. */
@@ -105,4 +137,7 @@ function classificarArquivo(arquivo) {
   return n === null ? null : classificar(n);
 }
 
-module.exports = { classificar, classificarArquivo, numeroDe, FAIXAS, STONE_ANDAVEL, WATER_ANIM };
+module.exports = {
+  classificar, classificarArquivo, numeroDe, ehBloco, expandirItens,
+  FAIXAS, STONE_ANDAVEL, WATER_ANIM,
+};

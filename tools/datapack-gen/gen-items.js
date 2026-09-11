@@ -15,7 +15,7 @@
 const fs = require('fs');
 const path = require('path');
 const { isMapTile, isDecoration } = require('../asset-compiler/map-assets.js');
-const { classificarArquivo } = require('../asset-compiler/tile-spec.js');
+const { classificarArquivo, ehBloco, expandirItens } = require('../asset-compiler/tile-spec.js');
 const { Props, Node, buildFile } = require('./otb-common');
 
 // --- constantes do formato (server/src/itemloader.h) ---
@@ -70,9 +70,13 @@ const OTB_DESCRIPTION = 'OTB 3.20.1-8.60';
  */
 function loadItems() {
   const dir = path.resolve(__dirname, "../../assets/items");
-  const files = fs.readdirSync(dir).filter(function (f) {
+  const pngs = fs.readdirSync(dir).filter(function (f) {
     return f.toLowerCase().slice(-4) === ".png";
   }).sort();
+  // Inclui os gemeos empilhaveis. A expansao mora no tile-spec para o .dat e
+  // o .otb gerarem a MESMA lista na mesma ordem -- id trocado entre os dois
+  // faz o client abortar o parse do mapa.
+  const files = expandirItens(pngs);
 
   const itens = files.map(function (f, i) {
     // Classificacao do terreno (tile_NNN.png). null para os outros arquivos.
@@ -89,6 +93,7 @@ function loadItems() {
       // carrega altura. Precisa de group != GROUND, senao Item::isGroundTile()
       // e verdadeiro no server e IOMap a trata como o chao da tile.
       decoration: isDecoration(f),
+      bloco: ehBloco(f),
       // Altura: e o que Tile::hasHeight(n) CONTA (server/src/tile.cpp:127), e
       // e contra esse contador que o JUMP do personagem e comparado. Sem a
       // flag o contador fica em zero e nada e transponivel.
@@ -124,8 +129,11 @@ function buildOtb() {
 
   for (const item of ITEMS) {
     // O byte de tipo do no E o itemgroup_t (items.cpp:707).
+    // O bloco empilhavel NAO pode ser GROUND: Tile::internalAddThing aceita
+    // um ground so por tile e descarta os demais (server/src/tile.cpp:1718).
+    // Era por isso que uma pilha de 13 virava 1.
     const group = item.group === 'container' ? ITEM_GROUP_CONTAINER
-      : item.decoration ? ITEM_GROUP_NONE
+      : (item.decoration || item.bloco) ? ITEM_GROUP_NONE
       : ITEM_GROUP_GROUND;
     const n = root.child(group);
     // Sem FLAG_BLOCK_SOLID -> chao andavel. FLAG_HAS_HEIGHT entra nos tiles

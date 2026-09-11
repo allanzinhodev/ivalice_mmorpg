@@ -55,8 +55,35 @@ const TEMPLE = { x: 8, y: 8, z: MAP_Z };
 // Os ids seguem a ordem alfabetica de assets/items/, comecando em 100 --
 // a mesma regra do compile.js e do gen-items.js. Como os arquivos sao
 // tile_000..tile_114, o id do tile N e 100 + N.
+/*
+ * Os ids seguem a lista expandida do tile-spec: cada tile que e degrau gera
+ * DOIS itens -- o ground e o gemeo `#bloco`, empilhavel. Calcular o id por
+ * `100 + n` so valia quando era um item por PNG.
+ */
+const { expandirItens, ehBloco, numeroDe } = require('../asset-compiler/tile-spec.js');
+
 const FIRST_ID = 100;
-const idDoTile = (n) => FIRST_ID + n;
+
+const LISTA = (() => {
+  const dir = path.resolve(__dirname, '../../assets/items');
+  const pngs = fs.readdirSync(dir).filter((f) => f.toLowerCase().endsWith('.png')).sort();
+  return expandirItens(pngs);
+})();
+
+/** id do item de CHAO do tile n. */
+function idDoTile(n) {
+  const alvo = 'tile_' + String(n).padStart(3, '0') + '.png';
+  const i = LISTA.indexOf(alvo);
+  if (i < 0) throw new Error('tile ' + n + ' nao esta na lista de itens');
+  return FIRST_ID + i;
+}
+
+/** id do BLOCO empilhavel do tile n, ou null se ele nao for degrau. */
+function idDoBloco(n) {
+  const alvo = 'tile_' + String(n).padStart(3, '0') + '.png#bloco';
+  const i = LISTA.indexOf(alvo);
+  return i < 0 ? null : FIRST_ID + i;
+}
 
 /** Um representante de cada tipo, escolhido entre os que a spec classifica. */
 function escolher(tipo, querAndavel) {
@@ -111,7 +138,10 @@ function celula(x, y) {
    * 12 niveis = 96px de deslocamento. O client guardava a elevacao num
    * uint8 com teto em 248; com pilha sem limite o tipo passou a int.
    */
-  if (x === 12 && y === 12) {
+  // Fora da poca (x 6..10, y 10..12) de proposito: as duas zonas se
+  // sobrepunham e a agua, testada depois, ganhava -- a pilha existia no
+  // OTBM mas nunca aparecia na tela.
+  if (x === 14 && y === 14) {
     return { ground: GROUND, altura: 12 };
   }
 
@@ -192,11 +222,20 @@ function buildOtbm() {
 
           tile.child(OTBM_ITEM).props.u16(idDoTile(c.ground));
 
-          // A altura e uma PILHA: cada item extra conta um nivel para o
-          // hasHeight. Usa o mesmo id do chao -- o que importa e a contagem,
-          // e repetir a arte deixa o degrau visivel na tela.
+          /*
+           * A altura e uma PILHA, feita com o gemeo `#bloco`.
+           *
+           * NAO da para repetir o id do chao: o server aceita um ground por
+           * tile e descarta o resto (Tile::internalAddThing, tile.cpp:1718).
+           * O bloco tem a mesma arte e a mesma elevacao, mas sem
+           * ThingAttrGround -- entao empilha.
+           */
+          const idBloco = idDoBloco(c.ground);
+          if (c.altura > 0 && idBloco === null) {
+            throw new Error('tile ' + c.ground + ' nao e degrau, nao pode empilhar');
+          }
           for (let i = 0; i < c.altura; i++) {
-            tile.child(OTBM_ITEM).props.u16(idDoTile(c.ground));
+            tile.child(OTBM_ITEM).props.u16(idBloco);
             empilhados++;
           }
           tiles++;

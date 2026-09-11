@@ -1874,6 +1874,11 @@ void ProtocolGame::parseCharacterBazaar(NetworkMessage& msg)
 	CharacterBazaar::sendCreateResult(player.get(), success, result);
 }
 
+// Quantos itens de um tile cabem numa descricao. Tem que casar com
+// Tile::MAX_THINGS no client -- se o server mandar mais do que o client
+// aceita, o excedente e descartado silenciosamente.
+static constexpr int32_t MAX_TILE_STACK = 64;
+
 void ProtocolGame::GetTileDescription(const Tile* tile, NetworkMessage& msg)
 {
 	const uint32_t playerInstanceId = player->getInstanceID();
@@ -1901,9 +1906,22 @@ void ProtocolGame::GetTileDescription(const Tile* tile, NetworkMessage& msg)
 			msg.addItem(it->get(), sendItemTierData, sendItemTierByte, isOTC, sendQuickLootFlags, sendAstraItemState,
 			            sendAstraQuiverCountU16);
 			count++;
-			if (count == 9 && tile->getPosition() == player->getPosition()) {
+			/*
+			 * O TETO DA PILHA E 64, NAO 10.
+			 *
+			 * O 10 era o limite do Tibia, e aqui a altura do terreno E uma
+			 * pilha de itens -- cada um vale 8px. Com 10 uma pilha de 13
+			 * itens era cortada e a elevacao SATURAVA: medido, um degrau de
+			 * 12 niveis desenhava na mesma altura que um de 4.
+			 *
+			 * Pior: o `return` cortava antes das CRIATURAS, entao um
+			 * personagem sobre pilha alta nem era enviado.
+			 *
+			 * Tem que casar com Tile::MAX_THINGS no client.
+			 */
+			if (count == MAX_TILE_STACK - 1 && tile->getPosition() == player->getPosition()) {
 				break;
-			} else if (count == 10) {
+			} else if (count == MAX_TILE_STACK) {
 				return;
 			}
 		}
@@ -1921,7 +1939,7 @@ void ProtocolGame::GetTileDescription(const Tile* tile, NetworkMessage& msg)
 				continue;
 			}
 
-			if (!isOTC && isStacked && count == 9 && !playerAdded) {
+			if (!isOTC && isStacked && count == MAX_TILE_STACK - 1 && !playerAdded) {
 				creature = player.get();
 			}
 

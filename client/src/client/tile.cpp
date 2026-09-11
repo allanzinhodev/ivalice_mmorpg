@@ -62,6 +62,7 @@ void Tile::drawGround(const Point& dest, LightView* lightView)
         thing->draw(dest - m_drawElevation, true, lightView);
         m_drawElevation = m_drawElevation + thing->getElevation();
     }
+
 }
 
 void Tile::drawBottom(const Point& dest, LightView* lightView)

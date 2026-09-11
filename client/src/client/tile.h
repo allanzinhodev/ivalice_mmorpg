@@ -58,7 +58,14 @@ class Tile : public LuaObject
 {
 public:
     enum {
-        MAX_THINGS = 10
+        // O empilhamento de altura nao tem limite: cada item da pilha e um
+        // nivel de 8px. Com o valor original (10, herdado do Tibia) uma pilha
+        // de 13 itens era truncada em 10 e a elevacao SATURAVA -- medido: um
+        // degrau de 12 niveis desenhava na mesma altura que um de 4.
+        //
+        // O teto continua existindo como protecao contra pilha absurda vinda
+        // de um mapa corrompido, so que alto o bastante para nao atrapalhar.
+        MAX_THINGS = 64
     };
 
     Tile(const Position& position);

@@ -32,6 +32,9 @@
 const ATTR_GROUND = 0;
 const ATTR_ELEVATION = 25;
 const ATTR_DISPLACEMENT = 24;
+// ThingAttrOnBottom. Faz Tile::drawGround continuar percorrendo a pilha em
+// vez de parar no primeiro item que nao e chao (client tile.cpp:57).
+const ATTR_ON_BOTTOM = 2;
 const ATTR_ON_TOP = 3;
 const ATTR_DONT_HIDE = 22;
 const ATTR_FULL_GROUND = 30;
@@ -137,6 +140,7 @@ function writeAttributes(w, attrs) {
   if (attrs.ground !== undefined) { w.u8(ATTR_GROUND); w.u16(attrs.ground); }
   if (attrs.displacement) { w.u8(ATTR_DISPLACEMENT); w.i16(attrs.displacement[0]); w.i16(attrs.displacement[1]); }
   if (attrs.elevation !== undefined) { w.u8(ATTR_ELEVATION); w.u16(attrs.elevation); }
+  if (attrs.onBottom) w.u8(ATTR_ON_BOTTOM);
   if (attrs.onTop) w.u8(ATTR_ON_TOP);
   if (attrs.dontHide) w.u8(ATTR_DONT_HIDE);
   if (attrs.fullGround) w.u8(ATTR_FULL_GROUND);
@@ -182,6 +186,6 @@ function buildDat({ signature, items, outfits, effects, missiles }) {
 
 module.exports = {
   FrameGroup, FRAME_GROUP_NAMES,
-  ATTR_GROUND, ATTR_ON_TOP, ATTR_DISPLACEMENT, ATTR_ELEVATION, ATTR_DONT_HIDE, ATTR_FULL_GROUND, ATTR_VISUAL_ONLY, ATTR_WATER, ATTR_STAND_OFFSET, ATTR_LAST,
+  ATTR_GROUND, ATTR_ON_BOTTOM, ATTR_ON_TOP, ATTR_DISPLACEMENT, ATTR_ELEVATION, ATTR_DONT_HIDE, ATTR_FULL_GROUND, ATTR_VISUAL_ONLY, ATTR_WATER, ATTR_STAND_OFFSET, ATTR_LAST,
   buildDat, Writer,
 };

@@ -27,7 +27,7 @@ const { buildSpr, SPRITE_SIZE } = require('./spr.js');
 const { buildCwm } = require('./cwm.js');
 const { slice } = require('./mosaic.js');
 const { isDecoration, mapIndexOf } = require('./map-assets.js');
-const { classificarArquivo } = require('./tile-spec.js');
+const { classificarArquivo, ehBloco, expandirItens } = require('./tile-spec.js');
 const { buildDat, FrameGroup, FRAME_GROUP_NAMES } = require('./dat.js');
 
 const ROOT = path.resolve(__dirname, '../..');
@@ -330,11 +330,16 @@ function carregarDeslocamentos() {
 function compileItems(table) {
   const deslocamentos = carregarDeslocamentos();
   const dir = path.join(ASSETS, 'items');
-  const files = listAssets(dir);
+  // Inclui os gemeos `#bloco` -- a versao empilhavel de cada tile que e
+  // degrau. A expansao mora no tile-spec para o .dat e o .otb gerarem a mesma
+  // lista na mesma ordem.
+  const files = expandirItens(listAssets(dir));
   const items = [];
 
   for (const file of files) {
-    const img = readPNG(path.join(dir, file));
+    const bloco = ehBloco(file);
+    const arquivoPng = bloco ? file.replace(/#bloco$/, '') : file;
+    const img = readPNG(path.join(dir, arquivoPng));
     /*
      * O item precisa ter a LARGURA de um tile, mas pode ser mais ALTO.
      *
@@ -384,7 +389,32 @@ function compileItems(table) {
 
     items.push({
       name: file,
-      attrs: decoracao ? {
+      attrs: bloco ? {
+        /*
+         * BLOCO DE ALTURA: o gemeo EMPILHAVEL do tile.
+         *
+         * Nao leva `ground` de proposito. Tile::internalAddThing do server
+         * aceita UM ground por tile e descarta os demais (tile.cpp:1718-1724)
+         * -- uma pilha de 13 grounds virava 1, e a elevacao nunca passava de
+         * um nivel. Sem o atributo, ele entra na lista normal de itens e
+         * empilha.
+         *
+         * Mesma arte e mesma elevacao do original; o que muda e poder
+         * repetir.
+         */
+        /*
+         * onBottom, e nao `ground`: Tile::drawGround do client percorre a
+         * pilha ate achar algo que nao seja ground, groundBorder OU
+         * onBottom, e para (tile.cpp:57). Sem esta flag o loop parava no
+         * primeiro bloco e a elevacao travava em 8, por mais alta que fosse
+         * a pilha -- medido: 10 itens, elevacao 8.
+         */
+        onBottom: true,
+        displacement: displacementFor([0, 0], cols, rows, CELL),
+        elevation: 8,
+        dontHide: true,
+        visualOnly: true,
+      } : decoracao ? {
         onTop: true,
         displacement: displacementFor([0, 0], cols, rows, CELL),
         dontHide: true,
@@ -485,6 +515,7 @@ function compileItems(table) {
         sprites: ids,
       }],
     });
+
   }
 
   return items;
