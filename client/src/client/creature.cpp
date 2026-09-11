@@ -156,6 +156,17 @@ void Creature::draw(const Point& dest, bool animate, LightView* lightView)
     if (m_outfit.getCategory() != ThingCategoryCreature)
         animationOffset -= getDisplacement();
 
+    /*
+     * Caminhando sobre agua: a outfit desenha com zPattern 2.
+     *
+     * Le do tile de PREWALKING, nao do atual: durante o passo a criatura
+     * ainda pertence ao tile de origem, mas visualmente ja esta indo para o
+     * destino. Usar o atual faria a troca acontecer um tile tarde demais --
+     * o personagem entraria na agua ainda "seco" e sairia dela molhado.
+     */
+    const TilePtr& standingTile = g_map.getTile(getPrewalkingPosition());
+    m_outfit.setOnWater(standingTile && standingTile->isWater());
+
     size_t drawQueueSize = g_drawQueue->size();
     m_outfit.draw(dest - jumpOffset + animationOffset, m_walking ? m_walkDirection : m_direction, m_walkAnimationPhase, true, lightView);
     if (m_marked) {

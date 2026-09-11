@@ -48,6 +48,12 @@ public:
     void setFeet(int feet) { m_feet = feet; }
     void setAddons(int addons) { m_addons = addons; }
     void setMount(int mount) { m_mount = mount; }
+
+    // Caminhando sobre agua: desenha com zPattern 2 em vez de 0.
+    // Ver Outfit::draw -- e por isso que a montaria (1) e a agua (2) sao
+    // indices distintos do mesmo eixo.
+    void setOnWater(bool onWater) { m_onWater = onWater; }
+    bool isOnWater() const { return m_onWater; }
     void setFamiliar(int familiar) { m_familiar = familiar; }
     void setWings(int wings) { m_wings = wings; }
     void setAura(int aura) { m_aura = aura; }
@@ -79,6 +85,7 @@ public:
 private:
     ThingCategory m_category;
     int m_id, m_auxId, m_head, m_body, m_legs, m_feet, m_addons, m_mount = 0, m_familiar = 0, m_wings = 0, m_aura = 0;
+    bool m_onWater = false;
     int m_healthBar = 0, m_manaBar = 0;
     std::string m_shader;
     bool m_center = false;

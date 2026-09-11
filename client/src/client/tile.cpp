@@ -521,6 +521,23 @@ ItemPtr Tile::getGround()
     return nullptr;
 }
 
+/*
+ * O tile e agua?
+ *
+ * Le do CHAO, nao da pilha inteira: o que define se alguem esta na agua e o
+ * terreno, nao um item largado em cima dele. Varrer m_things faria uma pedra
+ * sobre a agua responder "sim" tambem, e -- pior -- um item qualquer com a
+ * flag transformaria um tile seco em molhado.
+ */
+bool Tile::isWater()
+{
+    const ItemPtr& ground = getGround();
+    if (!ground)
+        return false;
+    ThingType* type = ground->rawGetThingType();
+    return type && type->isWater();
+}
+
 int Tile::getGroundSpeed()
 {
     if (m_speed)
