@@ -1,0 +1,575 @@
+<title>Aisenfield Tile Editor</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Space+Mono:wght@400;700&display=swap">
+<style>
+  :root{
+    --ground:#f3efe6; --panel:#fffdf8; --edge:#ddd4c2; --edge-soft:#eae3d4;
+    --ink:#241f18; --ink-dim:#6b6255; --ink-faint:#9a9083;
+    --sand:#b8934f; --stage:#20242b;
+    --l1:#8a6a4b; --l2:#5c7f42; --actor:#0d9bb5;
+    --water:#3d7ea6; --block:#b4443a; --walk:#5c7f42;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --ground:#14171c; --panel:#1b1f26; --edge:#2e343e; --edge-soft:#252b34;
+      --ink:#ece6da; --ink-dim:#9aa0ab; --ink-faint:#6b7280;
+      --sand:#d8c49a; --stage:#0d0f13;
+      --l1:#c49a6c; --l2:#8fb567; --actor:#2ec8e6;
+      --water:#5fa8d3; --block:#e0695e; --walk:#8fb567;
+    }
+  }
+  :root[data-theme="dark"]{
+      --ground:#14171c; --panel:#1b1f26; --edge:#2e343e; --edge-soft:#252b34;
+      --ink:#ece6da; --ink-dim:#9aa0ab; --ink-faint:#6b7280;
+      --sand:#d8c49a; --stage:#0d0f13;
+      --l1:#c49a6c; --l2:#8fb567; --actor:#2ec8e6;
+      --water:#5fa8d3; --block:#e0695e; --walk:#8fb567;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--ground);color:var(--ink);
+       font:14px/1.55 "Space Mono",ui-monospace,Consolas,monospace;
+       padding-block:24px;padding-left:18px;padding-right:18px}
+  .page{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+  h1{font-family:Fraunces,Georgia,serif;font-weight:700;
+     font-size:clamp(24px,3.6vw,36px);margin:0;letter-spacing:-.02em;text-wrap:balance}
+  .sub{color:var(--ink-dim);margin:6px 0 0;max-width:66ch;font-size:13px}
+  h2{font-family:Fraunces,Georgia,serif;font-size:16px;margin:0 0 9px;font-weight:600}
+
+  .bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:var(--panel);
+       border:1px solid var(--edge);padding:9px 11px;border-radius:10px}
+  button{border:1px solid var(--edge);background:transparent;color:var(--ink);
+         font:inherit;font-size:12.5px;padding:6px 11px;border-radius:7px;cursor:pointer}
+  button:hover{border-color:var(--ink-faint)}
+  button[aria-pressed="true"]{background:var(--edge-soft);border-color:var(--ink-faint)}
+  button:focus-visible{outline:2px solid var(--sand);outline-offset:2px}
+  .sw{width:10px;height:10px;border-radius:2px;display:inline-block;margin-right:6px;
+      vertical-align:-1px}
+  .spacer{margin-left:auto;display:flex;gap:8px;align-items:center;
+          font-size:12.5px;color:var(--ink-dim)}
+  input[type=range]{accent-color:var(--sand);width:90px}
+
+  .cols{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:18px;align-items:start}
+  @media (max-width:900px){.cols{grid-template-columns:1fr}}
+  .stage-wrap{background:var(--stage);border:1px solid var(--edge);border-radius:10px;
+              padding:14px;overflow:auto}
+  .stage{position:relative;margin:0 auto;image-rendering:pixelated;cursor:crosshair}
+  .stage img,.stage canvas{position:absolute;left:0;top:0;image-rendering:pixelated;
+                           width:100%;height:100%}
+  .hint{color:var(--ink-faint);font-size:12px;margin:9px 0 0;text-align:center}
+
+  .card{background:var(--panel);border:1px solid var(--edge);border-radius:10px;
+        padding:13px;margin-bottom:12px}
+  .field{display:grid;grid-template-columns:auto 1fr;gap:7px 10px;align-items:center;
+         font-size:12.5px}
+  .field label{color:var(--ink-dim)}
+  select,input[type=number]{background:var(--ground);color:var(--ink);
+       border:1px solid var(--edge);border-radius:6px;padding:5px 7px;font:inherit;
+       font-size:12.5px;width:100%}
+  .seg{display:flex;gap:4px}
+  .seg button{flex:1;padding:5px 4px;font-size:11.5px}
+  .nudge{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;max-width:132px;
+         margin:0 auto}
+  .nudge button{padding:6px 0}
+  .nudge .mid{display:flex;align-items:center;justify-content:center;
+              font-size:11px;color:var(--ink-faint)}
+  dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:12.5px}
+  dt{color:var(--ink-dim)}dd{margin:0;text-align:right;font-variant-numeric:tabular-nums}
+  code{background:var(--edge-soft);padding:1px 5px;border-radius:4px;font-size:11.5px}
+  .muted{color:var(--ink-faint)}
+  .legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11.5px;color:var(--ink-dim)}
+  footer{color:var(--ink-faint);font-size:12px;border-top:1px solid var(--edge);padding-top:12px}
+  .warn{background:var(--edge-soft);border-left:3px solid var(--sand);padding:9px 11px;
+        border-radius:0 6px 6px 0;font-size:12.5px;margin-top:10px}
+</style>
+<div class="page">
+  <header>
+    <h1>Aisenfield Tile Editor</h1>
+    <p class="sub">Ajuste a posição de cada célula, marque o terreno e exporte o
+    <code>map150.json</code> que os geradores leem.</p>
+  </header>
+
+  <div class="bar">
+    <button id="t1" aria-pressed="true"><span class="sw" style="background:var(--l1)"></span>Camada 1</button>
+    <button id="tp" aria-pressed="true"><span class="sw" style="background:var(--actor)"></span>Personagem</button>
+    <button id="t2" aria-pressed="true"><span class="sw" style="background:var(--l2)"></span>Camada 2</button>
+    <button id="tg" aria-pressed="true">Grade</button>
+    <button id="tf" aria-pressed="true">Flags</button>
+    <span class="spacer">
+      zoom <input type="range" id="z" min="1" max="4" step="1" value="2">
+      <button id="exp">Exportar JSON</button>
+    </span>
+  </div>
+
+  <div class="cols">
+    <div>
+      <div class="stage-wrap">
+        <div class="stage" id="stage">
+          <img id="img1" alt="Camada 1: terreno">
+          <canvas id="cActor"></canvas>
+          <img id="img2" alt="Camada 2: decoração por cima">
+          <canvas id="cFlags"></canvas>
+          <canvas id="cGrid"></canvas>
+        </div>
+      </div>
+      <p class="hint">Clique para selecionar. <b>Setas</b> movem a célula, <b>Ctrl+setas</b> a grade,
+      <b>Shift+setas</b> o personagem, <b>PageUp/PageDown</b> o andar.</p>
+    </div>
+
+    <aside>
+      <div class="card">
+        <h2>Grade inteira</h2>
+        <div class="nudge">
+          <span></span><button data-g="0,-1">↑</button><span></span>
+          <button data-g="-1,0">←</button>
+          <span class="mid" id="gOff">0,0</span>
+          <button data-g="1,0">→</button>
+          <span></span><button data-g="0,1">↓</button>
+          <button id="gZero" title="Zerar">⌫</button>
+        </div>
+        <p class="muted" style="font-size:11.5px;margin:9px 0 0">
+          Move as 208 células juntas. O deslocamento por célula é somado a
+          este.</p>
+      </div>
+
+      <div class="card">
+        <h2>Célula</h2>
+        <div id="sel" class="muted" style="font-size:12.5px">Nenhuma selecionada.</div>
+
+        <div id="editor" hidden>
+          <div class="field" style="margin-top:10px">
+            <label for="terreno">Terreno</label>
+            <select id="terreno">
+              <option value="walk">Andável</option>
+              <option value="water">Água</option>
+              <option value="block">Bloqueado</option>
+            </select>
+
+            <label for="andar">Andar</label>
+            <input type="number" id="andar" min="0" max="31" step="1">
+          </div>
+
+          <p class="muted" style="font-size:11.5px;margin:9px 0 4px">
+            Deslocamento da célula (px)</p>
+          <div class="nudge">
+            <span></span><button data-n="0,-1">↑</button><span></span>
+            <button data-n="-1,0">←</button>
+            <span class="mid" id="off">0,0</span>
+            <button data-n="1,0">→</button>
+            <span></span><button data-n="0,1">↓</button>
+            <button id="zero" title="Zerar deslocamento">⌫</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Distância do chão</h2>
+        <dl>
+          <dt>Andar</dt><dd id="dBase">—</dd>
+          <dt>Displacement Y</dt><dd id="dDisp">—</dd>
+        </dl>
+        <p class="muted" style="font-size:11.5px;margin:8px 0 0">
+          Cada andar vale −8&nbsp;px em Y. É o deslocamento que o personagem e a
+          seleção recebem ao pisar nessa célula.</p>
+      </div>
+
+      <div class="card">
+        <h2>Mapa</h2>
+        <dl>
+          <dt>Células</dt><dd id="mTot">208</dd>
+          <dt>Andáveis</dt><dd id="mWalk">—</dd>
+          <dt>Água</dt><dd id="mWater">—</dd>
+          <dt>Bloqueadas</dt><dd id="mBlock">—</dd>
+          <dt>Deslocadas</dt><dd id="mMoved">—</dd>
+        </dl>
+        <p class="legend" style="margin-top:9px">
+          <span><span class="sw" style="background:var(--walk)"></span>andável</span>
+          <span><span class="sw" style="background:var(--water)"></span>água</span>
+          <span><span class="sw" style="background:var(--block)"></span>bloqueado</span>
+        </p>
+      </div>
+    </aside>
+  </div>
+
+  <div class="card">
+    <h2>Como isso vira mapa</h2>
+    <p style="font-size:13px;color:var(--ink-dim);margin:0">
+      O JSON exportado substitui <code>assets/mapdata/map150.json</code>. Dali,
+      <code>gen-items.js</code> emite as flags do <code>items.otb</code>
+      (bloqueado vira <code>FLAG_BLOCK_SOLID</code>) e
+      <code>gen-map-ffta.js</code> emite o <code>world.otbm</code> com a altura
+      por célula. O deslocamento por célula entra no recorte do
+      <code>rebuild-map.js</code>.</p>
+    <div class="warn">O servidor lê de <code>server/build/data/</code>, que é
+    cópia. Depois de regerar, copie para lá — senão ele serve a versão antiga
+    sem reclamar.</div>
+  </div>
+
+  <footer>Gerado por <code>node map-editor/build.js</code> a partir do datapack
+  em <code>client/data/things/860</code>, do <code>world.otbm</code> e do
+  <code>assets/mapdata/map150.json</code>. Rode de novo quando eles mudarem.</footer>
+</div>
+<script>
+/*PAYLOAD*/
+
+const HW = 16, HH = 8, PX_POR_ANDAR = 8;
+const W = MAPMETA.largura, H = MAPMETA.altura;
+
+const stage = document.getElementById('stage');
+const img1 = document.getElementById('img1'), img2 = document.getElementById('img2');
+const cGrid = document.getElementById('cGrid'), cActor = document.getElementById('cActor');
+const cFlags = document.getElementById('cFlags');
+
+img1.src = 'data:image/png;base64,' + PNG1;
+img2.src = 'data:image/png;base64,' + PNG2;
+for (const c of [cGrid, cActor, cFlags]) { c.width = W; c.height = H; }
+
+/*
+ * Estado editavel, um registro por celula.
+ *
+ * SO EXISTE UM NUMERO DE ALTURA: o `andar`. O campo `height` do map150.json e
+ * a altura crua do height map do FFTA e hoje nada a consome -- quem alimentava
+ * o desenho era `elevation`, pela pilha de itens do OTBM, que foi abandonada.
+ * O andar E a altura, e o unico efeito dele e o deslocamento vertical.
+ */
+const grid = new Map();
+for (const [c, r, tile, tile2, andar, terreno, offset] of CELLS) {
+  grid.set(c + ',' + r, {
+    c, r, tile, tile2, andar,
+    terreno: terreno || 'walk',
+    dx: offset ? offset[0] : 0,
+    dy: offset ? offset[1] : 0,
+  });
+}
+
+// O andar de referencia: o mais baixo do mapa nao desloca nada. Sem isso um
+// mapa cujo chao comeca em 2 sairia 16px acima do lugar onde a arte esta.
+let andarBase = Infinity;
+for (const t of grid.values()) andarBase = Math.min(andarBase, t.andar);
+if (!isFinite(andarBase)) andarBase = 0;
+
+let gx = MAPMETA.gridOffset[0] || 0, gy = MAPMETA.gridOffset[1] || 0;
+
+/*
+ * Posicao de tela da celula.
+ *
+ * O ANDAR ARRASTA A CELULA: cada nivel acima do mais baixo sobe PX_POR_ANDAR
+ * pixels em Y. E o mesmo deslocamento que o personagem recebe ao pisar ali,
+ * entao mexer no andar mostra na hora o que vai acontecer no jogo, em vez de
+ * so mudar um numero no painel.
+ */
+const posDe = (t) => ({
+  x: MAPMETA.origin.x + (t.c - t.r) * HW + gx + t.dx,
+  y: MAPMETA.origin.y + (t.c + t.r) * HH + gy + t.dy
+       - (t.andar - andarBase) * PX_POR_ANDAR,
+});
+
+let zoom = 2, sel = null;
+let ax = Math.round(W / 2), ay = Math.round(H / 2);
+
+const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const on = (id) => document.getElementById(id).getAttribute('aria-pressed') === 'true';
+
+function applyZoom() {
+  stage.style.width = (W * zoom) + 'px';
+  stage.style.height = (H * zoom) + 'px';
+}
+
+function losango(g, x, y) {
+  g.beginPath();
+  g.moveTo(x + HW, y);
+  g.lineTo(x + HW * 2, y + HH);
+  g.lineTo(x + HW, y + HH * 2);
+  g.lineTo(x, y + HH);
+  g.closePath();
+}
+
+/*
+ * A grade e rosa puro, opaca.
+ *
+ * O acento de areia a 33% sumia contra a arte do Aisenfield -- que e areia.
+ * Para alinhar celula por celula a linha precisa ser vista sobre qualquer
+ * pixel do mapa, entao vale uma cor que NAO existe na paleta do terreno.
+ */
+const ROSA = '#ff00aa';
+
+function drawGrid() {
+  const g = cGrid.getContext('2d');
+  g.clearRect(0, 0, W, H);
+  if (on('tg')) {
+    g.strokeStyle = ROSA;
+    g.lineWidth = 1;
+    for (const t of grid.values()) { const p = posDe(t); losango(g, p.x, p.y); g.stroke(); }
+  }
+  if (sel) {
+    const p = posDe(sel);
+    g.strokeStyle = '#fff'; g.lineWidth = 3;
+    losango(g, p.x, p.y); g.stroke();
+    g.strokeStyle = ROSA; g.lineWidth = 2;
+    losango(g, p.x, p.y); g.stroke();
+  }
+}
+
+function drawFlags() {
+  const g = cFlags.getContext('2d');
+  g.clearRect(0, 0, W, H);
+  if (!on('tf')) return;
+  const cor = { walk: css('--walk'), water: css('--water'), block: css('--block') };
+  g.globalAlpha = .38;
+  for (const t of grid.values()) {
+    if (t.terreno === 'walk') continue;   // andavel e o padrao: nao pinta
+    const p = posDe(t);
+    g.fillStyle = cor[t.terreno];
+    losango(g, p.x, p.y);
+    g.fill();
+  }
+  g.globalAlpha = 1;
+}
+
+// O personagem: 32x64 com a base no centro do tile, como o client ancora um
+// frame de height=2.
+function drawActor() {
+  const g = cActor.getContext('2d');
+  g.clearRect(0, 0, W, H);
+  if (!on('tp')) return;
+  g.fillStyle = css('--actor'); g.globalAlpha = .9;
+  g.fillRect(ax - 16, ay - 56, 32, 56);
+  g.globalAlpha = 1;
+  g.strokeStyle = '#fff'; g.lineWidth = 1;
+  g.strokeRect(ax - 16.5, ay - 56.5, 33, 57);
+}
+
+/** Celula sob o ponto: distancia no espaco do losango, a mais proxima ganha. */
+function acharCelula(px, py) {
+  let best = null, dist = Infinity;
+  for (const t of grid.values()) {
+    const p = posDe(t);
+    const d = Math.abs(px - (p.x + HW)) / HW + Math.abs(py - (p.y + HH)) / HH;
+    if (d < dist) { dist = d; best = t; }
+  }
+  return dist <= 1.6 ? best : null;
+}
+
+function mostrarSel() {
+  const box = document.getElementById('sel');
+  const ed = document.getElementById('editor');
+  if (!sel) {
+    box.textContent = 'Nenhuma selecionada.';
+    box.className = 'muted'; ed.hidden = true;
+    document.getElementById('dBase').textContent = '—';
+    document.getElementById('dDisp').textContent = '—';
+    return;
+  }
+  box.className = '';
+  box.innerHTML = '<b>(' + sel.c + ', ' + sel.r + ')</b> '
+    + '<span class="muted">tile ' + sel.tile
+    + (sel.tile2 === null ? '' : ' · deco ' + sel.tile2) + '</span>';
+  ed.hidden = false;
+  document.getElementById('terreno').value = sel.terreno;
+  document.getElementById('andar').value = sel.andar;
+  document.getElementById('off').textContent = sel.dx + ',' + sel.dy;
+
+  document.getElementById('dBase').textContent = sel.andar;
+  document.getElementById('dDisp').textContent =
+    (-(sel.andar - andarBase) * PX_POR_ANDAR) + ' px';
+}
+
+function resumo() {
+  let w = 0, a = 0, b = 0, m = 0;
+  for (const t of grid.values()) {
+    if (t.terreno === 'walk') w++; else if (t.terreno === 'water') a++; else b++;
+    if (t.dx || t.dy) m++;
+  }
+  document.getElementById('mTot').textContent = grid.size;
+  document.getElementById('mWalk').textContent = w;
+  document.getElementById('mWater').textContent = a;
+  document.getElementById('mBlock').textContent = b;
+  document.getElementById('mMoved').textContent = m;
+}
+
+function render() {
+  img1.style.display = on('t1') ? '' : 'none';
+  img2.style.display = on('t2') ? '' : 'none';
+  drawActor(); drawFlags(); drawGrid();
+}
+
+stage.addEventListener('click', (e) => {
+  const r = stage.getBoundingClientRect();
+  const px = Math.round((e.clientX - r.left) / zoom);
+  const py = Math.round((e.clientY - r.top) / zoom);
+  sel = acharCelula(px, py);
+  // O personagem pisa no centro da celula escolhida, para dar para ver o que
+  // passa na frente dele naquele ponto.
+  if (sel) { const p = posDe(sel); ax = p.x + HW; ay = p.y + HH * 2; }
+  mostrarSel(); render();
+});
+
+for (const id of ['t1', 't2', 'tp', 'tg', 'tf']) {
+  document.getElementById(id).addEventListener('click', (e) => {
+    const b = e.currentTarget;
+    b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+    render();
+  });
+}
+document.getElementById('z').addEventListener('input', (e) => {
+  zoom = +e.target.value; applyZoom();
+});
+
+document.getElementById('terreno').addEventListener('change', (e) => {
+  if (!sel) return; sel.terreno = e.target.value; resumo(); render();
+});
+document.getElementById('andar').addEventListener('input', (e) => {
+  if (!sel) return;
+  sel.andar = Math.max(0, Math.min(31, +e.target.value || 0));
+  // Redesenha: o andar move a celula na tela, nao so o numero do painel.
+  mostrarSel(); render();
+});
+
+function mostrarGrade() {
+  document.getElementById('gOff').textContent = gx + ',' + gy;
+}
+for (const b of document.querySelectorAll('.nudge button[data-g]')) {
+  b.addEventListener('click', () => {
+    const [dx, dy] = b.dataset.g.split(',').map(Number);
+    gx += dx; gy += dy;
+    mostrarGrade(); render();
+  });
+}
+document.getElementById('gZero').addEventListener('click', () => {
+  gx = 0; gy = 0; mostrarGrade(); render();
+});
+
+for (const b of document.querySelectorAll('.nudge button[data-n]')) {
+  b.addEventListener('click', () => {
+    if (!sel) return;
+    const [dx, dy] = b.dataset.n.split(',').map(Number);
+    sel.dx += dx; sel.dy += dy;
+    mostrarSel(); resumo(); render();
+  });
+}
+document.getElementById('zero').addEventListener('click', () => {
+  if (!sel) return; sel.dx = 0; sel.dy = 0; mostrarSel(); resumo(); render();
+});
+
+/*
+ * Setas            movem a celula selecionada
+ * Ctrl+setas       movem a GRADE inteira
+ * Shift+setas      movem o personagem
+ * PageUp/PageDown  sobem e descem o ANDAR da celula
+ */
+addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+
+  if (sel && (e.key === 'PageUp' || e.key === 'PageDown')) {
+    e.preventDefault();
+    sel.andar = Math.max(0, Math.min(31, sel.andar + (e.key === 'PageUp' ? 1 : -1)));
+    mostrarSel(); render();
+    return;
+  }
+
+  const passos = { ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0] };
+  const p = passos[e.key];
+  if (!p) return;
+  e.preventDefault();
+  if (e.ctrlKey || e.metaKey) { gx += p[0]; gy += p[1]; mostrarGrade(); render(); return; }
+  if (e.shiftKey) { ax += p[0]; ay += p[1]; drawActor(); return; }
+  if (!sel) return;
+  sel.dx += p[0]; sel.dy += p[1];
+  mostrarSel(); resumo(); render();
+});
+
+/*
+ * Exporta no MESMO formato do map150.json, com campos novos por celula:
+ * `terreno`, `andar` e `offset`. Campos novos em vez de reinterpretar os
+ * existentes -- assim um gerador que ainda nao conhece as flags continua
+ * lendo o arquivo.
+ */
+function montarDoc() {
+  const linhas = [];
+  for (let r = 0; r < MAPMETA.rows; r++) {
+    const linha = [];
+    for (let c = 0; c < MAPMETA.cols; c++) {
+      const t = grid.get(c + ',' + r);
+      if (!t) { linha.push(null); continue; }
+      // `height` sai com o valor do andar: e o mesmo numero, e manter o nome
+      // antigo deixa quem ja le o campo continuar funcionando.
+      const o = { tile: t.tile, tile2: t.tile2, height: t.andar,
+                  andar: t.andar, terreno: t.terreno };
+      if (t.dx || t.dy) o.offset = [t.dx, t.dy];
+      linha.push(o);
+    }
+    linhas.push(linha);
+  }
+  // A origem ja sai somada ao deslocamento da grade, entao quem le o JSON nao
+  // precisa conhecer o campo novo para desenhar no lugar certo.
+  return JSON.stringify({
+    map: MAPMETA.map, cols: MAPMETA.cols, rows: MAPMETA.rows,
+    origin: { x: MAPMETA.origin.x + gx, y: MAPMETA.origin.y + gy },
+    gridOffset: [gx, gy],
+    minHeight: MAPMETA.minHeight,
+    grid: linhas,
+  }, null, 1);
+}
+
+/*
+ * O download.
+ *
+ * Rodando local (file://) um <a download> funciona. Dentro do visualizador de
+ * artifact ele NAO funciona: a pagina nunca recebe permissao de download e o
+ * link fica inerte, sem erro. Por isso tenta a capability primeiro, cai no
+ * link depois, e no pior caso mostra o texto -- o conteudo nunca fica preso.
+ */
+const btnExp = document.getElementById('exp');
+let downloads = null;
+if (typeof claude !== 'undefined' && claude.use) {
+  claude.use('downloads').then((d) => { downloads = d; }).catch(() => {});
+}
+
+btnExp.addEventListener('click', async () => {
+  const texto = montarDoc();
+  const nome = 'map' + MAPMETA.map + '.json';
+
+  if (downloads) {
+    try {
+      await downloads.save({ filename: nome, data: texto });
+      return;
+    } catch (err) {
+      if (err && err.code !== 'declined') console.warn('download:', err.code);
+      if (err && err.code === 'declined') return;
+    }
+  }
+
+  try {
+    const blob = new Blob([texto], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = nome;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  } catch (_) { /* cai para o texto */ }
+
+  mostrarTexto(texto, nome);
+});
+
+function mostrarTexto(texto, nome) {
+  let cx = document.getElementById('saida');
+  if (!cx) {
+    cx = document.createElement('div');
+    cx.id = 'saida';
+    cx.className = 'card';
+    cx.innerHTML = '<h2>' + nome + '</h2>'
+      + '<p class="muted" style="font-size:11.5px;margin:0 0 8px">'
+      + 'Salve por cima de <code>assets/mapdata/' + nome + '</code>.</p>'
+      + '<textarea id="saidaTxt" readonly style="width:100%;height:220px;'
+      + 'background:var(--ground);color:var(--ink);border:1px solid var(--edge);'
+      + 'border-radius:6px;padding:8px;font:inherit;font-size:11px"></textarea>';
+    document.querySelector('.page').appendChild(cx);
+  }
+  const ta = document.getElementById('saidaTxt');
+  ta.value = texto;
+  ta.select();
+  cx.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', render);
+
+applyZoom(); resumo(); mostrarGrade(); mostrarSel(); render();
+</script>

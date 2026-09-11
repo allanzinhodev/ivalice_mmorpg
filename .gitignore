@@ -80,3 +80,4 @@ server/config.lua.backup-*
 .env
 client/build-client.bat
 client/build-client-out.txt
+map-editor/editor.html
