@@ -75,7 +75,14 @@ const GRASS_ALTO = escolher('grass', false);   // o 36
 const PLANT = escolher('plant', true);
 const STONE_BAIXO = escolher('stone', false);
 const STONE_ANDAVEL = escolher('stone', true);
-const WATER = escolher('water');
+/*
+ * A agua do mapa e o tile 90, nao o primeiro water da lista.
+ *
+ * Os tiles 82-85 sao a ANIMACAO de espuma: tem 6 a 9 pixels opacos cada, e
+ * pintam quase nada. Escolhidos como chao, o mapa aparece com buracos pretos
+ * onde deveria haver agua -- foi o que aconteceu.
+ */
+const WATER = 90;
 
 /**
  * O que cada celula do mapa contem.
