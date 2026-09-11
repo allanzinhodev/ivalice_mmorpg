@@ -214,10 +214,16 @@ void Tile::drawTop(const Point& dest, LightView* lightView)
     }
 
     // top
+    //
+    // COM A ELEVACAO, como todo o resto do tile. Isto desenhava em `dest`
+    // cru, o que no Tibia nao incomoda -- item onTop e porta, seta, marca de
+    // chao, coisas de tile plano. Aqui a camada 2 e decoracao de terreno
+    // (pedra, arbusto), e sem a elevacao ela descia para a base do bloco em
+    // vez de ficar em cima dele.
     for (const ThingPtr& thing : m_things) {
         if (!thing->isOnTop() || thing->isHidden())
             continue;
-        thing->draw(dest, true, lightView);
+        thing->draw(dest - elevationOffset(m_drawElevation), true, lightView);
     }
 }
 
