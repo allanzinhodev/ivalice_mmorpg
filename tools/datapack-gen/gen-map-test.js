@@ -84,14 +84,50 @@ const WATER = escolher('water');
  * cada um contando como um nivel para o hasHeight.
  */
 function celula(x, y) {
-  // Zona da escada: x 20..31, degraus de altura crescente a cada 2 colunas.
-  // Com JUMP=4 o personagem sobe ate o degrau 4 e para no 5.
+  /*
+   * DEGRAUS AO LADO DO NASCIMENTO (temple em 8,8).
+   *
+   * Nao e escada para outro andar -- aqui nao existem andares. E pilha de
+   * itens no MESMO tile: cada item com displacement e um nivel, e cada nivel
+   * empurra o personagem 8px para cima na tela.
+   *
+   * Uma coluna de 1 a 6 niveis logo a direita do nascimento. Com JUMP=4:
+   * sobe ate o de 4, barra no de 5. E descer de qualquer altura e livre.
+   */
+  if (x >= 10 && x <= 15 && y === 8) {
+    return { ground: GROUND, altura: x - 9 };   // 1,2,3,4,5,6
+  }
+
+  /*
+   * PILHA ALTA, para provar que nao ha limite.
+   *
+   * 12 niveis = 96px de deslocamento. O client guardava a elevacao num
+   * uint8 com teto em 248; com pilha sem limite o tipo passou a int.
+   */
+  if (x === 12 && y === 12) {
+    return { ground: GROUND, altura: 12 };
+  }
+
+  // Campo de alturas variadas, para ver o relevo de longe e testar o jump
+  // entre tiles vizinhos de alturas diferentes.
   if (x >= 20 && x < 32 && y >= 8 && y < 24) {
-    const degrau = Math.floor((x - 20) / 2);   // 0,1,2,3,4,5
+    const degrau = Math.floor((x - 20) / 2);   // 0..5
     return { ground: GROUND, altura: Math.min(degrau, 5) };
   }
 
-  // Lago: x 8..19, y 30..45.
+  /*
+   * POCA DE AGUA AO LADO DO NASCIMENTO.
+   *
+   * O lago grande fica em y 30..45, longe demais para conferir o zPattern
+   * sem caminhar. Esta fica a dois passos abaixo do temple (8,8): pisando
+   * nela, a outfit deve trocar para o terceiro padrao -- o indice que antes
+   * era da montaria.
+   */
+  if (x >= 6 && x <= 10 && y >= 10 && y <= 12) {
+    return { ground: WATER, altura: 0 };
+  }
+
+  // Lago grande: x 8..19, y 30..45.
   if (x >= 8 && x < 20 && y >= 30 && y < 46) {
     return { ground: WATER, altura: 0 };
   }

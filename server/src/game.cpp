@@ -1670,46 +1670,38 @@ ReturnValue Game::internalMoveCreature(Creature* creature, Direction direction, 
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
-	bool diagonalMovement = (direction & DIRECTION_DIAGONAL_MASK) != 0;
-	if (player && !diagonalMovement) {
-		// try to go up
-		//
-		// O quanto o personagem vence de degrau e o JUMP dele, nao um 3 fixo.
-		// hasHeight(n) CONTA os itens da pilha com CONST_PROP_HASHEIGHT
-		// (tile.cpp:127) -- nao e booleano.
-		const uint8_t jump = player->getJump();
-		if (currentPos.z != 8 && creature->getTile()->hasHeight(jump)) {
-			Tile* tmpTile = map.getTile(currentPos.x, currentPos.y, currentPos.getZ() - 1);
-			if (tmpTile == nullptr || (tmpTile->getGround() == nullptr && !tmpTile->hasFlag(TILESTATE_BLOCKSOLID))) {
-				tmpTile = map.getTile(destPos.x, destPos.y, destPos.getZ() - 1);
-				if (tmpTile && tmpTile->getGround() && !tmpTile->hasFlag(TILESTATE_IMMOVABLEBLOCKSOLID)) {
-					flags |= FLAG_IGNOREBLOCKITEM | FLAG_IGNOREBLOCKCREATURE;
-
-					if (!tmpTile->hasFlag(TILESTATE_FLOORCHANGE)) {
-						player->setDirection(direction);
-						destPos.z--;
-					}
-				}
-			}
-		}
-
-		// try to go down
-		if (currentPos.z != 7 && currentPos.z == destPos.z) {
-			Tile* tmpTile = map.getTile(destPos.x, destPos.y, destPos.z);
-			if (tmpTile == nullptr || (tmpTile->getGround() == nullptr && !tmpTile->hasFlag(TILESTATE_BLOCKSOLID))) {
-				tmpTile = map.getTile(destPos.x, destPos.y, destPos.z + 1);
-				if (tmpTile && tmpTile->hasHeight(jump) && !tmpTile->hasFlag(TILESTATE_IMMOVABLEBLOCKSOLID)) {
-					flags |= FLAG_IGNOREBLOCKITEM | FLAG_IGNOREBLOCKCREATURE;
-					player->setDirection(direction);
-					destPos.z++;
-				}
-			}
-		}
-	}
-
 	Tile* toTile = map.getTile(destPos);
 	if (!toTile) {
 		return RETURNVALUE_NOTPOSSIBLE;
+	}
+
+	/*
+	 * ALTURA E EMPILHAMENTO, NAO ANDAR.
+	 *
+	 * Aqui nao existe o z do Tibia: o mapa inteiro fica numa camada so, e o
+	 * relevo vem de itens com CONST_PROP_HASHEIGHT empilhados no mesmo tile.
+	 * Cada item da pilha e um nivel, sem limite; na tela cada nivel empurra o
+	 * personagem 8px para cima.
+	 *
+	 * O codigo que estava aqui era o do Tibia: usava o mesmo hasHeight para
+	 * MUDAR DE ANDAR (destPos.z-- / z++). Isso nao se aplica -- e foi
+	 * removido junto com a divisao em andares.
+	 *
+	 * O JUMP e a diferenca de altura que o personagem vence de uma vez. Subir
+	 * um degrau mais alto que ele e barrado; descer e sempre livre, como no
+	 * Final Fantasy Tactics.
+	 */
+	if (player) {
+		const Tile* fromTile = creature->getTile();
+		if (fromTile) {
+			const int32_t alturaAtual = fromTile->getHeightLevels();
+			const int32_t alturaDestino = toTile->getHeightLevels();
+			const int32_t subida = alturaDestino - alturaAtual;
+
+			if (subida > static_cast<int32_t>(player->getJump())) {
+				return RETURNVALUE_NOTPOSSIBLE;
+			}
+		}
 	}
 	return internalMoveCreature(*creature, *toTile, flags);
 }

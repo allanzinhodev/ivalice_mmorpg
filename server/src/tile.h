@@ -206,6 +206,8 @@ public:
 	}
 
 	bool hasHeight(uint32_t n) const;
+	// Total de niveis da pilha, para comparar a altura de dois tiles.
+	uint32_t getHeightLevels() const;
 
 	int32_t getClientIndexOfCreature(const Player* player, const Creature* creature) const;
 	int32_t getStackposOfItem(const Player* player, const Item* item) const;

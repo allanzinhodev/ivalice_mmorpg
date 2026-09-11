@@ -152,6 +152,34 @@ bool Tile::hasHeight(uint32_t n) const
 	return false;
 }
 
+/*
+ * Quantos niveis de altura a pilha deste tile tem.
+ *
+ * hasHeight(n) so responde "tem EXATAMENTE n" e para de contar quando chega
+ * la -- serve para o degrau fixo do Tibia, nao para comparar dois tiles. O
+ * sistema de jump precisa da diferenca entre a altura de onde se esta e a de
+ * onde se vai, entao precisa do total.
+ *
+ * Sem limite de propósito: a pilha pode ter quantos itens o mapa puser.
+ */
+uint32_t Tile::getHeightLevels() const
+{
+	uint32_t levels = 0;
+
+	if (ground && ground->hasProperty(CONST_PROP_HASHEIGHT)) {
+		++levels;
+	}
+
+	if (const TileItemVector* items = getItemList()) {
+		for (const auto& item : *items) {
+			if (item->hasProperty(CONST_PROP_HASHEIGHT)) {
+				++levels;
+			}
+		}
+	}
+	return levels;
+}
+
 size_t Tile::getCreatureCount() const
 {
 	if (const CreatureVector* creatures = getCreatures()) {

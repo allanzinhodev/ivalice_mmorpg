@@ -179,7 +179,9 @@ private:
     std::vector<EffectPtr> m_effects; // leave this outside m_things because it has no stackpos.
     std::vector<ThingPtr> m_things;
     Position m_position;
-    uint8 m_drawElevation;
+    // int, nao uint8: o empilhamento nao tem limite, e 255 e pouco -- uma
+    // pilha de 32 itens de 8px ja passa disso.
+    int m_drawElevation;
     uint8 m_minimapColor;
     uint32 m_flags, m_houseId;
     uint16 m_speed = 0;

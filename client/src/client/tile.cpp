@@ -60,7 +60,7 @@ void Tile::drawGround(const Point& dest, LightView* lightView)
             continue;
 
         thing->draw(dest - m_drawElevation, true, lightView);
-        m_drawElevation = std::min<uint8_t>(m_drawElevation + thing->getElevation(), Otc::MAX_ELEVATION);
+        m_drawElevation = m_drawElevation + thing->getElevation();
     }
 }
 
@@ -81,7 +81,7 @@ void Tile::drawBottom(const Point& dest, LightView* lightView)
                 continue;
 
             thing->draw(dest - m_drawElevation, true, lightView);
-            m_drawElevation = std::min<uint8_t>(m_drawElevation + thing->getElevation(), Otc::MAX_ELEVATION);
+            m_drawElevation = m_drawElevation + thing->getElevation();
         }
     }
 
@@ -103,7 +103,7 @@ void Tile::drawBottom(const Point& dest, LightView* lightView)
             continue;
 
         thing->draw(dest - m_drawElevation , true, lightView);
-        m_drawElevation = std::min<uint8_t>(m_drawElevation + thing->getElevation(), Otc::MAX_ELEVATION);
+        m_drawElevation = m_drawElevation + thing->getElevation();
     }
 
     if (!g_game.getFeature(Otc::GameMapIgnoreCorpseCorrection)) {
@@ -112,8 +112,13 @@ void Tile::drawBottom(const Point& dest, LightView* lightView)
                 if (x == 0 && y == 0)
                     continue;
                 if (const TilePtr& tile = g_map.getTile(m_position.translated(x, y))) {
-                    tile->drawCreatures(dest + Point(x * g_sprites.spriteSize(), y * g_sprites.spriteSize()), lightView);
-                    tile->drawTop(dest + Point(x * g_sprites.spriteSize(), y * g_sprites.spriteSize()), lightView);
+                    // Offset ate o vizinho, PROJETADO. Com `x * spriteSize` o
+                    // redesenho caia na posicao da grade ortogonal, e a
+                    // criatura aparecia deslocada por cima do mapa.
+                    const Point vizinho((x - y) * Otc::TILE_HALF_W,
+                                        (x + y) * Otc::TILE_HALF_H);
+                    tile->drawCreatures(dest + vizinho, lightView);
+                    tile->drawTop(dest + vizinho, lightView);
                 }
             }
         }
@@ -285,16 +290,16 @@ bool Tile::drawToImage(const Point& dest, ImagePtr image)
 // OLD 'hack' to fix tables
         if (thing->isGround() || thing->isGroundBorder() || thing->isOnBottom()) {
             if (thing->getId() == 2322 || thing->getId() == 2323)
-                m_drawElevation = std::min<uint8_t>(m_drawElevation + thing->getElevation(), Otc::MAX_ELEVATION);
+                m_drawElevation = m_drawElevation + thing->getElevation();
 
             anythingDrawn |= thing->drawToImage(Point(x - m_drawElevation, y - m_drawElevation), image);
         }
 
         if (thing->getId() != 2322 && thing->getId() != 2323)
-            m_drawElevation = std::min<uint8_t>(m_drawElevation + thing->getElevation(), Otc::MAX_ELEVATION);
+            m_drawElevation = m_drawElevation + thing->getElevation();
 */
         anythingDrawn |= thing->drawToImage(Point(x - m_drawElevation, y - m_drawElevation), image);
-        m_drawElevation = std::min<uint8_t>(m_drawElevation + thing->getElevation(), Otc::MAX_ELEVATION);
+        m_drawElevation = m_drawElevation + thing->getElevation();
     }
 
     // drawBottom
@@ -306,7 +311,7 @@ bool Tile::drawToImage(const Point& dest, ImagePtr image)
             continue;
 
         anythingDrawn |= thing->drawToImage(Point(x - m_drawElevation, y - m_drawElevation), image);
-        m_drawElevation = std::min<uint8_t>(m_drawElevation + thing->getElevation(), Otc::MAX_ELEVATION);
+        m_drawElevation = m_drawElevation + thing->getElevation();
     }
 
     // drawTop
