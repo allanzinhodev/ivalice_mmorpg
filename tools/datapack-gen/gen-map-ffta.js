@@ -80,17 +80,32 @@ const HM_TERRAIN_COLS = 14; // as 2 ultimas sao enderecos, nao terreno
 const SCALE = 1;
 
 /*
- * Altura do FFTA -> andar do OTBM.
+ * O MAPA INTEIRO FICA NUM ANDAR SO.
  *
- * No Tibia z MENOR e mais ALTO, entao invertemos. O piso de referencia e
- * BASE_Z, e cada degrau de HEIGHT_PER_FLOOR unidades sobe um andar.
+ * A altura do FFTA nao vira mais z. Ela vira pilha de itens com altura, um
+ * item por unidade, e quem levanta na tela e o elevation de cada um
+ * (Tile::drawGround no client).
  *
- * As alturas do mapa 0 vao de 2 a 12. Com HEIGHT_PER_FLOOR = 3 isso vira uns
- * 4 andares, que e o suficiente para ver relevo sem estourar o limite de z
- * (0..15) nem a faixa que o client desenha (7 andares acima do mar).
+ * Antes a altura era repartida entre z e elevation. Nao funcionou, e os dois
+ * motivos so aparecem com o jogo aberto:
+ *
+ * 1. O client desenha UM andar por vez e escolhe quais mostrar em
+ *    MapView::calcFirstVisibleFloor. Aqui os andares sao relevo do MESMO
+ *    terreno, nao pavimentos de um predio, entao a regra de corte apagava
+ *    pedaco do mapa -- na tela o terreno saía chapado, so com o andar da
+ *    camera visivel.
+ * 2. FLOOR_LIFT (16px) e PX_PER_HEIGHT (8px) so fecham a conta com
+ *    exatamente 2 unidades por andar, uma amarra geometrica que nada mais
+ *    justificava.
+ *
+ * CONSEQUENCIA NO SERVER, e ela e de proposito: Game::internalMoveCreature so
+ * troca de andar cruzando z (game.cpp:1676), e com um z so esse trecho fica
+ * inerte -- nada bloqueia subir um barranco. Subir degrau deixa de ser regra
+ * de mapa e passa a ser regra de jogo. Tile::hasHeight(n) continua contando a
+ * pilha, que agora E a altura da celula, entao a primitiva para escrever essa
+ * regra depois esta pronta.
  */
 const BASE_Z = 7;
-const HEIGHT_PER_FLOOR = 2;
 
 /** Escolhe o chao pela altura -- so para o relevo ficar legivel na tela. */
 function groundForHeight(h) {
@@ -199,9 +214,8 @@ function buildOtbm(hm, refData, tileIds) {
   for (let r = 0; r < hm.rows; r++) {
     const row = [];
     for (let c = 0; c < hm.cols; c++) {
-      const h = hm.grid[r][c];
-      let z = BASE_Z - Math.floor(h / HEIGHT_PER_FLOOR);
-      z = Math.max(0, Math.min(15, z));
+      // Um andar so: a altura nao entra aqui, entra na pilha de itens.
+      const z = BASE_Z;
       row.push(z);
       if (z < minZ) minZ = z;
       if (z > maxZ) maxZ = z;
@@ -332,4 +346,4 @@ function main() {
 
 if (require.main === module) main();
 
-module.exports = { loadHeightMap, buildOtbm, SCALE, BASE_Z, HEIGHT_PER_FLOOR };
+module.exports = { loadHeightMap, buildOtbm, SCALE, BASE_Z };

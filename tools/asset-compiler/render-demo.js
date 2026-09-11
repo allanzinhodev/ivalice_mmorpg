@@ -114,27 +114,30 @@ function render(data, tiles, width, height, modoJogo) {
     }
 
     /*
-     * Projecao DO JOGO: a altura chega partida em duas metades que so se
-     * somam na tela.
+     * Projecao DO JOGO: um andar so, e a altura inteira sai da PILHA.
      *
-     *   z         -> FLOOR_LIFT por andar, em MapView::transformPositionTo2D
-     *   elevation -> itens empilhados, cada um somando o proprio elevation
-     *                do .dat em Tile::drawGround
-     *
-     * Vale simular isso, e nao so a projecao ideal, porque as duas metades
-     * podem fechar a conta no topo e ainda assim divergir da referencia: cada
-     * item empilhado e desenhado, e o de baixo aparece como uma faixa sob o
-     * de cima. O demo ideal desenha UM tile e nunca mostraria essa faixa.
+     * Vale simular isso, e nao so a projecao ideal, por uma diferenca que a
+     * ideal nunca mostraria: o demo ideal desenha UM tile na altura certa,
+     * enquanto o jogo desenha um tile por item empilhado. Os de baixo
+     * aparecem como faixas sob o de cima, e e ali que aparece artefato.
      */
-    const andar = Math.floor(cell.height / E.HEIGHT_PER_FLOOR);
-    const degraus = cell.height % E.HEIGHT_PER_FLOOR;
-
     const x = data.origin.x + (c - r) * E.TILE_HALF_W;
-    const yBase = data.origin.y + (c + r) * E.TILE_HALF_H - andar * E.FLOOR_LIFT;
+
+    /*
+     * O `- minHeight` alinha com a referencia e NAO existe no jogo.
+     *
+     * A pilha conta a partir da altura minima do mapa, entao o terreno todo
+     * fica minHeight*8 mais baixo do que na projecao pela altura absoluta.
+     * No jogo isso e invisivel -- a camera segue o personagem e um
+     * deslocamento constante nao muda nada. Aqui ele importaria, porque a
+     * comparacao e pixel a pixel contra a imagem do jogo original.
+     */
+    const yBase = data.origin.y + (c + r) * E.TILE_HALF_H
+      - (data.minHeight || 0) * E.PX_PER_HEIGHT;
 
     // O ground primeiro, depois os itens de altura, cada um PX_PER_HEIGHT
     // acima -- a mesma ordem do client, para quem cobre quem sair igual.
-    for (let i = 0; i <= degraus; i++) {
+    for (let i = 0; i <= (cell.elevation || 0); i++) {
       blitOver(out, img, x, yBase - i * E.PX_PER_HEIGHT);
     }
   }

@@ -72,31 +72,22 @@ const SPRITE = 32;
 const PX_PER_HEIGHT = TILE_HALF_H;
 
 /*
- * Altura do FFTA -> andar. Ver gen-map-ffta.js, que usa a mesma constante.
+ * NAO HA MAIS DIVISAO EM ANDARES.
  *
- * TEM que ser 2, e isso e geometria, nao gosto.
+ * Havia um HEIGHT_PER_FLOOR aqui, que repartia a altura entre z e elevation.
+ * Duas coisas derrubaram a ideia, e as duas so aparecem com o jogo rodando:
  *
- * Um andar sobe FLOOR_LIFT = 16px na tela. Uma unidade de altura vale
- * PX_PER_HEIGHT = 8px. Entao um andar so pode valer 16/8 = 2 unidades; com
- * qualquer outro valor a conta nao fecha e o relevo sai comprimido.
+ * 1. O client desenha um andar por vez e escolhe quais mostrar em
+ *    MapView::calcFirstVisibleFloor. Aqui os andares sao relevo do MESMO
+ *    terreno, nao pavimentos de um predio, entao a regra de corte apagava
+ *    pedaco do mapa -- na tela, terreno chapado.
+ * 2. FLOOR_LIFT (16px) e PX_PER_HEIGHT (8px) so fecham a conta com
+ *    exatamente 2 unidades por andar. Qualquer outro valor comprime o
+ *    relevo, e o erro cresce com a altura.
  *
- * Estava 3, e o erro era invisivel de perto: a posicao final e
- * -FLOOR_LIFT*floor(h/3) - PX_PER_HEIGHT*(h%3), que perde 8px POR ANDAR.
- *
- *   h   arte   com 3      com 2
- *   2   -16    -16 ok     -16 ok
- *   3   -24    -16 -8     -24 ok
- *   5   -40    -32 -8     -40 ok
- *   7   -56    -40 -16    -56 ok
- *
- * O mapa ia ficando mais chapado quanto mais alto -- que e exatamente o
- * sintoma de "o relevo nao aparece".
- *
- * O custo: com 2, a altura maxima do FFTA (31) pediria 16 andares e o OTBM so
- * tem z de 0 a 15. Nenhum mapa usado hoje chega perto (o Aisenfield usa 2..7,
- * o que da 3 andares), mas um mapa alto vai precisar de outra solucao.
+ * Com tudo num z so a altura vira pilha, cada item sobe PX_PER_HEIGHT, e o
+ * desenho bate com a referencia por construcao.
  */
-const HEIGHT_PER_FLOOR = FLOOR_LIFT / PX_PER_HEIGHT;
 
 // Height map: stride 16.
 //
@@ -153,9 +144,8 @@ function loadHeightMap(rom, mapIndex) {
  * em z=1 e eram recortadas da MESMA linha da imagem -- o relevo interno
  * simplesmente sumia.
  *
- * Com a altura crua x PX_PER_HEIGHT o recorte segue a arte pixel a pixel. O
- * andar continua saindo de HEIGHT_PER_FLOOR, e a diferenca dentro do andar
- * vira elevation (itens empilhados), nao z.
+ * Com a altura crua x PX_PER_HEIGHT o recorte segue a arte pixel a pixel, e
+ * e essa mesma altura que vira a pilha de itens no OTBM.
  */
 function project(col, row, height, origin) {
   return {
@@ -167,16 +157,35 @@ function project(col, row, height, origin) {
 /**
  * Quantos itens com hasHeight a celula precisa empilhar.
  *
- * O server conta ITENS, nao pixels: Tile::hasHeight(n) percorre o stack e
- * conta os que tem CONST_PROP_HASHEIGHT (server/src/tile.cpp:127). O
- * Game::internalMoveCreature usa esse mesmo contador para decidir subir ou
- * descer de andar (game.cpp:1676).
+ * TODA a altura vira pilha. Nao ha mais divisao em andares.
  *
- * Entao a altura DENTRO do andar (0, 1 ou 2, com HEIGHT_PER_FLOOR=3) vira
- * exatamente essa quantidade de itens empilhados.
+ * A versao anterior repartia a altura entre z (andar) e elevation (resto), e
+ * isso nao funcionou por dois motivos que so aparecem no jogo:
+ *
+ * 1. O client desenha UM andar de cada vez e decide quais mostrar em
+ *    MapView::calcFirstVisibleFloor. Como aqui os "andares" sao relevo do
+ *    mesmo terreno e nao pavimentos de um predio, qualquer regra de corte
+ *    apaga pedaco de mapa. Na tela o efeito era o terreno chapado: so o
+ *    andar da camera aparecia.
+ * 2. FLOOR_LIFT (16px) nao e multiplo livre de PX_PER_HEIGHT (8px). So
+ *    fechava a conta com exatamente 2 unidades por andar, o que amarrava a
+ *    geometria a uma constante que nada mais justificava.
+ *
+ * Com tudo num z so, a altura e puramente a pilha: cada item sobe
+ * PX_PER_HEIGHT na tela (ver elevationOffset em client/src/client/tile.h) e
+ * o desenho fica identico a referencia por construcao.
+ *
+ * O lado do server continua valendo: Tile::hasHeight(n) conta os itens com
+ * CONST_PROP_HASHEIGHT (server/src/tile.cpp:127), entao a pilha passa a ser
+ * a ALTURA da celula em unidades do FFTA -- que e a primitiva certa para a
+ * regra de pulo, mesmo que hoje nenhum z mude.
+ *
+ * A subtracao pelo minimo e o que evita empilhar por nada: no Aisenfield
+ * toda celula tem altura >= 2, e sem isso o mapa inteiro carregaria 2 itens
+ * a mais sem nenhuma diferenca visivel.
  */
-function elevationFor(height) {
-  return height % HEIGHT_PER_FLOOR;
+function elevationFor(height, minHeight) {
+  return height - minHeight;
 }
 
 /**
@@ -348,15 +357,20 @@ function main() {
     return;
   }
 
+  // A altura minima do mapa e o "chao" -- a pilha conta a partir dela.
+  let minHeight = Infinity;
+  for (let r = 0; r < hm.length; r++) {
+    for (let c = 0; c < hm[0].length; c++) minHeight = Math.min(minHeight, hm[r][c]);
+  }
+
   const table = new TileTable();
   const grid = [];
   for (let r = 0; r < hm.length; r++) {
     const row = [];
     for (let c = 0; c < hm[0].length; c++) {
       const h = hm[r][c];
-      const z = Math.floor(h / HEIGHT_PER_FLOOR);
       const cell = cutCell(ref, c, r, h, origin);
-      row.push({ tile: table.add(cell), height: h, z, elevation: elevationFor(h) });
+      row.push({ tile: table.add(cell), height: h, elevation: elevationFor(h, minHeight) });
     }
     grid.push(row);
   }
@@ -372,7 +386,7 @@ function main() {
 
   fs.writeFileSync(
     path.join(dataDir, `map${mapIndex}.json`),
-    JSON.stringify({ map: mapIndex, cols: hm[0].length, rows: hm.length, origin, grid }, null, 1)
+    JSON.stringify({ map: mapIndex, cols: hm[0].length, rows: hm.length, origin, minHeight, grid }, null, 1)
   );
 
   console.log(`tiles unicos: ${table.tiles.length}`);
@@ -381,4 +395,4 @@ function main() {
 
 if (require.main === module) main();
 
-module.exports = { project, elevationFor, loadHeightMap, TILE_HALF_W, TILE_HALF_H, FLOOR_LIFT, HEIGHT_PER_FLOOR, PX_PER_HEIGHT };
+module.exports = { project, elevationFor, loadHeightMap, TILE_HALF_W, TILE_HALF_H, FLOOR_LIFT, PX_PER_HEIGHT };
