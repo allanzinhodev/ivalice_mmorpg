@@ -428,24 +428,23 @@ function compileItems(table) {
         // .otb -- manter isso em dois lugares e como o hasHeight divergiu.
         water: !!(spec && spec.water),
         /*
-         * ELEVATION ZERO: quem carrega a altura sao os itens invisiveis.
+         * ELEVATION: 8px por item da pilha, nos tiles que sao degrau.
          *
-         * Tile::drawGround desenha o thing com a elevacao acumulada e SO
-         * DEPOIS soma a dele. Entao a elevacao do proprio tile de terreno nao
-         * levanta o terreno -- ela levanta o que vier depois.
+         * Tile::drawGround desenha o thing com a elevacao ACUMULADA e so
+         * depois soma a dele. Entao o primeiro item da pilha e desenhado no
+         * chao, o segundo 8px acima, o terceiro 16px -- e a criatura, que vem
+         * por ultimo, recebe a soma inteira. E assim que empilhar levanta o
+         * personagem.
          *
-         * Isso importa por causa da camada 2: Tile::drawTop desenha a
-         * decoracao com m_drawElevation ja FECHADO, somando tudo. Com 8 aqui,
-         * a decoracao saía 8px acima da superficie em que deveria estar
-         * pousada -- pedra flutuando.
+         * Zero aqui era do pipeline anterior, em que a altura vinha de itens
+         * INVISIVEIS empilhados sobre o terreno. Agora a pilha e do proprio
+         * tile, entao ele precisa carregar a elevacao -- com 0, empilhar nao
+         * levantava nada e o relevo nao aparecia.
          *
-         * Com 0, m_drawElevation termina exatamente na altura em que o
-         * terreno foi desenhado, que e onde a decoracao tem que ir.
-         *
-         * O FLAG_HAS_HEIGHT do items.otb continua: ele e a contagem do
-         * SERVER, independente do desenho.
+         * Casa com ELEVATION_STEP do client (const.h) e com o FLAG_HAS_HEIGHT
+         * do items.otb, que e a contagem equivalente no SERVER.
          */
-        elevation: 0,
+        elevation: (spec && spec.displacement) ? 8 : 0,
         /*
          * DONT HIDE: o relevo nao pode esconder o proprio relevo.
          *
