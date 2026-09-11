@@ -1,6 +1,17 @@
 build
 data/things/*
 !data/things/860.rar
+
+# O datapack do ivalice E versionado, ao contrario do resto de data/things.
+#
+# Ele e gerado (node tools/asset-compiler/compile.js), mas sem ele o client
+# NAO SOBE -- e um clone novo ficaria inutil ate alguem descobrir o passo que
+# falta. Sao ~660 KB por versao no historico, em troca de o repo rodar como
+# esta.
+!data/things/860/
+!data/things/860/Tibia.dat
+!data/things/860/Tibia.spr
+!data/things/860/Tibia.otfi
 pdbs
 CMakeCache.txt
 CMakeFiles

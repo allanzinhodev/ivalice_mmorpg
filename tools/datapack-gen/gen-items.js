@@ -186,6 +186,23 @@ function main() {
   fs.writeFileSync(path.join(outDir, 'items.otb'), otb);
   fs.writeFileSync(path.join(outDir, 'items.xml'), buildXml(), 'latin1');
 
+  /*
+   * Sincroniza com server/build/data/items, que e de onde o server LE.
+   *
+   * O tfs.exe roda com working directory em build/ e procura data/ relativo a
+   * ele; aquela arvore e uma COPIA independente. Deixar o passo manual falha
+   * em SILENCIO da pior forma: o mapa novo referencia ids que o items.otb
+   * antigo nao tem, o server manda esses ids ao client, e o client aborta o
+   * parse com "unable to create item with invalid id 0" -- nada renderiza, e
+   * o erro nao diz nada sobre itens dessincronizados.
+   */
+  const build = path.resolve(__dirname, '../../server/build/data/items');
+  if (fs.existsSync(build)) {
+    fs.copyFileSync(path.join(outDir, 'items.otb'), path.join(build, 'items.otb'));
+    fs.copyFileSync(path.join(outDir, 'items.xml'), path.join(build, 'items.xml'));
+    console.log('sincronizado com server/build/data/items/');
+  }
+
   console.log(`items.otb  ${otb.length} bytes, ${ITEMS.length} itens`);
   console.log(`items.xml  ${ITEMS.map((i) => `${i.id}=${i.name}`).join(', ')}`);
 }
