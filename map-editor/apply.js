@@ -314,8 +314,33 @@ function main() {
     for (const c of conflitos.slice(0, 5)) console.log(`  ${c}`);
     if (conflitos.length > 5) console.log(`  ... e mais ${conflitos.length - 5}`);
   }
-  console.log('\nO server le de server/build/data/ -- copie para la antes de subir:');
-  console.log('  cp server/data/world/world.otbm server/data/items/items.* server/build/data/...');
+  /*
+   * Copia para server/build/data/, que e de onde o server LE.
+   *
+   * O tfs.exe roda com o working directory em build/ e procura data/ relativo
+   * a ele; essa arvore e uma COPIA independente. Deixar o passo manual ja
+   * custou uma sessao de depuracao -- o server servia o mapa antigo sem erro
+   * nenhum, so renderizando errado.
+   */
+  const BUILD = path.join(ROOT, 'server/build/data');
+  if (fs.existsSync(BUILD)) {
+    const copias = [
+      ['world', 'world.otbm'], ['world', SPAWN_FILE], ['world', HOUSE_FILE],
+      ['items', 'items.otb'], ['items', 'items.xml'],
+    ];
+    let n = 0;
+    for (const [sub, nome] of copias) {
+      const de = path.join(ROOT, 'server/data', sub, nome);
+      const para = path.join(BUILD, sub, nome);
+      if (fs.existsSync(de) && fs.existsSync(path.dirname(para))) {
+        fs.copyFileSync(de, para);
+        n++;
+      }
+    }
+    console.log(`sincronizado  ${n} arquivos para server/build/data/`);
+  } else {
+    console.log('server/build/data/ nao existe -- nada a sincronizar');
+  }
 }
 
 if (require.main === module) main();
