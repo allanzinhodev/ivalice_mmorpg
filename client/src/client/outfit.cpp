@@ -142,21 +142,26 @@ void Outfit::draw(Point dest, Otc::Direction direction, uint walkAnimationPhase,
     }
 
     /*
-     * O eixo Z da outfit tem tres significados:
+     * O eixo Z da outfit, no Tibia, tem tres colunas:
      *   0  em terra, a pe
      *   1  montado
      *   2  caminhando sobre agua
      *
-     * Sempre limitado por getNumPatternZ()-1: uma outfit que so tenha dois
-     * padroes cai para o que existe em vez de ler fora do .dat. Nesse caso o
-     * personagem na agua e desenhado como montado, o que e feio mas nao
-     * quebra -- e o sinal de que falta a terceira coluna na spritesheet.
+     * As outfits do ivalice NAO tem montaria: o compilador emite patternZ 2,
+     * sendo 0 = seco e 1 = agua (compile.js:buildOutfitGroup). Por isso a
+     * agua pega a ULTIMA coluna que existir, nao o indice 2 fixo -- com duas
+     * colunas ela e a 1, com tres e a 2.
+     *
+     * Fixar o 2 e deixar o clamp resolver daria o mesmo resultado hoje, por
+     * coincidencia, e o resultado ERRADO no dia em que a coluna de montaria
+     * aparecer: a agua passaria a desenhar a arte da montaria.
      */
+    const int ultimoZ = type->getNumPatternZ() - 1;
     int zPattern = 0;
     if (m_onWater)
-        zPattern = std::min<int>(2, type->getNumPatternZ() - 1);
+        zPattern = std::max<int>(0, ultimoZ);
     else if (m_mount > 0)
-        zPattern = std::min<int>(1, type->getNumPatternZ() - 1);
+        zPattern = std::min<int>(1, ultimoZ);
 
     auto drawMount = [&] {
         // A montaria so entra se houver montaria DE VERDADE. Testar
