@@ -160,10 +160,17 @@ tentados e o personagem não se move. Duas peças contornam isso:
 Alvos úteis: `8 8` chão plano, `11 10` entre os dois degraus abruptos (o de
 4 à esquerda, o de 5 à direita), `14 14` pilha de 12, `8 11` água.
 
-**O `JUMP` não dá para testar por script.** `teleportTo` ignora
-`Game::internalMoveCreature`, que é onde a regra vive — um teste por
-teleporte passaria sempre e não provaria nada. E `player:move()` não existe
-no Lua deste fork. Fica para validação manual, andando a partir de (11,10).
+**O `JUMP` é testado sozinho.** Com o marcador extra `data/autotest.jump`,
+o `autotest.lua` anda de verdade a partir de (11,10) e imprime o resultado
+no log do server.
+
+Anda de verdade porque `creature:move(direction)` chama
+`Game::internalMoveCreature(creature, direction, …)` — a sobrecarga onde a
+regra vive. O `FLAG_NOLIMIT` do binding **não** a contorna: a checagem
+acontece antes de `flags` ser usado (`server/src/game.cpp:1693-1704`).
+
+`teleportTo` não serve: vai direto para a outra sobrecarga, a que recebe o
+`Tile`, e essa não tem a regra. Um teste por teleporte passaria sempre.
 
 Para medir a elevação, compare capturas do **mesmo tile** antes e depois —
 o Y absoluto do boneco não serve, porque a câmera o segue.
@@ -176,12 +183,13 @@ o Y absoluto do boneco não serve, porque a câmera o segue.
 - [x] Água renderizando, personagem em pé sobre ela
 - [x] Água trocando a arte da outfit — em terra o personagem aparece
       inteiro, na água o corpo é cortado na cintura
+- [x] `JUMP=4` — sobe o degrau de 4, barra o de 5 (2/2, automatizado)
+- [x] Picking nos quatro quadrantes — `projecao.test.js`, não precisa de mouse
 
 ## Falta validar
 
-- [ ] `JUMP=4` barrando o degrau de 5 (precisa andar)
-- [ ] Caminhada nas 8 direções com velocidade uniforme
-- [ ] Picking à esquerda/acima da câmera
+- [ ] Caminhada nas 8 direções com velocidade uniforme — o único item que
+      ainda depende de teclado
 
 ## O eixo Z da outfit não tem coluna de montaria
 
