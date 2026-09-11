@@ -475,6 +475,35 @@ int luaCreatureGetSpeed(lua_State* L)
 	return 1;
 }
 
+/*
+ * Exposto para o autotest medir a velocidade percebida nas 8 direcoes.
+ *
+ * Sem isto o teste so podia RECALCULAR a duracao em Lua, repetindo a formula
+ * do C++ -- e um teste que reimplementa a regra mede a copia, nao o jogo:
+ * ele continua "passando" mesmo depois de o C++ mudar.
+ */
+int luaCreatureGetStepDuration(lua_State* L)
+{
+	// creature:getStepDuration([direction])
+	const Creature* creature = getUserdata<const Creature>(L, 1);
+	if (!creature) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	if (isInteger(L, 2)) {
+		Direction direction = getInteger<Direction>(L, 2);
+		if (direction > DIRECTION_LAST) {
+			lua_pushnil(L);
+			return 1;
+		}
+		lua_pushinteger(L, creature->getStepDuration(direction));
+	} else {
+		lua_pushinteger(L, creature->getStepDuration());
+	}
+	return 1;
+}
+
 int luaCreatureSetSpeed(lua_State* L)
 {
 	// creature:setSpeed(speed)
@@ -1492,7 +1521,8 @@ void LuaScriptInterface::registerCreature()
 	registerMethod("Creature", "getLight", luaCreatureGetLight);
 	registerMethod("Creature", "setLight", luaCreatureSetLight);
 
-	registerMethod("Creature", "getSpeed", luaCreatureGetSpeed);
+	registerMethod("Creature", "getSpeed", luaCreatureGetSpeed);	registerMethod("Creature", "getStepDuration", luaCreatureGetStepDuration);
+
 	registerMethod("Creature", "setSpeed", luaCreatureSetSpeed);
 	registerMethod("Creature", "getBaseSpeed", luaCreatureGetBaseSpeed);
 	registerMethod("Creature", "changeSpeed", luaCreatureChangeSpeed);

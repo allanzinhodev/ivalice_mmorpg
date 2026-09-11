@@ -488,20 +488,23 @@ void Creature::onCreatureMove(Creature* creature, const Tile* newTile, const Pos
 {
 	if (creature == this) {
 		lastStep = OTSYS_TIME();
+
+		/*
+		 * Custo do passo sempre 1.
+		 *
+		 * O custo extra da diagonal era do Tibia ortogonal, onde ela e sempre
+		 * sqrt(2) mais longa que a reta. Aqui a projecao e em losango e as
+		 * diagonais nao sao uniformemente mais longas -- noroeste e sudeste
+		 * sao as mais curtas de todas. Quem escala a duracao pela distancia
+		 * real na tela e getStepDuration(Direction); manter a multiplicacao
+		 * aqui aplicaria o fator DUAS vezes.
+		 *
+		 * O custo de mudar de andar tambem sai: o mapa inteiro vive numa
+		 * camada so, entao ele nao tem o que representar.
+		 */
 		lastStepCost = 1;
 
-		if (!teleport) {
-			if (oldPos.z != newPos.z) {
-				// floor change extra cost
-				lastStepCost = 2;
-			} else if (newPos.getDistanceX(oldPos) >= 1 && newPos.getDistanceY(oldPos) >= 1) {
-				// diagonal extra cost
-				lastStepCost = 3;
-				if (getPlayer()) {
-					lastStepCost -= 1;
-				}
-			}
-		} else {
+		if (teleport) {
 			stopEventWalk();
 		}
 
@@ -1674,13 +1677,60 @@ bool Creature::isSuppress(ConditionType_t type) const
 	return hasBitSet(static_cast<uint64_t>(type), getConditionSuppressions());
 }
 
+/*
+ * Duracao do passo proporcional a distancia que ele percorre NA TELA.
+ *
+ * O codigo original era o do Tibia: dobrava a duracao de QUALQUER diagonal,
+ * porque na grade ortogonal a diagonal e sempre sqrt(2) mais longa que a
+ * reta. Na projecao isometrica isso nao vale.
+ *
+ * Um passo (dx,dy) em tiles vira, na tela:
+ *   sx = (dx - dy) * TILE_HALF_W      (16)
+ *   sy = (dx + dy) * TILE_HALF_H      (8)
+ *
+ * Medindo as oito direcoes:
+ *
+ *   as 4 retas           17,9 px   (16, 8)
+ *   nordeste/sudoeste    32,0 px   (32, 0)
+ *   noroeste/sudeste     16,0 px   (0, 16)
+ *
+ * Ou seja: as diagonais NAO sao uniformemente mais longas. Noroeste e
+ * sudeste sao as mais CURTAS de todas -- mais curtas que uma reta --, e
+ * dobrar a duracao delas fazia o personagem arrastar a 17,6 px/s contra
+ * 39,4 px/s de uma reta: 2,24x de diferenca, bem visivel.
+ *
+ * A duracao passa a escalar pela distancia real. A reta e a referencia, e as
+ * demais saem da razao entre as distancias -- o que mantem px/s constante em
+ * todas as direcoes, que e o que o olho percebe como velocidade uniforme.
+ *
+ * O client ja cooperava: Creature::updateWalkOffset interpola o passo como
+ * fracao 0..1 do tempo, entao a duracao daqui e o unico lugar que decide a
+ * velocidade percebida.
+ *
+ * Distancias em milesimos de pixel para nao trazer ponto flutuante para ca.
+ */
 int64_t Creature::getStepDuration(Direction dir) const
 {
-	int64_t stepDuration = getStepDuration();
-	if ((dir & DIRECTION_DIAGONAL_MASK) != 0) {
-		stepDuration *= 2;
+	const int64_t stepDuration = getStepDuration();
+
+	// Distancia de uma direcao reta, a referencia: hypot(16, 8) = 17,889.
+	static constexpr int64_t DIST_RETA_MILESIMOS = 17889;
+
+	int64_t distanciaMilesimos = DIST_RETA_MILESIMOS;
+	switch (dir) {
+		case DIRECTION_NORTHEAST:
+		case DIRECTION_SOUTHWEST:
+			distanciaMilesimos = 32000; // (32, 0)
+			break;
+		case DIRECTION_NORTHWEST:
+		case DIRECTION_SOUTHEAST:
+			distanciaMilesimos = 16000; // (0, 16)
+			break;
+		default:
+			break; // as quatro retas
 	}
-	return stepDuration;
+
+	return (stepDuration * distanciaMilesimos) / DIST_RETA_MILESIMOS;
 }
 
 int64_t Creature::getStepDuration() const
