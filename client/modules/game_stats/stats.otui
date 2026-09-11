@@ -3,7 +3,7 @@ UIWidget
   anchors.top: parent.top
   anchors.left: parent.left
   margin-left: 10
-  size: 220 100
+  size: 220 120
   visible: false
   phantom: true
   layout:
@@ -26,5 +26,9 @@ UIWidget
     margin-left: 32
   Label
     id: fps
+    font: verdana-11px-rounded
+    margin-left: 32
+  Label
+    id: position
     font: verdana-11px-rounded
     margin-left: 32

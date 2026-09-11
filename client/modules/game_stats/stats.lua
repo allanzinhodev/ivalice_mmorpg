@@ -30,6 +30,25 @@ function update()
   text = g_app.getFps() .. ' fps'
   ui.fps:setText(text)
 
+  -- Coordenada do personagem, logo abaixo do fps.
+  --
+  -- Serve para validar o mapa: a reconstrucao em JS (render-world.js) desenha
+  -- o mapa SEM personagem, entao ela prova a arte mas nao prova a posicao --
+  -- e a camada 2 so pode ser conferida sabendo em que tile o boneco esta
+  -- quando algo passa na frente dele.
+  --
+  -- Hoje a coordenada de mundo do OTBM comeca em (0,0), entao o numero aqui
+  -- casa direto com assets/mapdata/map150.json e com a grade da referencia.
+  if ui.position then
+    local p = g_game.getLocalPlayer()
+    local pos = p and p:getPosition()
+    if pos then
+      ui.position:setText(string.format('(%d, %d, %d)', pos.x, pos.y, pos.z))
+    else
+      ui.position:setText('')
+    end
+  end
+
   local ping = math.round(g_game.getPing() * 0.7)
   if g_proxy and g_proxy.getPing() > 0 then
     ping = g_proxy.getPing()
