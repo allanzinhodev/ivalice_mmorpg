@@ -428,18 +428,21 @@ void MapView::updateGeometry(const Size& visibleDimension, const Size& optimized
     m_visibleCenterOffset = m_virtualCenterOffset;
 
     /*
-     * O framebuffer tem que caber o LOSANGO, nao a grade quadrada.
+     * O framebuffer tem que caber o LOSANGO -- e sobrar espaco.
      *
-     * Com WxH celulas, a projecao ocupa:
-     *   largura = (W + H) * TILE_HALF_W
-     *   altura  = (W + H) * TILE_HALF_H
+     * Com WxH celulas a projecao ocupa (W+H)*TILE_HALF_W por
+     * (W+H)*TILE_HALF_H. `m_drawDimension * spriteSize()` dava a caixa da
+     * grade ORTOGONAL, estreita demais para o diamante, e o mapa ficava
+     * preso no canto cortado.
      *
-     * `m_drawDimension * spriteSize()` dava a caixa da grade ortogonal --
-     * estreita demais para o losango, que e mais largo que alto. O mapa
-     * ficava preso no canto superior esquerdo, cortado.
+     * O fator 2 e folga deliberada: o recorte desenhado tem o tamanho da
+     * JANELA (ver calcFramebufferSource), que numa tela grande passa das
+     * dimensoes do losango. Sem a folga o recorte sairia dos limites do
+     * framebuffer e o mapa apareceria cortado nas bordas.
      */
-    m_optimizedSize = Size((m_drawDimension.width() + m_drawDimension.height()) * Otc::TILE_HALF_W,
-                           (m_drawDimension.width() + m_drawDimension.height()) * Otc::TILE_HALF_H);
+    const int ladoLosango = m_drawDimension.width() + m_drawDimension.height();
+    m_optimizedSize = Size(ladoLosango * Otc::TILE_HALF_W * 2,
+                           ladoLosango * Otc::TILE_HALF_H * 2);
     requestVisibleTilesCacheUpdate();
 }
 
@@ -531,10 +534,10 @@ Position MapView::getPosition(const Point& point, const Size& mapSize)
      * O col/row que sai ja inclui o m_virtualCenterOffset, que a projecao
      * somou; subtrai-lo devolve o delta ate a camera.
      */
-    // Desconta a mesma origem que transformPositionTo2D soma.
-    const int origemX = (m_drawDimension.width() + m_drawDimension.height()) * Otc::TILE_HALF_W / 2;
-    const float fx = (realPos.x - origemX) / static_cast<float>(Otc::TILE_HALF_W);
-    const float fy = realPos.y / static_cast<float>(Otc::TILE_HALF_H);
+    // Desconta a mesma origem que transformPositionTo2D soma: o centro do
+    // framebuffer.
+    const float fx = (realPos.x - m_optimizedSize.width() / 2) / static_cast<float>(Otc::TILE_HALF_W);
+    const float fy = (realPos.y - m_optimizedSize.height() / 2) / static_cast<float>(Otc::TILE_HALF_H);
     const int col = static_cast<int>(std::floor((fx + fy) / 2.0f));
     const int row = static_cast<int>(std::floor((fy - fx) / 2.0f));
 
@@ -619,22 +622,25 @@ Rect MapView::calcFramebufferSource(const Size& destSize, bool inNextFrame)
      * errada: esticada na viewport, ampliava tudo e o mapa saia de escala.
      */
     /*
-     * O RECORTE TEM A PROPORCAO DA JANELA, NAO A DO LOSANGO.
+     * O RECORTE TEM A PROPORCAO DA JANELA, E A ESCALA 1:1.
      *
-     * `srcSize.scale(srcVisible, KeepAspectRatio)` encolhia o recorte ate
-     * caber na caixa do diamante (2:1). Como a viewport do jogo nao e 2:1, o
-     * resultado era esticado na hora de desenhar -- e a distorcao MUDAVA
-     * conforme a camera andava, porque o recorte se movia dentro de um
-     * framebuffer de outra proporcao.
+     * Duas armadilhas, as duas ja pagas:
      *
-     * Fixando a ALTURA pelo que se quer ver e derivando a largura da janela,
-     * a escala fica constante: cada pixel do framebuffer vira um pixel da
-     * tela, e o mapa nao deforma ao andar.
+     * 1. `srcSize.scale(srcVisible, KeepAspectRatio)` encolhia o recorte ate
+     *    caber na caixa 2:1 do diamante. Como a viewport nao e 2:1, o desenho
+     *    saia esticado -- e a distorcao MUDAVA ao andar, porque o recorte se
+     *    movia dentro de um framebuffer de outra proporcao.
+     *
+     * 2. Derivar a altura de (W+H)*TILE_HALF_H -- a DIAGONAL do losango --
+     *    dava 256px para uma janela de 723: escala 2,8x, com cada tile
+     *    ocupando quase tres vezes o tamanho real.
+     *
+     * O recorte agora e do tamanho da JANELA, em pixels. Escala 1:1, sem
+     * deformar e sem ampliar: um pixel do sprite e um pixel da tela. Quantos
+     * tiles aparecem passa a ser consequencia do tamanho da janela, que e o
+     * comportamento natural de um jogo isometrico.
      */
-    const int lado = m_visibleDimension.width() + m_visibleDimension.height();
-    const int alturaVisivel = lado * Otc::TILE_HALF_H;
-    Size srcSize(destSize.width() * alturaVisivel / std::max<int>(destSize.height(), 1),
-                 alturaVisivel);
+    Size srcSize = destSize;
 
     // Centro da celula da camera, menos metade do que cabe na tela.
     Point drawOffset(cameraScreen.x + Otc::TILE_HALF_W - srcSize.width() / 2,
@@ -761,10 +767,14 @@ Point MapView::transformPositionTo2D(const Position& position, const Position& r
      * a coluna mais a esquerda, que e (0, drawDimension.height), cair em
      * x = 0) e zero em Y (a celula do topo ja fica em y = 0).
      */
-    const int origemX = (m_drawDimension.width() + m_drawDimension.height()) * Otc::TILE_HALF_W / 2;
+    // A origem e o CENTRO do framebuffer, nao meia largura do losango: o
+    // framebuffer tem folga (ver setVisibleDimension), e ancorar na largura
+    // do diamante jogava o desenho para a metade esquerda enquanto o recorte
+    // buscava no meio.
+    const Point origem(m_optimizedSize.width() / 2, m_optimizedSize.height() / 2);
 
-    return Point(origemX + (col - row) * Otc::TILE_HALF_W,
-                 (col + row) * Otc::TILE_HALF_H);
+    return Point(origem.x + (col - row) * Otc::TILE_HALF_W,
+                 origem.y + (col + row) * Otc::TILE_HALF_H);
 }
 
 

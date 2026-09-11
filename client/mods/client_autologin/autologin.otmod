@@ -1,0 +1,11 @@
+Module
+  name: client_autologin
+  description: Loga sozinho com a conta de teste, para validar o mapa sem interacao
+  author: ivalice
+  reloadable: true
+  sandboxed: true
+  scripts: [ autologin ]
+  @onLoad: init()
+  @onUnload: terminate()
+  autoload: true
+  autoload-priority: 1200
