@@ -155,7 +155,12 @@ tentados e o personagem não se move. Duas peças contornam isso:
 - **`client/mods/client_autologin/`** — loga com 1/1. Só dispara se existir
   `client/data/autologin.request`.
 - **`server/.../creaturescripts/others/autotest.lua`** — teleporta no login
-  para a coordenada em `data/autotest.request` (conteúdo: `"x y"`).
+  para a coordenada em `data/autotest.request` (conteúdo: `"x y"`). Com
+  `data/autotest.jump` também roda o teste do `JUMP`.
+- **`server/.../creaturescripts/others/autotest_dirs.lua`** — mede a
+  velocidade nas 8 direções. Marcador: `data/autotest.dirs`.
+
+Os marcadores ficam em `server/build/data/`, que é de onde o `tfs.exe` lê.
 
 Alvos úteis: `8 8` chão plano, `11 10` entre os dois degraus abruptos (o de
 4 à esquerda, o de 5 à direita), `14 14` pilha de 12, `8 11` água.
@@ -185,11 +190,43 @@ o Y absoluto do boneco não serve, porque a câmera o segue.
       inteiro, na água o corpo é cortado na cintura
 - [x] `JUMP=4` — sobe o degrau de 4, barra o de 5 (2/2, automatizado)
 - [x] Picking nos quatro quadrantes — `projecao.test.js`, não precisa de mouse
+- [x] Caminhada nas 8 direções com velocidade uniforme — 35,8 px/s em todas,
+      razão 1,00× (era 2,24×)
 
-## Falta validar
+Não sobrou nenhum item pendente da lista original.
 
-- [ ] Caminhada nas 8 direções com velocidade uniforme — o único item que
-      ainda depende de teclado
+## Velocidade do passo: a diagonal do Tibia não vale aqui
+
+Na grade ortogonal a diagonal é sempre √2 mais longa que a reta, e por isso
+o TFS dobra a duração dela. **Na projeção em losango isso é falso**, e as
+oito direções têm três comprimentos:
+
+| direção | distância na tela |
+|---|---|
+| as 4 retas | 17,9 px |
+| nordeste, sudoeste | 32,0 px |
+| noroeste, sudeste | **16,0 px** |
+
+Noroeste e sudeste são as **mais curtas de todas** — mais curtas que uma
+reta. Dobrar a duração delas fazia o personagem arrastar a 17,6 px/s contra
+39,4 px/s de uma reta.
+
+Eram **duas** multiplicações, não uma:
+
+1. `Creature::getStepDuration(Direction)` — `if diagonal then *= 2`
+2. `lastStepCost = 3` (2 para player) em `onCreatureMove`, que multiplica
+   dentro de `getStepDuration()` — e reflete o passo *anterior*
+
+A primeira escala pela distância real; a segunda saiu (custo sempre 1).
+
+O client já cooperava: `updateWalkOffset` interpola o passo como fração 0..1
+do tempo, então a duração do server é o **único** lugar que decide a
+velocidade percebida.
+
+> Um teste que reimplementa a fórmula do C++ em Lua mede a cópia, não o
+> jogo: a primeira versão do `autotest_dirs` imprimiu os números antigos com
+> o server já corrigido. Por isso `Creature:getStepDuration` ganhou binding
+> Lua — o teste **pergunta** a duração.
 
 ## O eixo Z da outfit não tem coluna de montaria
 
