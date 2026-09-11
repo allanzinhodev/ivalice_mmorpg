@@ -1019,15 +1019,17 @@ Point Creature::getDrawOffset()
     // que o bug original: o tile subiria os 8px do degrau e o personagem
     // sobre ele apenas 2, entao o boneco afundaria no relevo em vez de
     // simplesmente ficar plano. Os dois lados TEM que usar a mesma unidade.
+    // E levantamento VERTICAL: o Point(1,1) daqui empurrava na diagonal, que
+    // e a regra do Tibia e nao a deste projeto. Ver elevationOffset em tile.h.
     Point drawOffset;
     if (m_walking) {
         if (m_walkingTile)
-            drawOffset -= Point(1, 1) * m_walkingTile->getDrawElevation();
+            drawOffset -= elevationOffset(m_walkingTile->getDrawElevation());
         drawOffset += m_walkOffset;
     } else {
         const TilePtr& tile = getTile();
         if (tile)
-            drawOffset -= Point(1, 1) * tile->getDrawElevation();
+            drawOffset -= elevationOffset(tile->getDrawElevation());
     }
     return drawOffset;
 }

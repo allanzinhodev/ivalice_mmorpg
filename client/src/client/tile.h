@@ -54,6 +54,28 @@ enum tileflags_t
     TILESTATE_LAST = 1 << 24
 };
 
+/*
+ * O deslocamento de tela de uma elevacao.
+ *
+ * ALTURA E LEVANTAMENTO VERTICAL PURO, nao deslocamento diagonal.
+ *
+ * No Tibia `dest - m_drawElevation` subtrai do Point INTEIRO (point.h:57), o
+ * que empurra a arte na diagonal -- faz sentido la, onde a celula e um
+ * quadrado visto de frente. Aqui a celula e um losango e a altura e o eixo
+ * vertical da tela, exatamente como o FFTA faz (RenderHeightMap usa Y -
+ * height) e como Otc::FLOOR_LIFT ja documenta para o andar.
+ *
+ * As duas regras conviviam no mesmo arquivo: as criaturas EM MOVIMENTO ja
+ * subiam so em Y (Tile::drawCreatures/drawTop), enquanto o chao sob elas
+ * subia na diagonal. Resultado: o personagem descolava do proprio degrau ao
+ * andar. Esta funcao existe para a regra ficar num lugar so.
+ *
+ * A extracao do mapa assume o mesmo (PX_PER_HEIGHT = 8 em
+ * tools/asset-compiler/extract-map-tiles.js): se as duas divergirem, o mapa
+ * no jogo deixa de bater com a referencia do FFTA.
+ */
+inline Point elevationOffset(int elevation) { return Point(0, elevation); }
+
 class Tile : public LuaObject
 {
 public:

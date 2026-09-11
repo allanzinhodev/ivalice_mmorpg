@@ -70,7 +70,7 @@ void Tile::drawGround(const Point& dest, LightView* lightView)
         if (thing->isHidden())
             continue;
 
-        thing->draw(dest - m_drawElevation, true, lightView);
+        thing->draw(dest - elevationOffset(m_drawElevation), true, lightView);
         m_drawElevation = std::min<uint8_t>(m_drawElevation + thing->getElevation(), Otc::MAX_ELEVATION);
     }
 }
@@ -91,7 +91,7 @@ void Tile::drawBottom(const Point& dest, LightView* lightView)
             if (thing->isHidden() || !afterBottom)
                 continue;
 
-            thing->draw(dest - m_drawElevation, true, lightView);
+            thing->draw(dest - elevationOffset(m_drawElevation), true, lightView);
             m_drawElevation = std::min<uint8_t>(m_drawElevation + thing->getElevation(), Otc::MAX_ELEVATION);
         }
     }
@@ -113,7 +113,7 @@ void Tile::drawBottom(const Point& dest, LightView* lightView)
         if (thing->isHidden())
             continue;
 
-        thing->draw(dest - m_drawElevation , true, lightView);
+        thing->draw(dest - elevationOffset(m_drawElevation), true, lightView);
         m_drawElevation = std::min<uint8_t>(m_drawElevation + thing->getElevation(), Otc::MAX_ELEVATION);
     }
 
@@ -168,7 +168,7 @@ void Tile::drawCreatures(const Point& dest, LightView* lightView)
         CreaturePtr creature = thing->static_self_cast<Creature>();
         if (!creature || creature->isWalking())
             continue;
-        creature->draw(dest - m_drawElevation, true, lightView);
+        creature->draw(dest - elevationOffset(m_drawElevation), true, lightView);
     }
 }
 
@@ -202,7 +202,7 @@ void Tile::drawTop(const Point& dest, LightView* lightView)
         CreaturePtr creature = thing->static_self_cast<Creature>();
         if (!creature || creature->isWalking())
             continue;
-        creature->draw(dest - m_drawElevation, true, lightView);
+        creature->draw(dest - elevationOffset(m_drawElevation), true, lightView);
     }
 
     // effects
@@ -210,7 +210,7 @@ void Tile::drawTop(const Point& dest, LightView* lightView)
     for (int i = limit; i >= 0; --i) {
         if (m_effects[i]->isHidden())
             continue;
-        m_effects[i]->draw(dest - m_drawElevation, m_position.x - g_map.getCentralPosition().x, m_position.y - g_map.getCentralPosition().y, true, lightView);
+        m_effects[i]->draw(dest - elevationOffset(m_drawElevation), m_position.x - g_map.getCentralPosition().x, m_position.y - g_map.getCentralPosition().y, true, lightView);
     }
 
     // top
@@ -299,13 +299,13 @@ bool Tile::drawToImage(const Point& dest, ImagePtr image)
             if (thing->getId() == 2322 || thing->getId() == 2323)
                 m_drawElevation = std::min<uint8_t>(m_drawElevation + thing->getElevation(), Otc::MAX_ELEVATION);
 
-            anythingDrawn |= thing->drawToImage(Point(x - m_drawElevation, y - m_drawElevation), image);
+            anythingDrawn |= thing->drawToImage(Point(x, y - m_drawElevation), image);
         }
 
         if (thing->getId() != 2322 && thing->getId() != 2323)
             m_drawElevation = std::min<uint8_t>(m_drawElevation + thing->getElevation(), Otc::MAX_ELEVATION);
 */
-        anythingDrawn |= thing->drawToImage(Point(x - m_drawElevation, y - m_drawElevation), image);
+        anythingDrawn |= thing->drawToImage(Point(x, y - m_drawElevation), image);
         m_drawElevation = std::min<uint8_t>(m_drawElevation + thing->getElevation(), Otc::MAX_ELEVATION);
     }
 
@@ -317,7 +317,7 @@ bool Tile::drawToImage(const Point& dest, ImagePtr image)
         if (thing->isHidden())
             continue;
 
-        anythingDrawn |= thing->drawToImage(Point(x - m_drawElevation, y - m_drawElevation), image);
+        anythingDrawn |= thing->drawToImage(Point(x, y - m_drawElevation), image);
         m_drawElevation = std::min<uint8_t>(m_drawElevation + thing->getElevation(), Otc::MAX_ELEVATION);
     }
 
@@ -326,7 +326,7 @@ bool Tile::drawToImage(const Point& dest, ImagePtr image)
         if (!thing->isOnTop() || !thing->isHidden())
             continue;
 
-        anythingDrawn |= thing->drawToImage(Point(x - m_drawElevation, y - m_drawElevation), image);
+        anythingDrawn |= thing->drawToImage(Point(x, y - m_drawElevation), image);
     }
 
     return anythingDrawn;
