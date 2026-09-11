@@ -138,7 +138,9 @@ void Creature::draw(const Point& dest, bool animate, LightView* lightView)
 
     const int sprSize = g_sprites.spriteSize();
     Point jumpOffset = Point(m_jumpOffset.x, m_jumpOffset.y);
-    Point creatureCenter = dest - jumpOffset + m_walkOffset - getDisplacement() + Point(sprSize / 2, sprSize / 2);
+    // Centro da celula: no losango fica TILE_HALF_H abaixo do vertice
+    // superior, e nao (sprSize/2, sprSize/2) como na grade quadrada.
+    Point creatureCenter = dest - jumpOffset + m_walkOffset - getDisplacement() + Point(0, Otc::TILE_HALF_H);
     drawBottomWidgets(creatureCenter, m_walking ? m_walkDirection : m_direction);
 
     Point animationOffset = animate ? m_walkOffset : Point(0, 0);
@@ -610,33 +612,56 @@ void Creature::updateWalkOffset(uint8 totalPixelsWalked, bool inNextFrame)
 {
     Point& walkOffset = inNextFrame ? m_walkOffsetInNextFrame : m_walkOffset;
     walkOffset = Point(0, 0);
+
+    // Direcao do passo em coordenadas de TILE.
+    int dx = 0, dy = 0;
     if (m_walkDirection == Otc::North || m_walkDirection == Otc::NorthEast || m_walkDirection == Otc::NorthWest)
-        walkOffset.y = g_sprites.spriteSize() - totalPixelsWalked;
+        dy = -1;
     else if (m_walkDirection == Otc::South || m_walkDirection == Otc::SouthEast || m_walkDirection == Otc::SouthWest)
-        walkOffset.y = totalPixelsWalked - g_sprites.spriteSize();
+        dy = 1;
 
     if (m_walkDirection == Otc::East || m_walkDirection == Otc::NorthEast || m_walkDirection == Otc::SouthEast)
-        walkOffset.x = totalPixelsWalked - g_sprites.spriteSize();
+        dx = 1;
     else if (m_walkDirection == Otc::West || m_walkDirection == Otc::NorthWest || m_walkDirection == Otc::SouthWest)
-        walkOffset.x = g_sprites.spriteSize() - totalPixelsWalked;
+        dx = -1;
+
+    // Projeta o delta para o espaco diamante (mesma formula de
+    // MapView::transformPositionTo2D). Um passo em +x vale (+16,+8) na tela,
+    // e nao 32px num eixo so como na grade ortogonal.
+    const int stepX = (dx - dy) * Otc::TILE_HALF_W;
+    const int stepY = (dx + dy) * Otc::TILE_HALF_H;
+
+    // Progresso do passo como FRACAO normalizada (0..1). O contador original
+    // media pixels com spriteSize() como total, o que nao serve aqui: no
+    // losango o comprimento em px de um passo depende da direcao (a diagonal
+    // e mais longa que a cardinal), e isso faria a velocidade parecer
+    // irregular.
+    const float progress = std::min<float>(totalPixelsWalked / static_cast<float>(g_sprites.spriteSize()), 1.0f);
+
+    // O offset e o quanto FALTA para chegar (por isso 1 - progress): a
+    // criatura e desenhada a partir do tile de destino.
+    const float remaining = 1.0f - progress;
+    walkOffset = Point(static_cast<int>(-stepX * remaining),
+                       static_cast<int>(-stepY * remaining));
 }
 
 void Creature::updateWalkingTile()
 {
-    // determine new walking tile
+    // Determina em qual tile a criatura e desenhada durante o passo.
+    //
+    // O original testava o canto inferior-direito contra um grid 3x3 de
+    // RETANGULOS de spriteSize(). Com celulas losango isso troca de tile na
+    // hora errada -- a criatura pisca na frente/atras de obstaculos --,
+    // entao invertemos a projecao do walk offset para descobrir o
+    // deslocamento em tiles. Mesma formula de MapView::getPosition.
     TilePtr newWalkingTile;
-    Rect virtualCreatureRect(g_sprites.spriteSize() + (m_walkOffset.x - getDisplacementX()),
-        g_sprites.spriteSize() + (m_walkOffset.y - getDisplacementY()),
-        g_sprites.spriteSize(), g_sprites.spriteSize());
-    for (int xi = -1; xi <= 1 && !newWalkingTile; ++xi) {
-        for (int yi = -1; yi <= 1 && !newWalkingTile; ++yi) {
-            Rect virtualTileRect((xi + 1) * g_sprites.spriteSize(), (yi + 1) * g_sprites.spriteSize(), g_sprites.spriteSize(), g_sprites.spriteSize());
+    const float fx = m_walkOffset.x / static_cast<float>(Otc::TILE_HALF_W);
+    const float fy = m_walkOffset.y / static_cast<float>(Otc::TILE_HALF_H);
+    const int xi = static_cast<int>(std::floor((fx + fy) / 2.0f + 0.5f));
+    const int yi = static_cast<int>(std::floor((fy - fx) / 2.0f + 0.5f));
 
-            // only render creatures where bottom right is inside tile rect
-            if (virtualTileRect.contains(virtualCreatureRect.bottomRight())) {
-                newWalkingTile = g_map.getOrCreateTile(getPrewalkingPosition().translated(xi, yi, 0));
-            }
-        }
+    if (xi >= -1 && xi <= 1 && yi >= -1 && yi <= 1) {
+        newWalkingTile = g_map.getOrCreateTile(getPrewalkingPosition().translated(xi, yi, 0));
     }
 
     if (newWalkingTile != m_walkingTile) {

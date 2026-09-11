@@ -28,7 +28,30 @@
 namespace Otc
 {
     enum : int {
-        MAX_ELEVATION = 24,
+        // --- Projecao isometrica ---
+        //
+        // A celula do mapa e um losango de 32x16 px:
+        //   screenX = offsetX + (col - row) * TILE_HALF_W
+        //   screenY = offsetY + (col + row) * TILE_HALF_H
+        //
+        // NAO confundir com g_sprites.spriteSize(): aquele e o tamanho do
+        // SPRITE (32x32), este e o tamanho da CELULA. A arte pode ser maior
+        // que o losango que ela ocupa.
+        TILE_HALF_W = 16,
+        TILE_HALF_H = 8,
+
+        // Quanto UM nivel de elevacao sobe em screenY.
+        //
+        // E meia-altura da celula. Consequencia que vale saber: o andar do
+        // OTBM vale 16px, entao DOIS niveis de elevacao equivalem a um andar
+        // na geometria do Tibia. Aqui nao ha andares -- tudo fica em z=7 e a
+        // altura e so este deslocamento.
+        ELEVATION_STEP = 8,
+
+        // Teto do empilhamento de elevacao, em pixels de tela. O valor
+        // original (24) vinha de uma pilha de parcels; com relevo de verdade
+        // ele satura no primeiro degrau.
+        MAX_ELEVATION = 248,
 
         INVISIBLE_TICKS_PER_FRAME = 500,
         INVISIBLE_TICKS_PER_FRAME_FAST = 100,

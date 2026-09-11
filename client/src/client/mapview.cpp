@@ -503,9 +503,27 @@ Position MapView::getPosition(const Point& point, const Size& mapSize)
 
     Point framebufferPos = Point(point.x * sh, point.y * sv);
     Point realPos = (framebufferPos + srcRect.topLeft());
-    Point centerOffset = realPos / g_sprites.spriteSize();
 
-    Point tilePos2D = getVisibleCenterOffset() - m_drawDimension.toPoint() + centerOffset + Point(2,2);
+    /*
+     * Inversa da projecao isometrica (ver transformPositionTo2D).
+     *
+     * De  sx = (col-row)*HW  e  sy = (col+row)*HH  segue:
+     *   col = (sx/HW + sy/HH) / 2
+     *   row = (sy/HH - sx/HW) / 2
+     *
+     * std::floor em FLOAT, nao divisao inteira: a divisao inteira trunca em
+     * direcao a zero, e a esquerda/acima da camera as coordenadas sao
+     * negativas -- ali o truncamento erra o tile por um.
+     *
+     * O col/row que sai ja inclui o m_virtualCenterOffset, que a projecao
+     * somou; subtrai-lo devolve o delta ate a camera.
+     */
+    const float fx = realPos.x / static_cast<float>(Otc::TILE_HALF_W);
+    const float fy = realPos.y / static_cast<float>(Otc::TILE_HALF_H);
+    const int col = static_cast<int>(std::floor((fx + fy) / 2.0f));
+    const int row = static_cast<int>(std::floor((fy - fx) / 2.0f));
+
+    Point tilePos2D(col - m_virtualCenterOffset.x, row - m_virtualCenterOffset.y);
     if(tilePos2D.x + cameraPosition.x < 0 && tilePos2D.y + cameraPosition.y < 0)
         return Position();
 
@@ -659,9 +677,26 @@ int MapView::calcLastVisibleFloor()
     return z;
 }
 
+/*
+ * Projecao isometrica: a celula e um losango de 32x16.
+ *
+ *   screenX = (col - row) * TILE_HALF_W
+ *   screenY = (col + row) * TILE_HALF_H
+ *
+ * A versao ortogonal multiplicava cada eixo por spriteSize() e subtraia o
+ * delta de z em ambos -- o deslocamento DIAGONAL que o Tibia usa para andar.
+ * Aqui nao ha andares: tudo fica num z so, e a altura e o elevation do tile,
+ * somado em Tile::drawGround.
+ *
+ * O m_virtualCenterOffset continua em unidades de TILE, entao entra na conta
+ * antes da projecao -- projeta-lo depois somaria pixels a uma coordenada de
+ * grade.
+ */
 Point MapView::transformPositionTo2D(const Position& position, const Position& relativePosition) {
-    return Point((m_virtualCenterOffset.x + (position.x - relativePosition.x) - (relativePosition.z - position.z)) * g_sprites.spriteSize(),
-        (m_virtualCenterOffset.y + (position.y - relativePosition.y) - (relativePosition.z - position.z)) * g_sprites.spriteSize());
+    const int col = m_virtualCenterOffset.x + (position.x - relativePosition.x);
+    const int row = m_virtualCenterOffset.y + (position.y - relativePosition.y);
+    return Point((col - row) * Otc::TILE_HALF_W,
+                 (col + row) * Otc::TILE_HALF_H);
 }
 
 

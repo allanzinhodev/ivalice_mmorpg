@@ -59,7 +59,7 @@ void Tile::drawGround(const Point& dest, LightView* lightView)
         if (thing->isHidden())
             continue;
 
-        thing->draw(dest - m_drawElevation * g_sprites.getOffsetFactor(), true, lightView);
+        thing->draw(dest - m_drawElevation, true, lightView);
         m_drawElevation = std::min<uint8_t>(m_drawElevation + thing->getElevation(), Otc::MAX_ELEVATION);
     }
 }
@@ -80,7 +80,7 @@ void Tile::drawBottom(const Point& dest, LightView* lightView)
             if (thing->isHidden() || !afterBottom)
                 continue;
 
-            thing->draw(dest - m_drawElevation * g_sprites.getOffsetFactor(), true, lightView);
+            thing->draw(dest - m_drawElevation, true, lightView);
             m_drawElevation = std::min<uint8_t>(m_drawElevation + thing->getElevation(), Otc::MAX_ELEVATION);
         }
     }
@@ -102,7 +102,7 @@ void Tile::drawBottom(const Point& dest, LightView* lightView)
         if (thing->isHidden())
             continue;
 
-        thing->draw(dest - m_drawElevation * g_sprites.getOffsetFactor() , true, lightView);
+        thing->draw(dest - m_drawElevation , true, lightView);
         m_drawElevation = std::min<uint8_t>(m_drawElevation + thing->getElevation(), Otc::MAX_ELEVATION);
     }
 
@@ -135,8 +135,13 @@ void Tile::drawCreatures(const Point& dest, LightView* lightView)
     for (const CreaturePtr& creature : m_walkingCreatures) {
         if (creature->isHidden())
             continue;
-        Point creatureDest(dest.x + ((creature->getPrewalkingPosition().x - m_position.x) * g_sprites.spriteSize() - m_drawElevation * g_sprites.getOffsetFactor()),
-                           dest.y + ((creature->getPrewalkingPosition().y - m_position.y) * g_sprites.spriteSize() - m_drawElevation * g_sprites.getOffsetFactor()));
+        // Delta ate o tile da criatura, PROJETADO no espaco diamante. Um
+        // passo em +x vale (+16,+8) na tela, e nao 32px num eixo so como na
+        // grade ortogonal.
+        const int cdx = creature->getPrewalkingPosition().x - m_position.x;
+        const int cdy = creature->getPrewalkingPosition().y - m_position.y;
+        Point creatureDest(dest.x + (cdx - cdy) * Otc::TILE_HALF_W,
+                           dest.y + (cdx + cdy) * Otc::TILE_HALF_H - m_drawElevation);
         creature->draw(creatureDest, true, lightView);
     }
 
@@ -151,7 +156,7 @@ void Tile::drawCreatures(const Point& dest, LightView* lightView)
         CreaturePtr creature = thing->static_self_cast<Creature>();
         if (!creature || creature->isWalking())
             continue;
-        creature->draw(dest - m_drawElevation * g_sprites.getOffsetFactor(), true, lightView);
+        creature->draw(dest - m_drawElevation, true, lightView);
     }
 }
 
@@ -166,8 +171,11 @@ void Tile::drawTop(const Point& dest, LightView* lightView)
     for (const CreaturePtr& creature : m_walkingCreatures) {
         if (creature->isHidden())
             continue;
-        Point creatureDest(dest.x + ((creature->getPrewalkingPosition().x - m_position.x) * g_sprites.spriteSize() - m_drawElevation * g_sprites.getOffsetFactor()),
-                   dest.y + ((creature->getPrewalkingPosition().y - m_position.y) * g_sprites.spriteSize() - m_drawElevation * g_sprites.getOffsetFactor()));
+        // Mesma projecao do drawCreatures.
+        const int cdx = creature->getPrewalkingPosition().x - m_position.x;
+        const int cdy = creature->getPrewalkingPosition().y - m_position.y;
+        Point creatureDest(dest.x + (cdx - cdy) * Otc::TILE_HALF_W,
+                           dest.y + (cdx + cdy) * Otc::TILE_HALF_H - m_drawElevation);
         creature->draw(creatureDest, true, lightView);
     }
 
@@ -182,7 +190,7 @@ void Tile::drawTop(const Point& dest, LightView* lightView)
         CreaturePtr creature = thing->static_self_cast<Creature>();
         if (!creature || creature->isWalking())
             continue;
-        creature->draw(dest - m_drawElevation * g_sprites.getOffsetFactor(), true, lightView);
+        creature->draw(dest - m_drawElevation, true, lightView);
     }
 
     // effects
@@ -190,7 +198,7 @@ void Tile::drawTop(const Point& dest, LightView* lightView)
     for (int i = limit; i >= 0; --i) {
         if (m_effects[i]->isHidden())
             continue;
-        m_effects[i]->draw(dest - m_drawElevation * g_sprites.getOffsetFactor(), m_position.x - g_map.getCentralPosition().x, m_position.y - g_map.getCentralPosition().y, true, lightView);
+        m_effects[i]->draw(dest - m_drawElevation, m_position.x - g_map.getCentralPosition().x, m_position.y - g_map.getCentralPosition().y, true, lightView);
     }
 
     // top
