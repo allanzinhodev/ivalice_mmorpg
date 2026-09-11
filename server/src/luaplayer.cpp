@@ -1369,6 +1369,32 @@ int luaPlayerGetSoul(lua_State* L)
 	return 1;
 }
 
+int luaPlayerGetJump(lua_State* L)
+{
+	// player:getJump()
+	const Player* player = getUserdata<const Player>(L, 1);
+	if (player) {
+		lua_pushinteger(L, player->getJump());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int luaPlayerSetJump(lua_State* L)
+{
+	// player:setJump(value)
+	// Quantos niveis de elevacao o personagem vence de uma vez.
+	Player* player = getUserdata<Player>(L, 1);
+	if (player) {
+		player->setJump(getNumber<uint8_t>(L, 2));
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int luaPlayerAddSoul(lua_State* L)
 {
 	// player:addSoul(soulChange)
@@ -4891,6 +4917,8 @@ void LuaScriptInterface::registerPlayer()
 	registerMethod("Player", "setStamina", luaPlayerSetStamina);
 
 	registerMethod("Player", "getSoul", luaPlayerGetSoul);
+	registerMethod("Player", "getJump", luaPlayerGetJump);
+	registerMethod("Player", "setJump", luaPlayerSetJump);
 	registerMethod("Player", "addSoul", luaPlayerAddSoul);
 	registerMethod("Player", "getMaxSoul", luaPlayerGetMaxSoul);
 

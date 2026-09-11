@@ -604,6 +604,14 @@ public:
 	}
 	uint16_t getXpBoostTime() const { return xpBoostTime; }
 	uint32_t getBaseMagicLevel() const { return magLevel; }
+
+	// Quantos NIVEIS DE ELEVACAO o personagem vence de uma vez.
+	//
+	// Cada nivel desloca -8px em Y na tela, entao jump 4 = um degrau de 32px.
+	// Vira o `n` de Tile::hasHeight(n) em Game::internalMoveCreature, que
+	// antes era 3 cravado no codigo.
+	uint8_t getJump() const { return jump; }
+	void setJump(uint8_t value) { jump = value; }
 	uint8_t getMagicLevelPercent() const { return magLevelPercent; }
 	uint8_t getSoul() const { return soul; }
 	bool isAccessPlayer() const { return group->access; }
@@ -1885,6 +1893,7 @@ private:
 	uint32_t staminaTrainerDelayMs = 0;
 
 	uint8_t soul = 0;
+	uint8_t jump = 4;   // niveis de elevacao que vence; cravado para teste
 	std::array<uint8_t, PLAYER_MAX_BLESSINGS + 1> blessings{};
 	std::vector<DeathLogEntry> m_deathLog;
 	uint8_t levelPercent = 0;

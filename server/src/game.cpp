@@ -1673,7 +1673,12 @@ ReturnValue Game::internalMoveCreature(Creature* creature, Direction direction, 
 	bool diagonalMovement = (direction & DIRECTION_DIAGONAL_MASK) != 0;
 	if (player && !diagonalMovement) {
 		// try to go up
-		if (currentPos.z != 8 && creature->getTile()->hasHeight(3)) {
+		//
+		// O quanto o personagem vence de degrau e o JUMP dele, nao um 3 fixo.
+		// hasHeight(n) CONTA os itens da pilha com CONST_PROP_HASHEIGHT
+		// (tile.cpp:127) -- nao e booleano.
+		const uint8_t jump = player->getJump();
+		if (currentPos.z != 8 && creature->getTile()->hasHeight(jump)) {
 			Tile* tmpTile = map.getTile(currentPos.x, currentPos.y, currentPos.getZ() - 1);
 			if (tmpTile == nullptr || (tmpTile->getGround() == nullptr && !tmpTile->hasFlag(TILESTATE_BLOCKSOLID))) {
 				tmpTile = map.getTile(destPos.x, destPos.y, destPos.getZ() - 1);
@@ -1693,7 +1698,7 @@ ReturnValue Game::internalMoveCreature(Creature* creature, Direction direction, 
 			Tile* tmpTile = map.getTile(destPos.x, destPos.y, destPos.z);
 			if (tmpTile == nullptr || (tmpTile->getGround() == nullptr && !tmpTile->hasFlag(TILESTATE_BLOCKSOLID))) {
 				tmpTile = map.getTile(destPos.x, destPos.y, destPos.z + 1);
-				if (tmpTile && tmpTile->hasHeight(3) && !tmpTile->hasFlag(TILESTATE_IMMOVABLEBLOCKSOLID)) {
+				if (tmpTile && tmpTile->hasHeight(jump) && !tmpTile->hasFlag(TILESTATE_IMMOVABLEBLOCKSOLID)) {
 					flags |= FLAG_IGNOREBLOCKITEM | FLAG_IGNOREBLOCKCREATURE;
 					player->setDirection(direction);
 					destPos.z++;
