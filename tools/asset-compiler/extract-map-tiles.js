@@ -53,9 +53,33 @@ const TILE_HALF_W = 16;
 const TILE_HALF_H = 8;
 const FLOOR_LIFT = 16;
 
-// Sprite do Tibia. O losango tem 32x16, mas recortamos 32x32 para pegar
+// Sprite do Tibia. O losango tem 32x16, mas recortamos mais alto para pegar
 // tambem a face lateral do bloco -- e o que da o visual do FFTA.
 const SPRITE = 32;
+
+/*
+ * ALTURA do recorte: quanto de face lateral cada tile carrega.
+ *
+ * Era 32 (quadrado), e sobrava parede: a saia externa do mapa, onde o bloco
+ * desce mais do que meia celula, ficava sem cobertura. Medido no Aisenfield,
+ * contando os pixels da referencia que nenhum tile alcanca:
+ *
+ *   32 -> 2054 buracos   97.0% dos pixels iguais ao original
+ *   40 -> 1721           97.5%
+ *   48 -> 1649           97.6%
+ *   56 -> 1649           97.6%   (estabiliza)
+ *   64 -> 1649           97.6%
+ *
+ * Estabiliza em 48 porque dali em diante a face ja desce mais do que a arte
+ * tem. Os 1649 que restam NAO sao face faltando: sao o contorno de ~1px que
+ * a propria imagem de referencia desenha em volta do mapa, fora da grade
+ * isometrica. Nao ha tile que os cubra, e o jogo tambem nao os quer -- o
+ * mundo simplesmente acaba ali.
+ *
+ * Em pixels de sprite 8x8 isto vira 4x6 celulas, e o mosaico lida com isso
+ * sem nada especial.
+ */
+const SPRITE_H = 48;
 
 // Quanto UMA unidade de altura do FFTA vale em pixels na tela.
 //
@@ -242,54 +266,37 @@ function calibrate(ref, hm) {
  */
 function cutCell(ref, col, row, height, origin) {
   const p = project(col, row, height, origin);
-  // project() devolve o canto ESQUERDO do losango, e o losango e o topo do
-  // sprite. Entao o recorte comeca exatamente ali: nada de deslocar em Y.
-  //
-  // Isto ja esteve deslocado -(SPRITE - 2*TILE_HALF_H) por assumir o losango
-  // na base. Com a mascara no topo, aquele shift recortava 16px acima da
-  // celula -- pegando o vizinho de tras em vez da propria face.
-  const cell = ref.crop(p.x, p.y, SPRITE, SPRITE);
-
-  const out = Image.blank(SPRITE, SPRITE);
-
-  // A mascara e o BLOCO isometrico: o losango do TOPO mais as duas faces
-  // laterais que descem dele ate a base do sprite.
-  //
-  // O losango de 32x16 fica na METADE DE CIMA do sprite (y 0..15) -- e o
-  // topo do bloco, onde a criatura pisa. Os 16px de baixo (y 16..31) sao a
-  // face lateral, que e o que da o visual de bloco do FFTA.
-  //
-  // Duas tentativas anteriores falharam aqui:
-  //   - "faixa vertical estreitando para cima" saiu em forma de cone e
-  //     cortava a face lateral;
-  //   - a versao seguinte centrava o losango em y=24, invertendo a geometria:
-  //     a largura ficava NEGATIVA acima de y=16 e a face era descartada. So
-  //     376 dos 1024 pixels sobreviviam, e a deduplicacao ia para 151 tiles.
-  for (let y = 0; y < SPRITE; y++) {
-    for (let x = 0; x < SPRITE; x++) {
-      const dx = Math.abs(x - TILE_HALF_W + 0.5);
-      let inside;
-      if (y < TILE_HALF_H) {
-        // Metade DE CIMA do losango: a meia-largura cresce 2px por linha,
-        // de 2 (na ponta) ate 32 (na linha do meio).
-        //
-        // Antes isto usava min(y, 15-y), o que fazia o losango INTEIRO em
-        // 16px e depois estreitava de volta ate 6px de largura. O resultado
-        // foi o padrao de buracos em losango no render-demo: cada celula
-        // cobria menos area do que o passo da grade.
-        inside = dx <= (y + 1) * 2;
-      } else {
-        // Da linha do meio do losango para baixo e a FACE LATERAL do
-        // bloco: largura cheia ate a base do sprite. E o que encosta na
-        // celula da frente e fecha o mosaico.
-        inside = dx <= TILE_HALF_W - 0.5;
-      }
-      if (!inside) continue;
-      const o = cell.offset(x, y);
-      cell.pixels.copy(out.pixels, out.offset(x, y), o, o + 4);
-    }
-  }
-  return out;
+  /*
+   * RECORTE RETANGULAR, SEM MASCARA.
+   *
+   * Havia aqui uma mascara em forma de bloco isometrico -- o losango do topo
+   * mais as faces laterais. A ideia era que o tile so carregasse a sua
+   * propria celula, e que assim duas celulas de chao igual virassem o mesmo
+   * tile.
+   *
+   * Medido contra a referencia, ela ATRAPALHAVA. No miolo do mapa a imagem e
+   * 100% opaca em toda a largura, inclusive nas linhas de cima onde o losango
+   * afina: a mascara descartava pixels que existem, e o vizinho de tras nem
+   * sempre os repunha -- onde a altura mudava, ficava buraco.
+   *
+   *   com mascara    97.6% dos pixels iguais ao original, 1649 buracos
+   *   retangulo      99.2%                                 555
+   *
+   * E o retangulo e correto por construcao: cada celula e recortada da MESMA
+   * posicao em que sera desenhada (project() e a formula de
+   * transformPositionTo2D), e o desenho e de tras para a frente. Entao cada
+   * pixel da tela recebe o valor da ultima celula que o cobre, que e
+   * exatamente a celula de onde aquele pixel foi cortado.
+   *
+   * O custo e que o tile leva pedaco dos vizinhos na sobreposicao -- o que
+   * derruba a deduplicacao exata. Quem cuida disso agora e o rebuild-map.js,
+   * comparando tiles por SEMELHANCA em vez de igualdade.
+   *
+   * A transparencia que sobra (so nas bordas do mapa) nao custa nada: no
+   * mosaico 8x8 as celulas vazias viram sprite id 0, que o client nao
+   * desenha.
+   */
+  return ref.crop(p.x, p.y, SPRITE, SPRITE_H);
 }
 
 class TileTable {
@@ -395,4 +402,4 @@ function main() {
 
 if (require.main === module) main();
 
-module.exports = { project, elevationFor, loadHeightMap, TILE_HALF_W, TILE_HALF_H, FLOOR_LIFT, PX_PER_HEIGHT };
+module.exports = { project, cutCell, calibrate, SPRITE_H, elevationFor, loadHeightMap, TILE_HALF_W, TILE_HALF_H, FLOOR_LIFT, PX_PER_HEIGHT, SPRITE };

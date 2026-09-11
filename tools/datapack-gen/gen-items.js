@@ -14,12 +14,14 @@
 
 const fs = require('fs');
 const path = require('path');
+const { isMapTile, isDecoration } = require('../asset-compiler/map-assets.js');
 const { Props, Node, buildFile } = require('./otb-common');
 
 // --- constantes do formato (server/src/itemloader.h) ---
 const ROOT_ATTR_VERSION = 0x01;
 
-const ITEM_GROUP_GROUND = 1; // itemloader.h:9-29
+const ITEM_GROUP_NONE = 0;   // itemloader.h:9-29
+const ITEM_GROUP_GROUND = 1;
 const ITEM_GROUP_CONTAINER = 2;
 
 // itemloader.h:104-108. O server so sabe que um item tem altura por este
@@ -63,17 +65,22 @@ function loadItems() {
     return f.toLowerCase().slice(-4) === ".png";
   }).sort();
 
-  return files.map(function (f, i) {
+  const itens = files.map(function (f, i) {
     return {
       id: 100 + i,
-      name: f.replace(/\.png$/i, "").replace(/^\d+-/, ""),
+      name: f.replace(/\.png$/i, '').replace(/^\d+-/, ''),
       speed: 110,
       // Todo tile de mapa carrega altura. E o que faz Tile::hasHeight(n)
-      // contar, e por consequencia o que faz o personagem subir e descer de
-      // andar em Game::internalMoveCreature (server/src/game.cpp:1676).
-      hasHeight: f.indexOf('-map') >= 0,
+      // contar (server/src/tile.cpp:127).
+      // A decoracao da camada 2 NAO e chao: nao se anda sobre ela e ela nao
+      // carrega altura. Precisa de group != GROUND, senao Item::isGroundTile()
+      // e verdadeiro no server e IOMap a trata como o chao da tile.
+      decoration: isDecoration(f),
+      hasHeight: isMapTile(f) && !isDecoration(f),
     };
   });
+
+  return itens;
 }
 
 const ITEMS = loadItems();
@@ -96,7 +103,9 @@ function buildOtb() {
 
   for (const item of ITEMS) {
     // O byte de tipo do no E o itemgroup_t (items.cpp:707).
-    const group = item.group === 'container' ? ITEM_GROUP_CONTAINER : ITEM_GROUP_GROUND;
+    const group = item.group === 'container' ? ITEM_GROUP_CONTAINER
+      : item.decoration ? ITEM_GROUP_NONE
+      : ITEM_GROUP_GROUND;
     const n = root.child(group);
     // Sem FLAG_BLOCK_SOLID -> chao andavel. FLAG_HAS_HEIGHT entra nos tiles
     // de mapa para o server poder contar o empilhamento.

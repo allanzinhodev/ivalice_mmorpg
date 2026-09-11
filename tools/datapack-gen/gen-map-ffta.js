@@ -37,6 +37,8 @@ const fs = require('fs');
 const path = require('path');
 const { Node, buildFile } = require('./otb-common');
 const { decompress } = require('../ffta-extract/gfx.js');
+const { mapTileIds } = require('../asset-compiler/map-assets.js');
+
 
 // --- OTBM (iomap.h) ---
 const OTBM_MAP_DATA = 2;
@@ -127,30 +129,6 @@ function loadMapData(mapIndex) {
   return JSON.parse(fs.readFileSync(f, "utf8"));
 }
 
-/**
- * Descobre o id de item de cada tile do mapa.
- *
- * O compile.js atribui os ids na ordem alfabetica de assets/items/,
- * comecando em 100 (os ids 1..99 sao reservados pelo formato .dat). Em vez
- * de fixar os numeros -- que quebrariam ao adicionar qualquer arquivo --
- * lemos o diretorio e achamos a posicao dos arquivos do mapa.
- */
-function mapTileIds(mapIndex) {
-  const dir = path.resolve(__dirname, "../../assets/items");
-  const files = fs.readdirSync(dir).filter(function (f) {
-    return f.toLowerCase().slice(-4) === ".png";
-  }).sort();
-  const suffix = "-map" + mapIndex + "-";
-  const ids = new Map();
-  files.forEach(function (f, i) {
-    const at = f.indexOf(suffix);
-    if (at < 0) return;
-    const n = parseInt(f.slice(at + suffix.length), 10);
-    if (!isNaN(n)) ids.set(n, 100 + i);
-  });
-  return ids;
-}
-
 function loadHeightMap(mapIndex) {
   const romPath = path.resolve(__dirname, '../rom.gba');
   const idxPath = path.resolve(__dirname, '../extracted/maps-index.json');
@@ -204,7 +182,7 @@ function loadHeightMap(mapIndex) {
   return { grid, rows, cols, offset: rec.heightMapOffset };
 }
 
-function buildOtbm(hm, refData, tileIds) {
+function buildOtbm(hm, refData, tileIds, deco2Ids) {
   const mapW = hm.cols * SCALE;
   const mapH = hm.rows * SCALE;
 
@@ -246,16 +224,25 @@ function buildOtbm(hm, refData, tileIds) {
         const t = refData.grid[r][c].tile;
         if (t !== null && tileIds.has(t)) ground = tileIds.get(t);
       }
-      // Altura DENTRO do andar -> itens empilhados.
-      //
-      // O server conta ITENS, nao pixels: Tile::hasHeight(n) percorre a pilha
-      // e conta os que tem CONST_PROP_HASHEIGHT (server/src/tile.cpp:127), e
-      // Game::internalMoveCreature compara esse contador com o jump do
-      // personagem para decidir subir ou descer.
-      //
-      // Sem isto o OTBM escrevia UM ground por tile, hasHeight() sempre
-      // devolvia 1 e o relevo interno do andar nunca aparecia -- foi o que
-      // deixou o mapa chapado na tela mesmo com o elevation ja no .dat.
+      /*
+       * A altura da celula vira uma pilha de itens INVISIVEIS, antes do tile.
+       *
+       * O server conta ITENS, nao pixels: Tile::hasHeight(n) percorre a pilha
+       * e conta os que tem CONST_PROP_HASHEIGHT (server/src/tile.cpp:127).
+       *
+       * Ja foram copias do proprio tile, e cada copia desenhava: com 48px de
+       * face lateral e 8px de passo, a de baixo sobrava por baixo da de cima
+       * -- face listrada e uma saia extra sob o mapa. Invisiveis, elas so
+       * empurram o contador de elevacao, e o tile de verdade, que vai por
+       * ultimo, e desenhado UMA vez na altura certa. Ver map-assets.js.
+       */
+      // Camada 2: decoracao, quando a celula tiver. Celula sem decoracao
+      // simplesmente nao ganha item nenhum -- 117 das 208 no Aisenfield.
+      let deco = null;
+      if (refData && deco2Ids && refData.grid[r] && refData.grid[r][c]) {
+        const t2 = refData.grid[r][c].tile2;
+        if (t2 !== null && t2 !== undefined && deco2Ids.has(t2)) deco = deco2Ids.get(t2);
+      }
       const stack = refData && refData.grid[r] && refData.grid[r][c]
         ? (refData.grid[r][c].elevation || 0)
         : 0;
@@ -264,7 +251,7 @@ function buildOtbm(hm, refData, tileIds) {
       const list = byZ.get(z);
       for (let sy = 0; sy < SCALE; sy++) {
         for (let sx = 0; sx < SCALE; sx++) {
-          list.push({ x: c * SCALE + sx, y: r * SCALE + sy, ground, stack });
+          list.push({ x: c * SCALE + sx, y: r * SCALE + sy, ground, stack, deco });
         }
       }
     }
@@ -281,12 +268,11 @@ function buildOtbm(hm, refData, tileIds) {
       tile.props.u8(t.x).u8(t.y);
       const item = tile.child(OTBM_ITEM);
       item.props.u16(t.ground);
-      // Os itens de altura vao DEPOIS do ground, na mesma tile. O client
-      // soma o elevation de cada um e desenha o proximo mais acima
-      // (client/src/client/tile.cpp:62-63).
-      for (let i = 0; i < t.stack; i++) {
-        const extra = tile.child(OTBM_ITEM);
-        extra.props.u16(t.ground);
+      // A decoracao vai por ultimo. No client ela e ThingAttrOnTop e sai em
+      // Tile::drawTop, depois das criaturas.
+      if (t.deco !== null && t.deco !== undefined) {
+        const d = tile.child(OTBM_ITEM);
+        d.props.u16(t.deco);
       }
       tileCount++;
     }
@@ -323,14 +309,15 @@ function main() {
   }
 
   const mapData = loadMapData(mapIndex);
-  const tileIds = mapData ? mapTileIds(mapIndex) : null;
+  const tileIds = mapData ? mapTileIds(mapIndex, 1) : null;
+  const deco2Ids = mapData ? mapTileIds(mapIndex, 2) : null;
   if (mapData) {
     console.log("mapdata: " + mapData.cols + "x" + mapData.rows + " celulas, " + tileIds.size + " tiles com id");
   } else {
     console.log("sem assets/mapdata -- usando os 3 chaos genericos");
   }
 
-  const r = buildOtbm(hm, mapData, tileIds);
+  const r = buildOtbm(hm, mapData, tileIds, deco2Ids);
 
   const outDir = path.resolve(__dirname, '../../server/data/world');
   fs.writeFileSync(path.join(outDir, 'world.otbm'), r.buffer);

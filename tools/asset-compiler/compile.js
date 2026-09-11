@@ -26,6 +26,7 @@ const { readPNG, writePNG, Image } = require('./png.js');
 const { buildSpr, SPRITE_SIZE } = require('./spr.js');
 const { buildCwm } = require('./cwm.js');
 const { slice } = require('./mosaic.js');
+const { isDecoration } = require('./map-assets.js');
 const { buildDat, FrameGroup, FRAME_GROUP_NAMES } = require('./dat.js');
 
 const ROOT = path.resolve(__dirname, '../..');
@@ -285,31 +286,94 @@ function compileItems(table) {
 
   for (const file of files) {
     const img = readPNG(path.join(dir, file));
-    if (img.width !== SPRITE_SIZE || img.height !== SPRITE_SIZE) {
-      throw new Error(`${file}: item tem que ser ${SPRITE_SIZE}x${SPRITE_SIZE}, veio ${img.width}x${img.height}`);
+    /*
+     * O item precisa ter a LARGURA de um tile, mas pode ser mais ALTO.
+     *
+     * Exigir 32x32 valia quando o tile era so o losango mais meia celula de
+     * face lateral. Os tiles de mapa passaram a 32x48 para carregar a face
+     * inteira do bloco -- sem isso a saia externa do mapa ficava sem
+     * cobertura (ver SPRITE_H em extract-map-tiles.js).
+     *
+     * A altura continua tendo que ser multipla da celula do mosaico; quem
+     * cobra isso e o slice(), com a mensagem certa.
+     */
+    if (img.width !== SPRITE_SIZE) {
+      throw new Error(`${file}: item tem que ter ${SPRITE_SIZE}px de largura, veio ${img.width}`);
     }
     const { ids, cols, rows } = sliceToIds(img, table);
+    /*
+     * CAMADA 2: decoracao que fica POR CIMA.
+     *
+     * Pedra, arbusto, tufo seco. Nao e chao: nao se anda sobre ela e ela nao
+     * carrega altura. ThingAttrOnTop manda o client desenha-la em
+     * Tile::drawTop, que roda DEPOIS de drawCreatures -- e o que faz a pedra
+     * passar na frente do personagem em vez de sumir atras dele.
+     *
+     * Nao leva ground nem elevation de proposito: a altura da celula ja e
+     * resolvida pela pilha da camada 1, e dar elevation aqui empilharia duas
+     * vezes.
+     */
+    const decoracao = isDecoration(file);
+
     items.push({
       name: file,
-      attrs: {
+      attrs: decoracao ? {
+        onTop: true,
+        displacement: displacementFor([0, 0], cols, rows, CELL),
+        dontHide: true,
+        visualOnly: true,
+      } : {
         // ThingAttrGround e obrigatorio: sem ele Tile::drawGround para na
         // primeira iteracao e o chao nao aparece.
         ground: 110,
-        // Ancora: o quadro de 32x32 cai meio losango ABAIXO de `dest`, que e
-        // o vertice superior da celula. Antes isto era displacement [0,-16]
-        // cravado, que so vale enquanto o tile for UM sprite de 32x32 -- em
-        // mosaico o mesmo numero apontaria 24px fora. Ver displacementFor.
-        displacement: displacementFor([0, 16], cols, rows, CELL),
+        /*
+         * SEM DESLOCAMENTO: o quadro cai exatamente em `dest`.
+         *
+         * Nao e "zero por preguica" -- e o unico valor que faz o jogo
+         * desenhar onde a extracao recortou. O tile e cortado da referencia
+         * em project(col, row, altura), que e a MESMA formula de
+         * MapView::transformPositionTo2D. Qualquer deslocamento aqui separa
+         * as duas por um numero que so existe no .dat, e que depois tem que
+         * ser lembrado em toda ferramenta que compara.
+         *
+         * Ja foi [0,-16] cravado, depois a ancora [0,16] passando por
+         * displacementFor -- em ambos o jogo desenhava meio losango fora do
+         * lugar onde o recorte tinha sido feito. Com 0 as duas pontas do
+         * pipeline falam do mesmo pixel.
+         *
+         * ANCORA zero NAO e displacement zero. Escrever [0,0] direto aqui foi
+         * erro, e custou uma rodada inteira: o client ainda subtrai
+         * (cols-1, rows-1) * cell, que num tile de 4x6 celulas de 8px vale
+         * (24, 40). O mapa saía 24px a esquerda e 40px acima -- invisivel no
+         * render-world, que alinha pela caixa e portanto absorve deslocamento
+         * global, mas obvio no jogo, onde o mapa desloca em relacao ao
+         * PERSONAGEM e metade dele sai da viewport.
+         *
+         * displacementFor existe justamente para isso: recebe a ancora e
+         * devolve o displacement que a produz, seja qual for o tamanho da
+         * celula.
+         */
+        displacement: displacementFor([0, 0], cols, rows, CELL),
         fullGround: true,
-        // Elevation faz o client empilhar: cada item com elevation soma
-        // m_drawElevation e desenha o proximo mais acima
-        // (client/src/client/tile.cpp:62-63). E o lado visual do
-        // FLAG_HAS_HEIGHT que o gen-items.js poe no items.otb -- os dois
-        // precisam andar juntos, senao o server deixa subir num degrau que a
-        // tela mostra plano.
-        //
-        // TILE_HALF_H = 8: uma unidade de altura do FFTA vale meio tile em Y.
-        elevation: /-map[0-9]+-/.test(file) ? 8 : 0,
+        /*
+         * ELEVATION ZERO: quem carrega a altura sao os itens invisiveis.
+         *
+         * Tile::drawGround desenha o thing com a elevacao acumulada e SO
+         * DEPOIS soma a dele. Entao a elevacao do proprio tile de terreno nao
+         * levanta o terreno -- ela levanta o que vier depois.
+         *
+         * Isso importa por causa da camada 2: Tile::drawTop desenha a
+         * decoracao com m_drawElevation ja FECHADO, somando tudo. Com 8 aqui,
+         * a decoracao saía 8px acima da superficie em que deveria estar
+         * pousada -- pedra flutuando.
+         *
+         * Com 0, m_drawElevation termina exatamente na altura em que o
+         * terreno foi desenhado, que e onde a decoracao tem que ir.
+         *
+         * O FLAG_HAS_HEIGHT do items.otb continua: ele e a contagem do
+         * SERVER, independente do desenho.
+         */
+        elevation: 0,
         /*
          * DONT HIDE: o relevo nao pode esconder o proprio relevo.
          *
@@ -344,7 +408,7 @@ function compileItems(table) {
       groups: [{
         type: 0,
         width: cols, height: rows, layers: 1,
-        exactSize: SPRITE_SIZE,
+        exactSize: Math.max(img.width, img.height),
         patternX: 1, patternY: 1, patternZ: 1,
         phases: 1,
         sprites: ids,

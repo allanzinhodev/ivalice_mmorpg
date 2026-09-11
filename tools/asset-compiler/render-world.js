@@ -128,6 +128,26 @@ function main() {
   };
 
   console.log(`datapack: ${sprites.formato}, celula ${sprites.cell}px, ${dat.items.length} itens`);
+
+  /*
+   * A ANCORA, dita em voz alta.
+   *
+   * Esta comparacao alinha os dois lados pela caixa do conteudo, o que a
+   * torna CEGA a deslocamento global: se o mapa inteiro sair 24px para o
+   * lado, a silhueta e as cores continuam batendo e o numero nao muda. No
+   * jogo, porem, o mapa desloca em relacao ao PERSONAGEM, e metade dele sai
+   * da viewport.
+   *
+   * Foi assim que um displacement errado passou por aqui com 99,2%. Entao o
+   * numero que a comparacao nao ve fica impresso.
+   */
+  const amostra = mundo.tiles.find((t) => t.items.length && quadro(t.items[t.items.length - 1]));
+  if (amostra) {
+    const q = quadro(amostra.items[amostra.items.length - 1]);
+    const [ax, ay] = q.origem;
+    console.log(`ancora do tile de mapa: (${ax}, ${ay}) relativo a dest`
+      + `${ax === 0 && ay === 0 ? '' : '   <-- NAO e zero: o mapa sai deslocado do personagem'}`);
+  }
   console.log(`mundo:    ${mundo.header.width}x${mundo.header.height}, ${mundo.tiles.length} tiles`);
   const zs = [...new Set(mundo.tiles.map((t) => t.z))].sort();
   console.log(`andares:  ${zs.length} (z ${zs[0]}..${zs[zs.length - 1]})`);
@@ -178,12 +198,44 @@ function main() {
      */
     let elev = 0;
     for (const id of t.items) {
+      const tt = porId.get(id);
+      // A camada 2 (onTop) nao sai aqui: o client a desenha em Tile::drawTop,
+      // depois de TODOS os chaos do andar. Fica para a segunda passada.
+      if (tt && tt.attrs.onTop) continue;
       const q = quadro(id);
       if (!q) { semArte++; continue; }
       blitOver(out, q.img, p.x + q.origem[0] - minX, p.y - elev + q.origem[1] - minY);
       desenhados++;
-      const tt = porId.get(id);
       elev = Math.min(elev + (tt && tt.attrs.elevation ? tt.attrs.elevation : 0), MAX_ELEVATION);
+    }
+  }
+
+  /*
+   * Segunda passada: a camada 2.
+   *
+   * O client faz drawGround para todos os tiles do andar e so depois entra no
+   * laco por tile que chama drawTop (MapView::drawFloor). Entao a decoracao
+   * de um tile de TRAS fica por cima do terreno de um tile da FRENTE -- e por
+   * isso ela precisa de uma passada propria aqui, e nao pode ser desenhada
+   * junto com o chao da sua tile.
+   *
+   * A elevacao usada e a mesma acumulada pelo chao: drawTop desenha com
+   * m_drawElevation, que drawGround ja deixou no valor da celula.
+   */
+  for (const t of ordem) {
+    const p = posDe(t);
+    let elev = 0;
+    for (const id of t.items) {
+      const tt = porId.get(id);
+      if (!tt) continue;
+      if (tt.attrs.onTop) {
+        const q = quadro(id);
+        if (!q) { semArte++; continue; }
+        blitOver(out, q.img, p.x + q.origem[0] - minX, p.y - elev + q.origem[1] - minY);
+        desenhados++;
+        continue;
+      }
+      elev = Math.min(elev + (tt.attrs.elevation ? tt.attrs.elevation : 0), MAX_ELEVATION);
     }
   }
 
