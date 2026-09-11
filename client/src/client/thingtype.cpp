@@ -83,11 +83,8 @@ void ThingType::serialize(const FileStreamPtr& fin)
         fin->addU8(attr);
         switch(attr) {
             case ThingAttrStandOffset: {
-                // Dois int16 com sinal, como o displacement: o .dat guarda
-                // u16 e o valor negativo chega como complemento de dois.
-                m_standOffset.x = static_cast<int16_t>(fin->getU16());
-                m_standOffset.y = static_cast<int16_t>(fin->getU16());
-                m_attribs.set(attr, true);
+                fin->addU16(static_cast<uint16_t>(m_standOffset.x));
+                fin->addU16(static_cast<uint16_t>(m_standOffset.y));
                 break;
             }
             case ThingAttrDisplacement: {
@@ -240,6 +237,19 @@ void ThingType::unserialize(uint16 clientId, ThingCategory category, const FileS
         }
 
         switch(attr) {
+            case ThingAttrStandOffset: {
+                // Dois int16 com sinal, como o displacement: o .dat guarda
+                // u16 e o negativo chega como complemento de dois.
+                //
+                // PRECISA de caso proprio: atributo sem carga cai no
+                // `default`, e os 4 bytes seguintes dessincronizariam a
+                // leitura do arquivo inteiro -- foi exatamente o que
+                // aconteceu, com "corrupt data (id: 103, lastAttr: 79)".
+                m_standOffset.x = static_cast<int16_t>(fin->getU16());
+                m_standOffset.y = static_cast<int16_t>(fin->getU16());
+                m_attribs.set(attr, true);
+                break;
+            }
             case ThingAttrDisplacement: {
                 if(g_game.getClientVersion() >= 755) {
                     // O displacement e gravado como u16 no .dat, mas o valor e
