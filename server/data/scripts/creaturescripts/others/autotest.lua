@@ -17,9 +17,11 @@
 
   ALVOS UTEIS no mapa de teste (gen-map-test.js):
     8 8     nascimento, chao plano
-    13 8    degrau de 4 niveis -- o limite do JUMP=4
-    14 8    degrau de 5 -- deve BARRAR a subida vindo do 13
-    12 12   pilha de 12 niveis, para ver que nao ha teto
+    11 10   entre os dois degraus ABRUPTOS: o de altura 4 fica em (10,10)
+            e o de altura 5 em (12,10). Com JUMP=4 o primeiro passa e o
+            segundo barra. A rampa de (10,8) a (15,8) nao serve para isto:
+            ela sobe de 1 em 1, entao qualquer JUMP >= 1 vence ela inteira.
+    14 14   pilha de 12 niveis, para ver que nao ha teto
     8 11    agua, para o zPattern 2
 ]]
 

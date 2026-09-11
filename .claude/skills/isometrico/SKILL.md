@@ -136,8 +136,14 @@ Build: ver a skill `vcpkg`. Login **1/1**; a conta já existe em
 
 `gen-map-test.js` é um banco de provas, não um mapa bonito. Temple em (8,8):
 
-- **(10,8)–(15,8)** — degraus de 1 a 6 níveis. Com `JUMP=4`, sobe até o de 4
-- **(12,12)** — pilha de 12 níveis, para provar que não há limite
+- **(10,8)–(15,8)** — rampa de 1 a 6 níveis, subindo **de 1 em 1**. Serve
+  para ver o relevo, **não** para testar o `JUMP`: cada passo sobe 1, então
+  qualquer `JUMP ≥ 1` vence a rampa inteira
+- **(10,10) e (12,10)** — degraus **abruptos**, saltam do chão direto para a
+  altura alvo. É aqui que o teto do `JUMP` é exercitado:
+  - de (11,10) para **(10,10)** — subida de 4 — com `JUMP=4` **passa**
+  - de (11,10) para **(12,10)** — subida de 5 — com `JUMP=4` **barra**
+- **(14,14)** — pilha de 12 níveis, para provar que não há limite
 - **(6,10)–(10,12)** — poça de água, para o `zPattern` 2
 - **y=20** — muro de pedra que bloqueia; **y=22** — pedra andável ao lado
 
@@ -151,8 +157,13 @@ tentados e o personagem não se move. Duas peças contornam isso:
 - **`server/.../creaturescripts/others/autotest.lua`** — teleporta no login
   para a coordenada em `data/autotest.request` (conteúdo: `"x y"`).
 
-Alvos úteis: `8 8` chão plano, `13 8` degrau de 4, `14 8` degrau de 5
-(barra), `14 14` pilha de 12, `8 11` água.
+Alvos úteis: `8 8` chão plano, `11 10` entre os dois degraus abruptos (o de
+4 à esquerda, o de 5 à direita), `14 14` pilha de 12, `8 11` água.
+
+**O `JUMP` não dá para testar por script.** `teleportTo` ignora
+`Game::internalMoveCreature`, que é onde a regra vive — um teste por
+teleporte passaria sempre e não provaria nada. E `player:move()` não existe
+no Lua deste fork. Fica para validação manual, andando a partir de (11,10).
 
 Para medir a elevação, compare capturas do **mesmo tile** antes e depois —
 o Y absoluto do boneco não serve, porque a câmera o segue.
