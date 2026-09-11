@@ -32,6 +32,7 @@
 const ATTR_GROUND = 0;
 const ATTR_ELEVATION = 25;
 const ATTR_DISPLACEMENT = 24;
+const ATTR_DONT_HIDE = 22;
 const ATTR_FULL_GROUND = 30;
 /*
  * MERAMENTE VISUAL -- extensao nossa, ver ThingAttrVisualOnly em
@@ -123,6 +124,7 @@ function writeAttributes(w, attrs) {
   if (attrs.ground !== undefined) { w.u8(ATTR_GROUND); w.u16(attrs.ground); }
   if (attrs.displacement) { w.u8(ATTR_DISPLACEMENT); w.i16(attrs.displacement[0]); w.i16(attrs.displacement[1]); }
   if (attrs.elevation !== undefined) { w.u8(ATTR_ELEVATION); w.u16(attrs.elevation); }
+  if (attrs.dontHide) w.u8(ATTR_DONT_HIDE);
   if (attrs.fullGround) w.u8(ATTR_FULL_GROUND);
   if (attrs.visualOnly) w.u8(ATTR_VISUAL_ONLY);
   w.u8(ATTR_LAST);
@@ -160,6 +162,6 @@ function buildDat({ signature, items, outfits, effects, missiles }) {
 
 module.exports = {
   FrameGroup, FRAME_GROUP_NAMES,
-  ATTR_GROUND, ATTR_DISPLACEMENT, ATTR_ELEVATION, ATTR_FULL_GROUND, ATTR_VISUAL_ONLY, ATTR_LAST,
+  ATTR_GROUND, ATTR_DISPLACEMENT, ATTR_ELEVATION, ATTR_DONT_HIDE, ATTR_FULL_GROUND, ATTR_VISUAL_ONLY, ATTR_LAST,
   buildDat, Writer,
 };

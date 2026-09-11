@@ -1894,7 +1894,23 @@ private:
 	uint32_t staminaTrainerDelayMs = 0;
 
 	uint8_t soul = 0;
-	uint8_t jump = 3;   // FFTA: quantas unidades de altura sobe de uma vez
+	/*
+	 * FFTA: quantas unidades de altura o personagem sobe de uma vez.
+	 *
+	 * O PADRAO E ACOPLADO AO HEIGHT_PER_FLOOR DAS FERRAMENTAS DE MAPA
+	 * (tools/asset-compiler/extract-map-tiles.js). Tile::hasHeight(n) exige
+	 * EXATAMENTE n itens com altura na pilha, e a pilha de uma celula vai de
+	 * 1 (so o ground) a HEIGHT_PER_FLOOR. Entao so quem esta no topo do
+	 * andar -- pilha cheia -- consegue passar para o andar de cima, e o
+	 * padrao tem que ser justamente HEIGHT_PER_FLOOR.
+	 *
+	 * Era 3 e casava com o HEIGHT_PER_FLOOR=3 de entao. Quando ele virou 2
+	 * (porque FLOOR_LIFT/PX_PER_HEIGHT = 16/8 = 2, e com 3 o relevo saía
+	 * comprimido), este 3 deixou de ser alcancavel: nenhuma celula chega a
+	 * 3 itens, hasHeight(3) nunca e verdade e o personagem simplesmente para
+	 * de trocar de andar -- sem erro nenhum, so deixando de subir.
+	 */
+	uint8_t jump = 2;
 	std::array<uint8_t, PLAYER_MAX_BLESSINGS + 1> blessings{};
 	std::vector<DeathLogEntry> m_deathLog;
 	uint8_t levelPercent = 0;

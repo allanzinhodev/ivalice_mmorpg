@@ -87,7 +87,7 @@ function blitOver(dst, src, dx, dy) {
  * Desenha o mapa. `origin` e o mesmo da extracao, entao o resultado fica
  * pixel a pixel em cima da referencia.
  */
-function render(data, tiles, width, height) {
+function render(data, tiles, width, height, modoJogo) {
   const out = Image.blank(width, height);
 
   // Painter's algorithm: ordena por (col + row). Empate nao importa -- duas
@@ -104,8 +104,39 @@ function render(data, tiles, width, height) {
   for (const { c, r, cell } of cells) {
     const img = tiles.get(cell.tile);
     if (!img) continue;
-    const p = E.project(c, r, cell.height, data.origin);
-    blitOver(out, img, p.x, p.y);
+
+    if (!modoJogo) {
+      // Projecao IDEAL: um blit na altura crua. Serve para conferir o
+      // recorte, que e o que este script sempre fez.
+      const p = E.project(c, r, cell.height, data.origin);
+      blitOver(out, img, p.x, p.y);
+      continue;
+    }
+
+    /*
+     * Projecao DO JOGO: a altura chega partida em duas metades que so se
+     * somam na tela.
+     *
+     *   z         -> FLOOR_LIFT por andar, em MapView::transformPositionTo2D
+     *   elevation -> itens empilhados, cada um somando o proprio elevation
+     *                do .dat em Tile::drawGround
+     *
+     * Vale simular isso, e nao so a projecao ideal, porque as duas metades
+     * podem fechar a conta no topo e ainda assim divergir da referencia: cada
+     * item empilhado e desenhado, e o de baixo aparece como uma faixa sob o
+     * de cima. O demo ideal desenha UM tile e nunca mostraria essa faixa.
+     */
+    const andar = Math.floor(cell.height / E.HEIGHT_PER_FLOOR);
+    const degraus = cell.height % E.HEIGHT_PER_FLOOR;
+
+    const x = data.origin.x + (c - r) * E.TILE_HALF_W;
+    const yBase = data.origin.y + (c + r) * E.TILE_HALF_H - andar * E.FLOOR_LIFT;
+
+    // O ground primeiro, depois os itens de altura, cada um PX_PER_HEIGHT
+    // acima -- a mesma ordem do client, para quem cobre quem sair igual.
+    for (let i = 0; i <= degraus; i++) {
+      blitOver(out, img, x, yBase - i * E.PX_PER_HEIGHT);
+    }
   }
   return out;
 }
@@ -147,17 +178,18 @@ function main() {
   if (!fs.existsSync(dataPath)) throw new Error(`nao achei ${dataPath} -- rode o extract-map-tiles.js antes`);
   const data = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
 
+  const modoJogo = args.includes('--game');
   const tiles = loadTiles(mapIndex);
-  console.log(`mapa ${mapIndex}: ${data.cols}x${data.rows} celulas, ${tiles.size} tiles`);
+  console.log(`mapa ${mapIndex}: ${data.cols}x${data.rows} celulas, ${tiles.size} tiles` + (modoJogo ? '  [modo jogo: z + pilha]' : '  [projecao ideal]'));
 
   const ref = readPNG(path.join(ASSETS, 'mapref/aisenfield.png'));
-  const demo = render(data, tiles, ref.width, ref.height);
+  const demo = render(data, tiles, ref.width, ref.height, modoJogo);
 
   const dbg = path.join(ASSETS, 'debug');
   if (!fs.existsSync(dbg)) fs.mkdirSync(dbg, { recursive: true });
 
-  writePNG(path.join(dbg, `map${mapIndex}-demo.png`), demo);
-  writePNG(path.join(dbg, `map${mapIndex}-compare.png`), compare(ref, demo));
+  writePNG(path.join(dbg, `map${mapIndex}${modoJogo?"-game":""}-demo.png`), demo);
+  writePNG(path.join(dbg, `map${mapIndex}${modoJogo?"-game":""}-compare.png`), compare(ref, demo));
 
   // Metrica objetiva: quantos pixels batem.
   let both = 0, onlyRef = 0, onlyDemo = 0;
@@ -170,8 +202,8 @@ function main() {
   }
   const cov = (100 * both / (both + onlyRef)).toFixed(1);
   console.log(`cobertura: ${cov}%  (faltando ${onlyRef}px, sobrando ${onlyDemo}px)`);
-  console.log(`-> assets/debug/map${mapIndex}-demo.png`);
-  console.log(`-> assets/debug/map${mapIndex}-compare.png`);
+  console.log(`-> assets/debug/map${mapIndex}${modoJogo?"-game":""}-demo.png`);
+  console.log(`-> assets/debug/map${mapIndex}${modoJogo?"-game":""}-compare.png`);
 }
 
 if (require.main === module) main();

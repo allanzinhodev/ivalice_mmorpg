@@ -90,7 +90,7 @@ const SCALE = 1;
  * (0..15) nem a faixa que o client desenha (7 andares acima do mar).
  */
 const BASE_Z = 7;
-const HEIGHT_PER_FLOOR = 3;
+const HEIGHT_PER_FLOOR = 2;
 
 /** Escolhe o chao pela altura -- so para o relevo ficar legivel na tela. */
 function groundForHeight(h) {

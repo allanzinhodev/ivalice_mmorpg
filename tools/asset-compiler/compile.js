@@ -311,6 +311,22 @@ function compileItems(table) {
         // TILE_HALF_H = 8: uma unidade de altura do FFTA vale meio tile em Y.
         elevation: /-map[0-9]+-/.test(file) ? 8 : 0,
         /*
+         * DONT HIDE: o relevo nao pode esconder o proprio relevo.
+         *
+         * MapView::calcFirstVisibleFloor corta os andares acima da camera
+         * assim que acha um tile com chao "geometricamente acima"
+         * (Tile::limitsFloorsView). Isso serve ao Tibia, onde o andar de
+         * cima e o teto de um predio e esconde-lo e o que deixa ver dentro.
+         *
+         * Aqui os andares sao RELEVO do mesmo terreno: a celula vizinha em
+         * (x+1, y+1, z-1) e o degrau ao lado, nao um teto. Com o corte
+         * ligado, subir num barranco apagava o resto do mapa.
+         *
+         * ThingAttrDontHide (22) e a valvula que ja existe para isso --
+         * limitsFloorsView consulta isDontHide() antes de cortar.
+         */
+        dontHide: true,
+        /*
          * MERAMENTE VISUAL: tudo em assets/items/ hoje e chao -- pedaco de
          * cenario, nao objeto de jogo. Sem esta marca o alvo do clique cai
          * no chao pelo fallback das funcoes getTop*Thing do client

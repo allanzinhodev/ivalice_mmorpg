@@ -71,8 +71,32 @@ const SPRITE = 32;
 // desloca meio tile em Y.
 const PX_PER_HEIGHT = TILE_HALF_H;
 
-// Altura do FFTA -> andar. Ver gen-map-ffta.js, que usa a mesma constante.
-const HEIGHT_PER_FLOOR = 3;
+/*
+ * Altura do FFTA -> andar. Ver gen-map-ffta.js, que usa a mesma constante.
+ *
+ * TEM que ser 2, e isso e geometria, nao gosto.
+ *
+ * Um andar sobe FLOOR_LIFT = 16px na tela. Uma unidade de altura vale
+ * PX_PER_HEIGHT = 8px. Entao um andar so pode valer 16/8 = 2 unidades; com
+ * qualquer outro valor a conta nao fecha e o relevo sai comprimido.
+ *
+ * Estava 3, e o erro era invisivel de perto: a posicao final e
+ * -FLOOR_LIFT*floor(h/3) - PX_PER_HEIGHT*(h%3), que perde 8px POR ANDAR.
+ *
+ *   h   arte   com 3      com 2
+ *   2   -16    -16 ok     -16 ok
+ *   3   -24    -16 -8     -24 ok
+ *   5   -40    -32 -8     -40 ok
+ *   7   -56    -40 -16    -56 ok
+ *
+ * O mapa ia ficando mais chapado quanto mais alto -- que e exatamente o
+ * sintoma de "o relevo nao aparece".
+ *
+ * O custo: com 2, a altura maxima do FFTA (31) pediria 16 andares e o OTBM so
+ * tem z de 0 a 15. Nenhum mapa usado hoje chega perto (o Aisenfield usa 2..7,
+ * o que da 3 andares), mas um mapa alto vai precisar de outra solucao.
+ */
+const HEIGHT_PER_FLOOR = FLOOR_LIFT / PX_PER_HEIGHT;
 
 // Height map: stride 16.
 //
