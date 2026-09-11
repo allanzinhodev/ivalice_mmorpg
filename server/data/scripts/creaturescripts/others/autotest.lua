@@ -32,6 +32,7 @@ local autotest = CreatureEvent("AutoTest")
 function autotest.onLogin(player)
 	local f = io.open(MARCADOR, 'r')
 	if not f then
+		print('[autotest] sem marcador em ' .. MARCADOR .. ', nada a fazer')
 		return true
 	end
 

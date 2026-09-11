@@ -49,7 +49,7 @@ truncamento erra o tile por um.
   `m_drawElevation` sem teto no client
 - **`JUMP`** — `player->getJump()`, exposto ao Lua como
   `getJump`/`setJump`
-- **Água → `zPattern` 2** — `Tile::isWater()`, `ThingAttrWater = 103`
+- **Água → última coluna de `patternZ`** — `Tile::isWater()`, `ThingAttrWater = 103`
 - **115 tiles classificados** — `tools/asset-compiler/tile-spec.js`
 
 ## Altura: o "bloco", e por que o terreno não empilha
@@ -119,7 +119,7 @@ andar. Fixe a altura e derive a largura da janela.
 | 61–81 | stone | só 61,62,63,66,69,70,77 | sim |
 | 82–114 | water | sim | **não** |
 
-Água é **andável** de propósito: o `zPattern` 2 pressupõe pisar nela.
+Água é **andável** de propósito: a troca de `patternZ` pressupõe pisar nela.
 
 ## Como gerar e rodar
 
@@ -144,7 +144,7 @@ Build: ver a skill `vcpkg`. Login **1/1**; a conta já existe em
   - de (11,10) para **(10,10)** — subida de 4 — com `JUMP=4` **passa**
   - de (11,10) para **(12,10)** — subida de 5 — com `JUMP=4` **barra**
 - **(14,14)** — pilha de 12 níveis, para provar que não há limite
-- **(6,10)–(10,12)** — poça de água, para o `zPattern` 2
+- **(6,10)–(10,12)** — poça de água, para a troca de `patternZ`
 - **y=20** — muro de pedra que bloqueia; **y=22** — pedra andável ao lado
 
 ## Como validar sem interação
@@ -174,17 +174,24 @@ o Y absoluto do boneco não serve, porque a câmera o segue.
 - [x] Tiles empilhados desenhando relevo com faces laterais
 - [x] Elevação acumulando sem teto (5 itens = 40px, 7 = 56px)
 - [x] Água renderizando, personagem em pé sobre ela
+- [x] Água trocando a arte da outfit — em terra o personagem aparece
+      inteiro, na água o corpo é cortado na cintura
 
 ## Falta validar
 
 - [ ] `JUMP=4` barrando o degrau de 5 (precisa andar)
-- [ ] Água trocando a outfit para o terceiro padrão — **só funciona se as
-      outfits tiverem 3 colunas de `patternZ`**; com 2 o código cai no
-      padrão da montaria e nada muda na tela
 - [ ] Caminhada nas 8 direções com velocidade uniforme
 - [ ] Picking à esquerda/acima da câmera
 
-> A água só muda de aparência se as outfits tiverem **3 colunas de
-> `patternZ`**. Com 2, o código cai no padrão da montaria — não quebra, mas
-> nada muda na tela. É o sinal de que falta a terceira coluna na
-> spritesheet.
+## O eixo Z da outfit não tem coluna de montaria
+
+No Tibia o `patternZ` é `0` a pé, `1` montado, `2` na água. **As outfits
+do ivalice não têm montaria**: `compile.js:buildOutfitGroup` emite
+`patternZ: 2` com `0` = seco e `1` = água, e as 4 spritesheets já trazem
+as duas colunas (medido: ~4400px opacos nas secas contra ~3200px nas de água,
+13 das 16 linhas -- o *attack* não tem versão molhada).
+
+Por isso `outfit.cpp` pede a **última** coluna que existir, não o índice 2
+fixo. Pedir o 2 e deixar o clamp resolver dá o mesmo resultado hoje por
+coincidência, e o resultado errado no dia em que a coluna de montaria
+aparecer -- a água passaria a desenhar a montaria.
