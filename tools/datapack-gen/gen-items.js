@@ -28,6 +28,10 @@ const ITEM_GROUP_CONTAINER = 2;
 // bit; nao existe forma de declarar isso pelo items.xml.
 const FLAG_HAS_HEIGHT = 1 << 3;
 
+// itemloader.h:118. O server so sabe que um item fica ACIMA da criatura
+// na pilha por este bit (items.cpp:744 -> iType.alwaysOnTop).
+const FLAG_ALWAYSONTOP = 1 << 13;
+
 const ITEM_ATTR_SERVERID = 0x10; // itemloader.h:62+
 const ITEM_ATTR_CLIENTID = 0x11;
 const ITEM_ATTR_SPEED = 0x14;
@@ -109,7 +113,22 @@ function buildOtb() {
     const n = root.child(group);
     // Sem FLAG_BLOCK_SOLID -> chao andavel. FLAG_HAS_HEIGHT entra nos tiles
     // de mapa para o server poder contar o empilhamento.
-    n.props.u32(item.hasHeight ? FLAG_HAS_HEIGHT : 0);
+    //
+    // A CAMADA 2 PRECISA DE FLAG_ALWAYSONTOP, senao o server e o client
+    // discordam de ONDE a criatura entra na pilha do tile:
+    //
+    //   client  Tile::addThing ordena por isOnTop(), lido do .dat
+    //   server  Tile::addThing ordena por alwaysOnTop, lido do .otb
+    //
+    // Com a flag so no .dat, o client punha a criatura ANTES da decoracao e
+    // o server DEPOIS. Ai o server mandava parseCreatureMove com um stackpos
+    // que no client era outra coisa, e o movimento morria com
+    // "no creature found to move" / "no thing at pos" -- que na tela e o
+    // personagem nao andando direito.
+    let flags = 0;
+    if (item.hasHeight) flags |= FLAG_HAS_HEIGHT;
+    if (item.decoration) flags |= FLAG_ALWAYSONTOP;
+    n.props.u32(flags);
     const u16 = (v) => {
       const b = Buffer.alloc(2);
       b.writeUInt16LE(v, 0);
