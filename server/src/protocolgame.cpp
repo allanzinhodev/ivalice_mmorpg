@@ -4170,7 +4170,17 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position& pos
 		sendInventoryItem(static_cast<slots_t>(i), player->getInventoryItem(static_cast<slots_t>(i)));
 	}
 
-	if (isOTC) {
+	/*
+	 * O store inbox (ITEM_STORE_INBOX = 23396) so vai se o datapack CONHECER
+	 * esse item.
+	 *
+	 * Num datapack enxuto os ids param muito antes de 23396. O client entao
+	 * recebe um id que nao existe no .dat, Item::create devolve id 0 e o
+	 * ProtocolGame ABORTA a mensagem inteira -- junto com o desenho do mapa
+	 * que vinha nela. O sintoma e a tela em branco, e o erro fala de
+	 * inventario, nao de mapa.
+	 */
+	if (isOTC && Item::items.getItemType(ITEM_STORE_INBOX).id != 0) {
 		sendInventoryItem(CONST_SLOT_STORE_INBOX, player->getStoreInbox());
 	}
 

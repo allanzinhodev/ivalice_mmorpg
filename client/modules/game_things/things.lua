@@ -42,6 +42,17 @@ local function hasModernAssetFeatures(datPath)
   return otfi:find('frame%-groups:%s*true') ~= nil or otfi:find('sprite%-data%-size:%s*4096') ~= nil
 end
 
+-- O .otfi declara se os sprites tem canal alfa (RGBA) em vez de RGB.
+local function hasSpriteAlphaChannel(datPath)
+  local otfiPath = datPath .. '.otfi'
+  if not g_resources.fileExists(otfiPath) then
+    return false
+  end
+
+  local otfi = g_resources.readFileContents(otfiPath)
+  return otfi ~= nil and otfi:find('transparency:%s*true') ~= nil
+end
+
 local function enableModernAssetFeatures()
   g_game.enableFeature(GameSpritesU32)
   g_game.enableFeature(GameIdleAnimations)
@@ -77,6 +88,19 @@ function load()
   local assetVersion = getVersionFromPath(datPath) or version
   if hasModernAssetFeatures(datPath) then
     enableModernAssetFeatures()
+  end
+
+  --[[
+    Canal alfa: 4 bytes por pixel em vez de 3.
+
+    Sem esta feature o SpriteManager le RGB num arquivo RGBA
+    (spritemanager.cpp:628-638). O stream sai de fase logo no primeiro
+    sprite, e o resto do arquivo e lido em posicoes erradas -- na tela isso
+    aparece como pixels coloridos esparsos em vez da arte, e NAO como erro.
+    Nada no log denuncia; so o desenho.
+  ]]
+  if hasSpriteAlphaChannel(datPath) then
+    g_game.enableFeature(GameSpritesAlphaChannel)
   end
 
   if assetVersion ~= version then

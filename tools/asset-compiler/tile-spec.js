@@ -42,12 +42,19 @@ const FAIXAS = [
   // stone alto: ocupa altura, e so alguns sao andaveis
   { de: 61, ate: 81, tipo: 'stone', walkable: false, displacement: true },
 
-  // water: nunca e degrau e nunca e andavel.
-  //
-  // 82-85 sao UMA animacao so (quatro fases do mesmo tile), o resto sao
-  // tiles distintos. Para a classificacao dao no mesmo; a diferenca importa
-  // quando o compilador montar os frames.
-  { de: 82, ate: 114, tipo: 'water', walkable: false, displacement: false, water: true },
+  /*
+   * water: ANDAVEL, e nunca degrau.
+   *
+   * Andavel de proposito. A spec original dizia que agua bloqueia, mas o
+   * recurso de "personagem na agua" -- que troca a outfit para o zPattern 2,
+   * o indice que antes era da montaria -- pressupoe que da para pisar nela.
+   * As duas regras se excluiam, e esta ganhou.
+   *
+   * 82-85 sao UMA animacao so (quatro fases do mesmo tile), o resto sao
+   * tiles distintos. Para a classificacao dao no mesmo; a diferenca importa
+   * quando o compilador montar os frames.
+   */
+  { de: 82, ate: 114, tipo: 'water', walkable: true, displacement: false, water: true },
 ];
 
 /** Os unicos andaveis da faixa 61-81. O resto dela bloqueia. */

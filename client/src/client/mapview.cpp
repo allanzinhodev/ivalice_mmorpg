@@ -426,7 +426,20 @@ void MapView::updateGeometry(const Size& visibleDimension, const Size& optimized
     m_drawDimension = visibleDimension + Size(3, 3);
     m_virtualCenterOffset = (m_drawDimension / 2 - Size(1, 1)).toPoint();
     m_visibleCenterOffset = m_virtualCenterOffset;
-    m_optimizedSize = m_drawDimension * g_sprites.spriteSize();
+
+    /*
+     * O framebuffer tem que caber o LOSANGO, nao a grade quadrada.
+     *
+     * Com WxH celulas, a projecao ocupa:
+     *   largura = (W + H) * TILE_HALF_W
+     *   altura  = (W + H) * TILE_HALF_H
+     *
+     * `m_drawDimension * spriteSize()` dava a caixa da grade ortogonal --
+     * estreita demais para o losango, que e mais largo que alto. O mapa
+     * ficava preso no canto superior esquerdo, cortado.
+     */
+    m_optimizedSize = Size((m_drawDimension.width() + m_drawDimension.height()) * Otc::TILE_HALF_W,
+                           (m_drawDimension.width() + m_drawDimension.height()) * Otc::TILE_HALF_H);
     requestVisibleTilesCacheUpdate();
 }
 
@@ -518,12 +531,14 @@ Position MapView::getPosition(const Point& point, const Size& mapSize)
      * O col/row que sai ja inclui o m_virtualCenterOffset, que a projecao
      * somou; subtrai-lo devolve o delta ate a camera.
      */
-    const float fx = realPos.x / static_cast<float>(Otc::TILE_HALF_W);
+    // Desconta a mesma origem que transformPositionTo2D soma.
+    const int origemX = (m_drawDimension.width() + m_drawDimension.height()) * Otc::TILE_HALF_W / 2;
+    const float fx = (realPos.x - origemX) / static_cast<float>(Otc::TILE_HALF_W);
     const float fy = realPos.y / static_cast<float>(Otc::TILE_HALF_H);
     const int col = static_cast<int>(std::floor((fx + fy) / 2.0f));
     const int row = static_cast<int>(std::floor((fy - fx) / 2.0f));
 
-    Point tilePos2D(col - m_virtualCenterOffset.x, row - m_virtualCenterOffset.y);
+    Point tilePos2D(col, row);
     if(tilePos2D.x + cameraPosition.x < 0 && tilePos2D.y + cameraPosition.y < 0)
         return Position();
 
@@ -578,16 +593,55 @@ void MapView::move(int x, int y)
 
 Rect MapView::calcFramebufferSource(const Size& destSize, bool inNextFrame)
 {
-    float scaleFactor = g_sprites.spriteSize()/(float)g_sprites.spriteSize();
-    Point drawOffset = ((m_drawDimension - m_visibleDimension - Size(1,1)).toPoint()/2) * g_sprites.spriteSize();
-    if(isFollowingCreature())
-        drawOffset += m_followingCreature->getWalkOffset(inNextFrame) * scaleFactor;
+    /*
+     * O RECORTE E CENTRADO NA CAMERA PROJETADA.
+     *
+     * A versao original calculava tudo em grade quadrada:
+     *   drawOffset = (drawDimension - visibleDimension)/2 * spriteSize
+     *
+     * Isso pressupoe que a celula (0,0) esta no canto do framebuffer e que a
+     * camera cai no meio da grade -- verdade no ortogonal, falso no losango.
+     * Aqui a camera pode estar em qualquer ponto do diamante, e centralizar
+     * pela grade deixava o mapa preso no canto superior esquerdo.
+     *
+     * A conta certa e direta: projeta a camera (delta zero, entao so a
+     * origem do losango), e recua meia viewport.
+     */
+    const Point cameraScreen = transformPositionTo2D(getCameraPosition(), getCameraPosition());
 
-    Size srcSize = destSize;
-    Size srcVisible = m_visibleDimension * g_sprites.spriteSize();
-    srcSize.scale(srcVisible, Fw::KeepAspectRatio);
-    drawOffset.x += (srcVisible.width() - srcSize.width()) / 2;
-    drawOffset.y += (srcVisible.height() - srcSize.height()) / 2;
+    /*
+     * QUANTO DO LOSANGO CABE NA TELA.
+     *
+     * Com WxH celulas visiveis, o diamante que elas formam mede
+     * (W+H)*TILE_HALF_W por (W+H)*TILE_HALF_H -- e sempre 2:1, largo e baixo.
+     *
+     * Usar `W*32 x H*16` (a caixa da grade) dava uma faixa de proporcao
+     * errada: esticada na viewport, ampliava tudo e o mapa saia de escala.
+     */
+    /*
+     * O RECORTE TEM A PROPORCAO DA JANELA, NAO A DO LOSANGO.
+     *
+     * `srcSize.scale(srcVisible, KeepAspectRatio)` encolhia o recorte ate
+     * caber na caixa do diamante (2:1). Como a viewport do jogo nao e 2:1, o
+     * resultado era esticado na hora de desenhar -- e a distorcao MUDAVA
+     * conforme a camera andava, porque o recorte se movia dentro de um
+     * framebuffer de outra proporcao.
+     *
+     * Fixando a ALTURA pelo que se quer ver e derivando a largura da janela,
+     * a escala fica constante: cada pixel do framebuffer vira um pixel da
+     * tela, e o mapa nao deforma ao andar.
+     */
+    const int lado = m_visibleDimension.width() + m_visibleDimension.height();
+    const int alturaVisivel = lado * Otc::TILE_HALF_H;
+    Size srcSize(destSize.width() * alturaVisivel / std::max<int>(destSize.height(), 1),
+                 alturaVisivel);
+
+    // Centro da celula da camera, menos metade do que cabe na tela.
+    Point drawOffset(cameraScreen.x + Otc::TILE_HALF_W - srcSize.width() / 2,
+                     cameraScreen.y + Otc::TILE_HALF_H - srcSize.height() / 2);
+
+    if (isFollowingCreature())
+        drawOffset += m_followingCreature->getWalkOffset(inNextFrame);
 
     return Rect(drawOffset, srcSize);
 }
@@ -693,9 +747,23 @@ int MapView::calcLastVisibleFloor()
  * grade.
  */
 Point MapView::transformPositionTo2D(const Position& position, const Position& relativePosition) {
-    const int col = m_virtualCenterOffset.x + (position.x - relativePosition.x);
-    const int row = m_virtualCenterOffset.y + (position.y - relativePosition.y);
-    return Point((col - row) * Otc::TILE_HALF_W,
+    const int col = position.x - relativePosition.x;
+    const int row = position.y - relativePosition.y;
+
+    /*
+     * A ORIGEM DO LOSANGO NAO E m_virtualCenterOffset PROJETADO.
+     *
+     * Somar o offset a col e row antes de projetar nao funciona: ele e igual
+     * nos dois eixos, e o (col - row) da projecao CANCELA o termo em X. O
+     * mapa perdia o centro horizontal e encostava no canto esquerdo.
+     *
+     * A origem e o vertice esquerdo do losango: metade da largura em X (para
+     * a coluna mais a esquerda, que e (0, drawDimension.height), cair em
+     * x = 0) e zero em Y (a celula do topo ja fica em y = 0).
+     */
+    const int origemX = (m_drawDimension.width() + m_drawDimension.height()) * Otc::TILE_HALF_W / 2;
+
+    return Point(origemX + (col - row) * Otc::TILE_HALF_W,
                  (col + row) * Otc::TILE_HALF_H);
 }
 
