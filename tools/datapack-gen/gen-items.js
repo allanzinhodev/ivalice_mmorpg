@@ -15,6 +15,7 @@
 const fs = require('fs');
 const path = require('path');
 const { isMapTile, isDecoration } = require('../asset-compiler/map-assets.js');
+const { classificarArquivo } = require('../asset-compiler/tile-spec.js');
 const { Props, Node, buildFile } = require('./otb-common');
 
 // --- constantes do formato (server/src/itemloader.h) ---
@@ -27,6 +28,10 @@ const ITEM_GROUP_CONTAINER = 2;
 // itemloader.h:104-108. O server so sabe que um item tem altura por este
 // bit; nao existe forma de declarar isso pelo items.xml.
 const FLAG_HAS_HEIGHT = 1 << 3;
+
+// itemloader.h:105-107. O bit 0 barra o passo; o 2 barra o pathfind.
+const FLAG_BLOCK_SOLID = 1 << 0;
+const FLAG_BLOCK_PATHFIND = 1 << 2;
 
 // itemloader.h:118. O server so sabe que um item fica ACIMA da criatura
 // na pilha por este bit (items.cpp:744 -> iType.alwaysOnTop).
@@ -70,17 +75,29 @@ function loadItems() {
   }).sort();
 
   const itens = files.map(function (f, i) {
+    // Classificacao do terreno (tile_NNN.png). null para os outros arquivos.
+    // Mesmo modulo que o compile.js le -- manter a classificacao em dois
+    // lugares e como o hasHeight divergiu antes.
+    const spec = classificarArquivo(f);
+
     return {
       id: 100 + i,
-      name: f.replace(/\.png$/i, '').replace(/^\d+-/, ''),
+      name: spec ? `${spec.tipo}_${f.replace(/\.png$/i, '').replace(/^tile_/, '')}`
+                 : f.replace(/\.png$/i, '').replace(/^\d+-/, ''),
       speed: 110,
-      // Todo tile de mapa carrega altura. E o que faz Tile::hasHeight(n)
-      // contar (server/src/tile.cpp:127).
       // A decoracao da camada 2 NAO e chao: nao se anda sobre ela e ela nao
       // carrega altura. Precisa de group != GROUND, senao Item::isGroundTile()
       // e verdadeiro no server e IOMap a trata como o chao da tile.
       decoration: isDecoration(f),
-      hasHeight: isMapTile(f) && !isDecoration(f),
+      // Altura: e o que Tile::hasHeight(n) CONTA (server/src/tile.cpp:127), e
+      // e contra esse contador que o JUMP do personagem e comparado. Sem a
+      // flag o contador fica em zero e nada e transponivel.
+      //
+      // Para os tiles classificados quem manda e o `displacement` da spec:
+      // planta e pedra baixa sao pisaveis/atravessaveis mas nao sao degrau.
+      hasHeight: spec ? spec.displacement : (isMapTile(f) && !isDecoration(f)),
+      // Nao andavel -> bloqueia o passo E o pathfind.
+      blocking: spec ? !spec.walkable : false,
     };
   });
 
@@ -128,6 +145,10 @@ function buildOtb() {
     let flags = 0;
     if (item.hasHeight) flags |= FLAG_HAS_HEIGHT;
     if (item.decoration) flags |= FLAG_ALWAYSONTOP;
+    // Nao andavel: bloqueia o passo e tambem o pathfind. Sem o segundo, o
+    // autowalk tenta rotas por cima da pedra e o personagem trava no caminho
+    // em vez de contornar.
+    if (item.blocking) flags |= FLAG_BLOCK_SOLID | FLAG_BLOCK_PATHFIND;
     n.props.u32(flags);
     const u16 = (v) => {
       const b = Buffer.alloc(2);

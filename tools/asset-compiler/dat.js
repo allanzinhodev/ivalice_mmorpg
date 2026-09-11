@@ -46,6 +46,12 @@ const ATTR_FULL_GROUND = 30;
  */
 const ATTR_VISUAL_ONLY = 102;
 
+// O tile e agua: quem pisa nele desenha com zPattern 2.
+// Flag SEM CARGA -- atributo com payload precisaria de case proprio no
+// ThingType::unserialize do client, e esquece-lo dessincroniza a leitura
+// do arquivo inteiro.
+const ATTR_WATER = 103;
+
 // Deslocamento de QUEM PISA na celula. Nao confundir com ATTR_DISPLACEMENT
 // (24), que move a ARTE do item -- este move a criatura e deixa o chao onde
 // esta. Carrega dois int16, entao o client precisa do caso proprio em
@@ -135,6 +141,7 @@ function writeAttributes(w, attrs) {
   if (attrs.dontHide) w.u8(ATTR_DONT_HIDE);
   if (attrs.fullGround) w.u8(ATTR_FULL_GROUND);
   if (attrs.visualOnly) w.u8(ATTR_VISUAL_ONLY);
+  if (attrs.water) w.u8(ATTR_WATER);
   if (attrs.standOffset && (attrs.standOffset[0] || attrs.standOffset[1])) {
     w.u8(ATTR_STAND_OFFSET);
     w.i16(attrs.standOffset[0]);
@@ -175,6 +182,6 @@ function buildDat({ signature, items, outfits, effects, missiles }) {
 
 module.exports = {
   FrameGroup, FRAME_GROUP_NAMES,
-  ATTR_GROUND, ATTR_ON_TOP, ATTR_DISPLACEMENT, ATTR_ELEVATION, ATTR_DONT_HIDE, ATTR_FULL_GROUND, ATTR_VISUAL_ONLY, ATTR_STAND_OFFSET, ATTR_LAST,
+  ATTR_GROUND, ATTR_ON_TOP, ATTR_DISPLACEMENT, ATTR_ELEVATION, ATTR_DONT_HIDE, ATTR_FULL_GROUND, ATTR_VISUAL_ONLY, ATTR_WATER, ATTR_STAND_OFFSET, ATTR_LAST,
   buildDat, Writer,
 };

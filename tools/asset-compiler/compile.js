@@ -27,6 +27,7 @@ const { buildSpr, SPRITE_SIZE } = require('./spr.js');
 const { buildCwm } = require('./cwm.js');
 const { slice } = require('./mosaic.js');
 const { isDecoration, mapIndexOf } = require('./map-assets.js');
+const { classificarArquivo } = require('./tile-spec.js');
 const { buildDat, FrameGroup, FRAME_GROUP_NAMES } = require('./dat.js');
 
 const ROOT = path.resolve(__dirname, '../..');
@@ -376,6 +377,10 @@ function compileItems(table) {
     const chave = info ? (info.map + ':' + info.layer + ':' + info.tile) : null;
     const standOffset = (chave && deslocamentos.get(chave)) || [0, 0];
 
+    // Classificacao do terreno (tile_NNN.png). null para qualquer outro
+    // arquivo -- os tres chaos desenhados a mao, por exemplo.
+    const spec = classificarArquivo(file);
+
 
     items.push({
       name: file,
@@ -418,6 +423,10 @@ function compileItems(table) {
         displacement: displacementFor([0, 0], cols, rows, CELL),
         standOffset,
         fullGround: true,
+        // Agua: quem pisa desenha com zPattern 2. A classificacao vem de
+        // tile-spec.js, o mesmo modulo que o gen-items.js le para as flags do
+        // .otb -- manter isso em dois lugares e como o hasHeight divergiu.
+        water: !!(spec && spec.water),
         /*
          * ELEVATION ZERO: quem carrega a altura sao os itens invisiveis.
          *
