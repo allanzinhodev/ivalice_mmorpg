@@ -224,6 +224,34 @@ function main() {
 
   const ref1 = readPNG(path.join(ASSETS, 'mapref/aisenfield.png'));
   const ref2 = readPNG(path.join(ASSETS, 'mapref/aisenfield2.png'));
+
+  /*
+   * aisenfield4.png -- o resto da camada 2.
+   *
+   * A camada 2 estava INCOMPLETA na fonte: 73 pixels aparecem no
+   * aisenfield3 (o resultado esperado) e nao aparecem no aisenfield2. Eram
+   * exatamente os 73 que a reconstrucao nunca cobria, e que ficaram sem
+   * explicacao ate alguem abrir a imagem e olhar.
+   *
+   * Nao e um tile novo: cai sobre celulas que JA tem decoracao. Por isso e
+   * mesclado no ref2 antes do recorte, em vez de virar uma terceira camada
+   * -- o que produziria um segundo item onTop na mesma pilha e mexeria no
+   * stackpos, que ja foi causa de bug de movimentacao aqui.
+   */
+  const ref4Path = path.join(ASSETS, 'mapref/aisenfield4.png');
+  if (fs.existsSync(ref4Path)) {
+    const ref4 = readPNG(ref4Path);
+    let mesclados = 0;
+    for (let y = 0; y < Math.min(ref2.height, ref4.height); y++) {
+      for (let x = 0; x < Math.min(ref2.width, ref4.width); x++) {
+        const o4 = ref4.offset(x, y);
+        if (ref4.pixels[o4 + 3] === 0) continue;   // transparente: nao apaga
+        ref4.pixels.copy(ref2.pixels, ref2.offset(x, y), o4, o4 + 4);
+        mesclados++;
+      }
+    }
+    console.log(`aisenfield4: ${mesclados} px mesclados na camada 2`);
+  }
   const alvoPath = path.join(ASSETS, 'mapref/aisenfield3.png');
   // aisenfield3 e as duas camadas juntas -- o resultado esperado. Sem ele,
   // comparar so contra a camada 1 diria que a decoracao "sobra".
