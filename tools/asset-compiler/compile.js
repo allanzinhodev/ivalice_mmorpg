@@ -364,22 +364,24 @@ function compileItems(table) {
     const decoracao = isDecoration(file);
 
     /*
-     * A ANCORA E O DESLOCAMENTO DA CELULA.
+     * O offset da celula desloca QUEM PISA nela, nao a arte.
      *
-     * displacementFor recebe onde o canto do quadro deve cair relativo a
-     * `dest`, entao mover a arte 3px para a direita e ancorar em +3 em x. O
-     * editor ja grava nessa convencao (as setas movem a celula na direcao
-     * esperada), e a ancora sai igual ao offset.
+     * Uma versao anterior somava isto na ancora, o que virava
+     * ThingAttrDisplacement e movia o TILE. Errado: o mapa e a referencia
+     * visual, e mover a arte desalinharia o mosaico inteiro. O que precisa de
+     * ajuste fino e onde o personagem apoia o pe -- num bloco isometrico
+     * desenhado a mao, o apoio raramente cai no centro geometrico do losango.
      */
     const info = mapIndexOf(file);
     const chave = info ? (info.map + ':' + info.layer + ':' + info.tile) : null;
-    const ancora = (chave && deslocamentos.get(chave)) || [0, 0];
+    const standOffset = (chave && deslocamentos.get(chave)) || [0, 0];
+
 
     items.push({
       name: file,
       attrs: decoracao ? {
         onTop: true,
-        displacement: displacementFor(ancora, cols, rows, CELL),
+        displacement: displacementFor([0, 0], cols, rows, CELL),
         dontHide: true,
         visualOnly: true,
       } : {
@@ -413,7 +415,8 @@ function compileItems(table) {
          * devolve o displacement que a produz, seja qual for o tamanho da
          * celula.
          */
-        displacement: displacementFor(ancora, cols, rows, CELL),
+        displacement: displacementFor([0, 0], cols, rows, CELL),
+        standOffset,
         fullGround: true,
         /*
          * ELEVATION ZERO: quem carrega a altura sao os itens invisiveis.

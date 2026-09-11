@@ -45,6 +45,12 @@ const ATTR_FULL_GROUND = 30;
  * registra um atributo que ninguem le. O numero tem que casar com o enum.
  */
 const ATTR_VISUAL_ONLY = 102;
+
+// Deslocamento de QUEM PISA na celula. Nao confundir com ATTR_DISPLACEMENT
+// (24), que move a ARTE do item -- este move a criatura e deixa o chao onde
+// esta. Carrega dois int16, entao o client precisa do caso proprio em
+// ThingType::unserialize.
+const ATTR_STAND_OFFSET = 103;
 const ATTR_LAST = 0xff;
 
 // --- frame groups. TEM que bater com FrameGroupType no client e no
@@ -129,6 +135,11 @@ function writeAttributes(w, attrs) {
   if (attrs.dontHide) w.u8(ATTR_DONT_HIDE);
   if (attrs.fullGround) w.u8(ATTR_FULL_GROUND);
   if (attrs.visualOnly) w.u8(ATTR_VISUAL_ONLY);
+  if (attrs.standOffset && (attrs.standOffset[0] || attrs.standOffset[1])) {
+    w.u8(ATTR_STAND_OFFSET);
+    w.i16(attrs.standOffset[0]);
+    w.i16(attrs.standOffset[1]);
+  }
   w.u8(ATTR_LAST);
 }
 
@@ -164,6 +175,6 @@ function buildDat({ signature, items, outfits, effects, missiles }) {
 
 module.exports = {
   FrameGroup, FRAME_GROUP_NAMES,
-  ATTR_GROUND, ATTR_ON_TOP, ATTR_DISPLACEMENT, ATTR_ELEVATION, ATTR_DONT_HIDE, ATTR_FULL_GROUND, ATTR_VISUAL_ONLY, ATTR_LAST,
+  ATTR_GROUND, ATTR_ON_TOP, ATTR_DISPLACEMENT, ATTR_ELEVATION, ATTR_DONT_HIDE, ATTR_FULL_GROUND, ATTR_VISUAL_ONLY, ATTR_STAND_OFFSET, ATTR_LAST,
   buildDat, Writer,
 };

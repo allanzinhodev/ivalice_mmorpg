@@ -142,6 +142,18 @@ enum ThingAttr : uint8 {
     // carga cai no `default`, que o registra como true.
     ThingAttrVisualOnly       = 102,
 
+    // Deslocamento de QUEM PISA na celula, em pixels de tela.
+    //
+    // Nao confundir com ThingAttrDisplacement (24), que move a ARTE do
+    // proprio item. Este move a criatura sobre o tile e deixa o chao onde
+    // esta -- e o ajuste fino de onde o personagem apoia o pe, para o boneco
+    // cair no lugar certo de um bloco isometrico desenhado a mao.
+    //
+    // Carrega dois int16 (x, y), entao PRECISA de um caso proprio em
+    // ThingType::unserialize: sem ele o `default` o trataria como atributo
+    // sem carga e os 4 bytes seguintes dessincronizariam a leitura inteira.
+    ThingAttrStandOffset      = 103,
+
     ThingAttrFloorChange      = 252,
     ThingAttrNoMoveAnimation  = 253, // 10.10: real value is 16, but we need to do this for backwards compatibility
     ThingAttrChargeable       = 254, // deprecated
@@ -356,6 +368,7 @@ public:
     bool isFullGround() { return m_attribs.has(ThingAttrFullGround); }
     bool isIgnoreLook() { return m_attribs.has(ThingAttrLook); }
     bool isVisualOnly() { return m_attribs.has(ThingAttrVisualOnly); }
+    Point getStandOffset() { return m_standOffset; }
     bool isCloth() { return m_attribs.has(ThingAttrCloth); }
     bool isMarketable() { return m_attribs.has(ThingAttrMarket); }
     bool isUsable() { return m_attribs.has(ThingAttrUsable); }
@@ -388,6 +401,7 @@ private:
 
     Size m_size;
     Point m_displacement;
+    Point m_standOffset;
     AnimatorPtr m_animator;
     AnimatorPtr m_idleAnimator;
 

@@ -48,6 +48,7 @@ ThingType::ThingType()
     m_animationPhases = 0;
     m_layers = 0;
     m_elevation = 0;
+    m_standOffset = Point();
     m_upgradeClassification = 0;
     m_opacity = 1.0f;
 }
@@ -81,6 +82,14 @@ void ThingType::serialize(const FileStreamPtr& fin)
 
         fin->addU8(attr);
         switch(attr) {
+            case ThingAttrStandOffset: {
+                // Dois int16 com sinal, como o displacement: o .dat guarda
+                // u16 e o valor negativo chega como complemento de dois.
+                m_standOffset.x = static_cast<int16_t>(fin->getU16());
+                m_standOffset.y = static_cast<int16_t>(fin->getU16());
+                m_attribs.set(attr, true);
+                break;
+            }
             case ThingAttrDisplacement: {
                 // Grava de volta como u16 em complemento de dois, para que um
                 // displacement negativo sobreviva ao round-trip (ver a leitura

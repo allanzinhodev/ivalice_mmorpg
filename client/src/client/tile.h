@@ -127,6 +127,7 @@ public:
     std::vector<ThingPtr> getThings() { return m_things; }
     std::vector<EffectPtr> getEffects() { return m_effects; }
     ItemPtr getGround();
+    Point getStandOffset();
     int getGroundSpeed();
     bool isBlocking() { return m_blocking != 0; }
     uint8 getMinimapColorByte();

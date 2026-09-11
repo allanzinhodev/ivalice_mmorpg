@@ -138,6 +138,27 @@ void Tile::drawBottom(const Point& dest, LightView* lightView)
     }
 }
 
+/*
+ * Deslocamento de QUEM PISA nesta celula.
+ *
+ * Vem do chao (ThingAttrStandOffset) e move so a criatura -- a arte do tile
+ * fica onde esta. E o oposto de ThingAttrDisplacement, que move a arte e
+ * deixa quem pisa no lugar.
+ *
+ * Serve para o ajuste fino de onde o personagem apoia o pe: num bloco
+ * isometrico desenhado a mao, o ponto de apoio raramente cai no centro
+ * geometrico do losango.
+ */
+Point Tile::getStandOffset()
+{
+    const ItemPtr& ground = getGround();
+    if (!ground)
+        return Point();
+    // rawGetThingType devolve um ponteiro CRU, nao um ThingTypePtr.
+    ThingType* type = ground->rawGetThingType();
+    return type ? type->getStandOffset() : Point();
+}
+
 void Tile::drawCreatures(const Point& dest, LightView* lightView)
 {
     if (m_fill != Color::alpha)
@@ -154,6 +175,11 @@ void Tile::drawCreatures(const Point& dest, LightView* lightView)
         const int cdy = creature->getPrewalkingPosition().y - m_position.y;
         Point creatureDest(dest.x + (cdx - cdy) * Otc::TILE_HALF_W,
                            dest.y + (cdx + cdy) * Otc::TILE_HALF_H - m_drawElevation);
+        // A criatura caminhando ainda pertence a ESTA tile, mas o apoio dela
+        // e o da tile de DESTINO -- por isso o offset sai de la, nao daqui.
+        const TilePtr& destTile = g_map.getTile(creature->getPrewalkingPosition());
+        if (destTile)
+            creatureDest += destTile->getStandOffset();
         creature->draw(creatureDest, true, lightView);
     }
 
@@ -168,7 +194,7 @@ void Tile::drawCreatures(const Point& dest, LightView* lightView)
         CreaturePtr creature = thing->static_self_cast<Creature>();
         if (!creature || creature->isWalking())
             continue;
-        creature->draw(dest - elevationOffset(m_drawElevation), true, lightView);
+        creature->draw(dest - elevationOffset(m_drawElevation) + getStandOffset(), true, lightView);
     }
 }
 
@@ -188,6 +214,10 @@ void Tile::drawTop(const Point& dest, LightView* lightView)
         const int cdy = creature->getPrewalkingPosition().y - m_position.y;
         Point creatureDest(dest.x + (cdx - cdy) * Otc::TILE_HALF_W,
                            dest.y + (cdx + cdy) * Otc::TILE_HALF_H - m_drawElevation);
+        // Mesmo caso do drawCreatures: o apoio vem da tile de DESTINO.
+        const TilePtr& destTile = g_map.getTile(creature->getPrewalkingPosition());
+        if (destTile)
+            creatureDest += destTile->getStandOffset();
         creature->draw(creatureDest, true, lightView);
     }
 
@@ -202,7 +232,7 @@ void Tile::drawTop(const Point& dest, LightView* lightView)
         CreaturePtr creature = thing->static_self_cast<Creature>();
         if (!creature || creature->isWalking())
             continue;
-        creature->draw(dest - elevationOffset(m_drawElevation), true, lightView);
+        creature->draw(dest - elevationOffset(m_drawElevation) + getStandOffset(), true, lightView);
     }
 
     // effects
