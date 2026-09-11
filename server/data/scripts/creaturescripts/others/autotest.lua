@@ -47,6 +47,18 @@ function autotest.onLogin(player)
 	end
 
 	local destino = Position(tonumber(x), tonumber(y), 7)
+
+	--[[
+	  O JUMP nao da para testar daqui.
+
+	  teleportTo IGNORA Game::internalMoveCreature, que e onde a regra vive --
+	  um teste por teleporte passaria sempre e nao provaria nada. E
+	  player:move() nao existe no Lua deste fork.
+
+	  Fica para validacao manual: com JUMP=4, andando de (11,10) para
+	  (10,10) -- degrau de 4 -- tem que PASSAR, e para (12,10) -- degrau de
+	  5 -- tem que BARRAR.
+	]]
 	-- addEvent porque teleportar DENTRO do onLogin acontece antes de o client
 	-- receber o mapa; o player aparece no lugar certo mas a tela fica na
 	-- posicao antiga ate o primeiro passo.

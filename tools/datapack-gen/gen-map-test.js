@@ -133,6 +133,23 @@ function celula(x, y) {
   }
 
   /*
+   * DEGRAUS ABRUPTOS, para testar o limite do JUMP.
+   *
+   * A rampa acima sobe de 1 em 1, entao nunca exercita o teto: qualquer JUMP
+   * >= 1 vence todos os degraus dela. Aqui o salto e do chao (altura 0)
+   * direto para a altura alvo, na coluna y=10:
+   *
+   *   (10,10) altura 4  -> subida 4: com JUMP=4, PASSA (no limite)
+   *   (12,10) altura 5  -> subida 5: com JUMP=4, BARRA
+   *
+   * Os vizinhos ficam no chao de proposito, para a subida ser a altura
+   * inteira do degrau.
+   */
+  if (y === 10 && (x === 10 || x === 12)) {
+    return { ground: GROUND, altura: x === 10 ? 4 : 5 };
+  }
+
+  /*
    * PILHA ALTA, para provar que nao ha limite.
    *
    * 12 niveis = 96px de deslocamento. O client guardava a elevacao num
