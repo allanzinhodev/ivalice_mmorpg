@@ -11,7 +11,9 @@
  */
 
 const {
-  ATTR_GROUND, ATTR_ON_TOP, ATTR_DISPLACEMENT, ATTR_ELEVATION, ATTR_DONT_HIDE, ATTR_FULL_GROUND, ATTR_VISUAL_ONLY, ATTR_LAST,
+  ATTR_GROUND, ATTR_ON_BOTTOM, ATTR_ON_TOP, ATTR_DISPLACEMENT, ATTR_ELEVATION,
+  ATTR_DONT_HIDE, ATTR_FULL_GROUND, ATTR_VISUAL_ONLY, ATTR_WATER,
+  ATTR_STAND_OFFSET, ATTR_LAST,
 } = require('./dat.js');
 
 class Reader {
@@ -32,10 +34,15 @@ function readAttributes(r) {
       case ATTR_GROUND: attrs.ground = r.u16(); break;
       case ATTR_DISPLACEMENT: attrs.displacement = [r.i16(), r.i16()]; break;
       case ATTR_ELEVATION: attrs.elevation = r.u16(); break;
+      case ATTR_ON_BOTTOM: attrs.onBottom = true; break;
       case ATTR_ON_TOP: attrs.onTop = true; break;
       case ATTR_DONT_HIDE: attrs.dontHide = true; break;
       case ATTR_FULL_GROUND: attrs.fullGround = true; break;
       case ATTR_VISUAL_ONLY: attrs.visualOnly = true; break;
+      case ATTR_WATER: attrs.water = true; break;
+      // COM carga: dois int16. Esquecer de consumi-los aqui faria os 4 bytes
+      // virarem o proximo atributo -- o mesmo erro que o client cometeria.
+      case ATTR_STAND_OFFSET: attrs.standOffset = [r.i16(), r.i16()]; break;
       default:
         throw new Error(`atributo ${a} inesperado em 0x${(r.p - 1).toString(16)} -- ` +
           'dat.js nao emite este, entao o arquivo ou o parser estao errados');

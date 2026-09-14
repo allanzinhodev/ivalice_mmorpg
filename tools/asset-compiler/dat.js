@@ -55,11 +55,24 @@ const ATTR_VISUAL_ONLY = 102;
 // do arquivo inteiro.
 const ATTR_WATER = 103;
 
-// Deslocamento de QUEM PISA na celula. Nao confundir com ATTR_DISPLACEMENT
-// (24), que move a ARTE do item -- este move a criatura e deixa o chao onde
-// esta. Carrega dois int16, entao o client precisa do caso proprio em
-// ThingType::unserialize.
-const ATTR_STAND_OFFSET = 103;
+/*
+ * Deslocamento de QUEM PISA na celula. Nao confundir com ATTR_DISPLACEMENT
+ * (24), que move a ARTE do item -- este move a criatura e deixa o chao onde
+ * esta.
+ *
+ * Carrega dois int16, entao o client precisa do caso proprio em
+ * ThingType::unserialize -- sem ele os 4 bytes do valor viram o proximo
+ * atributo e o arquivo inteiro dessincroniza a partir dali.
+ *
+ * ERA 103, O MESMO NUMERO DO ATTR_WATER. Colisao de verdade, nao teorica: o
+ * client conhece 103 como ThingAttrWater, que e flag SEM carga, entao um
+ * standOffset nao-zero fazia o client nao consumir os 4 bytes. Ficou latente
+ * so porque os offsets medidos hoje sao [0,0] (compile.js:383) e a escrita e
+ * condicional.
+ *
+ * 104 esta livre: o client vai de 103 direto para ThingAttrFloorChange (252).
+ */
+const ATTR_STAND_OFFSET = 104;
 const ATTR_LAST = 0xff;
 
 // --- frame groups. TEM que bater com FrameGroupType no client e no
