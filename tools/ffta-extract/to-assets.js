@@ -43,9 +43,23 @@ const MAP_BASE = 0x569104;
 const MAP_REC = 0x58;
 const MAP_COUNT = 163;
 
-// Largura util do height map. As colunas 14 e 15 sao endereco (ver cabecalho).
+/*
+ * O height map tem stride 16, e AS 16 COLUNAS SAO TERRENO.
+ *
+ * Antes daqui saiam 14, seguindo o comentario "it's addresses, not values"
+ * do RenderHeightMap.cs do FFTAUtils. Medido nos 159 mapas que descomprimem:
+ * em NENHUM as colunas 14 e 15 contem multiplo de 32 -- os valores sao
+ * alturas normais que continuam o padrao do terreno.
+ *
+ * O sintoma era a grade nao encaixar na arte: no Aizenfield uma grade de
+ * 14x13 cobria 67,7% dos pixels opacos, enquanto 15x14 cobre 78% e 16x15 ja
+ * transborda. Faltavam colunas, nao sobrava.
+ *
+ * O filtro de "parece endereco" continua, por celula: se algum mapa de fato
+ * guardar endereco ali, ele vira null em vez de virar terreno falso.
+ */
 const HM_STRIDE = 16;
-const HM_COLUNAS_UTEIS = 14;
+const HM_COLUNAS_UTEIS = 16;
 
 function escrever(rel, dado) {
   const destino = path.join(SAIDA, rel);

@@ -23,8 +23,8 @@
  * O QUE AS TRES IMAGENS MOSTRARAM (Aizenfield, mapa 150)
  *
  * A segunda e a util. A grade cobre o terreno jogavel e para na moldura de
- * pedra -- 67,7% dos pixels opacos, com zero transbordo. Os 32% restantes
- * sao a borda, que aparece no desenho e nao e celula.
+ * pedra -- 77,3% dos pixels opacos, com zero transbordo. O resto e a borda,
+ * que aparece no desenho e nao e celula.
  *
  * A terceira prova um ponto que vale para o motor: com o deslocamento
  * aplicado, as celulas altas do norte SOEM da moldura e flutuam acima da
@@ -131,21 +131,18 @@ function main() {
   /*
    * Onde fica a celula (col,row) na arte?
    *
-   * Nao da para derivar dos extremos da imagem, e a razao importa: o
-   * heightmap de 14x13 celulas mede (14+13)*16 = 432px de largura, mas a
-   * arte tem 464. As duas celulas de diferenca sao a MOLDURA DE PEDRA das
-   * bordas, que aparece no desenho e nao e terreno jogavel.
+   * Obtido por busca: para cada (OX,OY), quantos pixels opacos da arte caem
+   * dentro de algum losango da grade, penalizando o que transborda para o
+   * vazio. O otimo cobre 77,3% com ZERO transbordo; o resto e a moldura de
+   * pedra das bordas, que esta desenhada e nao e celula.
    *
-   * Por isso o offset foi obtido por busca: para cada (OX,OY), quantos
-   * pixels opacos da arte caem dentro de algum losango da grade, penalizando
-   * o que transborda para o vazio. O otimo cobre 67,7% dos pixels opacos com
-   * ZERO transbordo -- os 32% restantes sao exatamente a moldura.
-   *
-   * Cobertura maior que essa so seria possivel invadindo a borda, o que
-   * significaria grade errada, nao alinhamento melhor.
+   * Foi assim que o corte de colunas do height map se revelou errado: com as
+   * 14 colunas antigas o melhor encaixe dava 67,7%, e uma grade de 15x14
+   * cobria 78% -- ou seja, FALTAVAM colunas. Ver o comentario em
+   * tools/ffta-extract/to-assets.js.
    */
   const OX = 208;
-  const OY = 26;
+  const OY = 28;
 
   for (const comRelevo of [false, true]) {
     const img = Image.blank(base.width, base.height);

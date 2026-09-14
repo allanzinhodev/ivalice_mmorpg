@@ -1,0 +1,91 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>world-editor — ivalice</title>
+<style>
+  :root {
+    --fundo: #1b1d21;
+    --painel: #24272c;
+    --borda: #35393f;
+    --texto: #d8dade;
+    --fraco: #8b9099;
+    --destaque: #6fb3e0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--fundo); color: var(--texto);
+    font: 13px/1.5 system-ui, -apple-system, Segoe UI, sans-serif;
+    display: grid; grid-template-columns: 1fr 260px; height: 100vh;
+  }
+  #palco { position: relative; overflow: auto; display: grid; place-items: center; }
+  canvas { image-rendering: pixelated; cursor: crosshair; }
+
+  aside {
+    background: var(--painel); border-left: 1px solid var(--borda);
+    padding: 16px; overflow-y: auto;
+  }
+  h1 { font-size: 14px; margin: 0 0 4px; }
+  .sub { color: var(--fraco); font-size: 12px; margin-bottom: 16px; }
+  fieldset { border: 1px solid var(--borda); border-radius: 6px; margin: 0 0 14px; padding: 10px 12px; }
+  legend { color: var(--fraco); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; padding: 0 4px; }
+  label { display: flex; align-items: center; gap: 8px; margin: 6px 0; }
+  label span { flex: 1; }
+  input[type=number] { width: 64px; background: #191b1f; color: var(--texto);
+    border: 1px solid var(--borda); border-radius: 4px; padding: 4px 6px; font: inherit; }
+  input[type=checkbox] { accent-color: var(--destaque); }
+  button { background: #2f333a; color: var(--texto); border: 1px solid var(--borda);
+    border-radius: 4px; padding: 6px 10px; font: inherit; cursor: pointer; }
+  button:hover { background: #383d45; }
+  button:disabled { opacity: .4; cursor: default; }
+
+  #sel { font-variant-numeric: tabular-nums; }
+  #sel b { color: var(--destaque); }
+  .dica { color: var(--fraco); font-size: 11px; margin-top: 10px; }
+  #status { color: var(--fraco); font-size: 11px; min-height: 1.5em; }
+  .escala { display: flex; gap: 2px; margin-top: 6px; }
+  .escala i { flex: 1; height: 10px; border-radius: 2px; }
+  .escala-nums { display: flex; justify-content: space-between; color: var(--fraco); font-size: 10px; }
+</style>
+
+<div id="palco"><canvas id="tela"></canvas></div>
+
+<aside>
+  <h1>world-editor</h1>
+  <div class="sub" id="titulo">carregando…</div>
+
+  <fieldset>
+    <legend>camadas</legend>
+    <label><input type="checkbox" id="c1" checked><span>1 — atrás</span></label>
+    <label><input type="checkbox" id="c2" checked><span>2 — meio</span></label>
+    <label><input type="checkbox" id="c3" checked><span>3 — frente</span></label>
+  </fieldset>
+
+  <fieldset>
+    <legend>grade</legend>
+    <label><input type="checkbox" id="grade" checked><span>desenhar</span></label>
+    <label><input type="checkbox" id="relevo"><span>aplicar relevo (−8px/nível)</span></label>
+    <label><input type="checkbox" id="cores" checked><span>cor por altura</span></label>
+    <label><input type="checkbox" id="numeros"><span>número da altura</span></label>
+    <label><span>zoom</span><input type="number" id="zoom" min="1" max="4" value="2"></label>
+    <label><span>offset X</span><input type="number" id="ox" value="208" step="8"></label>
+    <label><span>offset Y</span><input type="number" id="oy" value="28" step="2"></label>
+    <button id="medir" style="width:100%;margin-top:6px">medir encaixe</button>
+    <div class="escala" id="escala"></div>
+    <div class="escala-nums"><span id="emin">–</span><span id="emax">–</span></div>
+  </fieldset>
+
+  <fieldset>
+    <legend>célula</legend>
+    <div id="sel">nenhuma</div>
+    <label><span>altura</span><input type="number" id="altura" min="0" max="31" disabled></label>
+    <div style="display:flex; gap:6px; margin-top:8px">
+      <button id="menos" disabled>−1</button>
+      <button id="mais" disabled>+1</button>
+      <button id="vazia" disabled>vazia</button>
+    </div>
+    <div class="dica">Clique numa célula. Roda do mouse sobe/desce a altura.</div>
+  </fieldset>
+
+  <div id="status"></div>
+</aside>
+
+<script src="editor.js"></script>
