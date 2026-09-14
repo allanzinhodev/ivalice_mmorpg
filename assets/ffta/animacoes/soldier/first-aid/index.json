@@ -1,0 +1,14 @@
+{
+ "job": "soldier",
+ "acao": "first-aid",
+ "nota": "Frames exportados do sprite view do mGBA. Uma pose costuma ser varios OBJs (corpo, arma, efeito) -- cada um e um arquivo. PNG indexado, como o emulador produziu; nao foi convertido. First Aid e aprendida pelo Soldier (Hume) e pelo Warrior (Bangaa) -- ability #76, animationId 74.",
+ "frames": [
+  {
+   "arquivo": "01.png",
+   "origem": "firstaid.png",
+   "largura": 8,
+   "altura": 8,
+   "bits": 8
+  }
+ ]
+}
