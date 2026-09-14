@@ -85,3 +85,6 @@ map-editor/editor.html
 # Despejos de VRAM do emulador: binario cru, centenas de MB por captura.
 # O que vale e o PNG extraido, nao o despejo.
 tools/ffta-vram/dumps/
+
+# Renderizacoes de inspecao da ROM -- descartaveis, regeram em segundos.
+tools/ffta-vram/regiao-*.png
