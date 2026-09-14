@@ -12,6 +12,7 @@ data/things/*
 !data/things/860/Tibia.dat
 !data/things/860/Tibia.spr
 !data/things/860/Tibia.otfi
+!data/things/860/Tibia.cwm
 pdbs
 CMakeCache.txt
 CMakeFiles

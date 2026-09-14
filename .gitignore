@@ -95,3 +95,7 @@ assets/ffta/tilesets/*/diff-*.png
 # Copias do datapack antes de regerar -- seguranca local, nao artefato.
 client/data/things/*/*.pre-tileset
 client/data/things/*/*.obsoleto
+
+# Saves e save states do emulador -- derivados da ROM comercial.
+tools/*.sav
+tools/*.ss[0-9]
