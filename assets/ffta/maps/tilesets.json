@@ -1,0 +1,820 @@
+{
+ "nota": "Qual arquivo de tileset serve cada mapa. Varios mapas compartilham o mesmo stream de graficos, e o arquivo leva o numero do PRIMEIRO mapa que o usa -- por isso o mapa 150 (Aisenfield) e servido por map147.png. tileset null = o stream nao descomprime com nenhum formato conhecido.",
+ "mapas": [
+  {
+   "index": 0,
+   "tileset": "map000.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 1,
+   "tileset": "map000.png",
+   "compartilhadoCom": 0
+  },
+  {
+   "index": 2,
+   "tileset": "map002.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 3,
+   "tileset": "map002.png",
+   "compartilhadoCom": 2
+  },
+  {
+   "index": 4,
+   "tileset": "map004.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 5,
+   "tileset": "map005.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 6,
+   "tileset": "map006.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 7,
+   "tileset": "map006.png",
+   "compartilhadoCom": 6
+  },
+  {
+   "index": 8,
+   "tileset": "map006.png",
+   "compartilhadoCom": 6
+  },
+  {
+   "index": 9,
+   "tileset": "map006.png",
+   "compartilhadoCom": 6
+  },
+  {
+   "index": 10,
+   "tileset": "map010.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 11,
+   "tileset": "map010.png",
+   "compartilhadoCom": 10
+  },
+  {
+   "index": 12,
+   "tileset": "map010.png",
+   "compartilhadoCom": 10
+  },
+  {
+   "index": 13,
+   "tileset": "map010.png",
+   "compartilhadoCom": 10
+  },
+  {
+   "index": 14,
+   "tileset": "map010.png",
+   "compartilhadoCom": 10
+  },
+  {
+   "index": 15,
+   "tileset": "map015.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 16,
+   "tileset": "map015.png",
+   "compartilhadoCom": 15
+  },
+  {
+   "index": 17,
+   "tileset": "map015.png",
+   "compartilhadoCom": 15
+  },
+  {
+   "index": 18,
+   "tileset": "map015.png",
+   "compartilhadoCom": 15
+  },
+  {
+   "index": 19,
+   "tileset": "map019.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 20,
+   "tileset": "map020.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 21,
+   "tileset": "map021.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 22,
+   "tileset": "map022.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 23,
+   "tileset": "map023.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 24,
+   "tileset": "map024.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 25,
+   "tileset": "map025.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 26,
+   "tileset": "map026.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 27,
+   "tileset": "map027.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 28,
+   "tileset": "map028.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 29,
+   "tileset": "map029.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 30,
+   "tileset": "map028.png",
+   "compartilhadoCom": 28
+  },
+  {
+   "index": 31,
+   "tileset": "map029.png",
+   "compartilhadoCom": 29
+  },
+  {
+   "index": 32,
+   "tileset": "map032.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 33,
+   "tileset": "map032.png",
+   "compartilhadoCom": 32
+  },
+  {
+   "index": 34,
+   "tileset": "map032.png",
+   "compartilhadoCom": 32
+  },
+  {
+   "index": 35,
+   "tileset": "map032.png",
+   "compartilhadoCom": 32
+  },
+  {
+   "index": 36,
+   "tileset": "map036.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 37,
+   "tileset": "map037.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 38,
+   "tileset": "map038.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 39,
+   "tileset": "map038.png",
+   "compartilhadoCom": 38
+  },
+  {
+   "index": 40,
+   "tileset": "map038.png",
+   "compartilhadoCom": 38
+  },
+  {
+   "index": 41,
+   "tileset": "map038.png",
+   "compartilhadoCom": 38
+  },
+  {
+   "index": 42,
+   "tileset": "map042.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 43,
+   "tileset": "map042.png",
+   "compartilhadoCom": 42
+  },
+  {
+   "index": 44,
+   "tileset": "map042.png",
+   "compartilhadoCom": 42
+  },
+  {
+   "index": 45,
+   "tileset": "map042.png",
+   "compartilhadoCom": 42
+  },
+  {
+   "index": 46,
+   "tileset": "map046.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 47,
+   "tileset": "map046.png",
+   "compartilhadoCom": 46
+  },
+  {
+   "index": 48,
+   "tileset": "map046.png",
+   "compartilhadoCom": 46
+  },
+  {
+   "index": 49,
+   "tileset": "map046.png",
+   "compartilhadoCom": 46
+  },
+  {
+   "index": 50,
+   "tileset": "map050.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 51,
+   "tileset": "map050.png",
+   "compartilhadoCom": 50
+  },
+  {
+   "index": 52,
+   "tileset": "map050.png",
+   "compartilhadoCom": 50
+  },
+  {
+   "index": 53,
+   "tileset": "map050.png",
+   "compartilhadoCom": 50
+  },
+  {
+   "index": 54,
+   "tileset": "map054.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 55,
+   "tileset": "map054.png",
+   "compartilhadoCom": 54
+  },
+  {
+   "index": 56,
+   "tileset": "map054.png",
+   "compartilhadoCom": 54
+  },
+  {
+   "index": 57,
+   "tileset": "map054.png",
+   "compartilhadoCom": 54
+  },
+  {
+   "index": 58,
+   "tileset": "map058.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 59,
+   "tileset": "map058.png",
+   "compartilhadoCom": 58
+  },
+  {
+   "index": 60,
+   "tileset": "map058.png",
+   "compartilhadoCom": 58
+  },
+  {
+   "index": 61,
+   "tileset": "map058.png",
+   "compartilhadoCom": 58
+  },
+  {
+   "index": 62,
+   "tileset": "map062.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 63,
+   "tileset": "map063.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 64,
+   "tileset": "map064.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 65,
+   "tileset": "map065.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 66,
+   "tileset": "map066.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 67,
+   "tileset": "map067.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 68,
+   "tileset": "map068.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 69,
+   "tileset": "map068.png",
+   "compartilhadoCom": 68
+  },
+  {
+   "index": 70,
+   "tileset": "map068.png",
+   "compartilhadoCom": 68
+  },
+  {
+   "index": 71,
+   "tileset": "map068.png",
+   "compartilhadoCom": 68
+  },
+  {
+   "index": 72,
+   "tileset": "map068.png",
+   "compartilhadoCom": 68
+  },
+  {
+   "index": 73,
+   "tileset": "map068.png",
+   "compartilhadoCom": 68
+  },
+  {
+   "index": 74,
+   "tileset": "map068.png",
+   "compartilhadoCom": 68
+  },
+  {
+   "index": 75,
+   "tileset": "map068.png",
+   "compartilhadoCom": 68
+  },
+  {
+   "index": 76,
+   "tileset": "map068.png",
+   "compartilhadoCom": 68
+  },
+  {
+   "index": 77,
+   "tileset": "map068.png",
+   "compartilhadoCom": 68
+  },
+  {
+   "index": 78,
+   "tileset": "map078.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 79,
+   "tileset": "map078.png",
+   "compartilhadoCom": 78
+  },
+  {
+   "index": 80,
+   "tileset": "map078.png",
+   "compartilhadoCom": 78
+  },
+  {
+   "index": 81,
+   "tileset": "map078.png",
+   "compartilhadoCom": 78
+  },
+  {
+   "index": 82,
+   "tileset": "map078.png",
+   "compartilhadoCom": 78
+  },
+  {
+   "index": 83,
+   "tileset": "map078.png",
+   "compartilhadoCom": 78
+  },
+  {
+   "index": 84,
+   "tileset": "map078.png",
+   "compartilhadoCom": 78
+  },
+  {
+   "index": 85,
+   "tileset": "map078.png",
+   "compartilhadoCom": 78
+  },
+  {
+   "index": 86,
+   "tileset": "map078.png",
+   "compartilhadoCom": 78
+  },
+  {
+   "index": 87,
+   "tileset": "map078.png",
+   "compartilhadoCom": 78
+  },
+  {
+   "index": 88,
+   "tileset": "map088.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 89,
+   "tileset": "map088.png",
+   "compartilhadoCom": 88
+  },
+  {
+   "index": 90,
+   "tileset": "map088.png",
+   "compartilhadoCom": 88
+  },
+  {
+   "index": 91,
+   "tileset": "map088.png",
+   "compartilhadoCom": 88
+  },
+  {
+   "index": 92,
+   "tileset": "map088.png",
+   "compartilhadoCom": 88
+  },
+  {
+   "index": 93,
+   "tileset": "map088.png",
+   "compartilhadoCom": 88
+  },
+  {
+   "index": 94,
+   "tileset": "map088.png",
+   "compartilhadoCom": 88
+  },
+  {
+   "index": 95,
+   "tileset": "map088.png",
+   "compartilhadoCom": 88
+  },
+  {
+   "index": 96,
+   "tileset": "map088.png",
+   "compartilhadoCom": 88
+  },
+  {
+   "index": 97,
+   "tileset": "map088.png",
+   "compartilhadoCom": 88
+  },
+  {
+   "index": 98,
+   "tileset": "map098.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 99,
+   "tileset": "map098.png",
+   "compartilhadoCom": 98
+  },
+  {
+   "index": 100,
+   "tileset": "map098.png",
+   "compartilhadoCom": 98
+  },
+  {
+   "index": 101,
+   "tileset": "map098.png",
+   "compartilhadoCom": 98
+  },
+  {
+   "index": 102,
+   "tileset": "map098.png",
+   "compartilhadoCom": 98
+  },
+  {
+   "index": 103,
+   "tileset": "map098.png",
+   "compartilhadoCom": 98
+  },
+  {
+   "index": 104,
+   "tileset": "map098.png",
+   "compartilhadoCom": 98
+  },
+  {
+   "index": 105,
+   "tileset": "map098.png",
+   "compartilhadoCom": 98
+  },
+  {
+   "index": 106,
+   "tileset": "map098.png",
+   "compartilhadoCom": 98
+  },
+  {
+   "index": 107,
+   "tileset": "map098.png",
+   "compartilhadoCom": 98
+  },
+  {
+   "index": 108,
+   "tileset": "map108.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 109,
+   "tileset": "map108.png",
+   "compartilhadoCom": 108
+  },
+  {
+   "index": 110,
+   "tileset": "map108.png",
+   "compartilhadoCom": 108
+  },
+  {
+   "index": 111,
+   "tileset": "map108.png",
+   "compartilhadoCom": 108
+  },
+  {
+   "index": 112,
+   "tileset": "map108.png",
+   "compartilhadoCom": 108
+  },
+  {
+   "index": 113,
+   "tileset": "map108.png",
+   "compartilhadoCom": 108
+  },
+  {
+   "index": 114,
+   "tileset": "map108.png",
+   "compartilhadoCom": 108
+  },
+  {
+   "index": 115,
+   "tileset": "map108.png",
+   "compartilhadoCom": 108
+  },
+  {
+   "index": 116,
+   "tileset": "map108.png",
+   "compartilhadoCom": 108
+  },
+  {
+   "index": 117,
+   "tileset": "map108.png",
+   "compartilhadoCom": 108
+  },
+  {
+   "index": 118,
+   "tileset": "map118.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 119,
+   "tileset": "map118.png",
+   "compartilhadoCom": 118
+  },
+  {
+   "index": 120,
+   "tileset": "map118.png",
+   "compartilhadoCom": 118
+  },
+  {
+   "index": 121,
+   "tileset": "map118.png",
+   "compartilhadoCom": 118
+  },
+  {
+   "index": 122,
+   "tileset": "map118.png",
+   "compartilhadoCom": 118
+  },
+  {
+   "index": 123,
+   "tileset": "map118.png",
+   "compartilhadoCom": 118
+  },
+  {
+   "index": 124,
+   "tileset": "map118.png",
+   "compartilhadoCom": 118
+  },
+  {
+   "index": 125,
+   "tileset": "map118.png",
+   "compartilhadoCom": 118
+  },
+  {
+   "index": 126,
+   "tileset": "map118.png",
+   "compartilhadoCom": 118
+  },
+  {
+   "index": 127,
+   "tileset": "map118.png",
+   "compartilhadoCom": 118
+  },
+  {
+   "index": 128,
+   "tileset": "map128.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 129,
+   "tileset": "map128.png",
+   "compartilhadoCom": 128
+  },
+  {
+   "index": 130,
+   "tileset": "map128.png",
+   "compartilhadoCom": 128
+  },
+  {
+   "index": 131,
+   "tileset": "map128.png",
+   "compartilhadoCom": 128
+  },
+  {
+   "index": 132,
+   "tileset": "map128.png",
+   "compartilhadoCom": 128
+  },
+  {
+   "index": 133,
+   "tileset": "map133.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 134,
+   "tileset": "map133.png",
+   "compartilhadoCom": 133
+  },
+  {
+   "index": 135,
+   "tileset": "map133.png",
+   "compartilhadoCom": 133
+  },
+  {
+   "index": 136,
+   "tileset": "map133.png",
+   "compartilhadoCom": 133
+  },
+  {
+   "index": 137,
+   "tileset": "map133.png",
+   "compartilhadoCom": 133
+  },
+  {
+   "index": 138,
+   "tileset": "map133.png",
+   "compartilhadoCom": 133
+  },
+  {
+   "index": 139,
+   "tileset": "map133.png",
+   "compartilhadoCom": 133
+  },
+  {
+   "index": 140,
+   "tileset": "map133.png",
+   "compartilhadoCom": 133
+  },
+  {
+   "index": 141,
+   "tileset": "map133.png",
+   "compartilhadoCom": 133
+  },
+  {
+   "index": 142,
+   "tileset": "map133.png",
+   "compartilhadoCom": 133
+  },
+  {
+   "index": 143,
+   "tileset": "map143.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 144,
+   "tileset": "map029.png",
+   "compartilhadoCom": 29
+  },
+  {
+   "index": 145,
+   "tileset": "map029.png",
+   "compartilhadoCom": 29
+  },
+  {
+   "index": 146,
+   "tileset": "map029.png",
+   "compartilhadoCom": 29
+  },
+  {
+   "index": 147,
+   "tileset": "map147.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 148,
+   "tileset": "map147.png",
+   "compartilhadoCom": 147
+  },
+  {
+   "index": 149,
+   "tileset": "map147.png",
+   "compartilhadoCom": 147
+  },
+  {
+   "index": 150,
+   "tileset": "map147.png",
+   "compartilhadoCom": 147
+  },
+  {
+   "index": 151,
+   "tileset": "map151.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 152,
+   "tileset": "map151.png",
+   "compartilhadoCom": 151
+  },
+  {
+   "index": 153,
+   "tileset": "map151.png",
+   "compartilhadoCom": 151
+  },
+  {
+   "index": 154,
+   "tileset": "map151.png",
+   "compartilhadoCom": 151
+  },
+  {
+   "index": 155,
+   "tileset": "map155.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 156,
+   "tileset": "map156.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 157,
+   "tileset": "map156.png",
+   "compartilhadoCom": 156
+  },
+  {
+   "index": 158,
+   "tileset": "map158.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 159,
+   "tileset": "map159.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 160,
+   "tileset": "map160.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 161,
+   "tileset": "map161.png",
+   "compartilhadoCom": null
+  },
+  {
+   "index": 162,
+   "tileset": null,
+   "compartilhadoCom": null
+  }
+ ]
+}

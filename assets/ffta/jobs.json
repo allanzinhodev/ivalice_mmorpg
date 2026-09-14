@@ -1,0 +1,5568 @@
+[
+ {
+  "index": 2,
+  "name": "Soldier",
+  "race": "Hume",
+  "spriteIndex": 0,
+  "base": {
+   "hp": 40,
+   "mp": 14,
+   "speed": 100
+  },
+  "growth": {
+   "hp": 84,
+   "mp": 11,
+   "speed": 11,
+   "attack": 88,
+   "defense": 88,
+   "power": 60,
+   "resistance": 72
+  },
+  "movement": {
+   "move": 4,
+   "jump": 2,
+   "evade": 50
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Sword",
+   "Great Sword",
+   "Shield",
+   "Helmet",
+   "Hat",
+   "Armor",
+   "Clothing",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [],
+  "learnset": [
+   {
+    "ability": "First Aid",
+    "abilityId": 76,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Powerbreak",
+    "abilityId": 77,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Mindbreak",
+    "abilityId": 78,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Magicbreak",
+    "abilityId": 79,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Speedbreak",
+    "abilityId": 80,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Mug",
+    "abilityId": 81,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Provoke",
+    "abilityId": 82,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Sensor",
+    "abilityId": 83,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Monkey Grip",
+    "abilityId": 6,
+    "kind": "Support",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Shieldbearer",
+    "abilityId": 15,
+    "kind": "Support",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 3,
+  "name": "Paladin",
+  "race": "Hume",
+  "spriteIndex": 1,
+  "base": {
+   "hp": 38,
+   "mp": 22,
+   "speed": 98
+  },
+  "growth": {
+   "hp": 76,
+   "mp": 22,
+   "speed": 8,
+   "attack": 81,
+   "defense": 92,
+   "power": 72,
+   "resistance": 88
+  },
+  "movement": {
+   "move": 3,
+   "jump": 2,
+   "evade": 35
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Knight Sword",
+   "Great Sword",
+   "Shield",
+   "Helmet",
+   "Armor",
+   "Robe",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [
+   {
+    "job": "Soldier",
+    "jobId": 2,
+    "abilitiesToMaster": 2
+   }
+  ],
+  "learnset": [
+   {
+    "ability": "Nurse",
+    "abilityId": 87,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Defense",
+    "abilityId": 94,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Cover",
+    "abilityId": 88,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Subdue",
+    "abilityId": 90,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Drop Weapon",
+    "abilityId": 95,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Parley",
+    "abilityId": 91,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Saint Cross",
+    "abilityId": 92,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Holy Blade",
+    "abilityId": 93,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Reflex",
+    "abilityId": 5,
+    "kind": "Reaction",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Weapon Def+",
+    "abilityId": 2,
+    "kind": "Support",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 4,
+  "name": "Fighter",
+  "race": "Hume",
+  "spriteIndex": 2,
+  "base": {
+   "hp": 36,
+   "mp": 12,
+   "speed": 104
+  },
+  "growth": {
+   "hp": 72,
+   "mp": 11,
+   "speed": 11,
+   "attack": 92,
+   "defense": 81,
+   "power": 56,
+   "resistance": 68
+  },
+  "movement": {
+   "move": 4,
+   "jump": 2,
+   "evade": 45
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Blade",
+   "Hat",
+   "Clothing",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [
+   {
+    "job": "Soldier",
+    "jobId": 2,
+    "abilitiesToMaster": 2
+   }
+  ],
+  "learnset": [
+   {
+    "ability": "Rush",
+    "abilityId": 112,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Wild Swing",
+    "abilityId": 113,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Beatdown",
+    "abilityId": 114,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Blitz",
+    "abilityId": 115,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Air Render",
+    "abilityId": 108,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Far Fist",
+    "abilityId": 109,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Air Blast",
+    "abilityId": 110,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Backdraft",
+    "abilityId": 111,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Bonecrusher",
+    "abilityId": 10,
+    "kind": "Reaction",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Strikeback",
+    "abilityId": 7,
+    "kind": "Reaction",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Doublehand",
+    "abilityId": 7,
+    "kind": "Support",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 5,
+  "name": "Thief",
+  "race": "Hume",
+  "spriteIndex": 3,
+  "base": {
+   "hp": 33,
+   "mp": 15,
+   "speed": 110
+  },
+  "growth": {
+   "hp": 66,
+   "mp": 11,
+   "speed": 18,
+   "attack": 76,
+   "defense": 76,
+   "power": 76,
+   "resistance": 64
+  },
+  "movement": {
+   "move": 4,
+   "jump": 3,
+   "evade": 65
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Knife",
+   "Hat",
+   "Clothing",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [],
+  "learnset": [
+   {
+    "ability": "Steal: Armor",
+    "abilityId": 163,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Steal: Shield",
+    "abilityId": 164,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Steal: Access.",
+    "abilityId": 165,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Steal: Helm",
+    "abilityId": 166,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Steal: Weapon",
+    "abilityId": 167,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Steal: Gil",
+    "abilityId": 168,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Steal: EXP",
+    "abilityId": 169,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Steal: JP",
+    "abilityId": 170,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Steal: Ability",
+    "abilityId": 171,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Counter",
+    "abilityId": 8,
+    "kind": "Reaction",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Maintenance",
+    "abilityId": 9,
+    "kind": "Support",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 6,
+  "name": "Ninja",
+  "race": "Hume",
+  "spriteIndex": 4,
+  "base": {
+   "hp": 29,
+   "mp": 21,
+   "speed": 120
+  },
+  "growth": {
+   "hp": 58,
+   "mp": 21,
+   "speed": 21,
+   "attack": 84,
+   "defense": 72,
+   "power": 81,
+   "resistance": 76
+  },
+  "movement": {
+   "move": 4,
+   "jump": 3,
+   "evade": 60
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Katana",
+   "Hat",
+   "Clothing",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [
+   {
+    "job": "Thief",
+    "jobId": 5,
+    "abilitiesToMaster": 2
+   }
+  ],
+  "learnset": [
+   {
+    "ability": "Throw",
+    "abilityId": 148,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Wood Veil",
+    "abilityId": 149,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Fire Veil",
+    "abilityId": 150,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Earth Veil",
+    "abilityId": 151,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Metal Veil",
+    "abilityId": 152,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Water Veil",
+    "abilityId": 153,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Unspell",
+    "abilityId": 154,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Oblivion",
+    "abilityId": 155,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Last Haste",
+    "abilityId": 2,
+    "kind": "Reaction",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Double Sword",
+    "abilityId": 8,
+    "kind": "Support",
+    "apToMaster": 1000
+   }
+  ]
+ },
+ {
+  "index": 7,
+  "name": "White Mage",
+  "race": "Hume",
+  "spriteIndex": 5,
+  "base": {
+   "hp": 30,
+   "mp": 40,
+   "speed": 108
+  },
+  "growth": {
+   "hp": 61,
+   "mp": 48,
+   "speed": 12,
+   "attack": 62,
+   "defense": 73,
+   "power": 84,
+   "resistance": 82
+  },
+  "movement": {
+   "move": 3,
+   "jump": 2,
+   "evade": 40
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Staff",
+   "Ribbon",
+   "Hat",
+   "Clothing",
+   "Robe",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [],
+  "learnset": [
+   {
+    "ability": "Cure",
+    "abilityId": 1,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Cura",
+    "abilityId": 2,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Curaga",
+    "abilityId": 3,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Esuna",
+    "abilityId": 4,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Life",
+    "abilityId": 5,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Full-Life",
+    "abilityId": 6,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Auto-Life",
+    "abilityId": 7,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Shell",
+    "abilityId": 8,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Protect",
+    "abilityId": 9,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Turbo MP",
+    "abilityId": 4,
+    "kind": "Support",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 8,
+  "name": "Black Mage",
+  "race": "Hume",
+  "spriteIndex": 6,
+  "base": {
+   "hp": 28,
+   "mp": 36,
+   "speed": 96
+  },
+  "growth": {
+   "hp": 56,
+   "mp": 44,
+   "speed": 11,
+   "attack": 64,
+   "defense": 68,
+   "power": 88,
+   "resistance": 96
+  },
+  "movement": {
+   "move": 3,
+   "jump": 2,
+   "evade": 35
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Rod",
+   "Hat",
+   "Clothing",
+   "Robe",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [],
+  "learnset": [
+   {
+    "ability": "Fire",
+    "abilityId": 23,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Fira",
+    "abilityId": 24,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Firaga",
+    "abilityId": 25,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Thunder",
+    "abilityId": 26,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Thundara",
+    "abilityId": 27,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Thundaga",
+    "abilityId": 28,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Blizzard",
+    "abilityId": 29,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Blizzara",
+    "abilityId": 30,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Blizzaga",
+    "abilityId": 31,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Return Magic",
+    "abilityId": 11,
+    "kind": "Reaction",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Geomancy",
+    "abilityId": 5,
+    "kind": "Support",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 9,
+  "name": "Illusionist",
+  "race": "Hume",
+  "spriteIndex": 7,
+  "base": {
+   "hp": 26,
+   "mp": 38,
+   "speed": 89
+  },
+  "growth": {
+   "hp": 52,
+   "mp": 71,
+   "speed": 9,
+   "attack": 61,
+   "defense": 64,
+   "power": 92,
+   "resistance": 84
+  },
+  "movement": {
+   "move": 3,
+   "jump": 2,
+   "evade": 30
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Rod",
+   "Hat",
+   "Clothing",
+   "Robe",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [
+   {
+    "job": "White Mage",
+    "jobId": 7,
+    "abilitiesToMaster": 3
+   },
+   {
+    "job": "Black Mage",
+    "jobId": 8,
+    "abilitiesToMaster": 5
+   }
+  ],
+  "learnset": [
+   {
+    "ability": "Prominence",
+    "abilityId": 43,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Tempest",
+    "abilityId": 44,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Freezeblink",
+    "abilityId": 45,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Star Cross",
+    "abilityId": 46,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Stardust",
+    "abilityId": 47,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Deluge",
+    "abilityId": 48,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Soil Evidence",
+    "abilityId": 49,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Wild Tornado",
+    "abilityId": 50,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Absorb MP",
+    "abilityId": 15,
+    "kind": "Reaction",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Half MP",
+    "abilityId": 10,
+    "kind": "Support",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 10,
+  "name": "Blue Mage",
+  "race": "Hume",
+  "spriteIndex": 8,
+  "base": {
+   "hp": 34,
+   "mp": 30,
+   "speed": 100
+  },
+  "growth": {
+   "hp": 68,
+   "mp": 36,
+   "speed": 12,
+   "attack": 81,
+   "defense": 84,
+   "power": 84,
+   "resistance": 92
+  },
+  "movement": {
+   "move": 4,
+   "jump": 2,
+   "evade": 55
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Saber",
+   "Hat",
+   "Clothing",
+   "Robe",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [
+   {
+    "job": "White Mage",
+    "jobId": 7,
+    "abilitiesToMaster": 1
+   },
+   {
+    "job": "Black Mage",
+    "jobId": 8,
+    "abilitiesToMaster": 1
+   }
+  ],
+  "learnset": [
+   {
+    "ability": "Goblin Punch",
+    "abilityId": 266,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Magic Hammer",
+    "abilityId": 267,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Acid",
+    "abilityId": 269,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Blowup",
+    "abilityId": 271,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Mighty Guard",
+    "abilityId": 274,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Guard-Off",
+    "abilityId": 275,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Dragon Force",
+    "abilityId": 276,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Night",
+    "abilityId": 277,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Twister",
+    "abilityId": 278,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "LV3 Def-less",
+    "abilityId": 282,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Matra Magic",
+    "abilityId": 288,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Limit Glove",
+    "abilityId": 287,
+    "kind": "Break",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Knife",
+    "abilityId": 290,
+    "kind": "Break",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Poison Claw",
+    "abilityId": 293,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Hastebreak",
+    "abilityId": 294,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Bad Breath",
+    "abilityId": 297,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Stare",
+    "abilityId": 300,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Roulette",
+    "abilityId": 301,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Drain Touch",
+    "abilityId": 304,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "LV? S-Flare",
+    "abilityId": 305,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "White Wind",
+    "abilityId": 308,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Angel Whisper",
+    "abilityId": 309,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Damage > MP",
+    "abilityId": 13,
+    "kind": "Reaction",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Immunity",
+    "abilityId": 11,
+    "kind": "Support",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Learning",
+    "abilityId": 12,
+    "kind": "Support",
+    "apToMaster": 400
+   }
+  ]
+ },
+ {
+  "index": 11,
+  "name": "Archer",
+  "race": "Hume",
+  "spriteIndex": 9,
+  "base": {
+   "hp": 36,
+   "mp": 18,
+   "speed": 106
+  },
+  "growth": {
+   "hp": 72,
+   "mp": 11,
+   "speed": 14,
+   "attack": 72,
+   "defense": 72,
+   "power": 64,
+   "resistance": 81
+  },
+  "movement": {
+   "move": 4,
+   "jump": 2,
+   "evade": 50
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Bow",
+   "Hat",
+   "Clothing",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [],
+  "learnset": [
+   {
+    "ability": "Boost",
+    "abilityId": 172,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Aim: Legs",
+    "abilityId": 173,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Aim: Arm",
+    "abilityId": 174,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Cupid",
+    "abilityId": 175,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Burial",
+    "abilityId": 176,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Take Aim",
+    "abilityId": 177,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Faster",
+    "abilityId": 178,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Blackout",
+    "abilityId": 179,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Block Arrows",
+    "abilityId": 6,
+    "kind": "Reaction",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Concentrate",
+    "abilityId": 13,
+    "kind": "Support",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 12,
+  "name": "Hunter",
+  "race": "Hume",
+  "spriteIndex": 10,
+  "base": {
+   "hp": 34,
+   "mp": 26,
+   "speed": 112
+  },
+  "growth": {
+   "hp": 68,
+   "mp": 32,
+   "speed": 17,
+   "attack": 88,
+   "defense": 68,
+   "power": 68,
+   "resistance": 84
+  },
+  "movement": {
+   "move": 4,
+   "jump": 2,
+   "evade": 55
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Great Bow",
+   "Hat",
+   "Clothing",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [
+   {
+    "job": "Archer",
+    "jobId": 11,
+    "abilitiesToMaster": 2
+   }
+  ],
+  "learnset": [
+   {
+    "ability": "Sonic Boom",
+    "abilityId": 180,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Oust",
+    "abilityId": 181,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Advice",
+    "abilityId": 182,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Aim: Vitals",
+    "abilityId": 183,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Hunting",
+    "abilityId": 184,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Addle",
+    "abilityId": 185,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Ultima Shot",
+    "abilityId": 186,
+    "kind": "Action",
+    "apToMaster": 1000
+   },
+   {
+    "ability": "Sidewinder",
+    "abilityId": 187,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Capture",
+    "abilityId": 188,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Auto-Regen",
+    "abilityId": 14,
+    "kind": "Reaction",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Weapon Atk+",
+    "abilityId": 1,
+    "kind": "Support",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 13,
+  "name": "Warrior",
+  "race": "Bangaa",
+  "spriteIndex": 11,
+  "base": {
+   "hp": 46,
+   "mp": 10,
+   "speed": 95
+  },
+  "growth": {
+   "hp": 92,
+   "mp": 21,
+   "speed": 9,
+   "attack": 92,
+   "defense": 84,
+   "power": 62,
+   "resistance": 68
+  },
+  "movement": {
+   "move": 4,
+   "jump": 2,
+   "evade": 50
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Sword",
+   "Broadsword",
+   "Shield",
+   "Helmet",
+   "Hat",
+   "Armor",
+   "Clothing",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [],
+  "learnset": [
+   {
+    "ability": "First Aid",
+    "abilityId": 76,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Powerbreak",
+    "abilityId": 77,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Mindbreak",
+    "abilityId": 78,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Magicbreak",
+    "abilityId": 79,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Speedbreak",
+    "abilityId": 80,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Body Slam",
+    "abilityId": 84,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Greased Bolt",
+    "abilityId": 85,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Downsize",
+    "abilityId": 86,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Monkey Grip",
+    "abilityId": 6,
+    "kind": "Support",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Shieldbearer",
+    "abilityId": 15,
+    "kind": "Support",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 14,
+  "name": "Dragoon",
+  "race": "Bangaa",
+  "spriteIndex": 12,
+  "base": {
+   "hp": 40,
+   "mp": 8,
+   "speed": 104
+  },
+  "growth": {
+   "hp": 82,
+   "mp": 12,
+   "speed": 11,
+   "attack": 96,
+   "defense": 84,
+   "power": 56,
+   "resistance": 64
+  },
+  "movement": {
+   "move": 3,
+   "jump": 3,
+   "evade": 40
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Sword",
+   "Spear",
+   "Helmet",
+   "Armor",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [
+   {
+    "job": "Warrior",
+    "jobId": 13,
+    "abilitiesToMaster": 2
+   }
+  ],
+  "learnset": [
+   {
+    "ability": "Jump",
+    "abilityId": 124,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Lancet",
+    "abilityId": 125,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Wyrmtamer",
+    "abilityId": 126,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Fire Breath",
+    "abilityId": 127,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Bolt Breath",
+    "abilityId": 128,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Ice Breath",
+    "abilityId": 129,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Wyrmkiller",
+    "abilityId": 130,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Bangaa Cry",
+    "abilityId": 131,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Dragonheart",
+    "abilityId": 12,
+    "kind": "Reaction",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 15,
+  "name": "Defender",
+  "race": "Bangaa",
+  "spriteIndex": 13,
+  "base": {
+   "hp": 42,
+   "mp": 6,
+   "speed": 92
+  },
+  "growth": {
+   "hp": 84,
+   "mp": 11,
+   "speed": 9,
+   "attack": 88,
+   "defense": 94,
+   "power": 65,
+   "resistance": 72
+  },
+  "movement": {
+   "move": 3,
+   "jump": 2,
+   "evade": 35
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Knight Sword",
+   "Broadsword",
+   "Helmet",
+   "Armor",
+   "Robe",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [
+   {
+    "job": "Warrior",
+    "jobId": 13,
+    "abilitiesToMaster": 2
+   }
+  ],
+  "learnset": [
+   {
+    "ability": "Tremor",
+    "abilityId": 96,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Meltdown",
+    "abilityId": 101,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Defense",
+    "abilityId": 94,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Drop Weapon",
+    "abilityId": 95,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Hibernate",
+    "abilityId": 97,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Mow Down",
+    "abilityId": 98,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Aura",
+    "abilityId": 99,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Expert Guard",
+    "abilityId": 100,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Last Berserk",
+    "abilityId": 3,
+    "kind": "Reaction",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Weapon Def+",
+    "abilityId": 2,
+    "kind": "Support",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 16,
+  "name": "Gladiator",
+  "race": "Bangaa",
+  "spriteIndex": 14,
+  "base": {
+   "hp": 40,
+   "mp": 18,
+   "speed": 97
+  },
+  "growth": {
+   "hp": 82,
+   "mp": 28,
+   "speed": 11,
+   "attack": 94,
+   "defense": 88,
+   "power": 59,
+   "resistance": 64
+  },
+  "movement": {
+   "move": 4,
+   "jump": 2,
+   "evade": 45
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Blade",
+   "Hat",
+   "Clothing",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [
+   {
+    "job": "Warrior",
+    "jobId": 13,
+    "abilitiesToMaster": 2
+   }
+  ],
+  "learnset": [
+   {
+    "ability": "Rush",
+    "abilityId": 112,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Wild Swing",
+    "abilityId": 113,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Beatdown",
+    "abilityId": 114,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Blitz",
+    "abilityId": 115,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Fire Sword",
+    "abilityId": 116,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Bolt Sword",
+    "abilityId": 117,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Ice Sword",
+    "abilityId": 118,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Ultima Sword",
+    "abilityId": 119,
+    "kind": "Action",
+    "apToMaster": 1000
+   },
+   {
+    "ability": "Strikeback",
+    "abilityId": 7,
+    "kind": "Reaction",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Doublehand",
+    "abilityId": 7,
+    "kind": "Support",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 17,
+  "name": "White Monk",
+  "race": "Bangaa",
+  "spriteIndex": 15,
+  "base": {
+   "hp": 32,
+   "mp": 12,
+   "speed": 108
+  },
+  "growth": {
+   "hp": 64,
+   "mp": 11,
+   "speed": 14,
+   "attack": 81,
+   "defense": 76,
+   "power": 83,
+   "resistance": 68
+  },
+  "movement": {
+   "move": 4,
+   "jump": 3,
+   "evade": 60
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Knuckles",
+   "Clothing",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [],
+  "learnset": [
+   {
+    "ability": "Whirlwind",
+    "abilityId": 102,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Air Render",
+    "abilityId": 108,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Earth Render",
+    "abilityId": 103,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Far Fist",
+    "abilityId": 109,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Chakra",
+    "abilityId": 104,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Revive",
+    "abilityId": 105,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Exorcise",
+    "abilityId": 106,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Holy Sign",
+    "abilityId": 107,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Reflex",
+    "abilityId": 5,
+    "kind": "Reaction",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Counter",
+    "abilityId": 8,
+    "kind": "Reaction",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 18,
+  "name": "Bishop",
+  "race": "Bangaa",
+  "spriteIndex": 16,
+  "base": {
+   "hp": 30,
+   "mp": 28,
+   "speed": 88
+  },
+  "growth": {
+   "hp": 61,
+   "mp": 46,
+   "speed": 9,
+   "attack": 72,
+   "defense": 68,
+   "power": 88,
+   "resistance": 76
+  },
+  "movement": {
+   "move": 3,
+   "jump": 2,
+   "evade": 30
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Staff",
+   "Hat",
+   "Clothing",
+   "Robe",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [
+   {
+    "job": "White Monk",
+    "jobId": 17,
+    "abilitiesToMaster": 2
+   }
+  ],
+  "learnset": [
+   {
+    "ability": "Cura",
+    "abilityId": 2,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Dispel",
+    "abilityId": 10,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Holy",
+    "abilityId": 11,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Barrier",
+    "abilityId": 12,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Judge",
+    "abilityId": 13,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Water",
+    "abilityId": 15,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Aero",
+    "abilityId": 16,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Break",
+    "abilityId": 14,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Return Magic",
+    "abilityId": 11,
+    "kind": "Reaction",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Half MP",
+    "abilityId": 10,
+    "kind": "Support",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 19,
+  "name": "Templar",
+  "race": "Bangaa",
+  "spriteIndex": 17,
+  "base": {
+   "hp": 36,
+   "mp": 20,
+   "speed": 86
+  },
+  "growth": {
+   "hp": 72,
+   "mp": 32,
+   "speed": 8,
+   "attack": 82,
+   "defense": 97,
+   "power": 84,
+   "resistance": 72
+  },
+  "movement": {
+   "move": 3,
+   "jump": 2,
+   "evade": 40
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Knight Sword",
+   "Spear",
+   "Helmet",
+   "Hat",
+   "Armor",
+   "Clothing",
+   "Robe",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [
+   {
+    "job": "White Monk",
+    "jobId": 17,
+    "abilitiesToMaster": 2
+   }
+  ],
+  "learnset": [
+   {
+    "ability": "Astra",
+    "abilityId": 59,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Warcry",
+    "abilityId": 120,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Rasp",
+    "abilityId": 60,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Cheer",
+    "abilityId": 121,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Silence",
+    "abilityId": 41,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Soul Sphere",
+    "abilityId": 122,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Haste",
+    "abilityId": 42,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Lifebreak",
+    "abilityId": 123,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Bonecrusher",
+    "abilityId": 10,
+    "kind": "Reaction",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Weapon Atk+",
+    "abilityId": 1,
+    "kind": "Support",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 20,
+  "name": "White Mage",
+  "race": "Nu Mou",
+  "spriteIndex": 18,
+  "base": {
+   "hp": 29,
+   "mp": 52,
+   "speed": 108
+  },
+  "growth": {
+   "hp": 58,
+   "mp": 56,
+   "speed": 11,
+   "attack": 57,
+   "defense": 73,
+   "power": 88,
+   "resistance": 84
+  },
+  "movement": {
+   "move": 3,
+   "jump": 2,
+   "evade": 40
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Staff",
+   "Ribbon",
+   "Hat",
+   "Clothing",
+   "Robe",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [],
+  "learnset": [
+   {
+    "ability": "Cure",
+    "abilityId": 1,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Cura",
+    "abilityId": 2,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Curaga",
+    "abilityId": 3,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Esuna",
+    "abilityId": 4,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Life",
+    "abilityId": 5,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Full-Life",
+    "abilityId": 6,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Auto-Life",
+    "abilityId": 7,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Shell",
+    "abilityId": 8,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Protect",
+    "abilityId": 9,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Turbo MP",
+    "abilityId": 4,
+    "kind": "Support",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 21,
+  "name": "Black Mage",
+  "race": "Nu Mou",
+  "spriteIndex": 19,
+  "base": {
+   "hp": 27,
+   "mp": 42,
+   "speed": 96
+  },
+  "growth": {
+   "hp": 54,
+   "mp": 52,
+   "speed": 9,
+   "attack": 62,
+   "defense": 68,
+   "power": 92,
+   "resistance": 102
+  },
+  "movement": {
+   "move": 3,
+   "jump": 2,
+   "evade": 35
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Rod",
+   "Hat",
+   "Clothing",
+   "Robe",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [],
+  "learnset": [
+   {
+    "ability": "Fire",
+    "abilityId": 23,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Fira",
+    "abilityId": 24,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Firaga",
+    "abilityId": 25,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Thunder",
+    "abilityId": 26,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Thundara",
+    "abilityId": 27,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Thundaga",
+    "abilityId": 28,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Blizzard",
+    "abilityId": 29,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Blizzara",
+    "abilityId": 30,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Blizzaga",
+    "abilityId": 31,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Return Magic",
+    "abilityId": 11,
+    "kind": "Reaction",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Geomancy",
+    "abilityId": 5,
+    "kind": "Support",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 22,
+  "name": "Time Mage",
+  "race": "Nu Mou",
+  "spriteIndex": 20,
+  "base": {
+   "hp": 26,
+   "mp": 36,
+   "speed": 98
+  },
+  "growth": {
+   "hp": 52,
+   "mp": 36,
+   "speed": 12,
+   "attack": 56,
+   "defense": 68,
+   "power": 102,
+   "resistance": 96
+  },
+  "movement": {
+   "move": 3,
+   "jump": 2,
+   "evade": 30
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Rod",
+   "Hat",
+   "Clothing",
+   "Robe",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [
+   {
+    "job": "Black Mage",
+    "jobId": 21,
+    "abilitiesToMaster": 5
+   }
+  ],
+  "learnset": [
+   {
+    "ability": "Haste",
+    "abilityId": 42,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Quicken",
+    "abilityId": 34,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Slow",
+    "abilityId": 35,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Reflect",
+    "abilityId": 36,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Stop",
+    "abilityId": 38,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Silence",
+    "abilityId": 41,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Quarter",
+    "abilityId": 39,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Demi",
+    "abilityId": 40,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Last Quicken",
+    "abilityId": 1,
+    "kind": "Reaction",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 23,
+  "name": "Illusionist",
+  "race": "Nu Mou",
+  "spriteIndex": 21,
+  "base": {
+   "hp": 25,
+   "mp": 46,
+   "speed": 89
+  },
+  "growth": {
+   "hp": 51,
+   "mp": 76,
+   "speed": 8,
+   "attack": 57,
+   "defense": 64,
+   "power": 96,
+   "resistance": 88
+  },
+  "movement": {
+   "move": 3,
+   "jump": 2,
+   "evade": 30
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Rod",
+   "Hat",
+   "Clothing",
+   "Robe",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [
+   {
+    "job": "White Mage",
+    "jobId": 20,
+    "abilitiesToMaster": 3
+   },
+   {
+    "job": "Black Mage",
+    "jobId": 21,
+    "abilitiesToMaster": 5
+   }
+  ],
+  "learnset": [
+   {
+    "ability": "Prominence",
+    "abilityId": 43,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Tempest",
+    "abilityId": 44,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Freezeblink",
+    "abilityId": 45,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Star Cross",
+    "abilityId": 46,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Stardust",
+    "abilityId": 47,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Deluge",
+    "abilityId": 48,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Soil Evidence",
+    "abilityId": 49,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Wild Tornado",
+    "abilityId": 50,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Absorb MP",
+    "abilityId": 15,
+    "kind": "Reaction",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Half MP",
+    "abilityId": 10,
+    "kind": "Support",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 24,
+  "name": "Alchemist",
+  "race": "Nu Mou",
+  "spriteIndex": 22,
+  "base": {
+   "hp": 30,
+   "mp": 48,
+   "speed": 92
+  },
+  "growth": {
+   "hp": 61,
+   "mp": 84,
+   "speed": 9,
+   "attack": 59,
+   "defense": 65,
+   "power": 92,
+   "resistance": 96
+  },
+  "movement": {
+   "move": 3,
+   "jump": 3,
+   "evade": 35
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Mace",
+   "Hat",
+   "Clothing",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [
+   {
+    "job": "White Mage",
+    "jobId": 20,
+    "abilitiesToMaster": 3
+   },
+   {
+    "job": "Black Mage",
+    "jobId": 21,
+    "abilitiesToMaster": 5
+   }
+  ],
+  "learnset": [
+   {
+    "ability": "Astra",
+    "abilityId": 59,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Death",
+    "abilityId": 61,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Meteor",
+    "abilityId": 62,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Rasp",
+    "abilityId": 60,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Flare",
+    "abilityId": 63,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Poison",
+    "abilityId": 64,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Toad",
+    "abilityId": 65,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Item",
+    "abilityId": 67,
+    "kind": "Break",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Magic Pow+",
+    "abilityId": 3,
+    "kind": "Support",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Maintenance",
+    "abilityId": 9,
+    "kind": "Support",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 25,
+  "name": "Beastmaster",
+  "race": "Nu Mou",
+  "spriteIndex": 23,
+  "base": {
+   "hp": 37,
+   "mp": 22,
+   "speed": 104
+  },
+  "growth": {
+   "hp": 74,
+   "mp": 21,
+   "speed": 12,
+   "attack": 88,
+   "defense": 88,
+   "power": 68,
+   "resistance": 84
+  },
+  "movement": {
+   "move": 4,
+   "jump": 3,
+   "evade": 55
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Instrument",
+   "Hat",
+   "Clothing",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [],
+  "learnset": [
+   {
+    "ability": "Goblin",
+    "abilityId": 189,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Flan",
+    "abilityId": 190,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Bomb",
+    "abilityId": 191,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Dragon",
+    "abilityId": 192,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Lamia",
+    "abilityId": 193,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Bug",
+    "abilityId": 194,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Tonberry",
+    "abilityId": 195,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Panther",
+    "abilityId": 196,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Malboro",
+    "abilityId": 197,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Floateye",
+    "abilityId": 198,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Undead",
+    "abilityId": 199,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Fairy",
+    "abilityId": 200,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Rockbeast",
+    "abilityId": 201,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Last Haste",
+    "abilityId": 2,
+    "kind": "Reaction",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Immunity",
+    "abilityId": 11,
+    "kind": "Support",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 26,
+  "name": "Morpher",
+  "race": "Nu Mou",
+  "spriteIndex": 24,
+  "base": {
+   "hp": 34,
+   "mp": 32,
+   "speed": 110
+  },
+  "growth": {
+   "hp": 68,
+   "mp": 28,
+   "speed": 16,
+   "attack": 71,
+   "defense": 82,
+   "power": 76,
+   "resistance": 81
+  },
+  "movement": {
+   "move": 4,
+   "jump": 3,
+   "evade": 30
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Soul",
+   "Hat",
+   "Clothing",
+   "Robe",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [
+   {
+    "job": "Beastmaster",
+    "jobId": 25,
+    "abilitiesToMaster": 5
+   }
+  ],
+  "learnset": [
+   {
+    "ability": "Goblin",
+    "abilityId": 202,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Flan",
+    "abilityId": 203,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Bomb",
+    "abilityId": 204,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Dragon",
+    "abilityId": 205,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Lamia",
+    "abilityId": 206,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Bug",
+    "abilityId": 207,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Panther",
+    "abilityId": 208,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Malboro",
+    "abilityId": 209,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Floateye",
+    "abilityId": 210,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Damage > MP",
+    "abilityId": 13,
+    "kind": "Reaction",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 27,
+  "name": "Sage",
+  "race": "Nu Mou",
+  "spriteIndex": 25,
+  "base": {
+   "hp": 38,
+   "mp": 38,
+   "speed": 85
+  },
+  "growth": {
+   "hp": 76,
+   "mp": 88,
+   "speed": 8,
+   "attack": 84,
+   "defense": 76,
+   "power": 92,
+   "resistance": 76
+  },
+  "movement": {
+   "move": 4,
+   "jump": 3,
+   "evade": 50
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Mace",
+   "Shield",
+   "Hat",
+   "Clothing",
+   "Robe",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [
+   {
+    "job": "Beastmaster",
+    "jobId": 25,
+    "abilitiesToMaster": 2
+   },
+   {
+    "job": "White Mage",
+    "jobId": 20,
+    "abilitiesToMaster": 3
+   }
+  ],
+  "learnset": [
+   {
+    "ability": "Drain",
+    "abilityId": 17,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Blind",
+    "abilityId": 18,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Water",
+    "abilityId": 15,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Aero",
+    "abilityId": 16,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Raise",
+    "abilityId": 19,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Giga Flare",
+    "abilityId": 20,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Bio",
+    "abilityId": 21,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Ultima Blow",
+    "abilityId": 22,
+    "kind": "Action",
+    "apToMaster": 1000
+   },
+   {
+    "ability": "Reflex",
+    "abilityId": 5,
+    "kind": "Reaction",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Weapon Def+",
+    "abilityId": 2,
+    "kind": "Support",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Shieldbearer",
+    "abilityId": 15,
+    "kind": "Support",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 28,
+  "name": "Fencer",
+  "race": "Viera",
+  "spriteIndex": 26,
+  "base": {
+   "hp": 38,
+   "mp": 8,
+   "speed": 110
+  },
+  "growth": {
+   "hp": 76,
+   "mp": 11,
+   "speed": 15,
+   "attack": 84,
+   "defense": 81,
+   "power": 76,
+   "resistance": 72
+  },
+  "movement": {
+   "move": 4,
+   "jump": 2,
+   "evade": 60
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Rapier",
+   "Shield",
+   "Ribbon",
+   "Hat",
+   "Clothing",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [],
+  "learnset": [
+   {
+    "ability": "Swarmstrike",
+    "abilityId": 140,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Shadowstick",
+    "abilityId": 141,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Checkmate",
+    "abilityId": 142,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Featherblow",
+    "abilityId": 143,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Swallowtail",
+    "abilityId": 144,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Manastrike",
+    "abilityId": 145,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Piercethrough",
+    "abilityId": 146,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Nighthawk",
+    "abilityId": 147,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Reflex",
+    "abilityId": 5,
+    "kind": "Reaction",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Shieldbearer",
+    "abilityId": 15,
+    "kind": "Support",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 29,
+  "name": "Elementalist",
+  "race": "Viera",
+  "spriteIndex": 27,
+  "base": {
+   "hp": 34,
+   "mp": 18,
+   "speed": 104
+  },
+  "growth": {
+   "hp": 68,
+   "mp": 42,
+   "speed": 11,
+   "attack": 81,
+   "defense": 76,
+   "power": 88,
+   "resistance": 76
+  },
+  "movement": {
+   "move": 3,
+   "jump": 2,
+   "evade": 50
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Rapier",
+   "Ribbon",
+   "Hat",
+   "Clothing",
+   "Robe",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [
+   {
+    "job": "Fencer",
+    "jobId": 28,
+    "abilitiesToMaster": 1
+   },
+   {
+    "job": "White Mage",
+    "jobId": 31,
+    "abilitiesToMaster": 1
+   }
+  ],
+  "learnset": [
+   {
+    "ability": "Fire Whip",
+    "abilityId": 51,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Earth Heal",
+    "abilityId": 52,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "White Flame",
+    "abilityId": 53,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Shining Air",
+    "abilityId": 54,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Evil Gaze",
+    "abilityId": 55,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Heavy Dust",
+    "abilityId": 56,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Sliprain",
+    "abilityId": 57,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Elementalshift",
+    "abilityId": 58,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Absorb MP",
+    "abilityId": 15,
+    "kind": "Reaction",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 30,
+  "name": "Red Mage",
+  "race": "Viera",
+  "spriteIndex": 28,
+  "base": {
+   "hp": 34,
+   "mp": 22,
+   "speed": 96
+  },
+  "growth": {
+   "hp": 68,
+   "mp": 26,
+   "speed": 13,
+   "attack": 81,
+   "defense": 76,
+   "power": 84,
+   "resistance": 76
+  },
+  "movement": {
+   "move": 4,
+   "jump": 2,
+   "evade": 50
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Rapier",
+   "Ribbon",
+   "Hat",
+   "Clothing",
+   "Robe",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [
+   {
+    "job": "Fencer",
+    "jobId": 28,
+    "abilitiesToMaster": 1
+   }
+  ],
+  "learnset": [
+   {
+    "ability": "Barrier",
+    "abilityId": 12,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Fire",
+    "abilityId": 23,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Thunder",
+    "abilityId": 26,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Blizzard",
+    "abilityId": 29,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Cure",
+    "abilityId": 1,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Sleep",
+    "abilityId": 32,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Poison",
+    "abilityId": 64,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Doublecast",
+    "abilityId": 33,
+    "kind": "Action",
+    "apToMaster": 1000
+   },
+   {
+    "ability": "Catch",
+    "abilityId": 4,
+    "kind": "Reaction",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Magic Pow+",
+    "abilityId": 3,
+    "kind": "Support",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 31,
+  "name": "White Mage",
+  "race": "Viera",
+  "spriteIndex": 29,
+  "base": {
+   "hp": 30,
+   "mp": 31,
+   "speed": 115
+  },
+  "growth": {
+   "hp": 62,
+   "mp": 48,
+   "speed": 12,
+   "attack": 62,
+   "defense": 72,
+   "power": 88,
+   "resistance": 76
+  },
+  "movement": {
+   "move": 3,
+   "jump": 2,
+   "evade": 40
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Staff",
+   "Ribbon",
+   "Hat",
+   "Clothing",
+   "Robe",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [],
+  "learnset": [
+   {
+    "ability": "Cure",
+    "abilityId": 1,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Cura",
+    "abilityId": 2,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Curaga",
+    "abilityId": 3,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Esuna",
+    "abilityId": 4,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Life",
+    "abilityId": 5,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Full-Life",
+    "abilityId": 6,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Auto-Life",
+    "abilityId": 7,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Shell",
+    "abilityId": 8,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Protect",
+    "abilityId": 9,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Turbo MP",
+    "abilityId": 4,
+    "kind": "Support",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 32,
+  "name": "Summoner",
+  "race": "Viera",
+  "spriteIndex": 30,
+  "base": {
+   "hp": 28,
+   "mp": 34,
+   "speed": 90
+  },
+  "growth": {
+   "hp": 56,
+   "mp": 62,
+   "speed": 9,
+   "attack": 65,
+   "defense": 64,
+   "power": 101,
+   "resistance": 84
+  },
+  "movement": {
+   "move": 3,
+   "jump": 2,
+   "evade": 30
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Staff",
+   "Ribbon",
+   "Hat",
+   "Clothing",
+   "Robe",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [
+   {
+    "job": "White Mage",
+    "jobId": 31,
+    "abilitiesToMaster": 2
+   },
+   {
+    "job": "Elementalist",
+    "jobId": 29,
+    "abilitiesToMaster": 2
+   }
+  ],
+  "learnset": [
+   {
+    "ability": "Unicorn",
+    "abilityId": 68,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Ifrit",
+    "abilityId": 69,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Ramuh",
+    "abilityId": 70,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Shiva",
+    "abilityId": 71,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Kirin",
+    "abilityId": 72,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Carbuncle",
+    "abilityId": 73,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Phoenix",
+    "abilityId": 74,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Madeen",
+    "abilityId": 75,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Half MP",
+    "abilityId": 10,
+    "kind": "Support",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 33,
+  "name": "Archer",
+  "race": "Viera",
+  "spriteIndex": 31,
+  "base": {
+   "hp": 36,
+   "mp": 14,
+   "speed": 112
+  },
+  "growth": {
+   "hp": 72,
+   "mp": 16,
+   "speed": 16,
+   "attack": 81,
+   "defense": 68,
+   "power": 72,
+   "resistance": 76
+  },
+  "movement": {
+   "move": 4,
+   "jump": 2,
+   "evade": 50
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Bow",
+   "Hat",
+   "Clothing",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [],
+  "learnset": [
+   {
+    "ability": "Boost",
+    "abilityId": 172,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Aim: Legs",
+    "abilityId": 173,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Aim: Arm",
+    "abilityId": 174,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Cupid",
+    "abilityId": 175,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Burial",
+    "abilityId": 176,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Take Aim",
+    "abilityId": 177,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Faster",
+    "abilityId": 178,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Blackout",
+    "abilityId": 179,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Block Arrows",
+    "abilityId": 6,
+    "kind": "Reaction",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Concentrate",
+    "abilityId": 13,
+    "kind": "Support",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 34,
+  "name": "Assassin",
+  "race": "Viera",
+  "spriteIndex": 32,
+  "base": {
+   "hp": 26,
+   "mp": 18,
+   "speed": 125
+  },
+  "growth": {
+   "hp": 52,
+   "mp": 52,
+   "speed": 23,
+   "attack": 88,
+   "defense": 68,
+   "power": 92,
+   "resistance": 72
+  },
+  "movement": {
+   "move": 4,
+   "jump": 4,
+   "evade": 65
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Katana",
+   "Great Bow",
+   "Ribbon",
+   "Hat",
+   "Clothing",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [
+   {
+    "job": "Sniper",
+    "jobId": 35,
+    "abilitiesToMaster": 1
+   },
+   {
+    "job": "Elementalist",
+    "jobId": 29,
+    "abilitiesToMaster": 2
+   }
+  ],
+  "learnset": [
+   {
+    "ability": "Shadowbind",
+    "abilityId": 156,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Last Breath",
+    "abilityId": 157,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Aphonia",
+    "abilityId": 158,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Nightmare",
+    "abilityId": 159,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Ague",
+    "abilityId": 160,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Rockseal",
+    "abilityId": 161,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Oblivion",
+    "abilityId": 155,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Ultima Masher",
+    "abilityId": 162,
+    "kind": "Action",
+    "apToMaster": 1000
+   },
+   {
+    "ability": "Return Fire",
+    "abilityId": 9,
+    "kind": "Reaction",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 35,
+  "name": "Sniper",
+  "race": "Viera",
+  "spriteIndex": 33,
+  "base": {
+   "hp": 31,
+   "mp": 10,
+   "speed": 105
+  },
+  "growth": {
+   "hp": 62,
+   "mp": 24,
+   "speed": 18,
+   "attack": 94,
+   "defense": 68,
+   "power": 76,
+   "resistance": 76
+  },
+  "movement": {
+   "move": 4,
+   "jump": 3,
+   "evade": 60
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Great Bow",
+   "Ribbon",
+   "Hat",
+   "Clothing",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [
+   {
+    "job": "Archer",
+    "jobId": 33,
+    "abilitiesToMaster": 2
+   }
+  ],
+  "learnset": [
+   {
+    "ability": "Doubleshot",
+    "abilityId": 223,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Beso Toxico",
+    "abilityId": 219,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Death Sickle",
+    "abilityId": 220,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Conceal",
+    "abilityId": 221,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Doom Archer",
+    "abilityId": 222,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Aim: Armor",
+    "abilityId": 224,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Aim: Weapon",
+    "abilityId": 225,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Aim: Wallet",
+    "abilityId": 226,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Auto-Regen",
+    "abilityId": 14,
+    "kind": "Reaction",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 36,
+  "name": "Animist",
+  "race": "Moogle",
+  "spriteIndex": 34,
+  "base": {
+   "hp": 36,
+   "mp": 14,
+   "speed": 100
+  },
+  "growth": {
+   "hp": 72,
+   "mp": 26,
+   "speed": 12,
+   "attack": 76,
+   "defense": 88,
+   "power": 72,
+   "resistance": 88
+  },
+  "movement": {
+   "move": 4,
+   "jump": 2,
+   "evade": 55
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Instrument",
+   "Hat",
+   "Clothing",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [],
+  "learnset": [
+   {
+    "ability": "Sheep Count",
+    "abilityId": 227,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "100% Wool",
+    "abilityId": 228,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Cuisine",
+    "abilityId": 229,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Tail Wag",
+    "abilityId": 230,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Chocobo Rush",
+    "abilityId": 231,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Frogsong",
+    "abilityId": 232,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Friend",
+    "abilityId": 233,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Catnip",
+    "abilityId": 234,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Block Arrows",
+    "abilityId": 6,
+    "kind": "Reaction",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 37,
+  "name": "Mog Knight",
+  "race": "Moogle",
+  "spriteIndex": 35,
+  "base": {
+   "hp": 35,
+   "mp": 12,
+   "speed": 98
+  },
+  "growth": {
+   "hp": 71,
+   "mp": 32,
+   "speed": 10,
+   "attack": 88,
+   "defense": 96,
+   "power": 62,
+   "resistance": 83
+  },
+  "movement": {
+   "move": 3,
+   "jump": 2,
+   "evade": 45
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Blade",
+   "Shield",
+   "Helmet",
+   "Hat",
+   "Armor",
+   "Clothing",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [
+   {
+    "job": "Animist",
+    "jobId": 36,
+    "abilitiesToMaster": 1
+   }
+  ],
+  "learnset": [
+   {
+    "ability": "Mog Attack",
+    "abilityId": 132,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Mog Guard",
+    "abilityId": 133,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Mog Lance",
+    "abilityId": 134,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Mog Rush",
+    "abilityId": 135,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Mog Shield",
+    "abilityId": 136,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Mog Peek",
+    "abilityId": 137,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Mog Aid",
+    "abilityId": 138,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Ultima Charge",
+    "abilityId": 139,
+    "kind": "Action",
+    "apToMaster": 1000
+   },
+   {
+    "ability": "Last Haste",
+    "abilityId": 2,
+    "kind": "Reaction",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Shieldbearer",
+    "abilityId": 15,
+    "kind": "Support",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 38,
+  "name": "Gunner",
+  "race": "Moogle",
+  "spriteIndex": 36,
+  "base": {
+   "hp": 30,
+   "mp": 8,
+   "speed": 95
+  },
+  "growth": {
+   "hp": 62,
+   "mp": 11,
+   "speed": 11,
+   "attack": 68,
+   "defense": 92,
+   "power": 56,
+   "resistance": 81
+  },
+  "movement": {
+   "move": 3,
+   "jump": 2,
+   "evade": 65
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Gun",
+   "Hat",
+   "Clothing",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [
+   {
+    "job": "Animist",
+    "jobId": 36,
+    "abilitiesToMaster": 1
+   }
+  ],
+  "learnset": [
+   {
+    "ability": "Fireshot",
+    "abilityId": 235,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Boltshot",
+    "abilityId": 236,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Iceshot",
+    "abilityId": 237,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Confushot",
+    "abilityId": 238,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Charmshot",
+    "abilityId": 239,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Blindshot",
+    "abilityId": 240,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Silenshot",
+    "abilityId": 241,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Stopshot",
+    "abilityId": 242,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Concentrate",
+    "abilityId": 13,
+    "kind": "Support",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 39,
+  "name": "Thief",
+  "race": "Moogle",
+  "spriteIndex": 37,
+  "base": {
+   "hp": 29,
+   "mp": 12,
+   "speed": 110
+  },
+  "growth": {
+   "hp": 58,
+   "mp": 22,
+   "speed": 19,
+   "attack": 73,
+   "defense": 84,
+   "power": 68,
+   "resistance": 76
+  },
+  "movement": {
+   "move": 4,
+   "jump": 3,
+   "evade": 70
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Knife",
+   "Hat",
+   "Clothing",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [],
+  "learnset": [
+   {
+    "ability": "Steal: Armor",
+    "abilityId": 163,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Steal: Shield",
+    "abilityId": 164,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Steal: Access.",
+    "abilityId": 165,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Steal: Helm",
+    "abilityId": 166,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Steal: Weapon",
+    "abilityId": 167,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Steal: Gil",
+    "abilityId": 168,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Steal: EXP",
+    "abilityId": 169,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Steal: JP",
+    "abilityId": 170,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Steal: Ability",
+    "abilityId": 171,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Counter",
+    "abilityId": 8,
+    "kind": "Reaction",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Maintenance",
+    "abilityId": 9,
+    "kind": "Support",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 40,
+  "name": "Juggler",
+  "race": "Moogle",
+  "spriteIndex": 38,
+  "base": {
+   "hp": 34,
+   "mp": 16,
+   "speed": 108
+  },
+  "growth": {
+   "hp": 68,
+   "mp": 16,
+   "speed": 17,
+   "attack": 82,
+   "defense": 99,
+   "power": 64,
+   "resistance": 64
+  },
+  "movement": {
+   "move": 4,
+   "jump": 2,
+   "evade": 40
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Knife",
+   "Hat",
+   "Clothing",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [
+   {
+    "job": "Thief",
+    "jobId": 39,
+    "abilitiesToMaster": 2
+   }
+  ],
+  "learnset": [
+   {
+    "ability": "Hurl",
+    "abilityId": 211,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Ring",
+    "abilityId": 212,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Firebomb",
+    "abilityId": 213,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Ball",
+    "abilityId": 214,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Dagger",
+    "abilityId": 215,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Smile",
+    "abilityId": 216,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Gil Toss",
+    "abilityId": 217,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Mythril",
+    "abilityId": 218,
+    "kind": "Break",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Catch",
+    "abilityId": 4,
+    "kind": "Reaction",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Return Fire",
+    "abilityId": 9,
+    "kind": "Reaction",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 41,
+  "name": "Gadgeteer",
+  "race": "Moogle",
+  "spriteIndex": 39,
+  "base": {
+   "hp": 35,
+   "mp": 20,
+   "speed": 90
+  },
+  "growth": {
+   "hp": 72,
+   "mp": 24,
+   "speed": 9,
+   "attack": 82,
+   "defense": 96,
+   "power": 83,
+   "resistance": 102
+  },
+  "movement": {
+   "move": 3,
+   "jump": 2,
+   "evade": 50
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Knuckles",
+   "Hat",
+   "Clothing",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [
+   {
+    "job": "Thief",
+    "jobId": 39,
+    "abilitiesToMaster": 2
+   }
+  ],
+  "learnset": [
+   {
+    "ability": "Red Spring",
+    "abilityId": 243,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Blue Screw",
+    "abilityId": 244,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Green Gear",
+    "abilityId": 245,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Silver Disc",
+    "abilityId": 246,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Gold Battery",
+    "abilityId": 247,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Black Ingot",
+    "abilityId": 248,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Chroma Gem",
+    "abilityId": 249,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Yellow Spring",
+    "abilityId": 250,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Auto-Regen",
+    "abilityId": 14,
+    "kind": "Reaction",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Damage > MP",
+    "abilityId": 13,
+    "kind": "Reaction",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 42,
+  "name": "Black Mage",
+  "race": "Moogle",
+  "spriteIndex": 40,
+  "base": {
+   "hp": 27,
+   "mp": 28,
+   "speed": 96
+  },
+  "growth": {
+   "hp": 54,
+   "mp": 48,
+   "speed": 11,
+   "attack": 57,
+   "defense": 76,
+   "power": 84,
+   "resistance": 97
+  },
+  "movement": {
+   "move": 3,
+   "jump": 2,
+   "evade": 35
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Rod",
+   "Hat",
+   "Clothing",
+   "Robe",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [],
+  "learnset": [
+   {
+    "ability": "Fire",
+    "abilityId": 23,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Fira",
+    "abilityId": 24,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Firaga",
+    "abilityId": 25,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Thunder",
+    "abilityId": 26,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Thundara",
+    "abilityId": 27,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Thundaga",
+    "abilityId": 28,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Blizzard",
+    "abilityId": 29,
+    "kind": "Action",
+    "apToMaster": 100
+   },
+   {
+    "ability": "Blizzara",
+    "abilityId": 30,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Blizzaga",
+    "abilityId": 31,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Return Magic",
+    "abilityId": 11,
+    "kind": "Reaction",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Geomancy",
+    "abilityId": 5,
+    "kind": "Support",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 43,
+  "name": "Time Mage",
+  "race": "Moogle",
+  "spriteIndex": 41,
+  "base": {
+   "hp": 26,
+   "mp": 22,
+   "speed": 98
+  },
+  "growth": {
+   "hp": 52,
+   "mp": 36,
+   "speed": 12,
+   "attack": 56,
+   "defense": 76,
+   "power": 92,
+   "resistance": 94
+  },
+  "movement": {
+   "move": 3,
+   "jump": 2,
+   "evade": 30
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Rod",
+   "Hat",
+   "Clothing",
+   "Robe",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [
+   {
+    "job": "Black Mage",
+    "jobId": 42,
+    "abilitiesToMaster": 5
+   }
+  ],
+  "learnset": [
+   {
+    "ability": "Haste",
+    "abilityId": 42,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Quicken",
+    "abilityId": 34,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Slow",
+    "abilityId": 35,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Reflect",
+    "abilityId": 36,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Stop",
+    "abilityId": 38,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Silence",
+    "abilityId": 41,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Quarter",
+    "abilityId": 39,
+    "kind": "Action",
+    "apToMaster": 200
+   },
+   {
+    "ability": "Demi",
+    "abilityId": 40,
+    "kind": "Action",
+    "apToMaster": 300
+   },
+   {
+    "ability": "Last Quicken",
+    "abilityId": 1,
+    "kind": "Reaction",
+    "apToMaster": 300
+   }
+  ]
+ },
+ {
+  "index": 77,
+  "name": "Official",
+  "race": "Hume",
+  "spriteIndex": 0,
+  "base": {
+   "hp": 40,
+   "mp": 14,
+   "speed": 100
+  },
+  "growth": {
+   "hp": 84,
+   "mp": 11,
+   "speed": 11,
+   "attack": 88,
+   "defense": 88,
+   "power": 60,
+   "resistance": 72
+  },
+  "movement": {
+   "move": 4,
+   "jump": 2,
+   "evade": 50
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 50,
+  "equippable": [
+   "Sword",
+   "Great Sword",
+   "Shield",
+   "Helmet",
+   "Hat",
+   "Armor",
+   "Clothing",
+   "Shoes",
+   "Armlets",
+   "Accessory"
+  ],
+  "unlockRequirements": [],
+  "learnset": []
+ },
+ {
+  "index": 78,
+  "name": "-",
+  "race": "Hume",
+  "spriteIndex": 0,
+  "base": {
+   "hp": 0,
+   "mp": 0,
+   "speed": 0
+  },
+  "growth": {
+   "hp": 0,
+   "mp": 0,
+   "speed": 0,
+   "attack": 0,
+   "defense": 0,
+   "power": 0,
+   "resistance": 0
+  },
+  "movement": {
+   "move": 0,
+   "jump": 0,
+   "evade": 0
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 0,
+  "equippable": [],
+  "unlockRequirements": [],
+  "learnset": []
+ },
+ {
+  "index": 79,
+  "name": "-",
+  "race": "Hume",
+  "spriteIndex": 0,
+  "base": {
+   "hp": 0,
+   "mp": 0,
+   "speed": 0
+  },
+  "growth": {
+   "hp": 0,
+   "mp": 0,
+   "speed": 0,
+   "attack": 0,
+   "defense": 0,
+   "power": 0,
+   "resistance": 0
+  },
+  "movement": {
+   "move": 0,
+   "jump": 0,
+   "evade": 0
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 0,
+  "equippable": [],
+  "unlockRequirements": [],
+  "learnset": []
+ },
+ {
+  "index": 80,
+  "name": "-",
+  "race": "Hume",
+  "spriteIndex": 0,
+  "base": {
+   "hp": 0,
+   "mp": 0,
+   "speed": 0
+  },
+  "growth": {
+   "hp": 0,
+   "mp": 0,
+   "speed": 0,
+   "attack": 0,
+   "defense": 0,
+   "power": 0,
+   "resistance": 0
+  },
+  "movement": {
+   "move": 0,
+   "jump": 0,
+   "evade": 0
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 0,
+  "equippable": [],
+  "unlockRequirements": [],
+  "learnset": []
+ },
+ {
+  "index": 81,
+  "name": "-",
+  "race": "Viera",
+  "spriteIndex": 0,
+  "base": {
+   "hp": 0,
+   "mp": 0,
+   "speed": 0
+  },
+  "growth": {
+   "hp": 0,
+   "mp": 0,
+   "speed": 0,
+   "attack": 0,
+   "defense": 0,
+   "power": 0,
+   "resistance": 0
+  },
+  "movement": {
+   "move": 0,
+   "jump": 0,
+   "evade": 0
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 0,
+  "equippable": [],
+  "unlockRequirements": [],
+  "learnset": []
+ },
+ {
+  "index": 82,
+  "name": "-",
+  "race": "Moogle",
+  "spriteIndex": 0,
+  "base": {
+   "hp": 0,
+   "mp": 0,
+   "speed": 0
+  },
+  "growth": {
+   "hp": 0,
+   "mp": 0,
+   "speed": 0,
+   "attack": 0,
+   "defense": 0,
+   "power": 0,
+   "resistance": 0
+  },
+  "movement": {
+   "move": 0,
+   "jump": 0,
+   "evade": 0
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 0,
+  "equippable": [],
+  "unlockRequirements": [],
+  "learnset": []
+ },
+ {
+  "index": 85,
+  "name": "-",
+  "race": "Viera",
+  "spriteIndex": 0,
+  "base": {
+   "hp": 0,
+   "mp": 0,
+   "speed": 0
+  },
+  "growth": {
+   "hp": 0,
+   "mp": 0,
+   "speed": 0,
+   "attack": 0,
+   "defense": 0,
+   "power": 0,
+   "resistance": 0
+  },
+  "movement": {
+   "move": 0,
+   "jump": 0,
+   "evade": 0
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 0,
+  "equippable": [],
+  "unlockRequirements": [],
+  "learnset": []
+ },
+ {
+  "index": 90,
+  "name": "New Kid",
+  "race": "Hume",
+  "spriteIndex": 0,
+  "base": {
+   "hp": 13,
+   "mp": 0,
+   "speed": 100
+  },
+  "growth": {
+   "hp": 26,
+   "mp": 0,
+   "speed": 10,
+   "attack": 22,
+   "defense": 28,
+   "power": 0,
+   "resistance": 0
+  },
+  "movement": {
+   "move": 3,
+   "jump": 2,
+   "evade": 50
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 178,
+  "equippable": [],
+  "unlockRequirements": [],
+  "learnset": []
+ },
+ {
+  "index": 91,
+  "name": "Librarian",
+  "race": "Hume",
+  "spriteIndex": 0,
+  "base": {
+   "hp": 8,
+   "mp": 5,
+   "speed": 92
+  },
+  "growth": {
+   "hp": 16,
+   "mp": 0,
+   "speed": 9,
+   "attack": 6,
+   "defense": 11,
+   "power": 0,
+   "resistance": 0
+  },
+  "movement": {
+   "move": 3,
+   "jump": 2,
+   "evade": 40
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 178,
+  "equippable": [],
+  "unlockRequirements": [],
+  "learnset": []
+ },
+ {
+  "index": 92,
+  "name": "Class Head",
+  "race": "Hume",
+  "spriteIndex": 0,
+  "base": {
+   "hp": 13,
+   "mp": 0,
+   "speed": 115
+  },
+  "growth": {
+   "hp": 26,
+   "mp": 0,
+   "speed": 11,
+   "attack": 17,
+   "defense": 22,
+   "power": 0,
+   "resistance": 0
+  },
+  "movement": {
+   "move": 3,
+   "jump": 2,
+   "evade": 55
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 178,
+  "equippable": [],
+  "unlockRequirements": [],
+  "learnset": []
+ },
+ {
+  "index": 93,
+  "name": "PE Head",
+  "race": "Hume",
+  "spriteIndex": 0,
+  "base": {
+   "hp": 20,
+   "mp": 0,
+   "speed": 105
+  },
+  "growth": {
+   "hp": 42,
+   "mp": 0,
+   "speed": 10,
+   "attack": 25,
+   "defense": 33,
+   "power": 0,
+   "resistance": 0
+  },
+  "movement": {
+   "move": 3,
+   "jump": 2,
+   "evade": 50
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 178,
+  "equippable": [],
+  "unlockRequirements": [],
+  "learnset": []
+ },
+ {
+  "index": 94,
+  "name": "D.J.",
+  "race": "Hume",
+  "spriteIndex": 0,
+  "base": {
+   "hp": 13,
+   "mp": 0,
+   "speed": 98
+  },
+  "growth": {
+   "hp": 26,
+   "mp": 0,
+   "speed": 9,
+   "attack": 22,
+   "defense": 22,
+   "power": 0,
+   "resistance": 0
+  },
+  "movement": {
+   "move": 3,
+   "jump": 2,
+   "evade": 50
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 178,
+  "equippable": [],
+  "unlockRequirements": [],
+  "learnset": []
+ },
+ {
+  "index": 95,
+  "name": "Nurse",
+  "race": "Viera",
+  "spriteIndex": 0,
+  "base": {
+   "hp": 14,
+   "mp": 0,
+   "speed": 97
+  },
+  "growth": {
+   "hp": 28,
+   "mp": 0,
+   "speed": 9,
+   "attack": 24,
+   "defense": 24,
+   "power": 0,
+   "resistance": 0
+  },
+  "movement": {
+   "move": 3,
+   "jump": 2,
+   "evade": 50
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 178,
+  "equippable": [],
+  "unlockRequirements": [],
+  "learnset": []
+ },
+ {
+  "index": 96,
+  "name": "Custodian",
+  "race": "Viera",
+  "spriteIndex": 0,
+  "base": {
+   "hp": 10,
+   "mp": 0,
+   "speed": 96
+  },
+  "growth": {
+   "hp": 21,
+   "mp": 0,
+   "speed": 9,
+   "attack": 21,
+   "defense": 22,
+   "power": 0,
+   "resistance": 0
+  },
+  "movement": {
+   "move": 3,
+   "jump": 2,
+   "evade": 50
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 178,
+  "equippable": [],
+  "unlockRequirements": [],
+  "learnset": []
+ },
+ {
+  "index": 103,
+  "name": "Judgemaster",
+  "race": "Hume",
+  "spriteIndex": 0,
+  "base": {
+   "hp": 0,
+   "mp": 0,
+   "speed": 0
+  },
+  "growth": {
+   "hp": 0,
+   "mp": 0,
+   "speed": 0,
+   "attack": 0,
+   "defense": 0,
+   "power": 0,
+   "resistance": 0
+  },
+  "movement": {
+   "move": 0,
+   "jump": 0,
+   "evade": 0
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 0,
+  "equippable": [],
+  "unlockRequirements": [],
+  "learnset": []
+ },
+ {
+  "index": 109,
+  "name": "Box",
+  "race": "Hume",
+  "spriteIndex": 0,
+  "base": {
+   "hp": 3,
+   "mp": 0,
+   "speed": 0
+  },
+  "growth": {
+   "hp": 6,
+   "mp": 0,
+   "speed": 0,
+   "attack": 2,
+   "defense": 6,
+   "power": 0,
+   "resistance": 0
+  },
+  "movement": {
+   "move": 0,
+   "jump": 0,
+   "evade": 60
+  },
+  "elementResist": {
+   "Fire": "Normal",
+   "Wind": "Normal",
+   "Earth": "Normal",
+   "Water": "Normal",
+   "Ice": "Normal",
+   "Lightning": "Normal",
+   "Holy": "Normal",
+   "Dark": "Normal"
+  },
+  "statusDefense": 228,
+  "equippable": [],
+  "unlockRequirements": [],
+  "learnset": []
+ },
+ {
+  "index": 110,
+  "name": "Statue",
+  "race": "Hume",
+  "spriteIndex": 0,
+  "base": {
+   "hp": 25,
+   "mp": 0,
+   "speed": 0
+  },
+  "growth": {
+   "hp": 53,
+   "mp": 0,
+   "speed": 0,
+   "attack": 2,
+   "defense": 91,
+   "power": 22,
+   "resistance": 32
+  },
+  "movement": {
+   "move": 0,
+   "jump": 0,
+   "evade": 0
+  },
+  "elementResist": {
+   "Fire": "Nullify",
+   "Wind": "Nullify",
+   "Earth": "Nullify",
+   "Water": "Nullify",
+   "Ice": "Nullify",
+   "Lightning": "Nullify",
+   "Holy": "Nullify",
+   "Dark": "Nullify"
+  },
+  "statusDefense": 228,
+  "equippable": [],
+  "unlockRequirements": [],
+  "learnset": []
+ },
+ {
+  "index": 111,
+  "name": "Sphere",
+  "race": "Hume",
+  "spriteIndex": 0,
+  "base": {
+   "hp": 15,
+   "mp": 0,
+   "speed": 0
+  },
+  "growth": {
+   "hp": 34,
+   "mp": 0,
+   "speed": 0,
+   "attack": 2,
+   "defense": 81,
+   "power": 124,
+   "resistance": 124
+  },
+  "movement": {
+   "move": 0,
+   "jump": 0,
+   "evade": 0
+  },
+  "elementResist": {
+   "Fire": "Absorb",
+   "Wind": "Absorb",
+   "Earth": "Absorb",
+   "Water": "Absorb",
+   "Ice": "Absorb",
+   "Lightning": "Absorb",
+   "Holy": "Absorb",
+   "Dark": "Absorb"
+  },
+  "statusDefense": 228,
+  "equippable": [],
+  "unlockRequirements": [],
+  "learnset": []
+ }
+]
