@@ -1,5 +1,13 @@
 # Sprites de unidade: o que já foi descartado
 
+> **RESOLVIDO POR OUTRO CAMINHO.** As folhas de sprite já existiam fora do
+> repositório e estão em `assets/ffta/sprites/` — 180 folhas, 4915 frames,
+> e **o nome do arquivo é o `spriteIndex` do job** (60 de 60 casam).
+>
+> Este documento continua valendo para quem precisar achar as sprites **na
+> ROM** — por exemplo para pegar as que faltam, ou para entender de onde as
+> existentes vieram. As tentativas abaixo continuam sendo becos.
+
 Registro das tentativas de extrair as sprites de personagem do FFTA por
 **análise estática da ROM**. Existe para a próxima investida não repetir
 caminho já andado.
