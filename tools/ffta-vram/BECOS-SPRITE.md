@@ -90,6 +90,57 @@ Renderizar os gráficos vizinhos com essas paletas (inclusive os de tamanho
 múltiplo exato de 32: 3072 B = 96 tiles, 6144 B = 192 tiles) também deu
 ruído.
 
+## Animação de habilidade e de arma: também não saiu
+
+Rodada separada, atrás dos efeitos visuais (magia, golpe de arma).
+
+**O ponto de partida:** o registro de habilidade (`0x55187C`, 347 entradas
+de 28 bytes) tem `animationId` em `+0x14`, denso de 2 a 341 (340 distintos).
+É índice de array, como o `spriteIndex` do job — logo existe uma tabela de
+~342 entradas de animação em algum lugar.
+
+> Cheguei a anotar que `+0x16` e `+0x1a` eram campos densos **não lidos**.
+> Errado: `+0x16` é o `descriptionId` e `+0x1a` é o `aiPriority`, ambos já
+> lidos (`ffta.js:199,202`). Eu os li como u16 onde são campos separados.
+> O único índice de animação no registro é o `+0x14`.
+
+**O que foi testado e falhou:**
+
+10. **Tabela de ponteiros de 330–400 entradas** — zero na ROM inteira.
+11. **Tabela de structs com primeiro campo sequencial** (≥300 entradas,
+    stride 4–32, faixa `0x400000`–`0x700000`) — zero.
+12. **Tabelas de 200–500 ponteiros** — 14 achadas, todas com 256/257
+    entradas (tamanho de código, não de tabela de 341/400) e praticamente
+    nenhum alvo LZ77.
+13. **Regiões densas em streams do tamanho de tile** — `0x390000-0x3A0000`
+    (199 streams) e `0x8F0000-0x950000` (~300). Renderizadas em grade
+    linear, em blocos de OBJ 32×32 e 64×64, e como bitmap linear de largura
+    32/64/128/240/256: **ruído em todas**.
+
+### A medida que quase me enganou
+
+Duas estatísticas apontaram forte para gráfico, e vale registrar por quê
+elas não bastam:
+
+| | índice 0 | entropia |
+|---|---|---|
+| Tileset de mapa (gráfico **real**) | 11,2% | 89,0% |
+| Candidatos em `0x390000` | **72,1%** | **45,1%** |
+| Candidatos em `0x8F0000` | **61,8%** | **52,1%** |
+
+Muito índice 0 e entropia baixa é *exatamente* o perfil de sprite com fundo
+transparente — e o oposto do tileset, que preenche tudo. A coerência entre
+nibbles vizinhos também ficou alta (58–66% contra 40% da referência).
+
+E mesmo assim **nenhuma geometria produziu imagem**. A conclusão é que
+essas estatísticas não distinguem sprite de **outro dado esparso
+comprimido** — estrutura de nível, script de batalha, tabela esparsa. É o
+mesmo engano registrado na primeira rodada: *"as 4 maiores, renderizadas,
+são dado comprimido, não tiles"*.
+
+Lição para a próxima investida: **entropia e contagem de zeros não provam
+que é gráfico.** Só renderizar prova.
+
 ## O que sobra
 
 **Rastrear o `spriteIndex` pelo código que o indexa.** A constante do job
