@@ -88,3 +88,6 @@ tools/ffta-vram/dumps/
 
 # Renderizacoes de inspecao da ROM -- descartaveis, regeram em segundos.
 tools/ffta-vram/regiao-*.png
+
+# Diffs do teste de fidelidade -- so existem quando ele falha.
+assets/ffta/tilesets/*/diff-*.png
