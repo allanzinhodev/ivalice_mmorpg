@@ -43,6 +43,21 @@ Tile::Tile(const Position& position) :
 {
 }
 
+/*
+ * A ELEVACAO NAO MOVE O TERRENO.
+ *
+ * `m_drawElevation` acumula a altura da pilha e serve para posicionar o que
+ * esta EM CIMA da celula -- criaturas e itens. O chao fica onde esta.
+ *
+ * O motivo e que a arte do terreno JA TEM o relevo desenhado: as faces
+ * laterais dos degraus, a sombra, o penhasco. Deslocar o sprite por cima
+ * disso soma o relevo duas vezes, e o sintoma e o terreno alto "flutuando"
+ * fora do mapa -- visivel em assets/ffta/tilesets/aizenfield/alturas-relevo.png,
+ * onde as celulas do planalto norte saem da moldura de pedra.
+ *
+ * O deslocamento continua sendo acumulado aqui, porque e nesta ordem que a
+ * pilha e percorrida; quem o consome e drawCreatures/drawTop.
+ */
 void Tile::drawGround(const Point& dest, LightView* lightView)
 {
     m_topDraws = 0;
@@ -59,7 +74,7 @@ void Tile::drawGround(const Point& dest, LightView* lightView)
         if (thing->isHidden())
             continue;
 
-        thing->draw(dest - m_drawElevation, true, lightView);
+        thing->draw(dest, true, lightView);
         m_drawElevation = m_drawElevation + thing->getElevation();
     }
 
@@ -71,6 +86,9 @@ void Tile::drawBottom(const Point& dest, LightView* lightView)
         return;
 
     // bottom things, only when GameMapDrawGroundFirst is active
+    //
+    // Sao os `#bloco` que formam a altura -- TERRENO, e portanto sem
+    // deslocamento, pelo mesmo motivo do drawGround.
     if (g_game.getFeature(Otc::GameMapDrawGroundFirst)) {
         bool afterBottom = false;
         for (const ThingPtr& thing : m_things) {
@@ -81,12 +99,16 @@ void Tile::drawBottom(const Point& dest, LightView* lightView)
             if (thing->isHidden() || !afterBottom)
                 continue;
 
-            thing->draw(dest - m_drawElevation, true, lightView);
+            thing->draw(dest, true, lightView);
             m_drawElevation = m_drawElevation + thing->getElevation();
         }
     }
 
     // common items, reverse order
+    //
+    // Aqui o deslocamento VALE: sao itens largados na celula (uma espada no
+    // chao, um bau), e eles pousam EM CIMA dela como o personagem. Sem isso
+    // um item numa celula alta apareceria enterrado no terreno.
     int redrawPreviousTopW = 0, redrawPreviousTopH = 0;
     bool stopDrawing = false;
     for (auto it = m_things.rbegin(); it != m_things.rend(); ++it) {
@@ -103,7 +125,9 @@ void Tile::drawBottom(const Point& dest, LightView* lightView)
         if (thing->isHidden())
             continue;
 
-        thing->draw(dest - m_drawElevation , true, lightView);
+        // So em Y: `Point - int` subtrai dos DOIS eixos (point.h:57), e mover
+        // em X inclinaria a coluna de itens sobre uma celula alta.
+        thing->draw(Point(dest.x, dest.y - m_drawElevation), true, lightView);
         m_drawElevation = m_drawElevation + thing->getElevation();
     }
 
@@ -162,7 +186,7 @@ void Tile::drawCreatures(const Point& dest, LightView* lightView)
         CreaturePtr creature = thing->static_self_cast<Creature>();
         if (!creature || creature->isWalking())
             continue;
-        creature->draw(dest - m_drawElevation, true, lightView);
+        creature->draw(Point(dest.x, dest.y - m_drawElevation), true, lightView);
     }
 }
 
@@ -196,7 +220,7 @@ void Tile::drawTop(const Point& dest, LightView* lightView)
         CreaturePtr creature = thing->static_self_cast<Creature>();
         if (!creature || creature->isWalking())
             continue;
-        creature->draw(dest - m_drawElevation, true, lightView);
+        creature->draw(Point(dest.x, dest.y - m_drawElevation), true, lightView);
     }
 
     // effects
@@ -204,7 +228,7 @@ void Tile::drawTop(const Point& dest, LightView* lightView)
     for (int i = limit; i >= 0; --i) {
         if (m_effects[i]->isHidden())
             continue;
-        m_effects[i]->draw(dest - m_drawElevation, m_position.x - g_map.getCentralPosition().x, m_position.y - g_map.getCentralPosition().y, true, lightView);
+        m_effects[i]->draw(Point(dest.x, dest.y - m_drawElevation), m_position.x - g_map.getCentralPosition().x, m_position.y - g_map.getCentralPosition().y, true, lightView);
     }
 
     // top
@@ -280,30 +304,29 @@ bool Tile::drawToImage(const Point& dest, ImagePtr image)
     int x = dest.x;
     int y = dest.y;
 
-    // drawGround
+    /*
+     * Mesma regra do desenho na tela (ver o comentario em drawGround): a
+     * elevacao nao move o TERRENO, so o que esta em cima dele.
+     *
+     * E o deslocamento e so em Y. O codigo original subtraia de x e de y --
+     * elevacao e vertical por definicao, entao mover em x era errado mesmo
+     * na logica antiga; passava despercebido porque `drawToImage` so e usado
+     * para gerar imagem fora da tela.
+     */
+
+    // drawGround -- terreno, sem deslocamento
     m_drawElevation = 0;
     for (const ThingPtr& thing : m_things) {
         if (!thing->isGround() && !thing->isGroundBorder() && !thing->isOnBottom())
             break;
         if (thing->isHidden())
             continue;
-/*
-// OLD 'hack' to fix tables
-        if (thing->isGround() || thing->isGroundBorder() || thing->isOnBottom()) {
-            if (thing->getId() == 2322 || thing->getId() == 2323)
-                m_drawElevation = m_drawElevation + thing->getElevation();
 
-            anythingDrawn |= thing->drawToImage(Point(x - m_drawElevation, y - m_drawElevation), image);
-        }
-
-        if (thing->getId() != 2322 && thing->getId() != 2323)
-            m_drawElevation = m_drawElevation + thing->getElevation();
-*/
-        anythingDrawn |= thing->drawToImage(Point(x - m_drawElevation, y - m_drawElevation), image);
+        anythingDrawn |= thing->drawToImage(Point(x, y), image);
         m_drawElevation = m_drawElevation + thing->getElevation();
     }
 
-    // drawBottom
+    // drawBottom -- itens largados, sobem com a celula
     for (auto it = m_things.rbegin(); it != m_things.rend(); ++it) {
         const ThingPtr& thing = *it;
         if (thing->isOnTop() || thing->isOnBottom() || thing->isGroundBorder() || thing->isGround() || thing->isCreature())
@@ -311,7 +334,7 @@ bool Tile::drawToImage(const Point& dest, ImagePtr image)
         if (thing->isHidden())
             continue;
 
-        anythingDrawn |= thing->drawToImage(Point(x - m_drawElevation, y - m_drawElevation), image);
+        anythingDrawn |= thing->drawToImage(Point(x, y - m_drawElevation), image);
         m_drawElevation = m_drawElevation + thing->getElevation();
     }
 
@@ -320,7 +343,7 @@ bool Tile::drawToImage(const Point& dest, ImagePtr image)
         if (!thing->isOnTop() || !thing->isHidden())
             continue;
 
-        anythingDrawn |= thing->drawToImage(Point(x - m_drawElevation, y - m_drawElevation), image);
+        anythingDrawn |= thing->drawToImage(Point(x, y - m_drawElevation), image);
     }
 
     return anythingDrawn;

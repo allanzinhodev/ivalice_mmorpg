@@ -1020,17 +1020,34 @@ void Creature::cancelShieldBlinkEvent()
     }
 }
 
+/*
+ * O deslocamento por altura e SO EM Y, e em pixels absolutos.
+ *
+ * O original fazia `Point(1,1) * elevation * getOffsetFactor()`, o que tem
+ * dois erros para o isometrico:
+ *
+ *   - Point(1,1) move tambem em X. Altura e vertical por definicao; mover em
+ *     X inclina a coluna de celulas empilhadas.
+ *   - getOffsetFactor() e spriteSize()/32 (spritemanager.h:56). Com sprite de
+ *     32 vale 1 e some; com 8 viraria 0.25 e a elevacao encolheria 4x sem
+ *     nenhum aviso. Como a elevacao ja esta em pixels de tela, escalar por
+ *     tamanho de sprite nao tem o que significar.
+ *
+ * Esta e a camada do personagem: aqui o deslocamento VALE, e e ele que
+ * centraliza a criatura sobre a celula alta. O terreno (camadas 1 e 3) e
+ * ilustrativo e nao se move -- ver o comentario em Tile::drawGround.
+ */
 Point Creature::getDrawOffset()
 {
     Point drawOffset;
     if (m_walking) {
         if (m_walkingTile)
-            drawOffset -= Point(1, 1) * m_walkingTile->getDrawElevation() * g_sprites.getOffsetFactor();
+            drawOffset.y -= m_walkingTile->getDrawElevation();
         drawOffset += m_walkOffset;
     } else {
         const TilePtr& tile = getTile();
         if (tile)
-            drawOffset -= Point(1, 1) * tile->getDrawElevation() * g_sprites.getOffsetFactor();
+            drawOffset.y -= tile->getDrawElevation();
     }
     return drawOffset;
 }
