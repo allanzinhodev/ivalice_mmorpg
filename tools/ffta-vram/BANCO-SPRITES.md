@@ -54,6 +54,35 @@ ROM** pelo mesmo caminho. Exportou, converteu, procurou — e tem o offset.
 Com o offset, dá para extrair os vizinhos: sprites de animação ficam juntos,
 então achar um frame do golpe entrega a sequência inteira.
 
+## Confirmado: arte de unidade está armazenada
+
+Três sprites exportados do emulador, três resultados que fecham o quadro:
+
+| Sprite | Tamanho | Achado? | Onde |
+|---|---|---|---|
+| Espada | 16×16 | **sim** | `0x79411C` |
+| Braço levantando (personagem) | 8×16 | **sim** | `0x75E45C` |
+| Anel do First Aid (efeito) | 8×8 | **não** | — |
+
+Os dois de arte de unidade casaram com tiles consecutivos, dentro do banco.
+O efeito de magia não apareceu em busca nenhuma.
+
+**A divisão é entre arte de unidade (armazenada) e efeito de magia
+(provavelmente gerado por código).**
+
+### A vizinhança entrega a animação
+
+Renderizando 1024 tiles ao redor do braço (`ver-regiao.js`) sai um banco de
+**dezenas de poses do mesmo personagem** — variações de braço e corpo, que é
+a animação inteira.
+
+O perfil confirma que o conjunto é contínuo: medindo de 2 em 2 KB entre
+`0x75C000` e `0x762000`, a contagem de índices de paleta fica estável em
+**13**, e a opacidade entre 40% e 51%. Mesma paleta, mesmo personagem.
+
+Ou seja: **achar um frame entrega a sequência**. Não é preciso exportar
+pose por pose do emulador — basta localizar uma e ler a vizinhança.
+
 ## Arma sim, efeito de spell não
 
 A espada casou de primeira. O efeito do **First Aid** — um anel de luz ciano

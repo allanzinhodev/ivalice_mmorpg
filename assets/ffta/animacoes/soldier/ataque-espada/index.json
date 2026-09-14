@@ -1,7 +1,7 @@
 {
  "job": "soldier",
  "acao": "ataque-espada",
- "nota": "Frames exportados do sprite view do mGBA. Uma pose costuma ser varios OBJs (corpo, arma, efeito) -- cada um e um arquivo. PNG indexado, como o emulador produziu; nao foi convertido.",
+ "nota": "Frames exportados do sprite view do mGBA. Uma pose costuma ser varios OBJs (corpo, arma, efeito) -- cada um e um arquivo. PNG indexado, como o emulador produziu; nao foi convertido. Os offsets na ROM estao em romOffsets -- a vizinhanca de cada um tem os demais frames da animacao (ver tools/ffta-vram/BANCO-SPRITES.md).",
  "frames": [
   {
    "arquivo": "01.png",
@@ -9,6 +9,17 @@
    "largura": 16,
    "altura": 16,
    "bits": 8
+  },
+  {
+   "arquivo": "02.png",
+   "origem": "bracolevantando.png",
+   "largura": 8,
+   "altura": 16,
+   "bits": 8
   }
- ]
+ ],
+ "romOffsets": {
+  "01.png": "0x79411C (espada)",
+  "02.png": "0x75E45C (braco/corpo)"
+ }
 }
