@@ -1,0 +1,1548 @@
+{
+ "nota": "Folhas de sprite de unidade do FFTA. Uma por unidade, 64px de largura, frames de 64x64 empilhados na vertical, 4bpp indexado (formato nativo do GBA). O numero do arquivo e o spriteIndex do job (assets/ffta/jobs.json). O 000.png e o sprite padrao de quem nao tem um proprio -- 19 jobs apontam para ele, incluindo NPCs que nao sao classe.",
+ "lado": 64,
+ "folhas": [
+  {
+   "spriteIndex": 0,
+   "arquivo": "000.png",
+   "frames": 44,
+   "bits": 4,
+   "usadoPor": [
+    "Soldier",
+    "Official",
+    "-",
+    "-",
+    "-",
+    "-",
+    "-",
+    "-",
+    "New Kid",
+    "Librarian",
+    "Class Head",
+    "PE Head",
+    "D.J.",
+    "Nurse",
+    "Custodian",
+    "Judgemaster",
+    "Box",
+    "Statue",
+    "Sphere"
+   ],
+   "fallback": true
+  },
+  {
+   "spriteIndex": 1,
+   "arquivo": "001.png",
+   "frames": 44,
+   "bits": 4,
+   "usadoPor": [
+    "Paladin"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 2,
+   "arquivo": "002.png",
+   "frames": 44,
+   "bits": 4,
+   "usadoPor": [
+    "Fighter"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 3,
+   "arquivo": "003.png",
+   "frames": 45,
+   "bits": 4,
+   "usadoPor": [
+    "Thief"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 4,
+   "arquivo": "004.png",
+   "frames": 44,
+   "bits": 4,
+   "usadoPor": [
+    "Ninja"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 5,
+   "arquivo": "005.png",
+   "frames": 44,
+   "bits": 4,
+   "usadoPor": [
+    "White Mage"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 6,
+   "arquivo": "006.png",
+   "frames": 44,
+   "bits": 4,
+   "usadoPor": [
+    "Black Mage"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 7,
+   "arquivo": "007.png",
+   "frames": 44,
+   "bits": 4,
+   "usadoPor": [
+    "Illusionist"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 8,
+   "arquivo": "008.png",
+   "frames": 45,
+   "bits": 4,
+   "usadoPor": [
+    "Blue Mage"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 9,
+   "arquivo": "009.png",
+   "frames": 44,
+   "bits": 4,
+   "usadoPor": [
+    "Archer"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 10,
+   "arquivo": "010.png",
+   "frames": 45,
+   "bits": 4,
+   "usadoPor": [
+    "Hunter"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 11,
+   "arquivo": "011.png",
+   "frames": 42,
+   "bits": 4,
+   "usadoPor": [
+    "Warrior"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 12,
+   "arquivo": "012.png",
+   "frames": 42,
+   "bits": 4,
+   "usadoPor": [
+    "Dragoon"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 13,
+   "arquivo": "013.png",
+   "frames": 42,
+   "bits": 4,
+   "usadoPor": [
+    "Defender"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 14,
+   "arquivo": "014.png",
+   "frames": 42,
+   "bits": 4,
+   "usadoPor": [
+    "Gladiator"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 15,
+   "arquivo": "015.png",
+   "frames": 42,
+   "bits": 4,
+   "usadoPor": [
+    "White Monk"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 16,
+   "arquivo": "016.png",
+   "frames": 42,
+   "bits": 4,
+   "usadoPor": [
+    "Bishop"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 17,
+   "arquivo": "017.png",
+   "frames": 42,
+   "bits": 4,
+   "usadoPor": [
+    "Templar"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 18,
+   "arquivo": "018.png",
+   "frames": 42,
+   "bits": 4,
+   "usadoPor": [
+    "White Mage"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 19,
+   "arquivo": "019.png",
+   "frames": 42,
+   "bits": 4,
+   "usadoPor": [
+    "Black Mage"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 20,
+   "arquivo": "020.png",
+   "frames": 42,
+   "bits": 4,
+   "usadoPor": [
+    "Time Mage"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 21,
+   "arquivo": "021.png",
+   "frames": 43,
+   "bits": 4,
+   "usadoPor": [
+    "Illusionist"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 22,
+   "arquivo": "022.png",
+   "frames": 42,
+   "bits": 4,
+   "usadoPor": [
+    "Alchemist"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 23,
+   "arquivo": "023.png",
+   "frames": 42,
+   "bits": 4,
+   "usadoPor": [
+    "Beastmaster"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 24,
+   "arquivo": "024.png",
+   "frames": 42,
+   "bits": 4,
+   "usadoPor": [
+    "Morpher"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 25,
+   "arquivo": "025.png",
+   "frames": 42,
+   "bits": 4,
+   "usadoPor": [
+    "Sage"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 26,
+   "arquivo": "026.png",
+   "frames": 42,
+   "bits": 4,
+   "usadoPor": [
+    "Fencer"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 27,
+   "arquivo": "027.png",
+   "frames": 42,
+   "bits": 4,
+   "usadoPor": [
+    "Elementalist"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 28,
+   "arquivo": "028.png",
+   "frames": 42,
+   "bits": 4,
+   "usadoPor": [
+    "Red Mage"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 29,
+   "arquivo": "029.png",
+   "frames": 42,
+   "bits": 4,
+   "usadoPor": [
+    "White Mage"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 30,
+   "arquivo": "030.png",
+   "frames": 42,
+   "bits": 4,
+   "usadoPor": [
+    "Summoner"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 31,
+   "arquivo": "031.png",
+   "frames": 42,
+   "bits": 4,
+   "usadoPor": [
+    "Archer"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 32,
+   "arquivo": "032.png",
+   "frames": 42,
+   "bits": 4,
+   "usadoPor": [
+    "Assassin"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 33,
+   "arquivo": "033.png",
+   "frames": 42,
+   "bits": 4,
+   "usadoPor": [
+    "Sniper"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 34,
+   "arquivo": "034.png",
+   "frames": 38,
+   "bits": 4,
+   "usadoPor": [
+    "Animist"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 35,
+   "arquivo": "035.png",
+   "frames": 38,
+   "bits": 4,
+   "usadoPor": [
+    "Mog Knight"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 36,
+   "arquivo": "036.png",
+   "frames": 38,
+   "bits": 4,
+   "usadoPor": [
+    "Gunner"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 37,
+   "arquivo": "037.png",
+   "frames": 38,
+   "bits": 4,
+   "usadoPor": [
+    "Thief"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 38,
+   "arquivo": "038.png",
+   "frames": 38,
+   "bits": 4,
+   "usadoPor": [
+    "Juggler"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 39,
+   "arquivo": "039.png",
+   "frames": 38,
+   "bits": 4,
+   "usadoPor": [
+    "Gadgeteer"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 40,
+   "arquivo": "040.png",
+   "frames": 38,
+   "bits": 4,
+   "usadoPor": [
+    "Black Mage"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 41,
+   "arquivo": "041.png",
+   "frames": 38,
+   "bits": 4,
+   "usadoPor": [
+    "Time Mage"
+   ],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 42,
+   "arquivo": "042.png",
+   "frames": 24,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 43,
+   "arquivo": "043.png",
+   "frames": 84,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 44,
+   "arquivo": "044.png",
+   "frames": 49,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 45,
+   "arquivo": "045.png",
+   "frames": 36,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 46,
+   "arquivo": "046.png",
+   "frames": 57,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 47,
+   "arquivo": "047.png",
+   "frames": 53,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 48,
+   "arquivo": "048.png",
+   "frames": 44,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 49,
+   "arquivo": "049.png",
+   "frames": 43,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 50,
+   "arquivo": "050.png",
+   "frames": 45,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 51,
+   "arquivo": "051.png",
+   "frames": 49,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 52,
+   "arquivo": "052.png",
+   "frames": 45,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 53,
+   "arquivo": "053.png",
+   "frames": 24,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 54,
+   "arquivo": "054.png",
+   "frames": 48,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 55,
+   "arquivo": "055.png",
+   "frames": 50,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 56,
+   "arquivo": "056.png",
+   "frames": 28,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 57,
+   "arquivo": "057.png",
+   "frames": 28,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 58,
+   "arquivo": "058.png",
+   "frames": 30,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 59,
+   "arquivo": "059.png",
+   "frames": 12,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 60,
+   "arquivo": "060.png",
+   "frames": 26,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 61,
+   "arquivo": "061.png",
+   "frames": 12,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 62,
+   "arquivo": "062.png",
+   "frames": 12,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 63,
+   "arquivo": "063.png",
+   "frames": 12,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 64,
+   "arquivo": "064.png",
+   "frames": 12,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 65,
+   "arquivo": "065.png",
+   "frames": 12,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 66,
+   "arquivo": "066.png",
+   "frames": 12,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 67,
+   "arquivo": "067.png",
+   "frames": 12,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 68,
+   "arquivo": "068.png",
+   "frames": 12,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 69,
+   "arquivo": "069.png",
+   "frames": 12,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 70,
+   "arquivo": "070.png",
+   "frames": 12,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 71,
+   "arquivo": "071.png",
+   "frames": 12,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 72,
+   "arquivo": "072.png",
+   "frames": 9,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 73,
+   "arquivo": "073.png",
+   "frames": 12,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 74,
+   "arquivo": "074.png",
+   "frames": 12,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 75,
+   "arquivo": "075.png",
+   "frames": 12,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 76,
+   "arquivo": "076.png",
+   "frames": 1,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 77,
+   "arquivo": "077.png",
+   "frames": 1,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 78,
+   "arquivo": "078.png",
+   "frames": 1,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 79,
+   "arquivo": "079.png",
+   "frames": 1,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 80,
+   "arquivo": "080.png",
+   "frames": 1,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 81,
+   "arquivo": "081.png",
+   "frames": 1,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 82,
+   "arquivo": "082.png",
+   "frames": 1,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 83,
+   "arquivo": "083.png",
+   "frames": 1,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 84,
+   "arquivo": "084.png",
+   "frames": 15,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 85,
+   "arquivo": "085.png",
+   "frames": 12,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 86,
+   "arquivo": "086.png",
+   "frames": 38,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 87,
+   "arquivo": "087.png",
+   "frames": 46,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 88,
+   "arquivo": "088.png",
+   "frames": 30,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 89,
+   "arquivo": "089.png",
+   "frames": 23,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 90,
+   "arquivo": "090.png",
+   "frames": 26,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 91,
+   "arquivo": "091.png",
+   "frames": 26,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 92,
+   "arquivo": "092.png",
+   "frames": 31,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 93,
+   "arquivo": "093.png",
+   "frames": 26,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 94,
+   "arquivo": "094.png",
+   "frames": 28,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 95,
+   "arquivo": "095.png",
+   "frames": 28,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 96,
+   "arquivo": "096.png",
+   "frames": 28,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 97,
+   "arquivo": "097.png",
+   "frames": 23,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 98,
+   "arquivo": "098.png",
+   "frames": 31,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 99,
+   "arquivo": "099.png",
+   "frames": 30,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 100,
+   "arquivo": "100.png",
+   "frames": 30,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 101,
+   "arquivo": "101.png",
+   "frames": 26,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 102,
+   "arquivo": "102.png",
+   "frames": 24,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 103,
+   "arquivo": "103.png",
+   "frames": 30,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 104,
+   "arquivo": "104.png",
+   "frames": 24,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 105,
+   "arquivo": "105.png",
+   "frames": 37,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 106,
+   "arquivo": "106.png",
+   "frames": 33,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 107,
+   "arquivo": "107.png",
+   "frames": 23,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 108,
+   "arquivo": "108.png",
+   "frames": 12,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 109,
+   "arquivo": "109.png",
+   "frames": 30,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 110,
+   "arquivo": "110.png",
+   "frames": 30,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 111,
+   "arquivo": "111.png",
+   "frames": 32,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 113,
+   "arquivo": "113.png",
+   "frames": 6,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 114,
+   "arquivo": "114.png",
+   "frames": 5,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 115,
+   "arquivo": "115.png",
+   "frames": 7,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 118,
+   "arquivo": "118.png",
+   "frames": 32,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 119,
+   "arquivo": "119.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 120,
+   "arquivo": "120.png",
+   "frames": 12,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 121,
+   "arquivo": "121.png",
+   "frames": 12,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 122,
+   "arquivo": "122.png",
+   "frames": 12,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 188,
+   "arquivo": "188.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 189,
+   "arquivo": "189.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 190,
+   "arquivo": "190.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 191,
+   "arquivo": "191.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 192,
+   "arquivo": "192.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 193,
+   "arquivo": "193.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 194,
+   "arquivo": "194.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 195,
+   "arquivo": "195.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 196,
+   "arquivo": "196.png",
+   "frames": 21,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 197,
+   "arquivo": "197.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 198,
+   "arquivo": "198.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 199,
+   "arquivo": "199.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 200,
+   "arquivo": "200.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 201,
+   "arquivo": "201.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 202,
+   "arquivo": "202.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 203,
+   "arquivo": "203.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 204,
+   "arquivo": "204.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 205,
+   "arquivo": "205.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 206,
+   "arquivo": "206.png",
+   "frames": 26,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 207,
+   "arquivo": "207.png",
+   "frames": 26,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 208,
+   "arquivo": "208.png",
+   "frames": 26,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 209,
+   "arquivo": "209.png",
+   "frames": 26,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 210,
+   "arquivo": "210.png",
+   "frames": 26,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 211,
+   "arquivo": "211.png",
+   "frames": 26,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 212,
+   "arquivo": "212.png",
+   "frames": 26,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 213,
+   "arquivo": "213.png",
+   "frames": 26,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 214,
+   "arquivo": "214.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 215,
+   "arquivo": "215.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 216,
+   "arquivo": "216.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 217,
+   "arquivo": "217.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 218,
+   "arquivo": "218.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 219,
+   "arquivo": "219.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 220,
+   "arquivo": "220.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 221,
+   "arquivo": "221.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 222,
+   "arquivo": "222.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 223,
+   "arquivo": "223.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 224,
+   "arquivo": "224.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 225,
+   "arquivo": "225.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 226,
+   "arquivo": "226.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 227,
+   "arquivo": "227.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 228,
+   "arquivo": "228.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 229,
+   "arquivo": "229.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 230,
+   "arquivo": "230.png",
+   "frames": 18,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 231,
+   "arquivo": "231.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 232,
+   "arquivo": "232.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 233,
+   "arquivo": "233.png",
+   "frames": 6,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 234,
+   "arquivo": "234.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 235,
+   "arquivo": "235.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 236,
+   "arquivo": "236.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 237,
+   "arquivo": "237.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 238,
+   "arquivo": "238.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 239,
+   "arquivo": "239.png",
+   "frames": 20,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 240,
+   "arquivo": "240.png",
+   "frames": 20,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 241,
+   "arquivo": "241.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 242,
+   "arquivo": "242.png",
+   "frames": 20,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 243,
+   "arquivo": "243.png",
+   "frames": 20,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 244,
+   "arquivo": "244.png",
+   "frames": 20,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 245,
+   "arquivo": "245.png",
+   "frames": 20,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 246,
+   "arquivo": "246.png",
+   "frames": 20,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  },
+  {
+   "spriteIndex": 247,
+   "arquivo": "247.png",
+   "frames": 22,
+   "bits": 4,
+   "usadoPor": [],
+   "fallback": false
+  }
+ ]
+}
