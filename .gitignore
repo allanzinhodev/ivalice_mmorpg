@@ -91,3 +91,7 @@ tools/ffta-vram/regiao-*.png
 
 # Diffs do teste de fidelidade -- so existem quando ele falha.
 assets/ffta/tilesets/*/diff-*.png
+
+# Copias do datapack antes de regerar -- seguranca local, nao artefato.
+client/data/things/*/*.pre-tileset
+client/data/things/*/*.obsoleto
