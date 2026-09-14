@@ -41,10 +41,27 @@ local REGIOES = {
   { nome = "oam.bin",     base = 0x07000000, tam = 1024 },
 }
 
+-- Teto de frames guardados. 300 frames = ~10 MB de RAM, e 5 segundos de
+-- animacao a 60fps -- de sobra para qualquer golpe.
+local MAX_FRAMES = 300
+
 local gravando = false
 local rotulo = "dump"
 local contador = 0
 local callbackId = nil
+
+--[[
+  Os frames ficam na MEMORIA ate o parar().
+
+  A primeira versao gravava em disco dentro do callback de frame, e isso
+  derrubou o emulador de 60 para 0,4 fps: sao tres arquivos e 34 KB por
+  frame, sessenta vezes por segundo, e o disco nao acompanha. O jogo
+  engasgou depois de 22 frames.
+
+  Acumular em RAM e gravar de uma vez no fim resolve: o callback so copia
+  bytes, que e barato, e a escrita acontece uma vez so com o jogo parado.
+]]
+local buffer = {}
 
 --[[
   Cria a pasta.
@@ -67,57 +84,80 @@ local function criarPasta(caminho)
   pastasFeitas[caminho] = true
 end
 
-local function escreverRegiao(destino, reg)
-  local f = io.open(destino .. "/" .. reg.nome, "wb")
-  if not f then
-    console:error("nao consegui abrir " .. destino .. "/" .. reg.nome)
-    return false
-  end
+--[[
+  Callback de frame: so LE e guarda. Nada de disco aqui.
 
-  -- readRange devolve a faixa inteira de uma vez. Ler 32 KB byte a byte a
-  -- cada frame travaria o emulador -- sao 2 milhoes de chamadas por segundo.
-  f:write(emu:readRange(reg.base, reg.tam))
-  f:close()
-  return true
-end
-
+  readRange devolve a faixa inteira de uma vez -- ler 32 KB byte a byte
+  seriam 2 milhoes de chamadas por segundo.
+]]
 local function despejar()
   if not gravando then return end
 
   contador = contador + 1
   if contador % PASSO ~= 0 then return end
 
-  local destino = string.format("%s/%s-%04d", PASTA, rotulo, contador)
-  criarPasta(destino)
-
-  for _, reg in ipairs(REGIOES) do
-    if not escreverRegiao(destino, reg) then
-      gravando = false
-      console:error("gravacao interrompida")
-      return
-    end
+  -- Ao bater o teto, so para de acumular. Nao chama parar() daqui: gravar
+  -- 300 pastas de dentro do callback de frame e exatamente o que travou a
+  -- primeira versao.
+  if #buffer >= MAX_FRAMES then
+    gravando = false
+    console:log("teto de " .. MAX_FRAMES .. " frames atingido -- digite parar() para gravar")
+    return
   end
 
-  if contador % 30 == 0 then
-    console:log("frame " .. contador .. " -> " .. destino)
-  end
+  buffer[#buffer + 1] = {
+    palette = emu:readRange(0x05000000, 1024),
+    objvram = emu:readRange(0x06010000, 32768),
+    oam     = emu:readRange(0x07000000, 1024),
+  }
 end
 
 --- Comeca a gravar. `nome` vira o prefixo das pastas.
 function iniciar(nome)
   rotulo = nome or "dump"
   contador = 0
+  buffer = {}
   gravando = true
-  criarPasta(PASTA)
-  console:log("gravando em " .. PASTA .. "/" .. rotulo .. "-NNNN  (passo " .. PASSO .. ")")
+  console:log("gravando na memoria (ate " .. MAX_FRAMES .. " frames, passo " .. PASSO .. ")")
   console:log("execute a habilidade agora; depois digite  parar()")
 end
 
---- Para de gravar.
+--- Para de gravar e grava tudo em disco.
 function parar()
   gravando = false
-  console:log("parado. " .. contador .. " frames capturados.")
-  console:log("agora rode:  node tools/ffta-vram/varrer.js " .. PASTA)
+
+  if #buffer == 0 then
+    console:log("nada capturado.")
+    return
+  end
+
+  console:log("gravando " .. #buffer .. " frames em disco...")
+  criarPasta(PASTA)
+
+  local gravados = 0
+  for i, q in ipairs(buffer) do
+    local destino = string.format("%s/%s-%04d", PASTA, rotulo, i)
+    criarPasta(destino)
+
+    local falhou = false
+    for nome, dados in pairs({ ["palette.bin"] = q.palette,
+                               ["objvram.bin"] = q.objvram,
+                               ["oam.bin"] = q.oam }) do
+      local f = io.open(destino .. "/" .. nome, "wb")
+      if f then
+        f:write(dados)
+        f:close()
+      else
+        falhou = true
+      end
+    end
+
+    if not falhou then gravados = gravados + 1 end
+  end
+
+  buffer = {}
+  console:log("pronto: " .. gravados .. " frames em " .. PASTA)
+  console:log("agora rode:  node tools/ffta-vram/varrer.js tools/ffta-vram/dumps")
 end
 
 callbackId = callbacks:add("frame", despejar)
