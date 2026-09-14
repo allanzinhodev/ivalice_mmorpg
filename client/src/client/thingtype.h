@@ -55,6 +55,20 @@ enum ThingCategory : uint8 {
     ThingCategoryCreature,
     ThingCategoryEffect,
     ThingCategoryMissile,
+
+    /*
+     * Tiles de cenario, 8x8, puramente visuais.
+     *
+     * Nao carregam flag nenhuma: quem decide colisao, altura e passagem e o
+     * item da celula, nao o desenho. O mapa e ilustrativo.
+     *
+     * Entra NO FIM do enum de proposito. Poe-la antes de Item deslocaria
+     * todos os outros valores, e `ThingCategoryItem == 0` esta assumido em
+     * varios pontos de thingtypemanager.cpp (o firstId = 100, entre outros).
+     * O preco e a ordem de serializacao: tileset vai por ultimo no .dat.
+     */
+    ThingCategoryTileset,
+
     ThingInvalidCategory,
     ThingLastCategory = ThingInvalidCategory
 };

@@ -836,9 +836,24 @@ const TexturePtr& ThingType::getTexture(int animationPhase)
     return animationPhaseTexture;
 }
 
+/*
+ * Quantas CELULAS cabem por eixo no atlas de um thing.
+ *
+ * Isto era `g_sprites.spriteSize()`, que e o tamanho do sprite em PIXELS --
+ * as duas grandezas nao tem relacao. Com sprite de 32 o valor 32 dava folga
+ * por acidente; com sprite de 8 viraria 8, e os VALIDATE abaixo derrubariam
+ * o client em qualquer thing um pouco maior. Um outfit de 32x64px fatiado em
+ * 8x8 ja da 4x8 celulas, e com 8 combinacoes de pattern sao 256 sprites --
+ * exatamente no limite, passando raspando.
+ *
+ * 32 e o valor que o codigo vinha usando na pratica, entao mante-lo preserva
+ * o comportamento com sprite de 32 e destrava o de 8.
+ */
+static constexpr int MAX_TEXTURE_CELLS = 32;
+
 Size ThingType::getBestTextureDimension(int w, int h, int count)
 {
-    const int MAX = g_sprites.spriteSize();
+    const int MAX = MAX_TEXTURE_CELLS;
 
     int k = 1;
     while(k < w)

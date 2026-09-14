@@ -179,7 +179,7 @@ function writeThing(w, thing, hasFrameGroups) {
  * `items` sao indexados a partir de 100 (o formato reserva 1..99).
  * Outfits levam frame groups; itens, efeitos e misseis nao.
  */
-function buildDat({ signature, items, outfits, effects, missiles }) {
+function buildDat({ signature, items, outfits, effects, missiles, tilesets = [] }) {
   const w = new Writer();
 
   w.u32(signature);
@@ -189,10 +189,26 @@ function buildDat({ signature, items, outfits, effects, missiles }) {
   w.u16(effects.length);
   w.u16(missiles.length);
 
+  /*
+   * TILESETS -- a quinta categoria, tiles 8x8 puramente visuais.
+   *
+   * Vem POR ULTIMO porque o enum do client a poe no fim
+   * (ThingCategoryTileset em thingtype.h): mudar a ordem aqui sem mudar la
+   * embaralha o arquivo inteiro, ja que o formato nao tem offset nem
+   * delimitador -- o client le em streaming, contando.
+   *
+   * Um .dat sem tilesets grava 0 aqui, e nao muda de tamanho de forma
+   * perceptivel. Mas ATENCAO: qualquer client que so conheca 4 categorias
+   * vai ler este u16 como o primeiro atributo do primeiro item. Nao ha
+   * compatibilidade para tras, e nem deveria haver fingida.
+   */
+  w.u16(tilesets.length);
+
   for (const t of items) writeThing(w, t, false);
   for (const t of outfits) writeThing(w, t, true);
   for (const t of effects) writeThing(w, t, false);
   for (const t of missiles) writeThing(w, t, false);
+  for (const t of tilesets) writeThing(w, t, false);
 
   return w.toBuffer();
 }

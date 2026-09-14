@@ -90,6 +90,7 @@ function readDat(buf) {
   const nOutfits = r.u16();
   const nEffects = r.u16();
   const nMissiles = r.u16();
+  const nTilesets = r.u16();
 
   const items = [];
   for (let id = 100; id <= lastItemId; id++) items.push({ id, ...readThing(r, false) });
@@ -103,11 +104,14 @@ function readDat(buf) {
   const missiles = [];
   for (let i = 1; i <= nMissiles; i++) missiles.push({ id: i, ...readThing(r, false) });
 
+  const tilesets = [];
+  for (let i = 1; i <= nTilesets; i++) tilesets.push({ id: i, ...readThing(r, false) });
+
   if (r.p !== buf.length) {
     throw new Error(`sobraram ${buf.length - r.p} bytes depois do ultimo thing`);
   }
 
-  return { signature, items, outfits, effects, missiles };
+  return { signature, items, outfits, effects, missiles, tilesets };
 }
 
 module.exports = { readDat };

@@ -1,0 +1,38 @@
+Reformulação do game.
+
+A ideia é refazer o motor do jogo e enxugar o client.
+
+.dat e .spr Client e Server side.
+
+as sprites agora terão 8x8.
+Serão baseadas em tile e reconstruídas usando a mesma lógica usada no .dat e .spr.
+
+Preciso que elas continuem com o valor indexed pois isso será usado no sistema de set outfit do game. No futuro ele só trocará uma cor base e a outfit trocará as cores indexed associadas pra trocar a cor do personagem.
+
+Preciso que você separe ele por blocos diferentes, o original é, item, outfit, missile e effect.
+
+quero que vire
+tilesets - os tilesets serão meramente visuais, eles não precisam existir flags que comunicam com o servidor, eu preciso que cada tile contenha 32x16 pixels, cada peça 8x8 será buscada a partir dos tilesets que eu já ripei e preciso que a partir deles você tente reaproveitar cada mapa que eu referencia com a imagem para economizar a quantidade de tiles diferentes. não quero que repita tiles iguais. 
+
+items - os item sim devem ter flags e serão renderizados separadamento no game, por enquanto não peguei nenhum item
+
+outfits - que serão adaptadas para funcionar de acordo com a spritesheet que temos. levando em consideração que não precisam existir as sprites das 4 posições da outfit, elas só precisam ter sul e oeste que é como já existe, o norte é a sprite renderizada do oeste com um flip horizontal e o sul 
+
+missile e effect permanecem na mesma lógica por enquanto 
+Map Render:
+
+Camada 1
+o mapa será meramente visual, as flags de cada posição são separadas,
+cada posição no game terá 32x16, ele que decidirá a posição de cada coisa no game.
+eu quero que o render do mapa seja 480 x 320, ou seja ele renderiza 20 de altura por 16 de largura 
+Camada 2
+Personagem
+Camada 3
+será a segunda camada de tiles.
+
+Cada célula tem 32x16 e um deslocamento de 16x8 o jogo. o jogo deve receber a informação de 40 x 32 lembrando que se for seguir ma matemática simples, um monte de células não serão visíveis então ela não renderizará todos visivei por conta do deslocamento então a lógica precisa ser adaptada para o jogo receber essas informações todas visíveis no mapa e não sobrecarregar o envio de informações para o servidor.
+
+Gere o mapa aizenfield basedo 
+na imagem do tools\ aizenfield.png será a primeira camada, aizenfield2.png será a segunda camada e aizenfield3.png será a terceira camada.
+
+lembre se, é pra reaproveitar os tiles o máximo possível. 
