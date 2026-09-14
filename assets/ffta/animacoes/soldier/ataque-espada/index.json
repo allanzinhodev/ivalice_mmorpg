@@ -1,0 +1,14 @@
+{
+ "job": "soldier",
+ "acao": "ataque-espada",
+ "nota": "Frames exportados do sprite view do mGBA. Uma pose costuma ser varios OBJs (corpo, arma, efeito) -- cada um e um arquivo. PNG indexado, como o emulador produziu; nao foi convertido.",
+ "frames": [
+  {
+   "arquivo": "01.png",
+   "origem": "espadada.png",
+   "largura": 16,
+   "altura": 16,
+   "bits": 8
+  }
+ ]
+}
