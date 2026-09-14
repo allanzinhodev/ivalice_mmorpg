@@ -63,6 +63,10 @@ local callbackId = nil
 ]]
 local buffer = {}
 
+-- Ultima OBJ VRAM vista, para nao guardar copia do que nao mudou.
+local ultimaVram = nil
+local trocas = 0
+
 --[[
   Cria a pasta.
 
@@ -105,10 +109,43 @@ local function despejar()
     return
   end
 
+  --[[
+    A OAM e a paleta sao 1 KB cada; a OBJ VRAM e 32 KB -- 94% do custo.
+
+    Numa animacao a VRAM costuma repetir de um frame para o outro: o que
+    muda e a OAM, que reposiciona os mesmos tiles. Entao so guardamos a VRAM
+    quando ela realmente mudou, e os demais frames referenciam a ultima.
+
+    Isso derruba o custo por frame de 34 KB para ~2 KB na maioria deles.
+  ]]
+  local oam = emu:readRange(0x07000000, 1024)
+  local pal = emu:readRange(0x05000000, 1024)
+  local vram = emu:readRange(0x06010000, 32768)
+
+  --[[
+    Compara por igualdade direta. readRange devolve string Lua, e string em
+    Lua e imutavel e internada -- `==` compara conteudo, nao referencia.
+
+    Se um dia devolver userdata, esta comparacao vira sempre falsa e o
+    script simplesmente guarda todo frame: fica mais pesado, mas nao perde
+    dado nem quebra.
+  ]]
+  local igual = (ultimaVram ~= nil and vram == ultimaVram)
+  if not igual then
+    ultimaVram = vram
+    -- Avisa em tempo real. Se voce executar o golpe e NADA aparecer aqui, a
+    -- captura nao pegou a animacao -- melhor descobrir agora que depois de
+    -- processar 300 frames.
+    trocas = trocas + 1
+    if trocas <= 40 then
+      console:log("  VRAM mudou no frame " .. #buffer + 1)
+    end
+  end
+
   buffer[#buffer + 1] = {
-    palette = emu:readRange(0x05000000, 1024),
-    objvram = emu:readRange(0x06010000, 32768),
-    oam     = emu:readRange(0x07000000, 1024),
+    palette = pal,
+    oam = oam,
+    objvram = igual and false or vram,   -- false = "repete a anterior"
   }
 end
 
@@ -117,6 +154,8 @@ function iniciar(nome)
   rotulo = nome or "dump"
   contador = 0
   buffer = {}
+  ultimaVram = nil
+  trocas = 0
   gravando = true
   console:log("gravando na memoria (ate " .. MAX_FRAMES .. " frames, passo " .. PASSO .. ")")
   console:log("execute a habilidade agora; depois digite  parar()")
@@ -135,13 +174,20 @@ function parar()
   criarPasta(PASTA)
 
   local gravados = 0
+  local vramAtual = nil
+
   for i, q in ipairs(buffer) do
     local destino = string.format("%s/%s-%04d", PASTA, rotulo, i)
     criarPasta(destino)
 
+    -- objvram == false quer dizer "igual ao frame anterior". Expandimos aqui
+    -- para que cada pasta fique completa e o vram-rip.js nao precise saber
+    -- desta otimizacao.
+    if q.objvram then vramAtual = q.objvram end
+
     local falhou = false
     for nome, dados in pairs({ ["palette.bin"] = q.palette,
-                               ["objvram.bin"] = q.objvram,
+                               ["objvram.bin"] = vramAtual,
                                ["oam.bin"] = q.oam }) do
       local f = io.open(destino .. "/" .. nome, "wb")
       if f then
