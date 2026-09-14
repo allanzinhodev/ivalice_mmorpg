@@ -131,18 +131,23 @@ function main() {
   /*
    * Onde fica a celula (col,row) na arte?
    *
-   * Obtido por busca: para cada (OX,OY), quantos pixels opacos da arte caem
+   * O X saiu de busca: para cada (OX,OY), quantos pixels opacos da arte caem
    * dentro de algum losango da grade, penalizando o que transborda para o
-   * vazio. O otimo cobre 77,3% com ZERO transbordo; o resto e a moldura de
-   * pedra das bordas, que esta desenhada e nao e celula.
+   * vazio.
    *
    * Foi assim que o corte de colunas do height map se revelou errado: com as
    * 14 colunas antigas o melhor encaixe dava 67,7%, e uma grade de 15x14
    * cobria 78% -- ou seja, FALTAVAM colunas. Ver o comentario em
    * tools/ffta-extract/to-assets.js.
+   *
+   * O Y e 16px ACIMA do que a busca devolve (28). A busca otimiza cobertura
+   * com transbordo zero, e por isso encosta a grade na moldura de pedra; a
+   * leitura fica melhor com a grade sobre o terreno. O custo e pequeno e
+   * medido: 76,4% em vez de 77,3%, e os 657px de "transbordo" sao a grade
+   * passando por cima da moldura -- que nao e celula de qualquer forma.
    */
   const OX = 208;
-  const OY = 28;
+  const OY = 12;
 
   for (const comRelevo of [false, true]) {
     const img = Image.blank(base.width, base.height);
