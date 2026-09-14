@@ -140,14 +140,20 @@ function main() {
    * cobria 78% -- ou seja, FALTAVAM colunas. Ver o comentario em
    * tools/ffta-extract/to-assets.js.
    *
-   * O Y e 16px ACIMA do que a busca devolve (28). A busca otimiza cobertura
-   * com transbordo zero, e por isso encosta a grade na moldura de pedra; a
-   * leitura fica melhor com a grade sobre o terreno. O custo e pequeno e
-   * medido: 76,4% em vez de 77,3%, e os 657px de "transbordo" sao a grade
-   * passando por cima da moldura -- que nao e celula de qualquer forma.
+   * O Y e 16px ABAIXO do que a busca devolve (28), por escolha visual: a
+   * grade assenta sobre o terreno em vez de encostar na moldura.
+   *
+   * Medido, para ficar claro o que se troca:
+   *
+   *   OY=28   77,3% de cobertura,    0 px de transbordo  (otimo da busca)
+   *   OY=44   74,7% de cobertura, 1783 px de transbordo  (o que esta aqui)
+   *
+   * "Transbordo" aqui nao e erro: e a grade passando por cima da moldura de
+   * pedra, que esta desenhada e nao e celula jogavel. A busca nao tem como
+   * saber disso -- ela so ve pixel opaco e pixel vazio.
    */
   const OX = 208;
-  const OY = 12;
+  const OY = 44;
 
   for (const comRelevo of [false, true]) {
     const img = Image.blank(base.width, base.height);

@@ -40,7 +40,7 @@ const EL = 8;    // quanto um nivel de altura sobe na tela
  * transbordo zero.
  */
 let OX = 208;
-let OY = 12;
+let OY = 44;
 
 const tela = document.getElementById('tela');
 const ctx = tela.getContext('2d');
