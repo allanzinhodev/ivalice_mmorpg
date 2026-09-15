@@ -36,6 +36,25 @@
 #include <framework/otml/otml.h>
 #include <memory>
 
+/*
+ * Teto de sprites por thing type -- salvaguarda contra .dat corrompido, nao
+ * limite de formato.
+ *
+ * Nada no client satura nesse numero: `m_spritesIndex` e um std::vector<int>
+ * que so cresce por resize, `getSpriteIndex` indexa em uint com VALIDATE
+ * contra o tamanho real, e os ids saem em u32 no arquivo (GameSpritesU32).
+ *
+ * O valor antigo era 4096, escolhido para sprite de 32x32, onde um quadro
+ * custa 1 sprite. Com celula de 8x8 um quadro de 32x48 custa 24, e as
+ * animacoes do FFTA2 passam longe do teto: a pior unidade medida (u66, 64
+ * grupos) precisa de 52800 sprites com 2 direcoes e a variante de agua.
+ *
+ * 262144 deixa folga de 5x sobre esse pior caso e ainda barra lixo: um .dat
+ * corrompido que peca mais que isso tentaria alocar 1 MB so de indices num
+ * unico thing, o que aparece.
+ */
+static constexpr int MAX_SPRITES_PER_THING = 262144;
+
 ThingType::ThingType()
 {
     m_category = ThingInvalidCategory;
@@ -347,8 +366,8 @@ void ThingType::unserialize(uint16 clientId, ThingCategory category, const FileS
         int totalSprites = m_size.area() * m_layers * m_numPatternX * m_numPatternY * m_numPatternZ * groupAnimationsPhases;
         total_sprites.push_back(totalSprites);
 
-        if((totalSpritesCount+totalSprites) > 4096)
-            stdext::throw_exception("a thing type has more than 4096 sprites");
+        if((totalSpritesCount+totalSprites) > MAX_SPRITES_PER_THING)
+            stdext::throw_exception(stdext::format("a thing type has more than %d sprites", MAX_SPRITES_PER_THING));
 
         m_spritesIndex.resize((totalSpritesCount+totalSprites));
         for(int i = totalSpritesCount; i < (totalSpritesCount+totalSprites); i++)

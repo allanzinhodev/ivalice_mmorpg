@@ -99,3 +99,4 @@ client/data/things/*/*.obsoleto
 # Saves e save states do emulador -- derivados da ROM comercial.
 tools/*.sav
 tools/*.ss[0-9]
+.ffta2/
