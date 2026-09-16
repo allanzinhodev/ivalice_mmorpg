@@ -114,12 +114,21 @@ class BancoDeBlocos {
   get quantidade() { return this.blocos.length; }
 }
 
-/** Fatia um quadro 32x48 em 24 ids de bloco, na ordem que o client espera. */
+/*
+ * Fatia um quadro 32x48 em 24 ids de bloco, na ordem que o client espera.
+ *
+ * ThingType::getTexture blita o sprite (w,h) em
+ * `Point(width - w - 1, height - h - 1)`: o primeiro sprite vai para o canto
+ * INFERIOR DIREITO, e a grade e percorrida da direita para a esquerda e de
+ * baixo para cima. Fatiar na ordem natural produz a imagem espelhada nos
+ * dois eixos -- e o mosaic.js:slice ja faz essa inversao pelo mesmo motivo.
+ */
 function fatiar(img, banco) {
   const ids = [];
-  for (let r = 0; r < ROWS; r++) {
-    for (let c = 0; c < COLS; c++) {
-      const bloco = img.bloco(c * CELULA, r * CELULA, CELULA, CELULA);
+  for (let h = 0; h < ROWS; h++) {
+    for (let w = 0; w < COLS; w++) {
+      const bloco = img.bloco(
+        (COLS - w - 1) * CELULA, (ROWS - h - 1) * CELULA, CELULA, CELULA);
       ids.push(banco.id(bloco, (i) => img.transparente(i)));
     }
   }
