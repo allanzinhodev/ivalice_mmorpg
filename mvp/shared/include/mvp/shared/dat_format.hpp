@@ -45,21 +45,16 @@ struct ItemRecord
 	uint8_t patternCount = 0;
 };
 
-// Mesmos 6 valores já validados no client atual (skill frame-groups) --
-// nenhum grupo novo é inventado sem confirmação explícita durante o import.
-enum class FrameGroupType : uint8_t
-{
-	Idle = 0,
-	Walking = 1,
-	Attacking = 2,
-	Casting = 3,
-	Hurt = 4,
-	Dying = 5,
-};
-
+// frameGroupType é o id BRUTO de animação do FFTA2 (base*112 + animationId,
+// ver tools/ffta2-extract/compilar-outfits.js), não um enum fechado -- não
+// existe hoje mapeamento semântico (idle/walking/attack) para esses ids;
+// medido até 229, cabe em u8. Classificação semântica é trabalho futuro,
+// feito quando a lógica de jogo precisar (ex.: "qual grupo toca ao andar").
+// Os nomes conhecidos da skill frame-groups do client atual (0=Idle,
+// 1=Walking, 2=Attacking, 3=Casting, 4=Hurt, 5=Dying) não se aplicam aqui.
 struct FrameGroupRecord
 {
-	FrameGroupType frameGroupType = FrameGroupType::Idle;
+	uint8_t frameGroupType = 0;
 	uint8_t frameCount = 1;
 	bool hasWaterVariant = false;
 	uint16_t spriteIndexDrySouth = 0;
@@ -72,7 +67,7 @@ struct CreatureRecord
 {
 	std::vector<FrameGroupRecord> frameGroups;
 	uint8_t frameWidth = 32;
-	uint8_t frameHeight = 64;
+	uint8_t frameHeight = 48; // medido no FFTA2 (compilar-outfits.js: LARGURA=32, ALTURA=48)
 };
 
 struct EffectRecord
@@ -105,7 +100,7 @@ struct PaletteEntry
 };
 
 constexpr int TILE_PIXELS = 16 * 16;
-constexpr int CREATURE_PIXELS = 32 * 64;
+constexpr int CREATURE_PIXELS = 32 * 48; // medido no FFTA2, ver CreatureRecord::frameWidth/Height
 
 struct SprHeader
 {

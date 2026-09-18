@@ -50,7 +50,7 @@ ItemRecord readItemRecord(ByteReader& reader)
 FrameGroupRecord readFrameGroupRecord(ByteReader& reader)
 {
 	FrameGroupRecord group;
-	group.frameGroupType = static_cast<FrameGroupType>(reader.readU8());
+	group.frameGroupType = reader.readU8();
 	group.frameCount = reader.readU8();
 	group.hasWaterVariant = reader.readU8() != 0;
 	group.spriteIndexDrySouth = reader.readU16();
