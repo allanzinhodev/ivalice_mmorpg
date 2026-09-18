@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "mvp/shared/dat_format.hpp"
+#include "palette_builder.hpp"
 
 namespace mvp::mapeditor::import
 {
@@ -53,8 +54,6 @@ struct TilesetImportResult
 {
 	std::vector<shared::dat::TileRecord> tiles; // peças 16x16 únicas pós-dedup (índice = id)
 	std::vector<uint8_t> tilePixels;             // tiles.size() * TILE_PIXELS, indexed
-	std::array<shared::dat::PaletteEntry, 256> palette{};
-	uint8_t colorKeyIndex = 0; // índice reservado para transparência
 
 	// grid[row][col], dimensão widthCells x heightCells -- a grade REAL do
 	// mapa (16x13 no Aizenfield), não um recorte cartesiano da imagem.
@@ -77,7 +76,12 @@ struct TilesetImportResult
 // fatia cada recorte em peças 16x16, deduplica por hash de conteúdo já
 // quantizado, e monta a grade de referências para o .mvpmap. Ver
 // mvp/docs/formats/dat-spr-v1.md, seção "Pipeline de import".
+//
+// `paletteBuilder` é compartilhado com o import de outfits (mesma paleta
+// global de 256 cores para todo o .spr) -- o chamador (CLI) decide a ordem;
+// tileset entra primeiro por convenção, mas a classe não impõe isso.
 TilesetImportResult importAizenfieldTileset(const std::string& terrainPngPath, const std::string& overlayPngPath,
-                                             const std::string& heightMapJsonPath, int mapIndex);
+                                             const std::string& heightMapJsonPath, int mapIndex,
+                                             PaletteBuilder& paletteBuilder);
 
 } // namespace mvp::mapeditor::import

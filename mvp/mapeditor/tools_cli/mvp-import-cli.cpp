@@ -4,6 +4,8 @@
 
 #include "../src/import/dat_writer.hpp"
 #include "../src/import/frame_group_preview.hpp"
+#include "../src/import/outfit_import.hpp"
+#include "../src/import/palette_builder.hpp"
 #include "../src/import/png_image.hpp"
 #include "../src/import/tile_dedup.hpp"
 #include "../src/map_editor/mvpmap_writer.hpp"
@@ -12,12 +14,14 @@
 // abrir janela, para uso em CI/scripts (ver plano, seção Bibliotecas: evita
 // trazer ImGui só para o preview).
 //
-// uso: mvp-import-cli tileset <aizenfield.png> <aizenfield2.png> <aizenfield3.png>
-//                              <heightmaps.json> <mapIndex> <out_dir> [--commit]
+// uso: mvp-import-cli all <aizenfield.png> <aizenfield2.png> <aizenfield3.png>
+//                          <heightmaps.json> <mapIndex> <outfits_export_dir>
+//                          <out_dir> [--commit]
 //
-// Sem --commit: só gera o preview e o relatório de comparação contra o
-// gabarito (aizenfield3.png) -- nada é gravado no .dat/.spr/.mvpmap final,
-// conforme a regra "o parse final só deve ser feito após eu confirmar".
+// Sem --commit: só gera o preview do tileset e o relatório de comparação
+// contra o gabarito (aizenfield3.png) -- nada é gravado no .dat/.spr/.mvpmap
+// final, conforme a regra "o parse final só deve ser feito após eu
+// confirmar".
 namespace
 {
 
@@ -54,11 +58,11 @@ double compareAgainstReference(const PngImage& preview, const PngImage& referenc
 	return 100.0 * static_cast<double>(matching) / static_cast<double>(totalPixels);
 }
 
-int runTilesetImport(int argc, char** argv)
+int runAllImport(int argc, char** argv)
 {
-	if (argc < 8) {
-		std::cerr << "uso: mvp-import-cli tileset <aizenfield.png> <aizenfield2.png> <aizenfield3.png> "
-		             "<heightmaps.json> <mapIndex> <out_dir> [--commit]\n";
+	if (argc < 9) {
+		std::cerr << "uso: mvp-import-cli all <aizenfield.png> <aizenfield2.png> <aizenfield3.png> "
+		             "<heightmaps.json> <mapIndex> <outfits_export_dir> <out_dir> [--commit]\n";
 		return 1;
 	}
 
@@ -67,33 +71,51 @@ int runTilesetImport(int argc, char** argv)
 	const std::string referencePath = argv[4];
 	const std::string heightMapPath = argv[5];
 	const int mapIndex = std::stoi(argv[6]);
-	const std::string outDir = argv[7];
-	const bool commit = argc >= 9 && std::string(argv[8]) == "--commit";
+	const std::string outfitsExportDir = argv[7];
+	const std::string outDir = argv[8];
+	const bool commit = argc >= 10 && std::string(argv[9]) == "--commit";
 
-	const auto result = mvp::mapeditor::import::importAizenfieldTileset(terrainPath, overlayPath, heightMapPath,
-	                                                                      mapIndex);
+	mvp::mapeditor::import::PaletteBuilder paletteBuilder;
 
-	const std::string previewPath = outDir + "/tileset_preview.png";
-	mvp::mapeditor::import::writeTilesetPreview(result, previewPath);
+	std::cout << "importando tileset...\n";
+	const auto tileset =
+	    mvp::mapeditor::import::importAizenfieldTileset(terrainPath, overlayPath, heightMapPath, mapIndex,
+	                                                       paletteBuilder);
 
-	const PngImage preview = loadPng(previewPath);
+	std::cout << "importando outfits (" << outfitsExportDir << ")...\n";
+	const auto outfits = mvp::mapeditor::import::importFftaOutfitsExport(outfitsExportDir, paletteBuilder);
+	std::printf("outfits importadas: %zu, frames unicos: %zu\n", outfits.creatures.size(),
+	            outfits.framePixels.size() / mvp::shared::dat::CREATURE_PIXELS);
+
+	// A paleta só fecha depois de tileset E outfits terem sido processados
+	// (é compartilhada) -- por isso os previews (que precisam da paleta
+	// final) rodam depois dos dois imports, não intercalados com eles.
+	const auto palette = paletteBuilder.build();
+	const uint8_t colorKeyIndex = paletteBuilder.colorKeyIndex();
+
+	const std::string tilesetPreviewPath = outDir + "/tileset_preview.png";
+	mvp::mapeditor::import::writeTilesetPreview(tileset, palette, colorKeyIndex, tilesetPreviewPath);
+
+	const PngImage preview = loadPng(tilesetPreviewPath);
 	const PngImage reference = loadPng(referencePath);
 	const double matchPercent = compareAgainstReference(preview, reference);
 	std::printf("comparacao contra gabarito (%s): %.2f%% dos pixels identicos\n", referencePath.c_str(),
 	            matchPercent);
+
+	const std::string outfitPreviewPath = outDir + "/outfit_preview.png";
+	mvp::mapeditor::import::writeOutfitPreview(outfits, palette, colorKeyIndex, outfitPreviewPath);
 
 	if (!commit) {
 		std::cout << "preview gerado, --commit nao passado -- nada foi gravado.\n";
 		return 0;
 	}
 
-	mvp::mapeditor::import::OutfitImportResult emptyOutfit; // outfits chegam no M2
 	const std::string datPath = outDir + "/mvp.dat";
 	const std::string sprPath = outDir + "/mvp.spr";
-	mvp::mapeditor::import::writeDatAndSpr(result, emptyOutfit, datPath, sprPath);
+	mvp::mapeditor::import::writeDatAndSpr(tileset, outfits, palette, datPath, sprPath);
 
 	const std::string mvpMapPath = outDir + "/aizenfield.mvpmap";
-	mvp::mapeditor::map_editor::writeMvpMap(result, mvpMapPath);
+	mvp::mapeditor::map_editor::writeMvpMap(tileset, mvpMapPath);
 
 	std::cout << "gravado: " << datPath << ", " << sprPath << ", " << mvpMapPath << '\n';
 	return 0;
@@ -104,14 +126,14 @@ int runTilesetImport(int argc, char** argv)
 int main(int argc, char** argv)
 {
 	if (argc < 2) {
-		std::cerr << "uso: mvp-import-cli <tileset> ...\n";
+		std::cerr << "uso: mvp-import-cli <all> ...\n";
 		return 1;
 	}
 
 	try {
 		const std::string command = argv[1];
-		if (command == "tileset") {
-			return runTilesetImport(argc, argv);
+		if (command == "all") {
+			return runAllImport(argc, argv);
 		}
 		std::cerr << "comando desconhecido: " << command << '\n';
 		return 1;

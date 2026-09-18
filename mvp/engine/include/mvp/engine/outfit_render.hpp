@@ -21,9 +21,9 @@ struct OutfitDrawInfo
 };
 
 // Só Sul e Oeste existem como dado gravado no .spr (ver dat_format.hpp,
-// FrameGroupRecord). Norte deriva de Oeste e Leste deriva de Sul, sempre por
+// FramePhase). Norte deriva de Oeste e Leste deriva de Sul, sempre por
 // flip horizontal de UV -- nunca há pixel gravado para essas duas direções.
-OutfitDrawInfo resolveOutfitSprite(const shared::dat::FrameGroupRecord& group, RenderDirection direction,
-                                    bool isWet);
+OutfitDrawInfo resolveOutfitSprite(const shared::dat::FrameGroupRecord& group, uint8_t phaseIndex,
+                                    RenderDirection direction, bool isWet);
 
 } // namespace mvp::engine

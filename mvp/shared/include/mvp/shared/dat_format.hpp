@@ -45,6 +45,18 @@ struct ItemRecord
 	uint8_t patternCount = 0;
 };
 
+// Um quadro de animação: só Sul e Oeste são gravados (Norte deriva de Oeste,
+// Leste deriva de Sul, por flip horizontal de UV em runtime -- ver
+// mvp::engine::resolveOutfitSprite). "seco" nunca fica vazio: se a fonte não
+// tiver variante molhada, o importador copia o índice seco para "molhado".
+struct FramePhase
+{
+	uint16_t spriteIndexDrySouth = 0;
+	uint16_t spriteIndexDryWest = 0;
+	uint16_t spriteIndexWetSouth = 0;
+	uint16_t spriteIndexWetWest = 0;
+};
+
 // frameGroupType é o id BRUTO de animação do FFTA2 (base*112 + animationId,
 // ver tools/ffta2-extract/compilar-outfits.js), não um enum fechado -- não
 // existe hoje mapeamento semântico (idle/walking/attack) para esses ids;
@@ -55,12 +67,8 @@ struct ItemRecord
 struct FrameGroupRecord
 {
 	uint8_t frameGroupType = 0;
-	uint8_t frameCount = 1;
 	bool hasWaterVariant = false;
-	uint16_t spriteIndexDrySouth = 0;
-	uint16_t spriteIndexDryWest = 0;
-	uint16_t spriteIndexWetSouth = 0; // == dry se !hasWaterVariant, nunca vazio
-	uint16_t spriteIndexWetWest = 0;
+	std::vector<FramePhase> phases; // frameCount = phases.size()
 };
 
 struct CreatureRecord

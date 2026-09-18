@@ -24,18 +24,15 @@ void writeFile(const std::string& path, const std::vector<uint8_t>& bytes)
 
 } // namespace
 
-void writeDatAndSpr(const TilesetImportResult& tileset, const OutfitImportResult& outfit, const std::string& datPath,
+void writeDatAndSpr(const TilesetImportResult& tileset, const OutfitImportResult& outfit,
+                     const std::array<shared::dat::PaletteEntry, 256>& palette, const std::string& datPath,
                      const std::string& sprPath)
 {
-	// Grava o header + bloco tiles a partir do tileset já deduplicado; o
-	// bloco creatures (outfit) é escrito quando outfit.creature já tiver
-	// frameGroups populados (fase M2). itemsCount/effectsCount/missilesCount
-	// ficam em 0 no MVP inicial (ver dat_format.hpp).
 	ByteWriter datWriter;
 	datWriter.writeU32(1); // signature v1
 	datWriter.writeU16(static_cast<uint16_t>(tileset.tiles.size()));
 	datWriter.writeU16(0); // itemsCount
-	datWriter.writeU16(static_cast<uint16_t>(outfit.creature.frameGroups.empty() ? 0 : 1)); // creaturesCount
+	datWriter.writeU16(static_cast<uint16_t>(outfit.creatures.size()));
 	datWriter.writeU16(0); // effectsCount
 	datWriter.writeU16(0); // missilesCount
 
@@ -45,19 +42,21 @@ void writeDatAndSpr(const TilesetImportResult& tileset, const OutfitImportResult
 		datWriter.writeU16(tile.spriteIndex);
 	}
 
-	if (!outfit.creature.frameGroups.empty()) {
-		datWriter.writeU8(static_cast<uint8_t>(outfit.creature.frameGroups.size()));
-		for (const auto& group : outfit.creature.frameGroups) {
-			datWriter.writeU8(static_cast<uint8_t>(group.frameGroupType));
-			datWriter.writeU8(group.frameCount);
+	for (const auto& creature : outfit.creatures) {
+		datWriter.writeU8(static_cast<uint8_t>(creature.frameGroups.size()));
+		for (const auto& group : creature.frameGroups) {
+			datWriter.writeU8(group.frameGroupType);
 			datWriter.writeU8(group.hasWaterVariant ? 1 : 0);
-			datWriter.writeU16(group.spriteIndexDrySouth);
-			datWriter.writeU16(group.spriteIndexDryWest);
-			datWriter.writeU16(group.spriteIndexWetSouth);
-			datWriter.writeU16(group.spriteIndexWetWest);
+			datWriter.writeU8(static_cast<uint8_t>(group.phases.size()));
+			for (const auto& phase : group.phases) {
+				datWriter.writeU16(phase.spriteIndexDrySouth);
+				datWriter.writeU16(phase.spriteIndexDryWest);
+				datWriter.writeU16(phase.spriteIndexWetSouth);
+				datWriter.writeU16(phase.spriteIndexWetWest);
+			}
 		}
-		datWriter.writeU8(outfit.creature.frameWidth);
-		datWriter.writeU8(outfit.creature.frameHeight);
+		datWriter.writeU8(creature.frameWidth);
+		datWriter.writeU8(creature.frameHeight);
 	}
 
 	writeFile(datPath, datWriter.data());
@@ -66,18 +65,12 @@ void writeDatAndSpr(const TilesetImportResult& tileset, const OutfitImportResult
 	sprWriter.writeU32(1); // signature v1, deve bater com o .dat
 	sprWriter.writeU16(256); // paletteSize
 	sprWriter.writeU32(static_cast<uint32_t>(tileset.tiles.size())); // tileSpriteCount
-	const uint32_t creatureSpriteCount =
-	    outfit.creature.frameGroups.empty()
-	        ? 0
-	        : static_cast<uint32_t>(outfit.framePixels.size() / shared::dat::CREATURE_PIXELS);
-	sprWriter.writeU32(creatureSpriteCount);
+	sprWriter.writeU32(static_cast<uint32_t>(outfit.framePixels.size() / shared::dat::CREATURE_PIXELS));
 	sprWriter.writeU32(0); // itemSpriteCount
 	sprWriter.writeU32(0); // effectSpriteCount
 	sprWriter.writeU32(0); // missileSpriteCount
 
-	// Paleta global compartilhada (tiles do tileset.palette; outfits ainda
-	// não têm cores próprias no M1 -- ver outfit_import.cpp, pendente M2).
-	for (const auto& entry : tileset.palette) {
+	for (const auto& entry : palette) {
 		sprWriter.writeU8(entry.r);
 		sprWriter.writeU8(entry.g);
 		sprWriter.writeU8(entry.b);

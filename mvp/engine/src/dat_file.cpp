@@ -47,16 +47,26 @@ ItemRecord readItemRecord(ByteReader& reader)
 	return record;
 }
 
+FramePhase readFramePhase(ByteReader& reader)
+{
+	FramePhase phase;
+	phase.spriteIndexDrySouth = reader.readU16();
+	phase.spriteIndexDryWest = reader.readU16();
+	phase.spriteIndexWetSouth = reader.readU16();
+	phase.spriteIndexWetWest = reader.readU16();
+	return phase;
+}
+
 FrameGroupRecord readFrameGroupRecord(ByteReader& reader)
 {
 	FrameGroupRecord group;
 	group.frameGroupType = reader.readU8();
-	group.frameCount = reader.readU8();
 	group.hasWaterVariant = reader.readU8() != 0;
-	group.spriteIndexDrySouth = reader.readU16();
-	group.spriteIndexDryWest = reader.readU16();
-	group.spriteIndexWetSouth = reader.readU16();
-	group.spriteIndexWetWest = reader.readU16();
+	const uint8_t phaseCount = reader.readU8();
+	group.phases.reserve(phaseCount);
+	for (uint8_t i = 0; i < phaseCount; ++i) {
+		group.phases.push_back(readFramePhase(reader));
+	}
 	return group;
 }
 

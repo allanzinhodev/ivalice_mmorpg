@@ -1,6 +1,7 @@
 add_library(mvp_mapeditor_import STATIC
 	src/import/png_image.cpp
 	src/import/height_map.cpp
+	src/import/json_value.cpp
 	src/import/tile_dedup.cpp
 	src/import/outfit_import.cpp
 	src/import/frame_group_preview.cpp
