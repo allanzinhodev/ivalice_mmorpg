@@ -1,29 +1,27 @@
 #pragma once
 
-#include <cstdint>
-#include <vector>
-
-#include "mvp/shared/position.hpp"
-#include "mvp/shared/protocol_messages.hpp"
+#include "mvp/engine/sprite_atlas.hpp"
+#include "mvp/engine/sprite_batch.hpp"
+#include "mvp/shared/map_data.hpp"
 
 namespace mvp::client::map
 {
 
-// Monta a cena visível a partir do estado replicado do server (MapChunk +
-// posição do personagem). Composição/desenho real via SpriteBatch chega na
-// fase M3; por ora guarda o estado mínimo.
+// Desenha o mapa carregado (terreno + overlay) usando a mesma projeção
+// isométrica de mvp::shared::projectCellOffset. Para o M3 (sem rede ainda)
+// consome o MapData completo direto do disco; a versão que consome
+// MapChunk do protocolo chega no M4/M5.
 class MapView
 {
 public:
-	void setCells(const std::vector<shared::protocol::CellData>& cells) { cells_ = cells; }
-	void setCharacterPosition(const shared::Position& position) { characterPosition_ = position; }
+	MapView(shared::map::MapData mapData, engine::SpriteAtlas terrainAtlas);
 
-	const std::vector<shared::protocol::CellData>& cells() const { return cells_; }
-	const shared::Position& characterPosition() const { return characterPosition_; }
+	void draw(engine::SpriteBatch& spriteBatch, const engine::Shader& shader, int viewportWidth,
+	          int viewportHeight);
 
 private:
-	std::vector<shared::protocol::CellData> cells_;
-	shared::Position characterPosition_;
+	shared::map::MapData mapData;
+	engine::SpriteAtlas terrainAtlas;
 };
 
 } // namespace mvp::client::map

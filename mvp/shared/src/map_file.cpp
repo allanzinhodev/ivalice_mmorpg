@@ -1,14 +1,14 @@
-#include "map_file.hpp"
+#include "mvp/shared/map_file.hpp"
 
 #include <fstream>
 #include <stdexcept>
 
 #include "mvp/shared/byte_stream.hpp"
 
-namespace mvp::server::map
+namespace mvp::shared::map
 {
 
-using shared::ByteReader;
+using mvp::shared::ByteReader;
 
 namespace
 {
@@ -29,12 +29,15 @@ std::vector<uint8_t> readWholeFile(const std::string& path)
 Cell readCell(ByteReader& reader)
 {
 	Cell cell;
-	cell.tileLeftId = reader.readU16();
-	cell.tileRightId = reader.readU16();
-	const uint8_t overlayCount = reader.readU8();
-	cell.overlayIds.reserve(overlayCount);
-	for (uint8_t i = 0; i < overlayCount; ++i) {
-		cell.overlayIds.push_back(reader.readU16());
+	for (int row = 0; row < PIECE_ROWS_PER_CELL; ++row) {
+		for (int col = 0; col < PIECE_COLS_PER_CELL; ++col) {
+			cell.terrainPieceIds[row][col] = reader.readU16();
+		}
+	}
+	for (int row = 0; row < PIECE_ROWS_PER_CELL; ++row) {
+		for (int col = 0; col < PIECE_COLS_PER_CELL; ++col) {
+			cell.overlayPieceIds[row][col] = reader.readU16();
+		}
 	}
 	cell.elevation = reader.readU8();
 	return cell;
@@ -48,7 +51,7 @@ MapData loadMapFile(const std::string& path)
 	ByteReader reader(bytes.data(), bytes.size());
 
 	MapData data;
-	reader.readU32(); // signature -- validado pelo mapeditor no import, não pelo server
+	reader.readU32(); // signature -- validado pelo mapeditor no import, não pelo leitor
 	data.width = reader.readU16();
 	data.height = reader.readU16();
 
@@ -60,4 +63,4 @@ MapData loadMapFile(const std::string& path)
 	return data;
 }
 
-} // namespace mvp::server::map
+} // namespace mvp::shared::map

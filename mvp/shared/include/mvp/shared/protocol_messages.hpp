@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <cstdint>
 #include <vector>
 
@@ -49,13 +50,18 @@ struct SpawnMessage
 	uint8_t outfitId = 0;
 };
 
+// Geometria de recorte por célula: 2 colunas x 3 linhas de peças 16x16 (ver
+// mapeditor/src/import/tile_dedup.hpp). 0xFFFF = peça vazia/transparente.
+constexpr int CELL_PIECE_COLS = 2;
+constexpr int CELL_PIECE_ROWS = 3;
+
 struct CellData
 {
 	int16_t du = 0;
 	int16_t dv = 0;
-	uint16_t tileLeftId = 0;
-	uint16_t tileRightId = 0;
-	std::vector<uint16_t> overlayIds;
+	std::array<std::array<uint16_t, CELL_PIECE_COLS>, CELL_PIECE_ROWS> terrainPieceIds{};
+	std::array<std::array<uint16_t, CELL_PIECE_COLS>, CELL_PIECE_ROWS> overlayPieceIds{};
+	uint8_t elevation = 0;
 };
 
 struct MapChunkMessage

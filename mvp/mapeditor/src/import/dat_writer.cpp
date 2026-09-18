@@ -75,14 +75,12 @@ void writeDatAndSpr(const TilesetImportResult& tileset, const OutfitImportResult
 	sprWriter.writeU32(0); // effectSpriteCount
 	sprWriter.writeU32(0); // missileSpriteCount
 
-	// Paleta real (quantização compartilhada) chega na fase M1/M2 -- aqui
-	// grava uma paleta vazia (256 entradas pretas) só para o layout do
-	// arquivo ficar completo e o parser (loadSprFile) conseguir validar
-	// tamanho/offsets já nesta fase M0.
-	for (int i = 0; i < 256; ++i) {
-		sprWriter.writeU8(0);
-		sprWriter.writeU8(0);
-		sprWriter.writeU8(0);
+	// Paleta global compartilhada (tiles do tileset.palette; outfits ainda
+	// não têm cores próprias no M1 -- ver outfit_import.cpp, pendente M2).
+	for (const auto& entry : tileset.palette) {
+		sprWriter.writeU8(entry.r);
+		sprWriter.writeU8(entry.g);
+		sprWriter.writeU8(entry.b);
 	}
 
 	sprWriter.writeBytes(tileset.tilePixels.data(), tileset.tilePixels.size());

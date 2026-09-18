@@ -88,12 +88,17 @@ void ProtocolHandler::sendMapChunk()
 	for (const auto& cell : cells) {
 		writer.writeU16(static_cast<uint16_t>(cell.du));
 		writer.writeU16(static_cast<uint16_t>(cell.dv));
-		writer.writeU16(cell.tileLeftId);
-		writer.writeU16(cell.tileRightId);
-		writer.writeU8(static_cast<uint8_t>(cell.overlayIds.size()));
-		for (uint16_t overlayId : cell.overlayIds) {
-			writer.writeU16(overlayId);
+		for (const auto& row : cell.terrainPieceIds) {
+			for (uint16_t pieceId : row) {
+				writer.writeU16(pieceId);
+			}
 		}
+		for (const auto& row : cell.overlayPieceIds) {
+			for (uint16_t pieceId : row) {
+				writer.writeU16(pieceId);
+			}
+		}
+		writer.writeU8(cell.elevation);
 	}
 	boost::asio::write(socket, boost::asio::buffer(writer.data()));
 }

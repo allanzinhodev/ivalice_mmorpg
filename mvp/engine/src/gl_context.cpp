@@ -70,6 +70,33 @@ void Shader::use() const
 	glUseProgram(programId);
 }
 
+void Shader::setUniformMat4(const std::string& name, const float matrix[16]) const
+{
+	const int location = glGetUniformLocation(programId, name.c_str());
+	glUniformMatrix4fv(location, 1, GL_FALSE, matrix);
+}
+
+void Shader::setUniformInt(const std::string& name, int value) const
+{
+	const int location = glGetUniformLocation(programId, name.c_str());
+	glUniform1i(location, value);
+}
+
+void orthographicProjection(int width, int height, float outMatrix[16])
+{
+	// Mapeia [0,width]x[0,height] (Y para baixo) para NDC [-1,1]x[-1,1] (Y
+	// para cima em OpenGL) -- column-major, como o GLSL espera.
+	for (int i = 0; i < 16; ++i) {
+		outMatrix[i] = 0.0f;
+	}
+	outMatrix[0] = 2.0f / static_cast<float>(width);
+	outMatrix[5] = -2.0f / static_cast<float>(height);
+	outMatrix[10] = -1.0f;
+	outMatrix[12] = -1.0f;
+	outMatrix[13] = 1.0f;
+	outMatrix[15] = 1.0f;
+}
+
 Texture2D::Texture2D(int width, int height, const uint8_t* rgbaPixels)
 {
 	glGenTextures(1, &textureId);

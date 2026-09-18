@@ -33,7 +33,7 @@ shared::Position offsetFor(Direction direction)
 
 } // namespace
 
-shared::Position applyMove(const map::MapData& map, const shared::Position& current, Direction direction)
+shared::Position applyMove(const shared::map::MapData& map, const shared::Position& current, Direction direction)
 {
 	const shared::Position delta = offsetFor(direction);
 	const shared::Position target{current.col + delta.col, current.row + delta.row};

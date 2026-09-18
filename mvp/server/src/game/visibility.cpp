@@ -5,7 +5,8 @@
 namespace mvp::server::game
 {
 
-std::vector<shared::protocol::CellData> computeVisibleCells(const map::MapData& map, const shared::Position& center)
+std::vector<shared::protocol::CellData> computeVisibleCells(const shared::map::MapData& map,
+                                                               const shared::Position& center)
 {
 	std::vector<shared::protocol::CellData> result;
 
@@ -16,14 +17,14 @@ std::vector<shared::protocol::CellData> computeVisibleCells(const map::MapData& 
 			continue;
 		}
 
-		const map::Cell& cell = map.at(col, row);
+		const shared::map::Cell& cell = map.at(col, row);
 
 		shared::protocol::CellData data;
 		data.du = static_cast<int16_t>(offset.du);
 		data.dv = static_cast<int16_t>(offset.dv);
-		data.tileLeftId = cell.tileLeftId;
-		data.tileRightId = cell.tileRightId;
-		data.overlayIds = cell.overlayIds;
+		data.terrainPieceIds = cell.terrainPieceIds;
+		data.overlayPieceIds = cell.overlayPieceIds;
+		data.elevation = cell.elevation;
 		result.push_back(std::move(data));
 	}
 

@@ -1,5 +1,6 @@
 add_library(mvp_shared STATIC
 	src/iso_projection.cpp
+	src/map_file.cpp
 )
 
 target_include_directories(mvp_shared PUBLIC include)

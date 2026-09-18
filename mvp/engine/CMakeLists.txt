@@ -8,6 +8,7 @@ add_library(mvp_engine STATIC
 	src/outfit_render.cpp
 	src/gl_context.cpp
 	src/sprite_batch.cpp
+	src/sprite_atlas.cpp
 )
 
 target_include_directories(mvp_engine PUBLIC include)

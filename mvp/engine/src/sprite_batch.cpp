@@ -53,12 +53,12 @@ void SpriteBatch::end(const Shader& shader)
 		const float right = static_cast<float>(quad.x + quad.width);
 		const float top = static_cast<float>(quad.y);
 		const float bottom = static_cast<float>(quad.y + quad.height);
-		const float u0 = quad.flipHorizontal ? 1.0f : 0.0f;
-		const float u1 = quad.flipHorizontal ? 0.0f : 1.0f;
+		const float u0 = quad.flipHorizontal ? quad.u1 : quad.u0;
+		const float u1 = quad.flipHorizontal ? quad.u0 : quad.u1;
 
 		const float quadVertices[VERTICES_PER_QUAD][FLOATS_PER_VERTEX] = {
-		    {left, top, u0, 0.0f},     {right, top, u1, 0.0f},    {left, bottom, u0, 1.0f},
-		    {right, top, u1, 0.0f},    {right, bottom, u1, 1.0f}, {left, bottom, u0, 1.0f},
+		    {left, top, u0, quad.v0},     {right, top, u1, quad.v0},    {left, bottom, u0, quad.v1},
+		    {right, top, u1, quad.v0},    {right, bottom, u1, quad.v1}, {left, bottom, u0, quad.v1},
 		};
 		for (const auto& vertex : quadVertices) {
 			vertices.insert(vertices.end(), vertex, vertex + FLOATS_PER_VERTEX);
@@ -67,6 +67,7 @@ void SpriteBatch::end(const Shader& shader)
 
 	shader.use();
 	atlas->bind(0);
+	shader.setUniformInt("uAtlas", 0);
 
 	glBindVertexArray(vertexArrayId);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferId);

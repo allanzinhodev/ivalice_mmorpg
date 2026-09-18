@@ -2,8 +2,8 @@
 
 #include <cstdint>
 
-#include "../map/map_data.hpp"
 #include "creature.hpp"
+#include "mvp/shared/map_data.hpp"
 
 namespace mvp::server::game
 {
@@ -13,15 +13,15 @@ namespace mvp::server::game
 class World
 {
 public:
-	explicit World(map::MapData mapData) : mapData(std::move(mapData)) {}
+	explicit World(shared::map::MapData mapData) : mapData(std::move(mapData)) {}
 
-	const map::MapData& map() const { return mapData; }
+	const shared::map::MapData& map() const { return mapData; }
 
 	Creature& testCreature() { return creature; }
 	const Creature& testCreature() const { return creature; }
 
 private:
-	map::MapData mapData;
+	shared::map::MapData mapData;
 	Creature creature{1, shared::Position{0, 0}, shared::protocol::Direction::South, 1};
 };
 

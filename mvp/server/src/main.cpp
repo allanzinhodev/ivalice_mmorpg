@@ -2,13 +2,13 @@
 #include <iostream>
 
 #include "game/world.hpp"
-#include "map/map_file.hpp"
+#include "mvp/shared/map_file.hpp"
 #include "net/listener.hpp"
 
 int main()
 {
 	try {
-		mvp::server::map::MapData mapData = mvp::server::map::loadMapFile("data/maps/aizenfield.mvpmap");
+		mvp::shared::map::MapData mapData = mvp::shared::map::loadMapFile("data/maps/aizenfield.mvpmap");
 		mvp::server::game::World world(std::move(mapData));
 
 		boost::asio::io_context ioContext;

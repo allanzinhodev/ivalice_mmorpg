@@ -15,6 +15,10 @@ struct SpriteQuad
 	int y = 0;
 	int width = 0;
 	int height = 0;
+	float u0 = 0.0f; // região da textura atlas a amostrar (0..1)
+	float v0 = 0.0f;
+	float u1 = 1.0f;
+	float v1 = 1.0f;
 	bool flipHorizontal = false;
 };
 
