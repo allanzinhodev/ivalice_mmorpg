@@ -19,8 +19,10 @@ public:
 	Window& operator=(const Window&) = delete;
 
 	// Roda o loop de mensagens/render até a janela ser fechada. onFrame é
-	// chamado uma vez por quadro, antes do swap de buffers.
-	void run(const std::function<void()>& onFrame);
+	// chamado uma vez por quadro, antes do swap de buffers. onKeyDown
+	// recebe o virtual-key code do Win32 a cada WM_KEYDOWN (sem repeat
+	// filtering -- o chamador decide o que fazer com teclas repetidas).
+	void run(const std::function<void()>& onFrame, const std::function<void(int)>& onKeyDown = {});
 
 	void swapBuffers();
 	bool shouldClose() const { return closeRequested; }

@@ -3,7 +3,9 @@
 #include <algorithm>
 #include <array>
 #include <iostream>
+#include <optional>
 
+#include "input/input_map.hpp"
 #include "map/map_view.hpp"
 #include "mvp/engine/dat_file.hpp"
 #include "mvp/engine/gl_context.hpp"
@@ -11,7 +13,7 @@
 #include "mvp/engine/spr_file.hpp"
 #include "mvp/engine/sprite_atlas.hpp"
 #include "mvp/shared/iso_projection.hpp"
-#include "mvp/shared/map_file.hpp"
+#include "net/client_connection.hpp"
 #include "window.hpp"
 
 int main()
@@ -24,7 +26,6 @@ int main()
 
 		const mvp::shared::dat::DatFile datFile = mvp::engine::loadDatFile("assets_runtime/mvp.dat");
 		const mvp::shared::dat::SprFile sprFile = mvp::engine::loadSprFile("assets_runtime/mvp.spr");
-		mvp::shared::map::MapData mapData = mvp::shared::map::loadMapFile("assets_runtime/aizenfield.mvpmap");
 
 		constexpr int TILE_PIECE_SIZE = 16;
 		constexpr int CREATURE_FRAME_W = 32;
@@ -44,8 +45,7 @@ int main()
 		const mvp::shared::dat::CreatureRecord* testCreature =
 		    datFile.creatures.empty() ? nullptr : &datFile.creatures[0];
 
-		mvp::client::map::MapView mapView(std::move(mapData), std::move(terrainAtlas), std::move(creatureAtlas),
-		                                    testCreature);
+		mvp::client::map::MapView mapView(std::move(terrainAtlas), std::move(creatureAtlas), testCreature);
 
 		mvp::engine::Shader shader(mvp::engine::shaders::SPRITE_VERTEX, mvp::engine::shaders::SPRITE_FRAGMENT);
 
@@ -57,11 +57,42 @@ int main()
 		mvp::engine::SpriteBatch terrainBatch(terrainTexture);
 		mvp::engine::SpriteBatch creatureBatch(creatureTexture);
 
-		window.run([&]() {
-			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT);
-			mapView.draw(terrainBatch, shader, creatureBatch, shader, mvp::shared::VIEW_W, mvp::shared::VIEW_H);
-		});
+		mvp::client::net::ClientConnection connection;
+		connection.connect("127.0.0.1", 7100);
+		connection.sendHello();
+
+		mvp::shared::protocol::SpawnMessage spawnMessage;
+		connection.receiveSpawn(spawnMessage);
+		std::cout << "spawned: creature " << spawnMessage.creatureId << " at (" << spawnMessage.position.col << ","
+		           << spawnMessage.position.row << ")\n";
+
+		mvp::shared::protocol::MapChunkMessage mapChunk;
+		connection.receiveMapChunk(mapChunk);
+		mapView.setMapChunk(mapChunk);
+
+		window.run(
+		    [&]() {
+			    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+			    glClear(GL_COLOR_BUFFER_BIT);
+			    mapView.draw(terrainBatch, shader, creatureBatch, shader, mvp::shared::VIEW_W, mvp::shared::VIEW_H);
+		    },
+		    [&](int virtualKeyCode) {
+			    const std::optional<mvp::shared::protocol::Direction> direction =
+			        mvp::client::input::directionFromVirtualKey(virtualKeyCode);
+			    if (!direction) {
+				    return;
+			    }
+			    connection.sendMove(*direction);
+
+			    mvp::shared::protocol::CreatureMoveMessage moveMessage;
+			    connection.receiveCreatureMove(moveMessage);
+
+			    mvp::shared::protocol::MapChunkMessage updatedChunk;
+			    connection.receiveMapChunk(updatedChunk);
+			    mapView.setMapChunk(updatedChunk);
+		    });
+
+		connection.disconnect();
 	} catch (const std::exception& error) {
 		std::cerr << "mvp client: " << error.what() << '\n';
 		return 1;

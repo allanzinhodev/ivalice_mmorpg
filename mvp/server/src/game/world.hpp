@@ -13,7 +13,11 @@ namespace mvp::server::game
 class World
 {
 public:
-	explicit World(shared::map::MapData mapData) : mapData(std::move(mapData)) {}
+	explicit World(shared::map::MapData mapData)
+	    : mapData(std::move(mapData)),
+	      creature{1, shared::Position{this->mapData.width / 2, this->mapData.height / 2},
+	                shared::protocol::Direction::South, 1}
+	{}
 
 	const shared::map::MapData& map() const { return mapData; }
 
@@ -22,7 +26,7 @@ public:
 
 private:
 	shared::map::MapData mapData;
-	Creature creature{1, shared::Position{0, 0}, shared::protocol::Direction::South, 1};
+	Creature creature;
 };
 
 } // namespace mvp::server::game

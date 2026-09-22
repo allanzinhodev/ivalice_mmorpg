@@ -3,14 +3,14 @@
 #include "mvp/engine/sprite_atlas.hpp"
 #include "mvp/engine/sprite_batch.hpp"
 #include "mvp/shared/dat_format.hpp"
-#include "mvp/shared/map_data.hpp"
+#include "mvp/shared/protocol_messages.hpp"
 
 namespace mvp::client::map
 {
 
-// Desenha o mapa carregado (terreno + overlay) usando a mesma projeção
-// isométrica de mvp::shared::projectCellOffset, mais um outfit de teste
-// fixo no centro (M2/M3, sem rede/movimento ainda -- isso chega no M4/M5).
+// Desenha o mapa a partir do estado replicado do server (MapChunk, com
+// células relativas à câmera -- du/dv), mais o personagem do jogador na
+// posição recebida em Spawn/CreatureMove.
 //
 // Simplificação conhecida desta fase: como terreno e outfit vêm de atlas
 // (texturas) diferentes, o desenho roda em 3 passadas -- todo o terreno,
@@ -18,19 +18,21 @@ namespace mvp::client::map
 // célula. A oclusão fica levemente incorreta perto da célula do
 // personagem (overlay sempre por cima); resolver isso corretamente (troca
 // de textura/flush por camada no SpriteBatch) só se justifica quando
-// houver múltiplas criaturas/itens de verdade (M4/M5+).
+// houver múltiplas criaturas/itens de verdade.
 class MapView
 {
 public:
-	MapView(shared::map::MapData mapData, engine::SpriteAtlas terrainAtlas, engine::SpriteAtlas creatureAtlas,
+	MapView(engine::SpriteAtlas terrainAtlas, engine::SpriteAtlas creatureAtlas,
 	        const shared::dat::CreatureRecord* testCreature);
+
+	void setMapChunk(const shared::protocol::MapChunkMessage& chunk) { cells = chunk.cells; }
 
 	void draw(engine::SpriteBatch& terrainBatch, const engine::Shader& terrainShader,
 	          engine::SpriteBatch& creatureBatch, const engine::Shader& creatureShader, int viewportWidth,
 	          int viewportHeight);
 
 private:
-	shared::map::MapData mapData;
+	std::vector<shared::protocol::CellData> cells;
 	engine::SpriteAtlas terrainAtlas;
 	engine::SpriteAtlas creatureAtlas;
 	const shared::dat::CreatureRecord* testCreature;

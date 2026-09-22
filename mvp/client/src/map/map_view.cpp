@@ -1,14 +1,15 @@
 #include "map_view.hpp"
 
+#include <algorithm>
+
 #include "mvp/engine/outfit_render.hpp"
 #include "mvp/shared/iso_projection.hpp"
 
 namespace mvp::client::map
 {
 
-using shared::map::EMPTY_PIECE_INDEX;
-using shared::map::PIECE_COLS_PER_CELL;
-using shared::map::PIECE_ROWS_PER_CELL;
+using shared::protocol::CELL_PIECE_COLS;
+using shared::protocol::CELL_PIECE_ROWS;
 
 namespace
 {
@@ -17,13 +18,14 @@ constexpr int PIECE_SIZE = 16;
 constexpr int CELL_W = 32;
 constexpr int FRAME_W = 32;
 constexpr int FRAME_H = 48;
+constexpr uint16_t EMPTY_PIECE_INDEX = 0xFFFF;
 
 void pushCellPieces(engine::SpriteBatch& spriteBatch, const engine::SpriteAtlas& atlas,
-                     const std::array<std::array<uint16_t, PIECE_COLS_PER_CELL>, PIECE_ROWS_PER_CELL>& pieceIds,
+                     const std::array<std::array<uint16_t, CELL_PIECE_COLS>, CELL_PIECE_ROWS>& pieceIds,
                      int cellScreenX, int cellScreenY)
 {
-	for (int pieceRow = 0; pieceRow < PIECE_ROWS_PER_CELL; ++pieceRow) {
-		for (int pieceCol = 0; pieceCol < PIECE_COLS_PER_CELL; ++pieceCol) {
+	for (int pieceRow = 0; pieceRow < CELL_PIECE_ROWS; ++pieceRow) {
+		for (int pieceCol = 0; pieceCol < CELL_PIECE_COLS; ++pieceCol) {
 			const uint16_t pieceId = pieceIds[pieceRow][pieceCol];
 			if (pieceId == EMPTY_PIECE_INDEX) {
 				continue;
@@ -46,46 +48,41 @@ void pushCellPieces(engine::SpriteBatch& spriteBatch, const engine::SpriteAtlas&
 
 } // namespace
 
-MapView::MapView(shared::map::MapData mapData, engine::SpriteAtlas terrainAtlas, engine::SpriteAtlas creatureAtlas,
+MapView::MapView(engine::SpriteAtlas terrainAtlas, engine::SpriteAtlas creatureAtlas,
                   const shared::dat::CreatureRecord* testCreature)
-    : mapData(std::move(mapData)),
-      terrainAtlas(std::move(terrainAtlas)),
-      creatureAtlas(std::move(creatureAtlas)),
-      testCreature(testCreature)
+    : terrainAtlas(std::move(terrainAtlas)), creatureAtlas(std::move(creatureAtlas)), testCreature(testCreature)
 {}
 
 void MapView::draw(engine::SpriteBatch& terrainBatch, const engine::Shader& terrainShader,
                     engine::SpriteBatch& creatureBatch, const engine::Shader& creatureShader, int viewportWidth,
                     int viewportHeight)
 {
-	const int centerCol = mapData.width / 2;
-	const int centerRow = mapData.height / 2;
 	const int originX = viewportWidth / 2;
 	const int originY = viewportHeight / 2;
 
-	auto cellScreenPos = [&](int col, int row, uint8_t elevation) {
-		const shared::ScreenPoint offset = shared::projectCellOffset(col - centerCol, row - centerRow);
+	auto cellScreenPos = [&](int du, int dv, uint8_t elevation) {
+		const shared::ScreenPoint offset = shared::projectCellOffset(du, dv);
 		return shared::ScreenPoint{originX + offset.x - CELL_W / 2,
 		                            originY + offset.y - shared::TILE_HALF_H - elevation * shared::TILE_HALF_H};
 	};
 
-	// Passada 1: terreno inteiro (trás para frente, row+col crescente --
-	// mesma convenção do pipeline de import).
+	// Passada 1: terreno das células visíveis (já vêm do server em ordem
+	// de trás para frente -- ver game::computeVisibleCells/visibleCellOffsets).
 	terrainBatch.begin();
-	for (int row = 0; row < mapData.height; ++row) {
-		for (int col = 0; col < mapData.width; ++col) {
-			const shared::map::Cell& cell = mapData.at(col, row);
-			const shared::ScreenPoint pos = cellScreenPos(col, row, cell.elevation);
-			pushCellPieces(terrainBatch, terrainAtlas, cell.terrainPieceIds, pos.x, pos.y);
-		}
+	for (const auto& cell : cells) {
+		const shared::ScreenPoint pos = cellScreenPos(cell.du, cell.dv, cell.elevation);
+		pushCellPieces(terrainBatch, terrainAtlas, cell.terrainPieceIds, pos.x, pos.y);
 	}
 	terrainBatch.end(terrainShader);
 
-	// Passada 2: personagem de teste, fixo na célula central.
+	// Passada 2: personagem do jogador, sempre no offset (0,0) -- o server
+	// centra o MapChunk na posição dele (ver visibleCellOffsets).
 	if (testCreature != nullptr && !testCreature->frameGroups.empty() &&
 	    !testCreature->frameGroups[0].phases.empty()) {
-		const shared::map::Cell& centerCell = mapData.at(centerCol, centerRow);
-		const shared::ScreenPoint pos = cellScreenPos(centerCol, centerRow, centerCell.elevation);
+		const auto centerIt = std::find_if(cells.begin(), cells.end(),
+		                                    [](const shared::protocol::CellData& c) { return c.du == 0 && c.dv == 0; });
+		const uint8_t centerElevation = centerIt != cells.end() ? centerIt->elevation : 0;
+		const shared::ScreenPoint pos = cellScreenPos(0, 0, centerElevation);
 
 		const engine::OutfitDrawInfo info =
 		    engine::resolveOutfitSprite(testCreature->frameGroups[0], 0, engine::RenderDirection::South, false);
@@ -108,15 +105,12 @@ void MapView::draw(engine::SpriteBatch& terrainBatch, const engine::Shader& terr
 		creatureBatch.end(creatureShader);
 	}
 
-	// Passada 3: overlay inteiro (por cima do personagem -- simplificação
-	// conhecida desta fase, ver comentário no header).
+	// Passada 3: overlay das células visíveis (por cima do personagem --
+	// simplificação conhecida desta fase, ver comentário no header).
 	terrainBatch.begin();
-	for (int row = 0; row < mapData.height; ++row) {
-		for (int col = 0; col < mapData.width; ++col) {
-			const shared::map::Cell& cell = mapData.at(col, row);
-			const shared::ScreenPoint pos = cellScreenPos(col, row, cell.elevation);
-			pushCellPieces(terrainBatch, terrainAtlas, cell.overlayPieceIds, pos.x, pos.y);
-		}
+	for (const auto& cell : cells) {
+		const shared::ScreenPoint pos = cellScreenPos(cell.du, cell.dv, cell.elevation);
+		pushCellPieces(terrainBatch, terrainAtlas, cell.overlayPieceIds, pos.x, pos.y);
 	}
 	terrainBatch.end(terrainShader);
 }
