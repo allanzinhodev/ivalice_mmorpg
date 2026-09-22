@@ -1,5 +1,7 @@
 #include <GL/glew.h>
 
+#include <algorithm>
+#include <array>
 #include <iostream>
 
 #include "map/map_view.hpp"
@@ -24,9 +26,26 @@ int main()
 		const mvp::shared::dat::SprFile sprFile = mvp::engine::loadSprFile("assets_runtime/mvp.spr");
 		mvp::shared::map::MapData mapData = mvp::shared::map::loadMapFile("assets_runtime/aizenfield.mvpmap");
 
-		mvp::engine::SpriteAtlas terrainAtlas(sprFile, 0);
-		auto atlasTexture = terrainAtlas.texture();
-		mvp::client::map::MapView mapView(std::move(mapData), std::move(terrainAtlas));
+		constexpr int TILE_PIECE_SIZE = 16;
+		constexpr int CREATURE_FRAME_W = 32;
+		constexpr int CREATURE_FRAME_H = 48;
+
+		std::array<mvp::shared::dat::PaletteEntry, 256> palette{};
+		std::copy_n(sprFile.palette.begin(), std::min<size_t>(sprFile.palette.size(), 256), palette.begin());
+
+		mvp::engine::SpriteAtlas terrainAtlas(sprFile.tilePixels, TILE_PIECE_SIZE, TILE_PIECE_SIZE,
+		                                       sprFile.header.tileSpriteCount, palette, 0);
+		mvp::engine::SpriteAtlas creatureAtlas(sprFile.creaturePixels, CREATURE_FRAME_W, CREATURE_FRAME_H,
+		                                        sprFile.header.creatureSpriteCount, palette, 0);
+
+		auto terrainTexture = terrainAtlas.texture();
+		auto creatureTexture = creatureAtlas.texture();
+
+		const mvp::shared::dat::CreatureRecord* testCreature =
+		    datFile.creatures.empty() ? nullptr : &datFile.creatures[0];
+
+		mvp::client::map::MapView mapView(std::move(mapData), std::move(terrainAtlas), std::move(creatureAtlas),
+		                                    testCreature);
 
 		mvp::engine::Shader shader(mvp::engine::shaders::SPRITE_VERTEX, mvp::engine::shaders::SPRITE_FRAGMENT);
 
@@ -35,14 +54,13 @@ int main()
 		shader.use();
 		shader.setUniformMat4("uProjection", projection);
 
-		mvp::engine::SpriteBatch spriteBatch(atlasTexture);
-
-		(void)datFile; // frame groups de outfit chegam no M4/M5; .dat só confirma que carrega
+		mvp::engine::SpriteBatch terrainBatch(terrainTexture);
+		mvp::engine::SpriteBatch creatureBatch(creatureTexture);
 
 		window.run([&]() {
 			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
-			mapView.draw(spriteBatch, shader, mvp::shared::VIEW_W, mvp::shared::VIEW_H);
+			mapView.draw(terrainBatch, shader, creatureBatch, shader, mvp::shared::VIEW_W, mvp::shared::VIEW_H);
 		});
 	} catch (const std::exception& error) {
 		std::cerr << "mvp client: " << error.what() << '\n';
