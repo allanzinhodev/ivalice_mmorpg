@@ -3,7 +3,7 @@
 # Os .gitignore de client/ e server/ continuam valendo para as
 # suas proprias pastas; aqui ficam so as regras transversais.
 # ============================================================
-
+old_tools
 # --- ROMs comerciais de Final Fantasy Tactics ---
 # Nao versionar: risco de DMCA. O FFTAUtils espera que o usuario
 # forneca a ROM (ver tools/FFTAUtils/BIN/rom/PLACE_ROMFILE_ffta.gba_HERE).
