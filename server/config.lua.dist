@@ -48,6 +48,9 @@ stairJumpExhaustion = 2000
 experienceByKillingPlayers = false
 pzLockSkullAttacker = false
 allowAutoAttackWithoutExhaustion = true
+-- Directional melee swing marks for AstraClient and OTC-Fonticak (opcode 0x93).
+-- When false, OTC clients receive no melee swing visuals. Classic clients are unaffected.
+meleeWeaponSwingMarksEnabled = true
 
 -- Protection Time
 -- Grants protection upon connection if monsters are nearby, to give you a grace period; if you move or attack, the protection is deactivated.
@@ -156,10 +159,22 @@ imbuementSystemEnabled = false
 monkVocationEnabled = false
 familiarSystemEnabled = false
 wheelSystemEnabled = false
+-- Enabling Bestiary loads its scripts and monster registry during startup.
+-- Restart the server after changing this option from false to true.
 bestiarySystemEnabled = false
+-- Echo Raid requires Bestiary and is opt-in. Restart after enabling it.
+-- Portal odds are 100 / 200000 (0.05%) by default; tune both values together.
+echoRaidSystemEnabled = false
+echoRaidPortalSpawnNumerator = 100
+echoRaidPortalSpawnDenominator = 200000
 marketSystemEnabled = false
 preySystemEnabled = false
 battlePassSystemEnabled = false
+-- Highest reward level transmitted by the Battle Pass reward track.
+battlePassRewardMaxStep = 50
+-- Level that must be completed before the Battle Pass shop is unlocked.
+-- Must be between 1 and battlePassRewardMaxStep.
+battlePassShopUnlockStep = 50
 weaponProficiencySystemEnabled = false
 augmentSystemEnabled = false
 monsterLevelEnabled = false
@@ -177,6 +192,14 @@ quickLootMaxCorpses = 30
 -- and may even cause a crash if you have a lot of files or many modifications.
 reloadCommandEnabled = true
 
+-- Game Store (uses accounts.tibia_coins as its coin balance)
+-- Native catalog, purchases and coin transfers for compatible OTClient clients.
+gameStore = true
+-- Experience bonus percentage granted by Store XP boosts (1-255, default: 50%).
+storeXpBoostPercent = 50
+-- Default duration in seconds when an offer omits it (60-65535, default: 3600s = 1h).
+storeXpBoostDefaultDuration = 3600
+
 -- Character Bazaar (accounts.tibia_coins is the transferable coin balance)
 characterBazaarEnabled = false
 characterBazaarMinLevel = 50
@@ -190,6 +213,10 @@ characterBazaarMaxDurationDays = 7
 -- Requires compatible AstraClient/OTCv8 support.
 -- Default: false keeps classic 8.60 behaviour.
 taskHuntingSystemEnabled = false
+
+-- Ignore an identical repeated Task Board mutation inside this window.
+-- Set to 0 to disable duplicate-action debounce.
+taskBoardActionCooldownMs = 150
 
 -- Enable Bounty Tasks inside Task Board.
 -- Requires taskHuntingSystemEnabled.

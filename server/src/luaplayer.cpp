@@ -1369,32 +1369,6 @@ int luaPlayerGetSoul(lua_State* L)
 	return 1;
 }
 
-int luaPlayerGetJump(lua_State* L)
-{
-	// player:getJump()
-	const Player* player = getUserdata<const Player>(L, 1);
-	if (player) {
-		lua_pushinteger(L, player->getJump());
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
-int luaPlayerSetJump(lua_State* L)
-{
-	// player:setJump(value)
-	// Quantos niveis de elevacao o personagem vence de uma vez.
-	Player* player = getUserdata<Player>(L, 1);
-	if (player) {
-		player->setJump(getNumber<uint8_t>(L, 2));
-		pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
 int luaPlayerAddSoul(lua_State* L)
 {
 	// player:addSoul(soulChange)
@@ -2555,6 +2529,11 @@ int luaPlayerApplyWeaponProficiencyPerk(lua_State* L)
 int luaPlayerAddMinorCharmEchoes(lua_State* L)
 {
 	// player:addMinorCharmEchoes(amount)
+	if (!BestiaryCharmSystem::isEnabled()) {
+		pushBoolean(L, false);
+		return 1;
+	}
+
 	Player* player = getUserdata<Player>(L, 1);
 	if (!player) {
 		lua_pushnil(L);
@@ -3008,6 +2987,18 @@ int luaPlayerSave(lua_State* L)
 	if (player) {
 		player->setLoginPosition(player->getPosition());
 		pushBoolean(L, g_saveManager.savePlayerSync(player));
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int luaPlayerSaveDailyReward(lua_State* L)
+{
+	// player:saveDailyReward()
+	Player* player = getUserdata<Player>(L, 1);
+	if (player) {
+		pushBoolean(L, player->saveDailyReward());
 	} else {
 		lua_pushnil(L);
 	}
@@ -4917,8 +4908,6 @@ void LuaScriptInterface::registerPlayer()
 	registerMethod("Player", "setStamina", luaPlayerSetStamina);
 
 	registerMethod("Player", "getSoul", luaPlayerGetSoul);
-	registerMethod("Player", "getJump", luaPlayerGetJump);
-	registerMethod("Player", "setJump", luaPlayerSetJump);
 	registerMethod("Player", "addSoul", luaPlayerAddSoul);
 	registerMethod("Player", "getMaxSoul", luaPlayerGetMaxSoul);
 
@@ -5030,6 +5019,7 @@ void LuaScriptInterface::registerPlayer()
 	registerMethod("Player", "addMapMark", luaPlayerAddMapMark);
 
 	registerMethod("Player", "save", luaPlayerSave);
+	registerMethod("Player", "saveDailyReward", luaPlayerSaveDailyReward);
 	registerMethod("Player", "saveAsync", luaPlayerSaveAsync);
 	registerMethod("Player", "drainAsyncSave", luaPlayerDrainAsyncSave);
 	registerMethod("Player", "popupFYI", luaPlayerPopupFYI);

@@ -75,6 +75,7 @@ public:
 	static uint32_t getGuidByName(std::string_view name);
 	static bool getGuidByNameEx(uint32_t& guid, bool& specialVip, std::string& name);
 	static bool saveAutoLootConfig(Player* player);
+	static bool savePlayerDailyRewardStorages(Player* player);
 	static bool loadAutoLootConfig(Player* player);
 	static std::string_view getNameByGuid(uint32_t guid);
 	static bool formatPlayerName(std::string& name);
@@ -85,7 +86,7 @@ public:
 	static void addVIPEntry(uint32_t accountId, uint32_t guid);
 	static void removeVIPEntry(uint32_t accountId, uint32_t guid);
 
-	static void updatePremiumTime(uint32_t accountId, time_t endTime);
+	static bool updatePremiumTime(uint32_t accountId, time_t endTime);
 
 	static uint64_t getTibiaCoins(uint32_t accountId);
 	static void updateTibiaCoins(uint32_t accountId, uint64_t tibiaCoins);

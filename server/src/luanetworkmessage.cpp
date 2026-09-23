@@ -52,8 +52,9 @@ bool isOtcOrAstraLuaOpcode(uint8_t opcode)
 	}
 }
 
-bool isAstraOnlyLuaOpcode(uint8_t opcode)
+bool isExtendedClientLuaOpcode(uint8_t opcode)
 {
+	// Opcodes shared by AstraClient and FonticakClient custom item/blessing protocols.
 	switch (opcode) {
 		case 0x2C: // custom boss cooldown
 		case 0x3D: // weapon proficiency reshape offers
@@ -81,8 +82,8 @@ bool canSendLuaNetworkMessageToPlayer(const NetworkMessage& message, const Playe
 	}
 
 	const uint8_t opcode = message.getBuffer()[NetworkMessage::INITIAL_BUFFER_POSITION];
-	if (isAstraOnlyLuaOpcode(opcode)) {
-		return player.isAstraClient();
+	if (isExtendedClientLuaOpcode(opcode)) {
+		return player.isAstraClient() || player.isFonticakClient();
 	}
 	if (isOtcOrAstraLuaOpcode(opcode)) {
 		return player.isOTC() || player.isAstraClient();
@@ -322,7 +323,7 @@ int luaNetworkMessageAddItem(lua_State* L)
 	const auto& message = getNetworkMessage(L);
 	if (message) {
 		if (getAssociatedValue(L, 1, 1)) {
-			if (const auto player = getPlayer(L, -1)) {
+			if (getPlayer(L, -1)) {
 				message->addItem(item);
 			} else {
 				reportErrorFunc(L, LuaScriptInterface::getErrorDesc(LuaErrorCode::PLAYER_NOT_FOUND));
@@ -360,7 +361,7 @@ int luaNetworkMessageAddItemId(lua_State* L)
 	}
 
 	if (getAssociatedValue(L, 1, 1)) {
-		if (const auto player = getPlayer(L, -1)) {
+		if (getPlayer(L, -1)) {
 			message->addItemId(itemId);
 		} else {
 			reportErrorFunc(L, LuaScriptInterface::getErrorDesc(LuaErrorCode::PLAYER_NOT_FOUND));

@@ -416,10 +416,18 @@ const uint8_t fluidMap[] = {
 enum SquareColor_t : uint8_t
 {
 	SQ_COLOR_BLACK = 0,
+	SQ_PLAYER_ATTACK = 3, // CreatureMark markType = IsAttacked (15.x melee swing)
 	SQ_COLOR_BROWN = 114,
 	SQ_COLOR_ORANGE = 198,
 	SQ_COLOR_YELLOW = 210,
 	SQ_COLOR_NONE = 255,
+};
+
+enum class EchoRaidVisualState : int8_t
+{
+	None = -1,
+	Warden = 0,
+	Empowered = 1,
 };
 
 enum TextColor_t : uint8_t
@@ -975,7 +983,7 @@ enum class GameFeature : uint8_t {
 	SendIdentifiers = 103,
 	WingsAndAura = 104,
 	PlayerStateU32 = 105,
-	OutfitShaders = 106,
+	ContainerTypes = 106, // OTC GameContainerTypes
 
 	// advanced features
 	PacketSizeU32 = 110,
@@ -993,8 +1001,24 @@ enum class GameFeature : uint8_t {
 	AstraOutfitStoreMode = 142,
 	AstraItemMetadata = 143,
 	ZoneWeather = 144,
+	AstraSingleCreatureMarks = 145,
+	AstraContainerTypes = 146, // Astra GameContainerTypes (OTC Fonticak uses 106)
+	AstraEchoRaidVisuals = 147,
+	AstraShopCountU16 = 148,
+	AstraStoreBasePrice = 149,
 
-	Last = 144
+	Last = 149
+};
+
+enum ContainerSpecialType : uint8_t
+{
+	CONTAINER_SPECIAL_NONE = 0,
+	CONTAINER_SPECIAL_LOOT_CONTAINER = 1,
+	CONTAINER_SPECIAL_CONTENT_COUNTER = 2,
+	CONTAINER_SPECIAL_LOOT_HIGHLIGHT = 4,
+	CONTAINER_SPECIAL_OBTAIN = 8,
+	CONTAINER_SPECIAL_MANAGER = 9,
+	CONTAINER_SPECIAL_QUIVER_LOOT = 11,
 };
 
 inline constexpr int32_t CHANNEL_GUILD = 0x00;

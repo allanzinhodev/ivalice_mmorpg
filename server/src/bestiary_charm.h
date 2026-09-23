@@ -11,6 +11,8 @@
 #include <unordered_map>
 #include <utility>
 
+#include "configmanager.h"
+
 class Player;
 
 enum class BestiaryCharmCategory : uint8_t
@@ -27,6 +29,8 @@ struct BestiaryCreatureInfo
 	uint32_t firstUnlock = 0;
 	uint32_t secondUnlock = 0;
 	uint16_t charmPoints = 0;
+	uint8_t stars = 0;
+	uint8_t occurrence = 0;
 	uint16_t lookType = 0;
 	uint8_t lookHead = 0;
 	uint8_t lookBody = 0;
@@ -44,6 +48,12 @@ struct BestiaryCharmActionResult
 class BestiaryCharmSystem
 {
 public:
+	/// Centralized feature check — all native paths should use this.
+	[[nodiscard]] static bool isEnabled()
+	{
+		return ConfigManager::getBoolean(ConfigManager::BESTIARY_SYSTEM_ENABLED);
+	}
+
 	void registerMonster(BestiaryCreatureInfo info);
 	[[nodiscard]] std::optional<std::reference_wrapper<const BestiaryCreatureInfo>> getMonster(uint16_t raceId) const;
 	[[nodiscard]] static uint8_t getProgress(const BestiaryCreatureInfo& info, uint32_t kills);

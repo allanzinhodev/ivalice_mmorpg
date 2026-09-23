@@ -778,6 +778,50 @@ void Player::addConditionSuppressions(uint64_t conditions) { conditionSuppressio
 
 void Player::removeConditionSuppressions(uint64_t conditions) { conditionSuppressions &= ~conditions; }
 
+Item* Player::getEquippedQuiver() const
+{
+	Item* rightItem = inventory[CONST_SLOT_RIGHT].get();
+	if (rightItem && rightItem->getWeaponType() == WEAPON_QUIVER) {
+		return rightItem;
+	}
+
+	Item* leftItem = inventory[CONST_SLOT_LEFT].get();
+	if (leftItem && leftItem->getWeaponType() == WEAPON_QUIVER) {
+		return leftItem;
+	}
+
+	return nullptr;
+}
+
+Item* Player::getDistanceAmmo(Ammo_t ammoType) const
+{
+	Item* quiverItem = getEquippedQuiver();
+	if (quiverItem) {
+		const Container* quiverContainer = quiverItem->getContainer();
+		if (!quiverContainer) {
+			return nullptr;
+		}
+
+		for (const auto& ammoItem : quiverContainer->getItemList()) {
+			if (!ammoItem || ammoItem->getAmmoType() != ammoType) {
+				continue;
+			}
+
+			const Weapon* quiverAmmoWeapon = g_weapons->getWeapon(ammoItem.get());
+			if (quiverAmmoWeapon && quiverAmmoWeapon->ammoCheck(this)) {
+				return ammoItem.get();
+			}
+		}
+		return nullptr;
+	}
+
+	Item* ammoItem = inventory[CONST_SLOT_AMMO].get();
+	if (!ammoItem || ammoItem->getAmmoType() != ammoType) {
+		return nullptr;
+	}
+	return ammoItem;
+}
+
 Item* Player::getWeapon(slots_t slot, bool ignoreAmmo) const
 {
 	Item* item = inventory[slot].get();
@@ -793,26 +837,7 @@ Item* Player::getWeapon(slots_t slot, bool ignoreAmmo) const
 	if (!ignoreAmmo && weaponType == WEAPON_DISTANCE) {
 		const ItemType& it = Item::items[item->getID()];
 		if (it.ammoType != AMMO_NONE) {
-			Item* ammoItem = inventory[CONST_SLOT_AMMO].get();
-			if (!ammoItem || ammoItem->getAmmoType() != it.ammoType) {
-				Item* rightItem = inventory[CONST_SLOT_RIGHT].get();
-				if (rightItem && rightItem->getWeaponType() == WEAPON_QUIVER) {
-					Container* quiverContainer = rightItem->getContainer();
-					if (quiverContainer) {
-						for (ContainerIterator cit = quiverContainer->iterator(); cit.hasNext(); cit.advance()) {
-							auto quiverAmmo = *cit;
-							if (quiverAmmo->getAmmoType() == it.ammoType) {
-								const Weapon* quiverAmmoWeapon = g_weapons->getWeapon(quiverAmmo.get());
-								if (quiverAmmoWeapon && quiverAmmoWeapon->ammoCheck(this)) {
-									return quiverAmmo.get();
-								}
-							}
-						}
-					}
-				}
-				return nullptr;
-			}
-			item = ammoItem;
+			return getDistanceAmmo(it.ammoType);
 		}
 	}
 	return item;
@@ -820,7 +845,7 @@ Item* Player::getWeapon(slots_t slot, bool ignoreAmmo) const
 
 void Player::sendMonkData()
 {
-	if (!client || !client->isAstraClient) {
+	if (!client || (!client->isAstraClient && !client->isFonticakClient)) {
 		return;
 	}
 	std::string json = fmt::format(
@@ -2021,6 +2046,11 @@ void Player::clearStorageDirty()
 	storageDirtyKeyRevisions.clear();
 }
 
+bool Player::saveDailyReward()
+{
+	return IOLoginData::savePlayerDailyRewardStorages(this);
+}
+
 bool Player::canSee(const Position& pos) const
 {
 	if (!client) {
@@ -2959,7 +2989,7 @@ void Player::onAddContainerItem(const Item* item)
 			}
 		}
 	}
-	if (canReceiveAstraItemState() && (isOwnedInventoryItem(this, item) || isOwnedOrOpenContainer(this, container))) {
+	if (canReceivePackedPlayerInventory() && (isOwnedInventoryItem(this, item) || isOwnedOrOpenContainer(this, container))) {
 		scheduleAstraPlayerInventorySnapshot();
 	}
 
@@ -2968,7 +2998,7 @@ void Player::onAddContainerItem(const Item* item)
 
 void Player::onUpdateContainerItem(const Container* container, const Item* oldItem, const Item* newItem)
 {
-	const bool updatesAstraInventory = canReceiveAstraItemState() &&
+	const bool updatesAstraInventory = canReceivePackedPlayerInventory() &&
 	                                   (isOwnedOrOpenContainer(this, container) ||
 	                                    isOwnedInventoryItem(this, oldItem) ||
 	                                    isOwnedInventoryItem(this, newItem));
@@ -2987,7 +3017,7 @@ void Player::onUpdateContainerItem(const Container* container, const Item* oldIt
 
 void Player::onRemoveContainerItem(const Container* container, const Item* item)
 {
-	if (canReceiveAstraItemState() && (isOwnedOrOpenContainer(this, container) || isOwnedInventoryItem(this, item))) {
+	if (canReceivePackedPlayerInventory() && (isOwnedOrOpenContainer(this, container) || isOwnedInventoryItem(this, item))) {
 		scheduleAstraPlayerInventorySnapshot();
 	}
 
@@ -3080,6 +3110,16 @@ bool Player::canReceiveAstraItemState() const
 	return protocol && protocol->canSendAstraItemState();
 }
 
+bool Player::canReceivePackedPlayerInventory() const
+{
+	if (!client) {
+		return false;
+	}
+
+	const ProtocolGame_ptr protocol = client->protocol();
+	return protocol && protocol->canSendPackedPlayerInventory();
+}
+
 void Player::sendAstraPlayerInventorySnapshot() const
 {
 	if (!client) {
@@ -3087,7 +3127,7 @@ void Player::sendAstraPlayerInventorySnapshot() const
 	}
 
 	const ProtocolGame_ptr protocol = client->protocol();
-	if (!protocol || !protocol->canSendAstraItemState()) {
+	if (!protocol || !protocol->canSendPackedPlayerInventory()) {
 		return;
 	}
 
@@ -3096,7 +3136,7 @@ void Player::sendAstraPlayerInventorySnapshot() const
 
 void Player::scheduleAstraPlayerInventorySnapshot()
 {
-	if (!canReceiveAstraItemState()) {
+	if (!canReceivePackedPlayerInventory()) {
 		return;
 	}
 
@@ -4508,7 +4548,11 @@ ReturnValue Player::queryAdd(int32_t index, const Thing& thing, uint32_t count, 
 
 		case CONST_SLOT_AMMO: {
 			if ((slotPosition & SLOTP_AMMO) || getBoolean(ConfigManager::CLASSIC_EQUIPMENT_SLOTS)) {
-				ret = RETURNVALUE_NOERROR;
+				if (item->getWeaponType() == WEAPON_AMMO && getEquippedQuiver()) {
+					ret = RETURNVALUE_CANNOTBEDRESSED;
+				} else {
+					ret = RETURNVALUE_NOERROR;
+				}
 			}
 			break;
 		}
@@ -8002,14 +8046,50 @@ void Player::flushPendingLoot(const std::string& groupKey)
 	};
 
 	const bool colorizedLootEnabled = ConfigManager::getBoolean(ConfigManager::COLORIZED_LOOT_VALUE);
-	const std::string plainText = buildLootText(false);
-	const std::string colorizedText = colorizedLootEnabled ? buildLootText(true) : plainText;
-	const auto sendLootText = [&](Player& recipient) {
-		recipient.sendChannelMessage(
-		    "", colorizedLootEnabled && recipient.isAstraClient() ? colorizedText : plainText, TALKTYPE_CHANNEL_O, 10);
+	std::string plainText;
+	std::string colorizedText;
+	bool needColorized = false;
+
+	const auto wantsColorizedLoot = [](const Player& recipient) {
+		return recipient.isAstraClient() || recipient.isFonticakClient();
 	};
 
 	const auto& party = getParty();
+	if (colorizedLootEnabled) {
+		if (party && party->isSharedExperienceEnabled()) {
+			const auto& leader = party->getLeader();
+			if (leader && wantsColorizedLoot(*leader)) {
+				needColorized = true;
+			}
+			if (!needColorized) {
+				for (auto& member : party->getMembers()) {
+					if (auto memberPtr = member.lock(); memberPtr && wantsColorizedLoot(*memberPtr)) {
+						needColorized = true;
+						break;
+					}
+				}
+			}
+		} else if (wantsColorizedLoot(*this)) {
+			needColorized = true;
+		}
+	}
+
+	const auto sendLootText = [&](Player& recipient) {
+		const bool useColorized = needColorized && wantsColorizedLoot(recipient);
+		if (useColorized) {
+			if (colorizedText.empty()) {
+				colorizedText = buildLootText(true);
+			}
+			recipient.sendChannelMessage("", colorizedText, TALKTYPE_CHANNEL_O, 10);
+			return;
+		}
+
+		if (plainText.empty()) {
+			plainText = buildLootText(false);
+		}
+		recipient.sendChannelMessage("", plainText, TALKTYPE_CHANNEL_O, 10);
+	};
+
 	if (party && party->isSharedExperienceEnabled()) {
 		const auto& leader = party->getLeader();
 		if (leader) {

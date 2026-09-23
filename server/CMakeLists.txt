@@ -53,7 +53,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 endif ()
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-    add_compile_options(-Wimplicit-fallthrough -Wmove)
+    add_compile_options(-Wimplicit-fallthrough -Wmove -Wno-date-time)
 endif ()
 
 if (ENABLE_ASAN)
@@ -303,6 +303,12 @@ if (BUILD_TESTING)
         COMMAND ${CMAKE_COMMAND}
             -DPROJECT_SOURCE_DIR=${CMAKE_SOURCE_DIR}
             -P ${CMAKE_SOURCE_DIR}/tools/check-protocolgame-handshake.cmake
+    )
+    add_test(
+        NAME check_shop_podium_protocol
+        COMMAND ${CMAKE_COMMAND}
+            -DPROJECT_SOURCE_DIR=${CMAKE_SOURCE_DIR}
+            -P ${CMAKE_SOURCE_DIR}/tools/check-shop-podium-protocol.cmake
     )
 endif()
 

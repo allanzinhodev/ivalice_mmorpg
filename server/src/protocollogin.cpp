@@ -31,9 +31,14 @@ namespace {
 
 constexpr uint8_t ASTRA_LOGIN_BOOSTED_INFO_MARKER = 0xA1;
 constexpr uint8_t ASTRA_LOGIN_CAST_LIST_MARKER = 0xA2;
+constexpr uint8_t ASTRA_LOGIN_CAPABILITIES_MARKER = 0xA3;
 constexpr uint8_t ASTRA_LOGIN_CAST_LIST_VERSION = 1;
+constexpr uint8_t ASTRA_LOGIN_CAPABILITIES_VERSION = 1;
+constexpr uint8_t ASTRA_LOGIN_CAPABILITY_DAILY_REWARD = 1U << 0;
 constexpr size_t ASTRA_LOGIN_CAST_LIST_LIMIT = std::numeric_limits<uint8_t>::max();
 constexpr std::string_view ASTRA_LOGIN_CAST_LIST_REQUEST = "__astra_casts_v1__";
+constexpr std::string_view FONTICAK_LOGIN_BOOSTED_REQUEST = "__fonticak_boosted_v1__";
+constexpr std::string_view ASTRA_LOGIN_CAPABILITIES_REQUEST_MARKER = "C";
 
 struct LoginCastEntry {
 	std::string name;
@@ -392,7 +397,7 @@ void ProtocolLogin::disconnectClient(std::string_view message)
 }
 
 void ProtocolLogin::getCharacterList(std::string_view accountName, std::string_view password, bool isAstraClient,
-                                     uint32_t clientIP)
+                                     bool includeDailyReward, uint32_t clientIP)
 {
 	Account account;
 	const auto authentication = IOLoginData::loginserverAuthentication(accountName, password, account);
@@ -428,6 +433,7 @@ void ProtocolLogin::getCharacterList(std::string_view accountName, std::string_v
 		uint8_t lookFeet = 76;
 		uint8_t lookAddons = 0;
 		std::string vocation = "None";
+		uint8_t dailyReward = 1;
 	};
 
 	std::vector<CharacterListEntry> characters;
@@ -442,9 +448,15 @@ void ProtocolLogin::getCharacterList(std::string_view accountName, std::string_v
 	}
 
 	Database& db = Database::getInstance();
+	const auto currentDay = static_cast<int64_t>(time(nullptr) / 86400);
+
 	DBResult_ptr result = db.storeQuery(fmt::format(
-	    "SELECT `name`, `level`, `vocation`, `looktype`, `lookhead`, `lookbody`, `looklegs`, `lookfeet`, `lookaddons` FROM `players` WHERE `account_id` = {:d} AND `deletion` = 0 ORDER BY `name` ASC",
-	    account.id));
+	    "SELECT p.`name`, p.`level`, p.`vocation`, p.`looktype`, p.`lookhead`, p.`lookbody`, p.`looklegs`, p.`lookfeet`, p.`lookaddons`, "
+	    "COALESCE(s.`value`, 0) AS `daily_storage` "
+	    "FROM `players` p "
+	    "LEFT JOIN `player_storage` s ON s.`player_id` = p.`id` AND s.`key` = {:d} "
+	    "WHERE p.`account_id` = {:d} AND p.`deletion` = 0 ORDER BY p.`name` ASC",
+	    STORAGE_DAILY_REWARD_LAST_DAY, account.id));
 	if (result) {
 		do {
 			CharacterListEntry character;
@@ -456,6 +468,14 @@ void ProtocolLogin::getCharacterList(std::string_view accountName, std::string_v
 			character.lookLegs = result->getNumber<uint8_t>("looklegs");
 			character.lookFeet = result->getNumber<uint8_t>("lookfeet");
 			character.lookAddons = result->getNumber<uint8_t>("lookaddons");
+
+			int64_t lastClaimDay = result->getNumber<int64_t>("daily_storage");
+			if (const auto onlinePlayer = g_game.getPlayerByName(character.name)) {
+				if (const auto onlineVal = onlinePlayer->getStorageValue(STORAGE_DAILY_REWARD_LAST_DAY)) {
+					lastClaimDay = *onlineVal;
+				}
+			}
+			character.dailyReward = (lastClaimDay == currentDay) ? 0 : 1;
 
 			const uint16_t vocationId = result->getNumber<uint16_t>("vocation");
 			if (const auto* vocation = g_vocations.getVocation(vocationId)) {
@@ -472,8 +492,13 @@ void ProtocolLogin::getCharacterList(std::string_view accountName, std::string_v
 
 	uint8_t size = std::min<size_t>(std::numeric_limits<uint8_t>::max(), characters.size());
 
-	if (isAstraClient) {
-		// AstraClient extends the 8.60 list with outfit, level and vocation metadata.
+	if (isAstraClient || isFonticakClient_) {
+		if (isAstraClient_ && astraLoginCapabilities_ != 0) {
+			output->addByte(ASTRA_LOGIN_CAPABILITIES_MARKER);
+			output->addByte(ASTRA_LOGIN_CAPABILITIES_VERSION);
+			output->addByte(astraLoginCapabilities_);
+		}
+		// AstraClient and FonticakClient extend the 8.60 list with outfit, level and vocation metadata.
 		output->addByte(0x65);
 		output->addByte(size);
 		for (uint8_t i = 0; i < size; ++i) {
@@ -490,6 +515,9 @@ void ProtocolLogin::getCharacterList(std::string_view accountName, std::string_v
 			output->addByte(character.lookAddons);
 			output->add<uint32_t>(character.level);
 			output->addString(character.vocation);
+			if (includeDailyReward) {
+				output->addByte(character.dailyReward);
+			}
 		}
 	} else {
 		// Standard 8.60 character list for OTCv8 Classic, Fonticak, CIP, etc.
@@ -516,12 +544,20 @@ void ProtocolLogin::getCharacterList(std::string_view accountName, std::string_v
 		}
 	}
 
-	if (isAstraClient) {
+	if (isAstraClient || isFonticakClient_) {
 		addAstraLoginBoostedInfo(output);
 	}
 
 	send(output);
 
+	disconnect();
+}
+
+void ProtocolLogin::getFonticakBoostedInfo()
+{
+	auto output = OutputMessagePool::getOutputMessage();
+	addAstraLoginBoostedInfo(output);
+	send(output);
 	disconnect();
 }
 
@@ -700,7 +736,8 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage& msg)
 
 	// Always detect AstraClient and FonticakClient, regardless of astraClientOnly setting.
 	// This allows sending the correct packet format (0x65 vs 0x64) to each client.
-	bool isFonticakClient_ = false;
+	isFonticakClient_ = false;
+	astraLoginCapabilities_ = 0;
 	if (msg.getBufferPosition() + 2 <= msg.getLength()) {
 		uint16_t markerLength = msg.get<uint16_t>();
 		if (markerLength > 0 && markerLength <= 64 && msg.getBufferPosition() + markerLength <= msg.getLength()) {
@@ -711,6 +748,16 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage& msg)
 			} else if (marker == FonticakClient::LOGIN_MARKER && msg.getBufferPosition() + sizeof(uint32_t) <= msg.getLength()) {
 				isFonticakClient_ =
 				    msg.get<uint32_t>() == FonticakClient::generateSignature(operatingSystem, version, key);
+			}
+		}
+	}
+	if (isAstraClient_ && msg.getBufferPosition() + 2 <= msg.getLength()) {
+		const uint16_t markerLength = msg.get<uint16_t>();
+		if (markerLength == ASTRA_LOGIN_CAPABILITIES_REQUEST_MARKER.size() &&
+		    msg.getBufferPosition() + markerLength + sizeof(uint8_t) <= msg.getLength()) {
+			const auto marker = msg.getString(markerLength);
+			if (marker == ASTRA_LOGIN_CAPABILITIES_REQUEST_MARKER) {
+				astraLoginCapabilities_ = msg.getByte() & ASTRA_LOGIN_CAPABILITY_DAILY_REWARD;
 			}
 		}
 	}
@@ -731,6 +778,8 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage& msg)
 
 	const bool isAstraCastListRequest =
 	    accountName.empty() && isAstraClient_ && password == ASTRA_LOGIN_CAST_LIST_REQUEST;
+	const bool isFonticakBoostedRequest =
+	    accountName.empty() && isFonticakClient_ && password == FONTICAK_LOGIN_BOOSTED_REQUEST;
 	if (isAstraClient_ && !isAstraCastListRequest) {
 		LOG_DEBUG("[AstraClient] Login protocol client accepted");
 	}
@@ -752,14 +801,22 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage& msg)
 	g_dispatcher.addTask([=, thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this()),
 	                      accountName = std::string{accountName},
 	                      password = std::string{password},
-	                      astraCastListRequest = isAstraCastListRequest]() {
+	                      astraCastListRequest = isAstraCastListRequest,
+	                      fonticakBoostedRequest = isFonticakBoostedRequest]() {
 		if (astraCastListRequest) {
 			LoginAttemptLimiter::getInstance().releaseReservation(clientIP, accountName);
 			thisPtr->getAstraCastList();
+		} else if (fonticakBoostedRequest) {
+			LoginAttemptLimiter::getInstance().releaseReservation(clientIP, accountName);
+			thisPtr->getFonticakBoostedInfo();
 		} else if (accountName.empty()) {
 			thisPtr->getCastList(password, clientIP);
 		} else {
-			thisPtr->getCharacterList(accountName, password, thisPtr->isAstraClient_, clientIP);
+			const bool includeDailyReward = thisPtr->isFonticakClient_ ||
+			    (thisPtr->astraLoginCapabilities_ & ASTRA_LOGIN_CAPABILITY_DAILY_REWARD) != 0;
+			thisPtr->getCharacterList(accountName, password,
+			                              thisPtr->isAstraClient_ || thisPtr->isFonticakClient_,
+			                              includeDailyReward, clientIP);
 		}
 	});
 }

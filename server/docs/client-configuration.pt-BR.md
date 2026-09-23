@@ -81,6 +81,7 @@ PlayerFamiliars = true
 AstraCreatureIcons = true
 AstraQuiverCountU16 = true
 AstraOutfitStoreMode = true
+AstraSingleCreatureMarks = true
 DisplayItemDuration = true
 DisplayItemCharges = true
 PackedPlayerInventory = true
@@ -157,7 +158,7 @@ Condição no server:
 QuickLootFlags = shouldSendQuickLootFlags()
 ```
 
-`shouldSendQuickLootFlags()` e verdadeiro apenas para AstraClient quando quick loot esta habilitado na config.
+`shouldSendQuickLootFlags()` é verdadeiro para AstraClient e FonticakClient quando quick loot está habilitado na configuração.
 
 ### GameThingUpgradeClassification
 
@@ -202,6 +203,7 @@ GameAstraCreatureIcons
 GameAstraQuiverCountU16
 GameAstraOutfitStoreMode
 GameAstraItemMetadata
+GameAstraSingleCreatureMarks
 ```
 
 Essas flags so devem ser usadas quando o server reconhece AstraClient e a config relacionada esta ativa.

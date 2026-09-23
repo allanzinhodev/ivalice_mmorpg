@@ -504,6 +504,7 @@ public:
 	void updateCreatureEmblem(Creature* creature);
 	void updateCreatureIcon(const Player* spectator, const Creature* creature);
 	void updateCreatureIcon(const Creature* creature);
+	void updateCreatureEchoRaidVisual(const Creature* creature);
 	void updateKnownCreature(const Creature* creature);
 
 	GameState_t getGameState() const;
@@ -715,6 +716,8 @@ public:
 
 
 private:
+	friend struct LootHighlightTestAccess;
+
 	StorageMap storageMap;
 
 	bool playerSaySpell(Player* player, SpeakClasses type, std::string_view text, bool forceCastOnFoot = false);
@@ -785,7 +788,6 @@ private:
 
 	std::unordered_set<Position, PositionHasher> tilesToClean;
 
-	// Loot Highlight: maps corpse item lifetime to scheduler event ID
 	LootHighlightEventMap lootHighlightEvents;
 
 	ModalWindow offlineTrainingWindow{std::numeric_limits<uint32_t>::max(), "Train while you sleep",

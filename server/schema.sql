@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `players` (
   `lookfeet` int NOT NULL DEFAULT '0',
   `lookhead` int NOT NULL DEFAULT '0',
   `looklegs` int NOT NULL DEFAULT '0',
-  `looktype` int NOT NULL DEFAULT '1',
+  `looktype` int NOT NULL DEFAULT '136',
   `lookaddons` int NOT NULL DEFAULT '0',
   `lookmount` smallint UNSIGNED NOT NULL DEFAULT '0',
   `currentmount` smallint UNSIGNED NOT NULL DEFAULT '0',
@@ -103,10 +103,7 @@ CREATE TABLE IF NOT EXISTS `players` (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
 
 INSERT INTO `players` (`id`, `name`, `group_id`, `account_id`, `level`, `vocation`, `health`, `healthmax`, `experience`, `lookbody`, `lookfeet`, `lookhead`, `looklegs`, `looktype`, `lookaddons`, `currentmount`, `randomizemount`, `direction`, `maglevel`, `mana`, `manamax`, `manaspent`, `soul`, `town_id`, `posx`, `posy`, `posz`, `conditions`, `cap`, `sex`, `lastlogin`, `lastip`, `save`, `skull`, `skulltime`, `lastlogout`, `blessings`, `onlinetime`, `deletion`, `balance`, `offlinetraining_time`, `offlinetraining_skill`, `stamina`, `skill_fist`, `skill_fist_tries`, `skill_club`, `skill_club_tries`, `skill_sword`, `skill_sword_tries`, `skill_axe`, `skill_axe_tries`, `skill_dist`, `skill_dist_tries`, `skill_shielding`, `skill_shielding_tries`, `skill_fishing`, `skill_fishing_tries`) VALUES
-(1, 'Sorcerer', 1, 1, 1, 1, 150, 150, 0, 0, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 1, 0, 0, 0, NULL, 400, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 43200, -1, 2520, 10, 0, 10, 0, 10, 0, 10, 0, 10, 0, 10, 0),
-(2, 'Druid', 1, 1, 1, 2, 150, 150, 0, 0, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 1, 0, 0, 0, NULL, 400, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 43200, -1, 2520, 10, 0, 10, 0, 10, 0, 10, 0, 10, 0, 10, 0),
-(3, 'Paladin', 1, 1, 1, 3, 150, 150, 0, 0, 0, 0, 0, 3, 0, 0, 0, 2, 0, 0, 0, 0, 0, 1, 0, 0, 0, NULL, 400, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 43200, -1, 2520, 10, 0, 10, 0, 10, 0, 10, 0, 10, 0, 10, 0),
-(4, 'Knight', 1, 1, 1, 4, 150, 150, 0, 0, 0, 0, 0, 4, 0, 0, 0, 2, 0, 0, 0, 0, 0, 1, 0, 0, 0, NULL, 400, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 43200, -1, 2520, 10, 0, 10, 0, 10, 0, 10, 0, 10, 0, 10, 0);
+(1, 'Account Manager', 1, 1, 1, 0, 150, 150, 0, 0, 0, 0, 0, 110, 0, 0, 0, 2, 0, 0, 0, 0, 0, 1, 50, 50, 7, NULL, 400, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 43200, -1, 2520, 10, 0, 10, 0, 10, 0, 10, 0, 10, 0, 10, 0, 10, 0);
 
 CREATE TABLE IF NOT EXISTS `player_autolootconfig` (
   `player_id` int(11) NOT NULL,
@@ -388,7 +385,7 @@ CREATE TABLE IF NOT EXISTS `shop_history` (
   `player` int(11) NOT NULL,
   `date` datetime NOT NULL,
   `title` varchar(100) NOT NULL,
-  `price` int(11) NOT NULL,
+  `price` bigint NOT NULL DEFAULT '0',
   `costSecond` int(11) NOT NULL,
   `count` int(11) NOT NULL DEFAULT '0',
   `target` varchar(255) DEFAULT NULL,
@@ -477,6 +474,44 @@ CREATE TABLE IF NOT EXISTS `player_bestiary_kills` (
   `kills` INT UNSIGNED NOT NULL DEFAULT 0,
   PRIMARY KEY (`player_id`, `raceid`),
   CONSTRAINT `fk_player_bestiary_kills_player`
+    FOREIGN KEY (`player_id`) REFERENCES `players` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `player_echo_warden_rewards` (
+  `player_id` INT NOT NULL,
+  `raceid` SMALLINT UNSIGNED NOT NULL,
+  PRIMARY KEY (`player_id`, `raceid`),
+  CONSTRAINT `fk_player_echo_warden_rewards_player`
+    FOREIGN KEY (`player_id`) REFERENCES `players` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `player_bestiary_charms` (
+  `player_id` INT NOT NULL,
+  `charm_id` TINYINT UNSIGNED NOT NULL,
+  `unlocked` TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  `raceid` SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (`player_id`, `charm_id`),
+  KEY `idx_player_bestiary_charms_race` (`player_id`, `raceid`),
+  CONSTRAINT `fk_player_bestiary_charms_player`
+    FOREIGN KEY (`player_id`) REFERENCES `players` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `player_bestiary_resources` (
+  `player_id` INT NOT NULL,
+  `minor_charm_echoes` INT UNSIGNED NOT NULL DEFAULT 0,
+  `max_minor_charm_echoes` INT UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (`player_id`),
+  CONSTRAINT `fk_player_bestiary_resources_player`
+    FOREIGN KEY (`player_id`) REFERENCES `players` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `player_bestiary_tracker` (
+  `player_id` INT NOT NULL,
+  `raceid` SMALLINT UNSIGNED NOT NULL,
+  `slot` TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (`player_id`, `raceid`),
+  KEY `idx_player_bestiary_tracker_slot` (`player_id`, `slot`),
+  CONSTRAINT `fk_player_bestiary_tracker_player`
     FOREIGN KEY (`player_id`) REFERENCES `players` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8mb4;
 

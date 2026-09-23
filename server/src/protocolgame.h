@@ -79,6 +79,8 @@ public:
 
 	uint16_t getVersion() const { return version; }
 	bool canSendAstraItemState() const;
+	bool canSendAstraItemMetadata() const;
+	bool canSendPackedPlayerInventory() const;
 	bool shouldSendAstraQuiverCountU16() const;
 	static void rebuildItemValuesCache();
 	static void invalidateItemValuesCache();
@@ -154,6 +156,13 @@ private:
 	void parseImbuementDurations(NetworkMessage& msg);
 	void parseCharacterBazaar(NetworkMessage& msg);
 
+	// Game store
+	void parseStoreOpen(NetworkMessage& msg);
+	void parseStorePurchase(NetworkMessage& msg);
+	void parseStoreHistory(NetworkMessage& msg);
+	void parseStoreTransfer(NetworkMessage& msg);
+
+
 	// trade methods
 	void parseRequestTrade(NetworkMessage& msg);
 	void parseLookInTrade(NetworkMessage& msg);
@@ -212,6 +221,10 @@ private:
 	void sendCreatureSkull(const Creature* creature);
 	void sendCreatureEmblem(const Creature* creature);
 	void sendCreatureIcon(const Creature* creature);
+	void sendCreatureEchoRaidVisual(const Creature* creature, bool force = false);
+	void sendVisibleEchoRaidVisuals(const Position& centerPos);
+	void sendCreatureVocation(const Creature* creature);
+	void sendVisiblePlayerVocations(const Position& centerPos);
 
 	void sendShop(const ShopInfoList& itemList);
 	void sendCloseShop();
@@ -238,6 +251,7 @@ private:
 	void sendWorldLight(LightInfo lightInfo);
 
 	void sendCreatureSquare(const Creature* creature, SquareColor_t color);
+	void sendCreatureWeaponAttackMark(const Creature* target, uint8_t weaponType);
 	void sendSpellCooldown(uint16_t spellId, uint32_t time);
 	void sendSpellGroupCooldown(SpellGroup_t groupId, uint32_t time);
 	void sendUseItemCooldown(uint32_t time);
@@ -247,9 +261,17 @@ private:
 	void sendScreenshotAndBannerUpLevel(uint16_t level);
 	void sendScreenshotAndBannerUpSkill(skills_t skill, uint16_t level);
 	void sendScreenshotAndBannerProgressRace(uint16_t raceId, uint8_t progressLevel, bool isBoss = false);
+	void sendEchoWardenReward(uint16_t raceId, uint32_t charmPoints);
 	void sendExtendedOpcode(uint8_t opcode, std::string_view data);
 	void sendBlessingWindow();
 	void sendBlessStatus();
+
+	// Game store
+	void sendStoreCatalog();
+	void sendStoreError(std::string_view message);
+	void sendStorePurchaseSuccess(uint32_t offerId, std::string_view message, uint32_t newBalance);
+	void sendStoreHistory();
+
 
 	// tiles
 	void sendMapDescription(const Position& pos);
@@ -335,7 +357,10 @@ private:
 	// OTCv8
 	void sendFeatures(bool advertiseAstraItemState = false);
 	bool shouldSendQuickLootFlags() const;
+	bool shouldSendContainerTypes() const;
 	bool shouldSendContainerPagination() const;
+	void appendItem(NetworkMessage& msg, const Item* item) const;
+	void appendItem(NetworkMessage& msg, uint16_t itemId, uint8_t count) const;
 	bool shouldPaginateContainer(const Container* container) const;
 	bool shouldSendItemTierByte() const;
 	bool shouldSendThingUpgradeClassification() const;
@@ -418,9 +443,15 @@ private:
 	bool isOTC = false;
 	bool isAstraClient = false;
 	bool isFonticakClient = false;
+	bool supportsGameStoreHighlights = false;
+	bool supportsContainerTypes = false;
+	bool supportsAstraSingleCreatureMarks = false;
+	bool supportsAstraEchoRaidVisuals = false;
+	bool supportsAstraStoreBasePrice = false;
 	bool supportsZoneWeather = false;
 	bool supportsDllZoneWeather = false;
 	bool zoneWeatherFeatureEnabled = false;
+	std::unordered_map<uint32_t, EchoRaidVisualState> echoRaidVisualCache;
 	uint32_t dllWeatherSequence = 0;
 	bool isUsingFonticakClient() const { return isFonticakClient; }
 	bool supportsAstraCreatureIcons() const { return isAstraClient; }
