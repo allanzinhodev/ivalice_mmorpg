@@ -35,6 +35,7 @@
 #include "map_display.h"
 #include "zone_brush.h"
 #include "map_drawer.h"
+#include "isometric.h"
 #include "application.h"
 #include "border_workspace_window.h"
 #include "border_learning_window.h"
@@ -392,6 +393,7 @@ void MapCanvas::OnPaint(wxPaintEvent& event) {
 		}
 
 		options.dragging = boundbox_selection;
+		options.isometric = g_settings.getBoolean(Config::ISOMETRIC_VIEW);
 
 		const bool animate_position_indicator = drawer->GetPositionIndicatorTime() != 0;
 		const bool animate_preview = options.show_preview && zoom <= 2.0;
@@ -544,6 +546,23 @@ void MapCanvas::ScreenToMap(int screen_x, int screen_y, int* map_x, int* map_y) 
 
 	screen_x *= GetContentScaleFactor();
 	screen_y *= GetContentScaleFactor();
+
+	if (g_settings.getBoolean(Config::ISOMETRIC_VIEW)) {
+		// back to orthogonal draw space around the screen center (MapDrawer's pivot); the
+		// square [o, o + TileSize) is exactly the tile's diamond, so the division below is
+		// a pixel-exact diamond hit-test
+		int view_w, view_h;
+		static_cast<MapWindow*>(GetParent())->GetViewSize(&view_w, &view_h);
+		float x = static_cast<float>(screen_x * zoom), y = static_cast<float>(screen_y * zoom);
+		Iso::unprojectVertex(x, y, view_w * zoom / 2.0f, view_h * zoom / 2.0f);
+		*map_x = static_cast<int>(std::floor((start_x + x) / TileSize));
+		*map_y = static_cast<int>(std::floor((start_y + y) / TileSize));
+		if (floor <= GROUND_LAYER) {
+			*map_x += GROUND_LAYER - floor;
+			*map_y += GROUND_LAYER - floor;
+		}
+		return;
+	}
 
 	if (screen_x < 0) {
 		*map_x = (start_x + screen_x) / TileSize;

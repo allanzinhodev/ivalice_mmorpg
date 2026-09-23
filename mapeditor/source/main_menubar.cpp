@@ -167,6 +167,7 @@ MainMenuBar::MainMenuBar(MainFrame* frame) :
 	MAKE_ACTION(SHOW_TECHNICAL_ITEMS, wxITEM_CHECK, OnChangeViewSettings);
 	MAKE_ACTION(SHOW_WAYPOINTS, wxITEM_CHECK, OnChangeViewSettings);
 	MAKE_ACTION(SHOW_GRID, wxITEM_CHECK, OnChangeViewSettings);
+	MAKE_ACTION(ISOMETRIC_VIEW, wxITEM_CHECK, OnChangeViewSettings);
 	MAKE_ACTION(SHOW_CREATURES, wxITEM_CHECK, OnChangeViewSettings);
 	MAKE_ACTION(SHOW_SPAWNS, wxITEM_CHECK, OnChangeViewSettings);
 	MAKE_ACTION(SHOW_SPECIAL, wxITEM_CHECK, OnChangeViewSettings);
@@ -495,6 +496,7 @@ void MainMenuBar::LoadValues() {
 	CheckItem(GHOST_HIGHER_FLOORS, g_settings.getBoolean(Config::TRANSPARENT_FLOORS));
 	CheckItem(SHOW_EXTRA, !g_settings.getBoolean(Config::SHOW_EXTRA));
 	CheckItem(SHOW_GRID, g_settings.getBoolean(Config::SHOW_GRID));
+	CheckItem(ISOMETRIC_VIEW, g_settings.getBoolean(Config::ISOMETRIC_VIEW));
 	CheckItem(HIGHLIGHT_ITEMS, g_settings.getBoolean(Config::HIGHLIGHT_ITEMS));
 	CheckItem(HIGHLIGHT_LOCKED_DOORS, g_settings.getBoolean(Config::HIGHLIGHT_LOCKED_DOORS));
 	CheckItem(SHOW_CREATURES, g_settings.getBoolean(Config::SHOW_CREATURES));
@@ -2165,6 +2167,7 @@ void MainMenuBar::OnChangeViewSettings(wxCommandEvent& event) {
 	g_settings.setInteger(Config::SHOW_TECHNICAL_ITEMS, IsItemChecked(MenuBar::SHOW_TECHNICAL_ITEMS));
 	g_settings.setInteger(Config::SHOW_WAYPOINTS, IsItemChecked(MenuBar::SHOW_WAYPOINTS));
 	g_settings.setInteger(Config::SHOW_GRID, IsItemChecked(MenuBar::SHOW_GRID));
+	g_settings.setInteger(Config::ISOMETRIC_VIEW, IsItemChecked(MenuBar::ISOMETRIC_VIEW));
 	g_settings.setInteger(Config::SHOW_EXTRA, !IsItemChecked(MenuBar::SHOW_EXTRA));
 
 	g_settings.setInteger(Config::SHOW_SHADE, IsItemChecked(MenuBar::SHOW_SHADE));

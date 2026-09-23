@@ -103,6 +103,7 @@ struct DrawingOptions {
 	bool experimental_fog;
 
 	bool use_fbo_scene_cache = false;
+	bool isometric = true; // ivalice 2:1 projection (View > Isometric view)
 	int post_process_effect = 0;
 };
 
@@ -230,6 +231,7 @@ class MapDrawer {
 	int screensize_x, screensize_y;
 	int tile_size;
 	int floor;
+	float iso_pivot_x = 0.0f, iso_pivot_y = 0.0f; // screen center in draw space
 
 	static constexpr float FAR_ZOOM_THRESHOLD = 6.0f;
 	static constexpr long VIEWPORT_SETTLE_DELAY_MS = 200;
@@ -308,7 +310,10 @@ public:
 	bool isViewportInteractionActive() const;
 	void DrawBackground();
 	void DrawMap();
+	void DrawMapIsometric();
 	void DrawMapMinimapPages();
+	// orthogonal tile draw point -> isometric sprite draw point (no-op when the view is orthogonal)
+	void ProjectTile(int& x, int& y) const;
 	void DrawDraggingShadow();
 	void DrawHigherFloors();
 	void DrawSelectionBox();

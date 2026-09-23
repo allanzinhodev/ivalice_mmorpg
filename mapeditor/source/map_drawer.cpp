@@ -50,6 +50,7 @@
 #include "sprite_appearances.h"
 
 #include "creature_brush.h"
+#include "isometric.h"
 #include "house_exit_brush.h"
 #include "house_brush.h"
 #include "raw_brush.h"
@@ -287,6 +288,15 @@ void MapDrawer::SetupVars() {
 
 	medium_zoom_mode = zoom > 3.0f && zoom < FAR_ZOOM_THRESHOLD;
 	far_zoom_mode = zoom >= FAR_ZOOM_THRESHOLD;
+
+	iso_pivot_x = screensize_x * zoom / 2.0f;
+	iso_pivot_y = screensize_y * zoom / 2.0f;
+}
+
+void MapDrawer::ProjectTile(int& x, int& y) const {
+	if (options.isometric) {
+		Iso::projectTile(x, y, iso_pivot_x, iso_pivot_y, TileSize);
+	}
 }
 
 void MapDrawer::SetupGL() {
@@ -335,7 +345,8 @@ void MapDrawer::DrawScene() {
 	if (canvas->IsIngamePreview()) {
 		DrawIngamePreviewPlayer();
 	}
-	if (options.isDrawLight() && !far_zoom_mode) {
+	// ponytail: the light drawer is an orthogonal grid, so no light in the isometric view
+	if (options.isDrawLight() && !far_zoom_mode && !options.isometric) {
 		DrawLight();
 	}
 	if (!far_zoom_mode) {
@@ -462,7 +473,8 @@ bool MapDrawer::isViewportInteractionActive() const {
 }
 
 void MapDrawer::Draw() {
-	if (!options.use_fbo_scene_cache) {
+	// the FBO cache re-blits the scene translated orthogonally while scrolling; iso scrolls diagonally
+	if (!options.use_fbo_scene_cache || options.isometric) {
 		DrawScene();
 		DrawOverlays();
 		return;
@@ -560,6 +572,11 @@ void MapDrawer::DrawMap() {
 	bool show_zone_tooltips = options.isTooltips() && !far_zoom_mode;
 	if (far_zoom_mode) {
 		DrawMapMinimapPages();
+		return;
+	}
+
+	if (options.isometric) {
+		DrawMapIsometric();
 		return;
 	}
 
@@ -754,6 +771,53 @@ void MapDrawer::DrawMap() {
 	}
 }
 
+void MapDrawer::DrawMapIsometric() {
+	// grid range under the screen: the 4 corners taken back to orthogonal draw space
+	const float w = screensize_x * zoom, h = screensize_y * zoom;
+	const float corners[4][2] = { { 0.0f, 0.0f }, { w, 0.0f }, { 0.0f, h }, { w, h } };
+	float min_x = std::numeric_limits<float>::max(), min_y = min_x;
+	float max_x = std::numeric_limits<float>::lowest(), max_y = max_x;
+	for (const auto& corner : corners) {
+		float x = corner[0], y = corner[1];
+		Iso::unprojectVertex(x, y, iso_pivot_x, iso_pivot_y);
+		min_x = std::min(min_x, x);
+		min_y = std::min(min_y, y);
+		max_x = std::max(max_x, x);
+		max_y = std::max(max_y, y);
+	}
+	const int margin = 3; // tall sprites and item elevation reach over neighbouring cells
+	const int gx0 = static_cast<int>(std::floor((min_x + view_scroll_x) / TileSize)) - margin;
+	const int gy0 = static_cast<int>(std::floor((min_y + view_scroll_y) / TileSize)) - margin;
+	const int gx1 = static_cast<int>(std::floor((max_x + view_scroll_x) / TileSize)) + margin;
+	const int gy1 = static_cast<int>(std::floor((max_y + view_scroll_y) / TileSize)) + margin;
+
+	std::vector<TileLocation*> locations;
+	for (int map_z = start_z; map_z >= end_z; --map_z) {
+		// same floor offset DrawTile applies, in tiles
+		const int offset = map_z <= GROUND_LAYER ? GROUND_LAYER - map_z : floor - map_z;
+		for (int map_y = std::max(0, gy0 + offset); map_y <= gy1 + offset; ++map_y) {
+			for (int map_x = std::max(0, gx0 + offset); map_x <= gx1 + offset; ++map_x) {
+				TileLocation* location = editor.map.getTileL(map_x, map_y, map_z);
+				if (location && location->get()) {
+					locations.push_back(location);
+				}
+			}
+		}
+	}
+
+	// painter order: (x+y) back to front, lower floor first on ties; a low tile in
+	// front of a higher-floor cliff is drawn after it (same rule as the client)
+	std::stable_sort(locations.begin(), locations.end(), [](const TileLocation* a, const TileLocation* b) {
+		const int da = a->getX() + a->getY(), db = b->getX() + b->getY();
+		return da != db ? da < db : a->getZ() > b->getZ();
+	});
+
+	// ponytail: no floor shade, zone tooltips or paste preview in iso; add them here when editing needs them
+	for (TileLocation* location : locations) {
+		DrawTile(location);
+	}
+}
+
 void MapDrawer::DrawMapMinimapPages() {
 	minimap_page_cache.bindMap(&editor.map);
 	minimap_page_cache.beginVisibleFrame();
@@ -894,6 +958,27 @@ void MapDrawer::DrawGrid() {
 		lines.push_back(static_cast<float>(end_y * TileSize - view_scroll_y));
 	}
 
+	if (options.isometric) {
+		// grid lines stay lines under the linear projection: the grid becomes diamonds.
+		// Cover the screen's diamond-shaped footprint with a square grid range around the center.
+		lines.clear();
+		const int span = static_cast<int>((screensize_x + 2 * screensize_y) * zoom / TileSize) + 2;
+		const int cx = static_cast<int>(std::floor((iso_pivot_x + view_scroll_x) / TileSize));
+		const int cy = static_cast<int>(std::floor((iso_pivot_y + view_scroll_y) / TileSize));
+		const int adjust = getFloorAdjustment(floor);
+		auto push = [&](int gx0, int gy0, int gx1, int gy1) {
+			float x0 = static_cast<float>(gx0 * TileSize - view_scroll_x - adjust), y0 = static_cast<float>(gy0 * TileSize - view_scroll_y - adjust);
+			float x1 = static_cast<float>(gx1 * TileSize - view_scroll_x - adjust), y1 = static_cast<float>(gy1 * TileSize - view_scroll_y - adjust);
+			Iso::projectVertex(x0, y0, iso_pivot_x, iso_pivot_y);
+			Iso::projectVertex(x1, y1, iso_pivot_x, iso_pivot_y);
+			lines.insert(lines.end(), { x0, y0, x1, y1 });
+		};
+		for (int i = -span; i <= span; ++i) {
+			push(cx - span, cy + i, cx + span, cy + i);
+			push(cx + i, cy - span, cx + i, cy + span);
+		}
+	}
+
 	if (!lines.empty()) {
 		renderer->drawLines(lines.data(), static_cast<int>(lines.size() / 4), 255, 255, 255, 128, 1.0f);
 	}
@@ -931,6 +1016,7 @@ void MapDrawer::DrawDraggingShadow() {
 
 				int draw_x = ((pos.x * TileSize) - view_scroll_x) - offset;
 				int draw_y = ((pos.y * TileSize) - view_scroll_y) - offset;
+				ProjectTile(draw_x, draw_y);
 
 				// save performance when moving large chunks unzoomed
 				ItemVector toRender = tile->getSelectedItems(zoom > 3.0);
@@ -975,6 +1061,7 @@ void MapDrawer::DrawHigherFloors() {
 
 					int draw_x = ((map_x * TileSize) - view_scroll_x) - offset;
 					int draw_y = ((map_y * TileSize) - view_scroll_y) - offset;
+					ProjectTile(draw_x, draw_y);
 
 					// Position pos = tile->getPosition();
 
@@ -1057,6 +1144,10 @@ void MapDrawer::DrawBrush() {
 
 	Brush* brush = g_gui.GetCurrentBrush();
 
+	// sprite previews take the projected tile point; glFillQuad projects its own corners
+	auto isoX = [this](int x, int y) { ProjectTile(x, y); return x; };
+	auto isoY = [this](int x, int y) { ProjectTile(x, y); return y; };
+
 	BrushColor brushColor = COLOR_BLANK;
 	if (brush->isTerrain() || brush->isTable() || brush->isCarpet()) {
 		brushColor = COLOR_BRUSH;
@@ -1137,7 +1228,7 @@ void MapDrawer::DrawBrush() {
 							if (brush->isOptionalBorder()) {
 								glColorCheck(brush, Position(x, y, floor));
 							} else if (raw_brush) {
-								DrawRawBrush(cx, cy, raw_brush->getItemType(), 160, 160, 160, 160);
+								DrawRawBrush(isoX(cx, cy), isoY(cx, cy), raw_brush->getItemType(), 160, 160, 160, 160);
 							}
 						}
 					}
@@ -1200,7 +1291,7 @@ void MapDrawer::DrawBrush() {
 						float distance = sqrt(dx * dx + dy * dy);
 						if (distance < radii) {
 							if (brush->isRaw()) {
-								DrawRawBrush(cx, cy, raw_brush->getItemType(), 160, 160, 160, 160);
+								DrawRawBrush(isoX(cx, cy), isoY(cx, cy), raw_brush->getItemType(), 160, 160, 160, 160);
 							} else {
 								glColor(brushColor);
 								glFillQuad(cx, cy + TileSize, cx + TileSize, cy + TileSize, cx + TileSize, cy, cx, cy);
@@ -1253,9 +1344,9 @@ void MapDrawer::DrawBrush() {
 			int cx = (mouse_map_x)*TileSize - view_scroll_x - getFloorAdjustment(floor);
 			CreatureBrush* creature_brush = brush->asCreature();
 			if (creature_brush->canDraw(&editor.map, Position(mouse_map_x, mouse_map_y, floor))) {
-				BlitCreature(cx, cy, creature_brush->getType()->outfit, SOUTH, 255, 255, 255, 160);
+				BlitCreature(isoX(cx, cy), isoY(cx, cy), creature_brush->getType()->outfit, SOUTH, 255, 255, 255, 160);
 			} else {
-				BlitCreature(cx, cy, creature_brush->getType()->outfit, SOUTH, 255, 64, 64, 160);
+				BlitCreature(isoX(cx, cy), isoY(cx, cy), creature_brush->getType()->outfit, SOUTH, 255, 64, 64, 160);
 			}
 		} else if (!brush->isDoodad()) {
 			RAWBrush* raw_brush = nullptr;
@@ -1270,12 +1361,12 @@ void MapDrawer::DrawBrush() {
 					if (g_gui.GetBrushShape() == BRUSHSHAPE_SQUARE) {
 						if (x >= -g_gui.GetBrushSize() && x <= g_gui.GetBrushSize() && y >= -g_gui.GetBrushSize() && y <= g_gui.GetBrushSize()) {
 							if (brush->isRaw()) {
-								DrawRawBrush(cx, cy, raw_brush->getItemType(), 160, 160, 160, 160);
+								DrawRawBrush(isoX(cx, cy), isoY(cx, cy), raw_brush->getItemType(), 160, 160, 160, 160);
 							} else {
 								if (brush->isWaypoint()) {
 									uint8_t r, g, b;
 									getColor(brush, Position(mouse_map_x + x, mouse_map_y + y, floor), r, g, b);
-									DrawBrushIndicator(cx, cy, brush, r, g, b);
+									DrawBrushIndicator(isoX(cx, cy), isoY(cx, cy), brush, r, g, b);
 								} else {
 									if (brush->isHouseExit() || brush->isOptionalBorder()) {
 										glColorCheck(brush, Position(mouse_map_x + x, mouse_map_y + y, floor));
@@ -1291,12 +1382,12 @@ void MapDrawer::DrawBrush() {
 						double distance = sqrt(double(x * x) + double(y * y));
 						if (distance < g_gui.GetBrushSize() + 0.005) {
 							if (brush->isRaw()) {
-								DrawRawBrush(cx, cy, raw_brush->getItemType(), 160, 160, 160, 160);
+								DrawRawBrush(isoX(cx, cy), isoY(cx, cy), raw_brush->getItemType(), 160, 160, 160, 160);
 							} else {
 								if (brush->isWaypoint()) {
 									uint8_t r, g, b;
 									getColor(brush, Position(mouse_map_x + x, mouse_map_y + y, floor), r, g, b);
-									DrawBrushIndicator(cx, cy, brush, r, g, b);
+									DrawBrushIndicator(isoX(cx, cy), isoY(cx, cy), brush, r, g, b);
 								} else {
 									if (brush->isHouseExit() || brush->isOptionalBorder()) {
 										glColorCheck(brush, Position(mouse_map_x + x, mouse_map_y + y, floor));
@@ -1391,8 +1482,10 @@ void MapDrawer::BlitItem(int& draw_x, int& draw_y, const Position& pos, Item* it
 	int screenx = draw_x - spr->getDrawOffset().first;
 	int screeny = draw_y - spr->getDrawOffset().second;
 
-	// Set the newd drawing height accordingly
-	draw_x -= spr->getDrawHeight();
+	// Set the newd drawing height accordingly (straight up in the isometric view)
+	if (!options.isometric) {
+		draw_x -= spr->getDrawHeight();
+	}
 	draw_y -= spr->getDrawHeight();
 
 	int subtype = -1;
@@ -1597,6 +1690,19 @@ void MapDrawer::BlitCreature(int screenx, int screeny, const Outfit& outfit, Dir
 			return;
 		}
 
+		// ivalice isometric outfits store 2 columns (0 = North, 1 = East); West and South
+		// are those mirrored around the tile's vertical axis, exactly like the client
+		const int axis_x = screenx + TileSize / 2;
+		bool mirror = false;
+		if (options.isometric) {
+			screenx -= spr->getDrawOffset().first; // displacement is the canvas point that lands on the tile point
+			screeny -= spr->getDrawOffset().second;
+			if (spr->pattern_x == 2 && (dir == WEST || dir == SOUTH)) {
+				dir = dir == WEST ? NORTH : EAST;
+				mirror = true;
+			}
+		}
+
 		const int frame = spr->frames == 0 ? 0 : animationFrame % spr->frames;
 		std::vector<PreparedSpritePart> parts;
 		bool complete = true;
@@ -1659,7 +1765,11 @@ void MapDrawer::BlitCreature(int screenx, int screeny, const Outfit& outfit, Dir
 		}
 		for (const PreparedSpritePart& part : parts) {
 			const auto& st = part.texture;
-			glBlitTexture(part.screen_x, part.screen_y, st.texture, red, green, blue, alpha, false, st.u0, st.v0, st.u1, st.v1);
+			if (mirror) {
+				glBlitTexture(2 * axis_x - part.screen_x - TileSize, part.screen_y, st.texture, red, green, blue, alpha, false, st.u1, st.v0, st.u0, st.v1);
+			} else {
+				glBlitTexture(part.screen_x, part.screen_y, st.texture, red, green, blue, alpha, false, st.u0, st.v0, st.u1, st.v1);
+			}
 		}
 	}
 }
@@ -1715,6 +1825,14 @@ void MapDrawer::BlitCreature(int screenx, int screeny, const Creature* c, int re
 void MapDrawer::BlitSquare(int sx, int sy, int red, int green, int blue, int alpha, int size) {
 	if (size == 0) {
 		size = TileSize;
+	}
+
+	if (options.isometric) {
+		// sx, sy is the diamond's bounding box top-left
+		const float x = static_cast<float>(sx), y = static_cast<float>(sy), half = TileSize / 2.0f;
+		const float diamond[8] = { x + half, y, x + TileSize, y + half / 2, x + half, y + half, x, y + half / 2 };
+		renderer->drawPolygon(diamond, 4, uint8_t(red), uint8_t(green), uint8_t(blue), uint8_t(alpha));
+		return;
 	}
 
 	GameSprite* spr = g_items[SPRITE_ZONE].sprite;
@@ -1888,6 +2006,7 @@ void MapDrawer::DrawTile(TileLocation* location) {
 
 	int draw_x = ((map_x * TileSize) - view_scroll_x) - offset;
 	int draw_y = ((map_y * TileSize) - view_scroll_y) - offset;
+	ProjectTile(draw_x, draw_y);
 
 	uint8_t r = 255, g = 255, b = 255;
 
@@ -2463,6 +2582,16 @@ void MapDrawer::drawFilledRect(int x, int y, int w, int h, const wxColor& color)
 }
 
 void MapDrawer::glFillQuad(float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3) {
+	if (options.isometric) {
+		// grid-aligned quads (brush cursor, selections) become diamonds / parallelograms
+		float vertices[8] = { x0, y0, x1, y1, x2, y2, x3, y3 };
+		for (int i = 0; i < 8; i += 2) {
+			Iso::projectVertex(vertices[i], vertices[i + 1], iso_pivot_x, iso_pivot_y);
+		}
+		renderer->drawPolygon(vertices, 4, m_brushColor.r, m_brushColor.g, m_brushColor.b, m_brushColor.a);
+		return;
+	}
+
 	float minx = std::min({ x0, x1, x2, x3 });
 	float miny = std::min({ y0, y1, y2, y3 });
 	float maxx = std::max({ x0, x1, x2, x3 });
