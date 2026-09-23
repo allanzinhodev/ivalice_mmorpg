@@ -170,24 +170,11 @@ Point UIMap::getPositionOffset(const Point& mousePos)
 
 TilePtr UIMap::getTile(const Point& mousePos)
 {
-    Position tilePos = getPosition(mousePos);
-    if(!tilePos.isValid())
+    if (!m_mapRect.contains(mousePos))
         return nullptr;
 
-    // we must check every floor, from top to bottom to check for a clickable tile
-    TilePtr tile;
-    tilePos.coveredUp(tilePos.z - m_mapView->getCachedFirstVisibleFloor());
-    for(int i = m_mapView->getCachedFirstVisibleFloor(); i <= m_mapView->getCachedLastVisibleFloor(); i++) {
-        tile = g_map.getTile(tilePos);
-        if(tile && tile->isClickable())
-            break;
-        tilePos.coveredDown();
-    }
-
-    if(!tile || !tile->isClickable())
-        return nullptr;
-
-    return tile;
+    // every floor from top to bottom, diamond mask plus item elevation
+    return m_mapView->pickTile(mousePos - m_mapRect.topLeft(), m_mapRect.size());
 }
 
 void UIMap::resetCursorToDefault()

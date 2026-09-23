@@ -186,10 +186,11 @@ enum class MapLoadStatus : uint8_t {
 class Map
 {
 public:
-	static constexpr int32_t maxViewportX = 11; // min value: maxClientViewportX + 1
-	static constexpr int32_t maxViewportY = 11; // min value: maxClientViewportY + 1
-	static constexpr int32_t maxClientViewportX = 8;
-	static constexpr int32_t maxClientViewportY = 6;
+	static constexpr int32_t maxViewportX = 21; // min value: maxClientViewportX + 1
+	static constexpr int32_t maxViewportY = 21; // min value: maxClientViewportY + 1
+	// isometric client: the visible screen is a diamond of the grid, it needs a square window
+	static constexpr int32_t maxClientViewportX = 20;
+	static constexpr int32_t maxClientViewportY = 20;
 
 
 	uint32_t clean() const;

@@ -290,6 +290,7 @@ protected:
     ScheduledEventPtr m_walkFinishAnimEvent;
     EventPtr m_disappearEvent;
     Point m_walkOffset;
+    int m_walkElevationDelta = 0; // origin minus destination tile elevation, screen px
     Point m_walkOffsetInNextFrame;
     Otc::Direction m_lastStepDirection;
     Position m_lastStepFromPosition;

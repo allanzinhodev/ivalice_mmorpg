@@ -46,7 +46,6 @@ public:
     void drawMapForeground(const Rect& rect);
 
 private:
-    void drawFloor(short floor, const Position& cameraPosition, const TilePtr& crosshairTile = nullptr);
     void drawTileTexts(const Rect& rect, const Rect& srcRect);
     void drawTileWidget(const Rect& rect, const Rect& srcRect);
     void updateGeometry(const Size& visibleDimension, const Size& optimizedSize);
@@ -130,6 +129,9 @@ public:
 
     Point getPositionOffset(const Point& point, const Size& mapSize);
 
+    // front-most clickable tile under the point, across visible floors and item elevation
+    TilePtr pickTile(const Point& point, const Size& mapSize);
+
     MapViewPtr asMapView() { return static_self_cast<MapView>(); }
 
 private:
@@ -137,6 +139,7 @@ private:
     int calcFirstVisibleFloor(bool forFading = false);
     int calcLastVisibleFloor();
     Point transformPositionTo2D(const Position& position, const Position& relativePosition);
+    Point toFramebuffer(const Point& point, const Size& mapSize);
 
     stdext::timer m_mapRenderTimer;
 
@@ -153,6 +156,7 @@ private:
     Point m_virtualCenterOffset;
     Point m_visibleCenterOffset;
     Point m_moveOffset;
+    Point m_isoOrigin; // framebuffer pixel of the bbox top-left of draw cell (0,0)
     Position m_customCameraPosition;
     Position m_lastCameraPosition;
     stdext::boolean<true> m_mustUpdateVisibleTilesCache;
@@ -174,6 +178,7 @@ private:
 
     stdext::boolean<true> m_follow;
     std::vector<std::vector<TilePtr>> m_cachedVisibleTiles;
+    std::vector<TilePtr> m_cachedSortedTiles; // all visible floors, back to front by (x+y, z)
     CreaturePtr m_followingCreature;
     Otc::DrawFlags m_drawFlags;
     bool m_drawLight = false;

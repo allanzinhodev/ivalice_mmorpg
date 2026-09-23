@@ -25,6 +25,7 @@
 #include "map.h"
 #include "game.h"
 #include "tile.h"
+#include "isometric.h"
 #include <framework/core/eventdispatcher.h>
 #include <framework/graphics/graphics.h>
 #include <framework/util/extras.h>
@@ -96,6 +97,10 @@ bool LocalPlayer::canWalk(Otc::Direction direction, bool ignoreLock)
     if (m_speed == 0)
         return false;
 
+    // last step still waiting for the server
+    if (isAwaitingStep())
+        return false;
+
     // last walk is not done yet; allow a tiny tail tolerance to avoid input repeat lag
     if (m_walking && (m_walkTimer.ticksElapsed() < std::max<int>(getStepDuration() - WalkTailToleranceTicks, 0)) && !isAutoWalking() && !isServerWalking())
         return false;
@@ -159,6 +164,9 @@ void LocalPlayer::walk(const Position& oldPos, const Position& newPos)
             m_serverWalkEndEvent->cancel();
 
         Creature::walk(oldPos, newPos);
+    } else if (m_awaitingStepExpiration != 0) { // the step we asked for, confirmed by the server
+        m_awaitingStepExpiration = 0;
+        Creature::walk(oldPos, newPos);
     } else { // no prewalk was going on, this must be an server side automated walk
         if (g_extras.debugWalking) {
             g_logger.info(stdext::format("[%i] LocalPlayer::walk server walk", (int)g_clock.millis()));
@@ -199,6 +207,7 @@ void LocalPlayer::cancelNewWalk(Otc::Direction dir)
 
     bool clearedPrewalk = !m_preWalking.empty();
 
+    m_awaitingStepExpiration = 0;
     m_preWalking.clear();
     g_map.requestVisibleTilesCacheUpdate();
 
@@ -376,6 +385,7 @@ void LocalPlayer::updateWalkOffset(uint8 totalPixelsWalked, bool inNextFrame)
             walkOffset.x = totalPixelsWalked;
         else if(m_walkDirection == Otc::West || m_walkDirection == Otc::NorthWest || m_walkDirection == Otc::SouthWest)
             walkOffset.x = -totalPixelsWalked;
+        walkOffset = Iso::fromGridPx(walkOffset);
     } else
         Creature::updateWalkOffset(totalPixelsWalked, inNextFrame);
 }
@@ -433,6 +443,10 @@ void LocalPlayer::onAppear()
 void LocalPlayer::onPositionChange(const Position& newPos, const Position& oldPos)
 {
     Creature::onPositionChange(newPos, oldPos);
+
+    // a teleport or floor change answers the step too (a plain step is handled in walk())
+    if (oldPos.z != newPos.z || !oldPos.isInRange(newPos, 1, 1))
+        m_awaitingStepExpiration = 0;
 
     if(newPos == m_autoWalkDestination)
         stopAutoWalk();

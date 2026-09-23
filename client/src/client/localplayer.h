@@ -43,6 +43,9 @@ public:
     void draw(const Point& dest, bool animate = true, LightView* lightView = nullptr) override;
 
     void unlockWalk() { m_walkLockExpiration = 0; }
+    // a step was sent; no new step and no animation until the server confirms or cancels it
+    void awaitStep() { m_awaitingStepExpiration = g_clock.millis() + 1000; }
+    bool isAwaitingStep() { return m_awaitingStepExpiration != 0 && g_clock.millis() < m_awaitingStepExpiration; }
     void lockWalk(int millis = 200);
     void stopAutoWalk();
     bool autoWalk(Position destination, bool retry = false, int pathFindFlags = 0);
@@ -208,6 +211,7 @@ private:
     ScheduledEventPtr m_serverWalkEndEvent;
     ScheduledEventPtr m_autoWalkContinueEvent;
     ticks_t m_walkLockExpiration;
+    ticks_t m_awaitingStepExpiration = 0;
     ticks_t m_teleportWalkDelay;
 
     // walking and pre walking

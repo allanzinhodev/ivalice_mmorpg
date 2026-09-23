@@ -33,6 +33,7 @@
 #include "game.h"
 #include "gameconfig.h"
 #include "spritemanager.h"
+#include "isometric.h"
 
 #include <framework/graphics/graphics.h>
 #include <framework/graphics/image.h>
@@ -125,36 +126,47 @@ void MapView::drawMapBackground(const Rect& rect, const TilePtr& crosshairTile) 
     const float renderScale = m_antiAliasingMode == AntialiasingSmoothRetro ? 2.f : 1.f;
     g_drawQueue->setFrameBuffer(rect, m_optimizedSize, srcRect, renderScale);
 
-    if (m_drawLight) {
-        Light ambientLight;
-        if (cameraPosition.z <= g_gameConfig.getMapSeaFloor())
-            ambientLight = g_map.getLight();
-        if (!m_lightTexture || m_lightTexture->getSize() != m_drawDimension)
-            m_lightTexture = std::make_shared<Texture>(m_drawDimension, false, true);
-        m_lightView = std::make_unique<LightView>(m_lightTexture, m_drawDimension, rect, srcRect, ambientLight.color,
-                                                  std::max<int>(m_minimumAmbientLight * 255, ambientLight.intensity));
-    }
+    // ponytail: no LightView in isometric; it is an orthogonal per-tile grid.
+    // Upgrade path: draw the light texture through the iso affine transform.
 
     int firstFloor = m_floorFading > 0 ? m_cachedFirstFadingFloor : m_cachedFirstVisibleFloor;
+    std::vector<float> fading(g_gameConfig.getMapMaxZ() + 1, 0.f);
     for (int z = m_cachedLastVisibleFloor; z >= firstFloor; --z) {
-        float fading = 1.0;
+        fading[z] = 1.f;
         if (m_floorFading > 0) {
-            fading = stdext::clamp<float>((float)m_fadingFloorTimers[z].elapsed_millis() / (float)m_floorFading, 0.f, 1.f);
+            fading[z] = stdext::clamp<float>((float)m_fadingFloorTimers[z].elapsed_millis() / (float)m_floorFading, 0.f, 1.f);
             if (z < m_cachedFirstVisibleFloor)
-                fading = 1.0 - fading;
-            if (fading == 0) break;
+                fading[z] = 1.f - fading[z];
         }
+    }
 
-        if (g_game.getFeature(Otc::GameDrawFloorShadow)) {
-            if (cameraPosition.z >= g_gameConfig.getMapUndergroundFloor() && cameraPosition.z == z) {
-                g_drawQueue->addFilledRect(srcRect, m_floorShadow);
-            }
-        }
-        size_t floorStart = g_drawQueue->size();
-        drawFloor(z, cameraPosition, crosshairTile);
+    // all visible floors in one back-to-front pass, so a low tile in front of a
+    // higher-floor cliff is drawn after it; per-tile order stays ground..top
+    const int s = g_sprites.spriteSize();
+    for (const TilePtr& tile : m_cachedSortedTiles) {
+        const int z = tile->getPosition().z;
+        if (fading[z] <= 0.f)
+            continue;
 
-        if (fading < 0.99)
-            g_drawQueue->setOpacity(floorStart, fading);
+        const size_t start = g_drawQueue->size();
+        const Point tileDrawPos = transformPositionTo2D(tile->getPosition(), cameraPosition);
+        tile->drawGround(tileDrawPos, nullptr);
+        tile->drawBottom(tileDrawPos, nullptr);
+        tile->drawLootHighlights(tileDrawPos, nullptr);
+        if (m_crosshair && tile == crosshairTile)
+            g_drawQueue->addTexturedRect(Rect(tileDrawPos, Size(s, s / 2)), m_crosshair, Rect(0, 0, m_crosshair->getSize()));
+        tile->drawCreatures(tileDrawPos, nullptr);
+        tile->drawTop(tileDrawPos, nullptr);
+
+        if (fading[z] < 0.99f)
+            g_drawQueue->setOpacity(start, fading[z]);
+    }
+
+    for (int z = m_cachedLastVisibleFloor; z >= firstFloor; --z) {
+        if (fading[z] <= 0.f)
+            continue;
+        for (const MissilePtr& missile : g_map.getFloorMissiles(z))
+            missile->draw(transformPositionTo2D(missile->getPosition(), cameraPosition), true, nullptr);
     }
 
     if(!m_shader.empty() && isFollowingCreature()) {
@@ -179,78 +191,6 @@ void MapView::setShader(const std::string& shader)
         m_shaderPosition = getCameraPosition();
 }
 
-void MapView::drawFloor(short floor, const Position& cameraPosition, const TilePtr& crosshairTile)
-{
-    if (floor < 0 || floor > g_gameConfig.getMapMaxZ())
-        return;
-
-    auto& tiles = m_cachedVisibleTiles[floor];
-    size_t lightFloorStart = m_lightView ? m_lightView->size() : 0;
-
-    // light
-    if (m_lightView) {
-        for (auto& tile : tiles) {
-            Point tileDrawPos = transformPositionTo2D(tile->getPosition(), cameraPosition);
-            ItemPtr ground = tile->getGround();
-            if (ground && ground->isGround() && !ground->isTranslucent()) {
-                m_lightView->setFieldBrightness(tileDrawPos, lightFloorStart, 0);
-            }
-        }
-    }
-
-    if (g_game.getFeature(Otc::GameMapDrawGroundFirst)) {
-        // ground
-        for (auto& tile : tiles) {
-            Point tileDrawPos = transformPositionTo2D(tile->getPosition(), cameraPosition);
-            tile->drawGround(tileDrawPos, m_lightView.get());
-        }
-        // bottom, creatures, top
-        for (auto& tile : tiles) {
-            Point tileDrawPos = transformPositionTo2D(tile->getPosition(), cameraPosition);
-
-            tile->drawBottom(tileDrawPos, m_lightView.get());
-            tile->drawLootHighlights(tileDrawPos, m_lightView.get());
-
-            if (m_crosshair && tile == crosshairTile) {
-                g_drawQueue->addTexturedRect(Rect(tileDrawPos, tileDrawPos + g_sprites.spriteSize() - 1),
-                                             m_crosshair, Rect(0, 0, m_crosshair->getSize()));
-            }
-
-            tile->drawCreatures(tileDrawPos, m_lightView.get());
-            tile->drawTop(tileDrawPos, m_lightView.get());
-        }
-    } else {
-        // ground, bottom, creatures, top
-        for (auto& tile : tiles) {
-            Point tileDrawPos = transformPositionTo2D(tile->getPosition(), cameraPosition);
-
-            if (m_lightView) {
-                ItemPtr ground = tile->getGround();
-                if (ground && ground->isGround() && !ground->isTranslucent()) {
-                    m_lightView->setFieldBrightness(tileDrawPos, lightFloorStart, 0);
-                }
-            }
-
-            tile->drawGround(tileDrawPos, m_lightView.get());
-
-            tile->drawBottom(tileDrawPos, m_lightView.get());
-            tile->drawLootHighlights(tileDrawPos, m_lightView.get());
-
-            if (m_crosshair && tile == crosshairTile) {
-                g_drawQueue->addTexturedRect(Rect(tileDrawPos, tileDrawPos + g_sprites.spriteSize() - 1),
-                                             m_crosshair, Rect(0, 0, m_crosshair->getSize()));
-            }
-
-            tile->drawCreatures(tileDrawPos, m_lightView.get());
-            tile->drawTop(tileDrawPos, m_lightView.get());
-        }
-    }
-
-    for (const MissilePtr& missile : g_map.getFloorMissiles(floor)) {
-        missile->draw(transformPositionTo2D(missile->getPosition(), cameraPosition), true, m_lightView.get());
-    }
-}
-
 
 void MapView::drawMapForeground(const Rect& rect)
 {
@@ -266,7 +206,8 @@ void MapView::drawMapForeground(const Rect& rect)
 
     // creatures
     std::vector<std::pair<CreaturePtr, Point>> creatures;
-    for (const CreaturePtr& creature : g_map.getSpectatorsInRangeEx(cameraPosition, false, m_visibleDimension.width() / 2, m_visibleDimension.width() / 2 + 1, m_visibleDimension.height() / 2, m_visibleDimension.height() / 2 + 1)) {
+    const int range = m_virtualCenterOffset.x; // the visible screen is a diamond of this grid radius
+    for (const CreaturePtr& creature : g_map.getSpectatorsInRangeEx(cameraPosition, false, range, range, range, range)) {
         if (!creature->canBeSeen())
             continue;
 
@@ -419,16 +360,34 @@ void MapView::updateVisibleTilesCache()
             }
         }
     }
+
+    // depth sort for the isometric painter: (x+y) back to front, lower floor first on ties
+    m_cachedSortedTiles.clear();
+    for (int iz = m_cachedLastVisibleFloor; iz >= 0; --iz)
+        m_cachedSortedTiles.insert(m_cachedSortedTiles.end(), m_cachedVisibleTiles[iz].begin(), m_cachedVisibleTiles[iz].end());
+    std::stable_sort(m_cachedSortedTiles.begin(), m_cachedSortedTiles.end(), [](const TilePtr& a, const TilePtr& b) {
+        const Position& pa = a->getPosition();
+        const Position& pb = b->getPosition();
+        const int da = pa.x + pa.y, db = pb.x + pb.y;
+        return da != db ? da < db : pa.z > pb.z;
+    });
 }
 
 void MapView::updateGeometry(const Size& visibleDimension, const Size& optimizedSize)
 {
     m_multifloor = true;
     m_visibleDimension = visibleDimension;
-    m_drawDimension = visibleDimension + Size(3, 3);
-    m_virtualCenterOffset = (m_drawDimension / 2 - Size(1, 1)).toPoint();
+
+    // visible area stays w*s x h*s pixels; the grid square around the camera that
+    // covers it in 2:1 iso has radius (w + 2h) / 2, plus a margin for tall sprites
+    const int s = g_sprites.spriteSize();
+    const int radius = (visibleDimension.width() + 2 * visibleDimension.height() + 1) / 2 + 2;
+    const int n = 2 * radius + 1;
+    m_drawDimension = Size(n, n);
+    m_virtualCenterOffset = Point(radius, radius);
     m_visibleCenterOffset = m_virtualCenterOffset;
-    m_optimizedSize = m_drawDimension * g_sprites.spriteSize();
+    m_isoOrigin = Point((n - 1) * s / 2, 2 * s);
+    m_optimizedSize = Size(n * s, n * s / 2 + 3 * s);
     requestVisibleTilesCacheUpdate();
 }
 
@@ -499,19 +458,11 @@ Position MapView::getPosition(const Point& point, const Size& mapSize)
     if(!cameraPosition.isValid())
         return Position();
 
-    Rect srcRect = calcFramebufferSource(mapSize);
-    float sh = srcRect.width() / (float)mapSize.width();
-    float sv = srcRect.height() / (float)mapSize.height();
-
-    Point framebufferPos = Point(point.x * sh, point.y * sv);
-    Point realPos = (framebufferPos + srcRect.topLeft());
-    Point centerOffset = realPos / g_sprites.spriteSize();
-
-    Point tilePos2D = getVisibleCenterOffset() - m_drawDimension.toPoint() + centerOffset + Point(2,2);
-    if(tilePos2D.x + cameraPosition.x < 0 && tilePos2D.y + cameraPosition.y < 0)
+    const Point cell = Iso::screenToCell(toFramebuffer(point, mapSize) - m_isoOrigin, g_sprites.spriteSize()) - m_virtualCenterOffset;
+    if(cell.x + cameraPosition.x < 0 || cell.y + cameraPosition.y < 0)
         return Position();
 
-    Position position = Position(tilePos2D.x, tilePos2D.y, 0) + cameraPosition;
+    Position position = Position(cell.x, cell.y, 0) + cameraPosition;
 
     if(!position.isValid())
         return Position();
@@ -522,18 +473,50 @@ Position MapView::getPosition(const Point& point, const Size& mapSize)
 Point MapView::getPositionOffset(const Point& point, const Size& mapSize)
 {
     Position cameraPosition = getCameraPosition();
+    Position position = getPosition(point, mapSize);
 
     // if we have no camera, its impossible to get the tile
-    if (!cameraPosition.isValid())
+    if (!cameraPosition.isValid() || !position.isValid())
         return Point(0, 0);
 
+    // pixel offset from the tile draw point (diamond bbox top-left), as creature hit-tests expect
+    return toFramebuffer(point, mapSize) - transformPositionTo2D(position, cameraPosition);
+}
+
+TilePtr MapView::pickTile(const Point& point, const Size& mapSize)
+{
+    Position cameraPosition = getCameraPosition();
+    if (!cameraPosition.isValid())
+        return nullptr;
+
+    const int s = g_sprites.spriteSize();
+    const Point p = toFramebuffer(point, mapSize) - m_isoOrigin;
+    const Point cell = Iso::screenToCell(p, s);
+
+    // front neighbours first: item elevation lifts their diamond over the raw cell
+    static const Point candidates[] = { Point(1, 1), Point(1, 0), Point(0, 1), Point(0, 0) };
+    for (int z = m_cachedFirstVisibleFloor; z <= m_cachedLastVisibleFloor; ++z) {
+        for (const Point& d : candidates) {
+            const Point c = cell + d;
+            Position pos = cameraPosition.translated(c.x - m_virtualCenterOffset.x, c.y - m_virtualCenterOffset.y);
+            pos.coveredUp(cameraPosition.z - z);
+            const TilePtr& tile = g_map.getTile(pos);
+            if (!tile || !tile->isClickable())
+                continue;
+            const int elevation = tile->getDrawElevation() * g_sprites.getOffsetFactor();
+            if (d == Point(0, 0) || (elevation > 0 && Iso::insideDiamond(p + Point(0, elevation), c, s)))
+                return tile;
+        }
+    }
+    return nullptr;
+}
+
+Point MapView::toFramebuffer(const Point& point, const Size& mapSize)
+{
     Rect srcRect = calcFramebufferSource(mapSize);
     float sh = srcRect.width() / (float)mapSize.width();
     float sv = srcRect.height() / (float)mapSize.height();
-
-    Point framebufferPos = Point(point.x * sh, point.y * sv);
-    Point realPos = (framebufferPos + srcRect.topLeft());
-    return Point(realPos.x % g_sprites.spriteSize(), realPos.y % g_sprites.spriteSize());
+    return Point(point.x * sh, point.y * sv) + srcRect.topLeft();
 }
 
 void MapView::move(int x, int y)
@@ -562,13 +545,16 @@ void MapView::move(int x, int y)
 
 Rect MapView::calcFramebufferSource(const Size& destSize, bool inNextFrame)
 {
-    float scaleFactor = g_sprites.spriteSize()/(float)g_sprites.spriteSize();
-    Point drawOffset = ((m_drawDimension - m_visibleDimension - Size(1,1)).toPoint()/2) * g_sprites.spriteSize();
+    const int s = g_sprites.spriteSize();
+    Size srcVisible = m_visibleDimension * s;
+
+    // center the visible rect on the camera cell's diamond center; the walk offset is already screen space
+    Point cameraCenter = m_isoOrigin + Iso::delta(m_virtualCenterOffset.x, m_virtualCenterOffset.y, s) + Point(s / 2, s / 4);
+    Point drawOffset = cameraCenter - Point(srcVisible.width() / 2, srcVisible.height() / 2);
     if(isFollowingCreature())
-        drawOffset += m_followingCreature->getWalkOffset(inNextFrame) * scaleFactor;
+        drawOffset += m_followingCreature->getWalkOffset(inNextFrame);
 
     Size srcSize = destSize;
-    Size srcVisible = m_visibleDimension * g_sprites.spriteSize();
     srcSize.scale(srcVisible, Fw::KeepAspectRatio);
     drawOffset.x += (srcVisible.width() - srcSize.width()) / 2;
     drawOffset.y += (srcVisible.height() - srcSize.height()) / 2;
@@ -662,8 +648,10 @@ int MapView::calcLastVisibleFloor()
 }
 
 Point MapView::transformPositionTo2D(const Position& position, const Position& relativePosition) {
-    return Point((m_virtualCenterOffset.x + (position.x - relativePosition.x) - (relativePosition.z - position.z)) * g_sprites.spriteSize(),
-        (m_virtualCenterOffset.y + (position.y - relativePosition.y) - (relativePosition.z - position.z)) * g_sprites.spriteSize());
+    // the (-dz,-dz) floor shift of Tibia projects to exactly s/2 pixels up per floor
+    const int dz = relativePosition.z - position.z;
+    return m_isoOrigin + Iso::delta(m_virtualCenterOffset.x + (position.x - relativePosition.x) - dz,
+                                    m_virtualCenterOffset.y + (position.y - relativePosition.y) - dz, g_sprites.spriteSize());
 }
 
 

@@ -49,6 +49,27 @@ Outfit::Outfit()
 
 void Outfit::draw(Point dest, Otc::Direction direction, uint walkAnimationPhase, bool animate, LightView* lightView, bool ui)
 {
+    // isometric outfits store 2 columns: 0 = North, 1 = East.
+    // West is North mirrored and South is East mirrored, around the tile's vertical axis.
+    const auto type = m_category == ThingCategoryCreature ? g_things.rawGetThingType(m_id, ThingCategoryCreature) : nullptr;
+    if (!type || type->getNumPatternX() != 2)
+        return drawPatterns(dest, direction, walkAnimationPhase, animate, lightView, ui);
+
+    if (direction == Otc::NorthEast || direction == Otc::SouthEast)
+        direction = Otc::East;
+    else if (direction == Otc::NorthWest || direction == Otc::SouthWest)
+        direction = Otc::West;
+
+    const bool mirror = direction == Otc::West || direction == Otc::South;
+    const size_t start = g_drawQueue->size();
+    drawPatterns(dest, direction == Otc::West ? Otc::North : direction == Otc::South ? Otc::East : direction,
+                 walkAnimationPhase, animate, lightView, ui);
+    if (mirror)
+        g_drawQueue->setFlip(start, dest + Point(g_sprites.spriteSize() / 2, g_sprites.spriteSize() / 2), 1);
+}
+
+void Outfit::drawPatterns(Point dest, Otc::Direction direction, uint walkAnimationPhase, bool animate, LightView* lightView, bool ui)
+{
     // direction correction
     if (m_category != ThingCategoryCreature)
         direction = Otc::North;
@@ -84,8 +105,8 @@ void Outfit::draw(Point dest, Otc::Direction direction, uint walkAnimationPhase,
             }
         }
         offset = tick <= floatingTicks / 2 ? tick * (maxoffset / (floatingTicks / 2)) : (2 * maxoffset) - tick * (maxoffset / (floatingTicks / 2));
-        dest -= Point(offset, offset) * g_sprites.getOffsetFactor();
-        wingDest -= Point(offset, offset) * g_sprites.getOffsetFactor();
+        dest -= Point(0, offset) * g_sprites.getOffsetFactor(); // float straight up
+        wingDest -= Point(0, offset) * g_sprites.getOffsetFactor();
     };
 
     if (animate && m_category == ThingCategoryCreature) {
@@ -458,7 +479,7 @@ bool DrawQueueItemOutfit::cache()
     if (!g_drawCache.hasSpace(6))
         return false;
 
-    g_drawCache.addTexturedRect(m_dest, Rect(atlasPos, m_src.size()), m_color);
+    g_drawCache.addTexturedRect(m_dest, Rect(atlasPos, m_src.size()), m_color, m_flipDirection);
     return true;
 }
 
@@ -476,7 +497,7 @@ void DrawQueueItemOutfit::draw()
     g_painter->setDrawOutfitLayersProgram();
     g_painter->setMatrixColor(mat4);
     g_painter->setOffset(m_offset);
-    g_painter->drawTexturedRect(m_dest, m_texture, m_src);
+    g_painter->drawTexturedRect(m_dest, m_texture, m_src, m_flipDirection);
     g_painter->resetShaderProgram();
 }
 

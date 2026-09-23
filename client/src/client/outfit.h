@@ -58,6 +58,11 @@ public:
     void setCenter(bool value) { m_center = value; }
 
     void resetClothes();
+
+private:
+    void drawPatterns(Point dest, Otc::Direction direction, uint walkAnimationPhase, bool animate, LightView* lightView, bool ui);
+
+public:
     void resetShader() { m_shader = ""; }
 
     int getId() const { return m_id; }
