@@ -38,6 +38,7 @@
 #include <framework/core/graphicalapplication.h>
 
 #include <framework/graphics/paintershaderprogram.h>
+#include <framework/graphics/shadermanager.h>
 #include <framework/graphics/texturemanager.h>
 #include <framework/graphics/framebuffermanager.h>
 #include "spritemanager.h"
@@ -55,6 +56,8 @@ namespace
 {
 std::unordered_map<std::string, TexturePtr> creatureIconTextureCache;
 std::unordered_set<std::string> missingCreatureIconTextureCache;
+constexpr const char* ECHO_WARDEN_NAME_SHADER = "text_echo_warden";
+constexpr const char* ECHO_EMPOWERED_NAME_SHADER = "text_echo_empowered";
 
 std::string getCreatureIconPath(uint8 iconId, uint8 category)
 {
@@ -138,9 +141,7 @@ void Creature::draw(const Point& dest, bool animate, LightView* lightView)
 
     const int sprSize = g_sprites.spriteSize();
     Point jumpOffset = Point(m_jumpOffset.x, m_jumpOffset.y);
-    // Centro da celula: no losango fica TILE_HALF_H abaixo do vertice
-    // superior, e nao (sprSize/2, sprSize/2) como na grade quadrada.
-    Point creatureCenter = dest - jumpOffset + m_walkOffset - getDisplacement() + Point(0, Otc::TILE_HALF_H);
+    Point creatureCenter = dest - jumpOffset + m_walkOffset - getDisplacement() + Point(sprSize / 2, sprSize / 2);
     drawBottomWidgets(creatureCenter, m_walking ? m_walkDirection : m_direction);
 
     Point animationOffset = animate ? m_walkOffset : Point(0, 0);
@@ -155,17 +156,6 @@ void Creature::draw(const Point& dest, bool animate, LightView* lightView)
 
     if (m_outfit.getCategory() != ThingCategoryCreature)
         animationOffset -= getDisplacement();
-
-    /*
-     * Caminhando sobre agua: a outfit desenha com zPattern 2.
-     *
-     * Le do tile de PREWALKING, nao do atual: durante o passo a criatura
-     * ainda pertence ao tile de origem, mas visualmente ja esta indo para o
-     * destino. Usar o atual faria a troca acontecer um tile tarde demais --
-     * o personagem entraria na agua ainda "seco" e sairia dela molhado.
-     */
-    const TilePtr& standingTile = g_map.getTile(getPrewalkingPosition());
-    m_outfit.setOnWater(standingTile && standingTile->isWater());
 
     size_t drawQueueSize = g_drawQueue->size();
     m_outfit.draw(dest - jumpOffset + animationOffset, m_walking ? m_walkDirection : m_direction, m_walkAnimationPhase, true, lightView);
@@ -329,7 +319,10 @@ void Creature::drawInformation(const Point& point, bool useGray, const Rect& par
     }
 
     if (drawFlags & Otc::DrawNames) {
-        m_nameCache.draw(textRect, fillColor);
+        if (useGray)
+            m_nameCache.draw(textRect, fillColor);
+        else
+            m_nameCache.draw(textRect, fillColor, m_nameShader);
 
         if (m_titleCache.hasText()) {
             Size titleSize = m_titleCache.getTextSize();
@@ -547,6 +540,7 @@ void Creature::onDisappear()
     m_disappearEvent = g_dispatcher.addEvent([self] {
         self->m_removed = true;
         self->stopWalk();
+		self->setEchoRaidVisualState(-1);
 
         self->callLuaField("onDisappear");
         self->m_shieldBlink = false;
@@ -623,56 +617,33 @@ void Creature::updateWalkOffset(uint8 totalPixelsWalked, bool inNextFrame)
 {
     Point& walkOffset = inNextFrame ? m_walkOffsetInNextFrame : m_walkOffset;
     walkOffset = Point(0, 0);
-
-    // Direcao do passo em coordenadas de TILE.
-    int dx = 0, dy = 0;
     if (m_walkDirection == Otc::North || m_walkDirection == Otc::NorthEast || m_walkDirection == Otc::NorthWest)
-        dy = -1;
+        walkOffset.y = g_sprites.spriteSize() - totalPixelsWalked;
     else if (m_walkDirection == Otc::South || m_walkDirection == Otc::SouthEast || m_walkDirection == Otc::SouthWest)
-        dy = 1;
+        walkOffset.y = totalPixelsWalked - g_sprites.spriteSize();
 
     if (m_walkDirection == Otc::East || m_walkDirection == Otc::NorthEast || m_walkDirection == Otc::SouthEast)
-        dx = 1;
+        walkOffset.x = totalPixelsWalked - g_sprites.spriteSize();
     else if (m_walkDirection == Otc::West || m_walkDirection == Otc::NorthWest || m_walkDirection == Otc::SouthWest)
-        dx = -1;
-
-    // Projeta o delta para o espaco diamante (mesma formula de
-    // MapView::transformPositionTo2D). Um passo em +x vale (+16,+8) na tela,
-    // e nao 32px num eixo so como na grade ortogonal.
-    const int stepX = (dx - dy) * Otc::TILE_HALF_W;
-    const int stepY = (dx + dy) * Otc::TILE_HALF_H;
-
-    // Progresso do passo como FRACAO normalizada (0..1). O contador original
-    // media pixels com spriteSize() como total, o que nao serve aqui: no
-    // losango o comprimento em px de um passo depende da direcao (a diagonal
-    // e mais longa que a cardinal), e isso faria a velocidade parecer
-    // irregular.
-    const float progress = std::min<float>(totalPixelsWalked / static_cast<float>(g_sprites.spriteSize()), 1.0f);
-
-    // O offset e o quanto FALTA para chegar (por isso 1 - progress): a
-    // criatura e desenhada a partir do tile de destino.
-    const float remaining = 1.0f - progress;
-    walkOffset = Point(static_cast<int>(-stepX * remaining),
-                       static_cast<int>(-stepY * remaining));
+        walkOffset.x = g_sprites.spriteSize() - totalPixelsWalked;
 }
 
 void Creature::updateWalkingTile()
 {
-    // Determina em qual tile a criatura e desenhada durante o passo.
-    //
-    // O original testava o canto inferior-direito contra um grid 3x3 de
-    // RETANGULOS de spriteSize(). Com celulas losango isso troca de tile na
-    // hora errada -- a criatura pisca na frente/atras de obstaculos --,
-    // entao invertemos a projecao do walk offset para descobrir o
-    // deslocamento em tiles. Mesma formula de MapView::getPosition.
+    // determine new walking tile
     TilePtr newWalkingTile;
-    const float fx = m_walkOffset.x / static_cast<float>(Otc::TILE_HALF_W);
-    const float fy = m_walkOffset.y / static_cast<float>(Otc::TILE_HALF_H);
-    const int xi = static_cast<int>(std::floor((fx + fy) / 2.0f + 0.5f));
-    const int yi = static_cast<int>(std::floor((fy - fx) / 2.0f + 0.5f));
+    Rect virtualCreatureRect(g_sprites.spriteSize() + (m_walkOffset.x - getDisplacementX()),
+        g_sprites.spriteSize() + (m_walkOffset.y - getDisplacementY()),
+        g_sprites.spriteSize(), g_sprites.spriteSize());
+    for (int xi = -1; xi <= 1 && !newWalkingTile; ++xi) {
+        for (int yi = -1; yi <= 1 && !newWalkingTile; ++yi) {
+            Rect virtualTileRect((xi + 1) * g_sprites.spriteSize(), (yi + 1) * g_sprites.spriteSize(), g_sprites.spriteSize(), g_sprites.spriteSize());
 
-    if (xi >= -1 && xi <= 1 && yi >= -1 && yi <= 1) {
-        newWalkingTile = g_map.getOrCreateTile(getPrewalkingPosition().translated(xi, yi, 0));
+            // only render creatures where bottom right is inside tile rect
+            if (virtualTileRect.contains(virtualCreatureRect.bottomRight())) {
+                newWalkingTile = g_map.getOrCreateTile(getPrewalkingPosition().translated(xi, yi, 0));
+            }
+        }
     }
 
     if (newWalkingTile != m_walkingTile) {
@@ -766,6 +737,36 @@ void Creature::setName(const std::string& name)
 {
     m_nameCache.setText(name);
     m_name = name;
+}
+
+void Creature::setId(uint32 id)
+{
+    if (m_id != id)
+        setEchoRaidVisualState(-1);
+    m_id = id;
+}
+
+void Creature::setEchoRaidVisualState(int8 state)
+{
+    EchoRaidVisualState nextState;
+    if (state == static_cast<int8>(EchoRaidVisualState::None))
+        nextState = EchoRaidVisualState::None;
+    else if (state == static_cast<int8>(EchoRaidVisualState::Warden))
+        nextState = EchoRaidVisualState::Warden;
+    else if (state == static_cast<int8>(EchoRaidVisualState::Empowered))
+        nextState = EchoRaidVisualState::Empowered;
+    else
+        return;
+
+    if (m_echoRaidVisualState == nextState)
+        return;
+    m_echoRaidVisualState = nextState;
+    if (nextState == EchoRaidVisualState::Warden)
+        m_nameShader = g_shaders.getShader(ECHO_WARDEN_NAME_SHADER);
+    else if (nextState == EchoRaidVisualState::Empowered)
+        m_nameShader = g_shaders.getShader(ECHO_EMPOWERED_NAME_SHADER);
+    else
+        m_nameShader.reset();
 }
 
 void Creature::setHealthPercent(uint8 healthPercent)
@@ -1020,34 +1021,17 @@ void Creature::cancelShieldBlinkEvent()
     }
 }
 
-/*
- * O deslocamento por altura e SO EM Y, e em pixels absolutos.
- *
- * O original fazia `Point(1,1) * elevation * getOffsetFactor()`, o que tem
- * dois erros para o isometrico:
- *
- *   - Point(1,1) move tambem em X. Altura e vertical por definicao; mover em
- *     X inclina a coluna de celulas empilhadas.
- *   - getOffsetFactor() e spriteSize()/32 (spritemanager.h:56). Com sprite de
- *     32 vale 1 e some; com 8 viraria 0.25 e a elevacao encolheria 4x sem
- *     nenhum aviso. Como a elevacao ja esta em pixels de tela, escalar por
- *     tamanho de sprite nao tem o que significar.
- *
- * Esta e a camada do personagem: aqui o deslocamento VALE, e e ele que
- * centraliza a criatura sobre a celula alta. O terreno (camadas 1 e 3) e
- * ilustrativo e nao se move -- ver o comentario em Tile::drawGround.
- */
 Point Creature::getDrawOffset()
 {
     Point drawOffset;
     if (m_walking) {
         if (m_walkingTile)
-            drawOffset.y -= m_walkingTile->getDrawElevation();
+            drawOffset -= Point(1, 1) * m_walkingTile->getDrawElevation() * g_sprites.getOffsetFactor();
         drawOffset += m_walkOffset;
     } else {
         const TilePtr& tile = getTile();
         if (tile)
-            drawOffset.y -= tile->getDrawElevation();
+            drawOffset -= Point(1, 1) * tile->getDrawElevation() * g_sprites.getOffsetFactor();
     }
     return drawOffset;
 }

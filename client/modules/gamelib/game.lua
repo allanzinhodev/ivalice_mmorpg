@@ -2,6 +2,11 @@ function g_game.getRsa()
   return G.currentRsa
 end
 
+function g_game.isQuickLootEnabled()
+  return g_game.getFeature(GameQuickLootFlags)
+      or g_game.getFeature(GameTibia12Protocol)
+end
+
 function g_game.findPlayerItem(itemId, subType)
     local localPlayer = g_game.getLocalPlayer()
     if localPlayer then

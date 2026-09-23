@@ -2,6 +2,7 @@ filename = nil
 loaded = false
 loading = false
 lastError = nil
+local successfulLoad = nil
 
 function setFileName(name)
   filename = name
@@ -42,21 +43,41 @@ local function hasModernAssetFeatures(datPath)
   return otfi:find('frame%-groups:%s*true') ~= nil or otfi:find('sprite%-data%-size:%s*4096') ~= nil
 end
 
--- O .otfi declara se os sprites tem canal alfa (RGBA) em vez de RGB.
-local function hasSpriteAlphaChannel(datPath)
-  local otfiPath = datPath .. '.otfi'
-  if not g_resources.fileExists(otfiPath) then
-    return false
-  end
-
-  local otfi = g_resources.readFileContents(otfiPath)
-  return otfi ~= nil and otfi:find('transparency:%s*true') ~= nil
-end
-
 local function enableModernAssetFeatures()
   g_game.enableFeature(GameSpritesU32)
   g_game.enableFeature(GameIdleAnimations)
   g_game.enableFeature(GameEnhancedAnimations)
+end
+
+local function getResourceGeneration()
+  if g_resources.getGeneration then
+    return g_resources.getGeneration()
+  end
+  return 0
+end
+
+local function isSameLoad(left, right)
+  return left and
+    left.assetVersion == right.assetVersion and
+    left.datPath == right.datPath and
+    left.sprPath == right.sprPath and
+    left.modernAssets == right.modernAssets and
+    left.resourceGeneration == right.resourceGeneration and
+    -- A loaded U32 asset remains valid after a feature-table reset and can
+    -- restore its required flag. A loaded U16 asset must never be reused when
+    -- the refreshed feature table now requires U32.
+    (left.spritesU32 or not right.spritesU32)
+end
+
+local function isNativeStateValid()
+  return g_things.isDatLoaded() and g_sprites.isLoaded()
+end
+
+local function invalidateAssetCache()
+  -- DAT and SPR are one logical asset set. Never retain an identity for a
+  -- partial or failed attempt, even if one native manager reports loaded.
+  successfulLoad = nil
+  loaded = false
 end
 
 function load()
@@ -86,32 +107,47 @@ function load()
 
   local protocolVersion = g_game.getProtocolVersion()
   local assetVersion = getVersionFromPath(datPath) or version
-  if hasModernAssetFeatures(datPath) then
-    enableModernAssetFeatures()
+  local modernAssets = hasModernAssetFeatures(datPath)
+  local requestedLoad = {
+    assetVersion = assetVersion,
+    datPath = datPath,
+    sprPath = sprPath,
+    modernAssets = modernAssets,
+    resourceGeneration = getResourceGeneration(),
+    spritesU32 = g_game.getFeature(GameSpritesU32)
+  }
+
+  if isSameLoad(successfulLoad, requestedLoad) and isNativeStateValid() then
+    if successfulLoad.spritesU32 then
+      g_game.enableFeature(GameSpritesU32)
+    end
+    if modernAssets then
+      enableModernAssetFeatures()
+    end
+    loaded = true
+    loading = false
+    return
   end
 
-  --[[
-    Canal alfa: 4 bytes por pixel em vez de 3.
-
-    Sem esta feature o SpriteManager le RGB num arquivo RGBA
-    (spritemanager.cpp:628-638). O stream sai de fase logo no primeiro
-    sprite, e o resto do arquivo e lido em posicoes erradas -- na tela isso
-    aparece como pixels coloridos esparsos em vez da arte, e NAO como erro.
-    Nada no log denuncia; so o desenho.
-  ]]
-  if hasSpriteAlphaChannel(datPath) then
-    g_game.enableFeature(GameSpritesAlphaChannel)
-  end
+  -- From this point native state may be replaced, so an older identity can no
+  -- longer be trusted even if this attempt later fails.
+  invalidateAssetCache()
 
   if assetVersion ~= version then
     g_logger.info(string.format("Loading assets from %s as client version %d while keeping protocol %d.", datPath, assetVersion, protocolVersion))
     g_game.setClientVersion(assetVersion)
   end
 
+  if modernAssets then
+    enableModernAssetFeatures()
+  end
+
   local errorMessage = ''
+  local spritesU32 = g_game.getFeature(GameSpritesU32)
   if not g_things.loadDat(datPath) then
     if not g_game.getFeature(GameSpritesU32) then
       g_game.enableFeature(GameSpritesU32)
+      spritesU32 = true
       if not g_things.loadDat(datPath) then
         errorMessage = errorMessage .. tr("Unable to load dat file, please place a valid dat in '%s'", datPath) .. '\n'
       end
@@ -133,7 +169,19 @@ function load()
     g_game.setProtocolVersion(protocolVersion)
   end
 
-  loaded = (errorMessage:len() == 0)
+  if errorMessage:len() == 0 then
+    loaded = true
+    requestedLoad.spritesU32 = spritesU32
+    successfulLoad = requestedLoad
+    if spritesU32 then
+      g_game.enableFeature(GameSpritesU32)
+    end
+    if modernAssets then
+      enableModernAssetFeatures()
+    end
+  else
+    invalidateAssetCache()
+  end
   loading = false
 
   if errorMessage:len() > 0 then

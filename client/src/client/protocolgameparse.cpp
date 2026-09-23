@@ -50,27 +50,38 @@
 
 namespace
 {
-constexpr int LootHighlightEffectId = 252;
-
 bool shouldDrawMagicEffect(int effectId)
 {
-    if (effectId != LootHighlightEffectId)
-        return true;
+    // Negotiated container highlights are rendered by Tile::drawLootHighlights.
+    // Keep effect 252 available to legacy servers that use it as a regular map effect.
+    if (effectId == Otc::LootHighlightEffectId && g_game.getFeature(Otc::GameContainerTypes))
+        return false;
 
-    int rets = g_lua.luaCallGlobalField("g_game", "shouldShowLootHighlightEffect");
-    if (rets <= 0)
-        return true;
+    return true;
+}
 
-    bool shouldDraw = true;
-    if (g_lua.isBoolean())
-        shouldDraw = g_lua.popBoolean();
-    else
-        g_lua.pop(1);
+constexpr uint8 CreatureMarkPlayerAttack = 3;
 
-    if (rets > 1)
-        g_lua.pop(rets - 1);
+// weaponType 1-6 maps to sword, club, axe, fist, monk staff and monk dagger effects.
+constexpr uint16 MeleeAttackEffectIds[] = { 0, 304, 305, 306, 309, 307, 308 };
 
-    return shouldDraw;
+void playMeleeAttackEffect(const CreaturePtr& target, uint8 weaponType)
+{
+    if (!target || weaponType < 1 || weaponType > 6)
+        return;
+
+    const auto& localPlayer = g_game.getLocalPlayer();
+    if (!localPlayer || g_game.getAttackingCreature() != target)
+        return;
+
+    const uint16 effectId = MeleeAttackEffectIds[weaponType];
+    if (!g_things.isValidDatId(effectId, ThingCategoryEffect))
+        return;
+
+    const auto& effect = std::make_shared<Effect>();
+    effect->setId(effectId);
+    effect->setDirection(localPlayer->getPosition().getDirectionFromPosition(target->getPosition()));
+    g_map.addThing(effect, target->getPosition());
 }
 
 uint32_t getBoundedItemCount(const InputMessagePtr& msg, uint32_t count, const char* context)
@@ -1539,7 +1550,7 @@ void ProtocolGame::parseOpenNpcTrade(const InputMessagePtr& msg)
 
     int listCount;
 
-    if (g_game.getProtocolVersion() >= 986) // tbh not sure from what version
+    if (g_game.getProtocolVersion() >= 986 || g_game.getFeature(Otc::GameShopCountU16))
         listCount = msg->getU16();
     else
         listCount = msg->getU8();
@@ -1779,6 +1790,15 @@ void ProtocolGame::parseCreatureIcons(const InputMessagePtr& msg)
 {
     uint32_t creatureId = msg->getU32();
     uint8_t type = msg->getU8();
+    if (type == 13) {
+        // Astra/Fonticak vocation update on visible players (sendCreatureVocation)
+        const uint8_t vocation = msg->getU8();
+        const CreaturePtr creature = g_map.getCreatureById(creatureId);
+        if (creature)
+            creature->setVocation(vocation);
+        return;
+    }
+
     if (type != 14) {
         // Consume payload to avoid corrupting message stream
         uint8_t count = msg->getU8();
@@ -4557,6 +4577,55 @@ void ProtocolGame::parseFeatures(const InputMessagePtr& msg)
 
 void ProtocolGame::parseCreaturesMark(const InputMessagePtr& msg)
 {
+    // Astra 8.60 negotiates custom server features and receives a single
+    // creature-mark record: [creatureId][markType][markValue]. This packet uses
+    // GameServerCreatureMarks (0x93), not GameServerCreatureIcons (0x8B).
+    // Keep the standard counted parser below for servers without this feature.
+    if (g_game.getProtocolVersion() == 860 && g_game.getFeature(Otc::GameAstraSingleCreatureMarks)) {
+        if (msg->getUnreadSize() < 6) {
+            g_logger.traceError("truncated Astra creature mark");
+            msg->skipBytes(static_cast<uint32>(std::max(0, msg->getUnreadSize())));
+            return;
+        }
+        const uint32 id = msg->getU32();
+        const uint8 markType = msg->getU8();
+        const uint8 markValue = msg->getU8();
+        const CreaturePtr creature = g_map.getCreatureById(id);
+
+        if (markType == 15) {
+            if (!g_game.getFeature(Otc::GameAstraEchoRaidVisuals))
+                return;
+            if (markValue != 0 && markValue != 1 && markValue != 0xFF) {
+                g_logger.traceError("invalid Echo Raid visual state");
+                return;
+            }
+            if (creature)
+                creature->setEchoRaidVisualState(markValue == 0xFF ? -1 : static_cast<int8>(markValue));
+            return;
+        }
+
+        if (!creature) {
+            g_logger.traceError("could not get creature");
+            return;
+        }
+
+        if (markType == CreatureMarkPlayerAttack) {
+            playMeleeAttackEffect(creature, markValue);
+            return;
+        }
+
+        const bool isPermanent = markType != 1;
+        if (isPermanent) {
+            if (markValue == 0xff)
+                creature->hideStaticSquare();
+            else
+                creature->showStaticSquare(Color::from8bit(markValue));
+        } else {
+            creature->addTimedSquare(markValue);
+        }
+        return;
+    }
+
     int len;
     if (g_game.getProtocolVersion() >= 1035) {
         len = 1;
@@ -5114,6 +5183,59 @@ ItemPtr ProtocolGame::getItem(const InputMessagePtr& msg, int id, bool hasDescri
         const uint8 flags = msg->getU8();
         if (hasExtendedItemData) {
             item->setAstraItemMetadata(slotPosition, flags);
+        }
+    }
+
+    if (item->isThingTypeContainer() && g_game.getFeature(Otc::GameContainerTypes)) {
+        const uint8_t containerType = msg->getU8();
+        switch (containerType) {
+            case 1: // Loot Container
+                if (hasExtendedItemData)
+                    item->setQuickLootFlags(msg->getU32());
+                else
+                    msg->getU32(); // loot category flags
+                break;
+            case 2: // Content Counter
+                msg->getU32(); // ammo total
+                break;
+            case 3: // Manager Unknown
+                if (hasExtendedItemData) {
+                    item->setQuickLootFlags(msg->getU32());
+                    item->setObtainFlags(msg->getU32());
+                } else {
+                    msg->getU32(); // loot flags
+                    msg->getU32(); // obtain flags
+                }
+                break;
+            case 4: // Loot Highlight
+                if (hasExtendedItemData)
+                    item->setLootHighlight(true);
+                break;
+            case 8: // Obtain
+                if (hasExtendedItemData)
+                    item->setObtainFlags(msg->getU32());
+                else
+                    msg->getU32(); // obtain flags
+                break;
+            case 9: // Manager
+                if (hasExtendedItemData)
+                    item->setQuickLootFlags(msg->getU32());
+                else
+                    msg->getU32(); // loot flags
+                break;
+            case 11: // Quiver Loot
+                if (hasExtendedItemData) {
+                    item->setQuickLootFlags(msg->getU32());
+                    msg->getU32(); // ammo total
+                } else {
+                    msg->getU32(); // loot flags
+                    msg->getU32(); // ammo total
+                }
+                break;
+            default:
+                if (containerType == 0 && hasExtendedItemData)
+                    item->setLootHighlight(false);
+                break;
         }
     }
 

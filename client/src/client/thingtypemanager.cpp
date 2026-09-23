@@ -287,8 +287,6 @@ bool ThingTypeManager::loadDat(std::string file)
 
         m_marketCategories.clear();
         for(int category = 0; category < ThingLastCategory; ++category) {
-            // Só itens reservam 1..99; o resto (criaturas, efeitos, misseis e
-            // tilesets) comeca no id 1.
             uint16 firstId = 1;
             if(category == ThingCategoryItem)
                 firstId = 100;

@@ -350,8 +350,13 @@ GameAstraQuiverCountU16 = 141
 GameAstraOutfitStoreMode = 142
 GameAstraItemMetadata = 143
 GameZoneWeather = 144
+GameAstraSingleCreatureMarks = 145
+GameContainerTypes = 146
+GameAstraEchoRaidVisuals = 147
+GameShopCountU16 = 148
+GameAstraStoreBasePrice = 149
 
-LastGameFeature = 145
+LastGameFeature = 150
 
 TextColors = {
   red        = '#F55E5E',
@@ -494,6 +499,7 @@ ExtendedIds = {
   Particles = 5,
   MapShader = 6,
   NeedsUpdate = 7,
+  StaffVisuals = 144,
   WheelSkills = 145,
   MonkData = 146,
   Cavebot = 210,

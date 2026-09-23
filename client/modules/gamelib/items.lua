@@ -125,6 +125,7 @@ ItemsDatabase.dirtyRarityItemIds = ItemsDatabase.dirtyRarityItemIds or {}
 ItemsDatabase.refreshAllTrackedRarityWidgets = ItemsDatabase.refreshAllTrackedRarityWidgets or false
 ItemsDatabase.rarityWidgetsByItemId = ItemsDatabase.rarityWidgetsByItemId or {}
 ItemsDatabase.rarityWidgetItemIds = ItemsDatabase.rarityWidgetItemIds or setmetatable({}, { __mode = 'k' })
+ItemsDatabase.rarityWidgetDestroyHooked = ItemsDatabase.rarityWidgetDestroyHooked or setmetatable({}, { __mode = 'k' })
 
 local SERVER_VALUE_CACHE_SCHEMA = 2
 local SERVER_VALUE_CACHE_SAVE_DELAY = 5000
@@ -417,6 +418,11 @@ function ItemsDatabase.untrackRarityWidget(widget)
   ItemsDatabase.rarityWidgetItemIds[widget] = nil
 end
 
+local function onTrackedRarityWidgetDestroy(widget)
+  ItemsDatabase.untrackRarityWidget(widget)
+  ItemsDatabase.rarityWidgetDestroyHooked[widget] = nil
+end
+
 function ItemsDatabase.trackRarityWidget(widget, item)
   local itemId = getRarityItemId(item)
   if not itemId or itemId ~= itemId or itemId <= 0 or itemId > MAX_SERVER_ITEM_ID then
@@ -443,24 +449,37 @@ function ItemsDatabase.trackRarityWidget(widget, item)
 
   ItemsDatabase.rarityWidgetItemIds[widget] = itemId
   bucket[widget] = true
+  if not ItemsDatabase.rarityWidgetDestroyHooked[widget] then
+    connect(widget, { onDestroy = onTrackedRarityWidgetDestroy })
+    ItemsDatabase.rarityWidgetDestroyHooked[widget] = true
+  end
   return itemId
 end
 
 local function refreshTrackedRarityWidget(widget, expectedItemId)
-  if not widget or (widget.isDestroyed and widget:isDestroyed()) or not widget.getItem then
+  if not widget then
     ItemsDatabase.untrackRarityWidget(widget)
     return
   end
 
-  local ok, item = pcall(function()
-    return widget:getItem()
+  -- A widget can be destroyed between the weak-table iteration and this
+  -- callback (notably while relogging or rebuilding the game panels). Even
+  -- looking up a method on that stale userdata enters the C++ binding, so keep
+  -- every widget access inside the protected call.
+  local ok, refreshed = pcall(function()
+    if (widget.isDestroyed and widget:isDestroyed()) or not widget.getItem then
+      return false
+    end
+    local item = widget:getItem()
+    if getRarityItemId(item) ~= expectedItemId then
+      return false
+    end
+    ItemsDatabase.setRarityItem(widget, item)
+    return true
   end)
-  if not ok or getRarityItemId(item) ~= expectedItemId then
+  if not ok or not refreshed then
     ItemsDatabase.untrackRarityWidget(widget)
-    return
   end
-
-  ItemsDatabase.setRarityItem(widget, item)
 end
 
 function ItemsDatabase.refreshVisibleRarityFrames(itemIds)

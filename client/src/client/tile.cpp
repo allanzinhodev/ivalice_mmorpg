@@ -21,6 +21,8 @@
  */
 
 #include "tile.h"
+#include "client.h"
+#include "const.h"
 #include "item.h"
 #include "thingtypemanager.h"
 #include "map.h"
@@ -28,12 +30,46 @@
 #include "gameconfig.h"
 #include "localplayer.h"
 #include "effect.h"
-#include "protocolgame.h"
 #include "lightview.h"
 #include "spritemanager.h"
 #include <framework/graphics/fontmanager.h>
-#include <framework/util/extras.h>
+#include <framework/stdext/fastrand.h>
 #include <framework/core/adaptiverenderer.h>
+
+namespace
+{
+int calculateLootHighlightPhase(const ThingTypePtr& effectType, Timer& timer, const uint32_t randomSeed, int& animationPhase)
+{
+    if (!effectType)
+        return 0;
+
+    const int phases = effectType->getAnimationPhases();
+    if (phases <= 1)
+        return 0;
+
+    ticks_t cycleDuration = 0;
+    AnimatorPtr animator;
+
+    if (g_game.getFeature(Otc::GameEnhancedAnimations) && effectType->getAnimator()) {
+        animator = effectType->getAnimator();
+        cycleDuration = animator->getTotalDuration(randomSeed);
+    } else {
+        cycleDuration = static_cast<ticks_t>(Otc::LootHighlightTicksPerFrame) * phases;
+    }
+
+    if (cycleDuration > 0 && timer.ticksElapsed() >= cycleDuration)
+        timer.restart();
+
+    if (g_game.getFeature(Otc::GameEnhancedAnimations) && animator) {
+        animationPhase = std::max<int>(0, animator->getPhaseAt(timer, randomSeed, animationPhase));
+    } else {
+        const int ticks = Otc::LootHighlightTicksPerFrame;
+        animationPhase = std::max<int>(0, std::min<int>(static_cast<int>(timer.ticksElapsed() / ticks), phases - 1));
+    }
+
+    return animationPhase;
+}
+}
 
 Tile::Tile(const Position& position) :
     m_position(position),
@@ -43,21 +79,6 @@ Tile::Tile(const Position& position) :
 {
 }
 
-/*
- * A ELEVACAO NAO MOVE O TERRENO.
- *
- * `m_drawElevation` acumula a altura da pilha e serve para posicionar o que
- * esta EM CIMA da celula -- criaturas e itens. O chao fica onde esta.
- *
- * O motivo e que a arte do terreno JA TEM o relevo desenhado: as faces
- * laterais dos degraus, a sombra, o penhasco. Deslocar o sprite por cima
- * disso soma o relevo duas vezes, e o sintoma e o terreno alto "flutuando"
- * fora do mapa -- visivel em assets/ffta/tilesets/aizenfield/alturas-relevo.png,
- * onde as celulas do planalto norte saem da moldura de pedra.
- *
- * O deslocamento continua sendo acumulado aqui, porque e nesta ordem que a
- * pilha e percorrida; quem o consome e drawCreatures/drawTop.
- */
 void Tile::drawGround(const Point& dest, LightView* lightView)
 {
     m_topDraws = 0;
@@ -74,10 +95,9 @@ void Tile::drawGround(const Point& dest, LightView* lightView)
         if (thing->isHidden())
             continue;
 
-        thing->draw(dest, true, lightView);
-        m_drawElevation = m_drawElevation + thing->getElevation();
+        thing->draw(dest - m_drawElevation * g_sprites.getOffsetFactor(), true, lightView);
+        m_drawElevation = std::min<uint8_t>(m_drawElevation + thing->getElevation(), Otc::MAX_ELEVATION);
     }
-
 }
 
 void Tile::drawBottom(const Point& dest, LightView* lightView)
@@ -86,9 +106,6 @@ void Tile::drawBottom(const Point& dest, LightView* lightView)
         return;
 
     // bottom things, only when GameMapDrawGroundFirst is active
-    //
-    // Sao os `#bloco` que formam a altura -- TERRENO, e portanto sem
-    // deslocamento, pelo mesmo motivo do drawGround.
     if (g_game.getFeature(Otc::GameMapDrawGroundFirst)) {
         bool afterBottom = false;
         for (const ThingPtr& thing : m_things) {
@@ -99,16 +116,12 @@ void Tile::drawBottom(const Point& dest, LightView* lightView)
             if (thing->isHidden() || !afterBottom)
                 continue;
 
-            thing->draw(dest, true, lightView);
-            m_drawElevation = m_drawElevation + thing->getElevation();
+            thing->draw(dest - m_drawElevation * g_sprites.getOffsetFactor(), true, lightView);
+            m_drawElevation = std::min<uint8_t>(m_drawElevation + thing->getElevation(), Otc::MAX_ELEVATION);
         }
     }
 
     // common items, reverse order
-    //
-    // Aqui o deslocamento VALE: sao itens largados na celula (uma espada no
-    // chao, um bau), e eles pousam EM CIMA dela como o personagem. Sem isso
-    // um item numa celula alta apareceria enterrado no terreno.
     int redrawPreviousTopW = 0, redrawPreviousTopH = 0;
     bool stopDrawing = false;
     for (auto it = m_things.rbegin(); it != m_things.rend(); ++it) {
@@ -125,10 +138,8 @@ void Tile::drawBottom(const Point& dest, LightView* lightView)
         if (thing->isHidden())
             continue;
 
-        // So em Y: `Point - int` subtrai dos DOIS eixos (point.h:57), e mover
-        // em X inclinaria a coluna de itens sobre uma celula alta.
-        thing->draw(Point(dest.x, dest.y - m_drawElevation), true, lightView);
-        m_drawElevation = m_drawElevation + thing->getElevation();
+        thing->draw(dest - m_drawElevation * g_sprites.getOffsetFactor() , true, lightView);
+        m_drawElevation = std::min<uint8_t>(m_drawElevation + thing->getElevation(), Otc::MAX_ELEVATION);
     }
 
     if (!g_game.getFeature(Otc::GameMapIgnoreCorpseCorrection)) {
@@ -137,13 +148,8 @@ void Tile::drawBottom(const Point& dest, LightView* lightView)
                 if (x == 0 && y == 0)
                     continue;
                 if (const TilePtr& tile = g_map.getTile(m_position.translated(x, y))) {
-                    // Offset ate o vizinho, PROJETADO. Com `x * spriteSize` o
-                    // redesenho caia na posicao da grade ortogonal, e a
-                    // criatura aparecia deslocada por cima do mapa.
-                    const Point vizinho((x - y) * Otc::TILE_HALF_W,
-                                        (x + y) * Otc::TILE_HALF_H);
-                    tile->drawCreatures(dest + vizinho, lightView);
-                    tile->drawTop(dest + vizinho, lightView);
+                    tile->drawCreatures(dest + Point(x * g_sprites.spriteSize(), y * g_sprites.spriteSize()), lightView);
+                    tile->drawTop(dest + Point(x * g_sprites.spriteSize(), y * g_sprites.spriteSize()), lightView);
                 }
             }
         }
@@ -152,6 +158,71 @@ void Tile::drawBottom(const Point& dest, LightView* lightView)
     if (lightView && hasTranslucentLight()) {
         lightView->addLight(dest + Point(16, 16), 215, 1);
     }
+}
+
+void Tile::updateLootHighlightItemFlag()
+{
+    m_hasLootHighlightItem = false;
+    for (const auto& thing : m_things) {
+        if (!thing->isItem())
+            continue;
+
+        if (thing->static_self_cast<Item>()->hasLootHighlight()) {
+            m_hasLootHighlightItem = true;
+            return;
+        }
+    }
+}
+
+void Tile::drawLootHighlights(const Point& dest, LightView* lightView)
+{
+    if (!m_hasLootHighlightItem || !g_client.shouldShowLootHighlightEffect())
+        return;
+
+    ItemPtr highlightedItem;
+    for (auto it = m_things.rbegin(); it != m_things.rend(); ++it) {
+        if (!(*it)->isItem())
+            continue;
+
+        const auto& item = (*it)->static_self_cast<Item>();
+        if (!item->hasLootHighlight())
+            continue;
+
+        highlightedItem = item;
+        break;
+    }
+
+    if (!highlightedItem) {
+        m_lootHighlightTimer.stop();
+        m_lootHighlightPhase = 0;
+        return;
+    }
+
+    if (!g_things.isValidDatId(Otc::LootHighlightEffectId, ThingCategoryEffect))
+        return;
+
+    const auto& effectType = g_things.getThingType(Otc::LootHighlightEffectId, ThingCategoryEffect);
+    if (!effectType)
+        return;
+
+    if (!m_lootHighlightTimer.running()) {
+        m_lootHighlightSeed = static_cast<uint32_t>(stdext::fastrand());
+        m_lootHighlightTimer.restart();
+        m_lootHighlightPhase = 0;
+    }
+
+    const int highlightPhase = calculateLootHighlightPhase(effectType, m_lootHighlightTimer, m_lootHighlightSeed, m_lootHighlightPhase);
+
+    int xPattern = m_position.x % effectType->getNumPatternX();
+    if (xPattern < 0)
+        xPattern += effectType->getNumPatternX();
+    int yPattern = m_position.y % effectType->getNumPatternY();
+    if (yPattern < 0)
+        yPattern += effectType->getNumPatternY();
+
+    const float alpha = g_client.getEffectAlpha(Otc::ME_SOURCE_OWN);
+    const Color highlightColor(255, 255, 255, static_cast<int>(alpha * 255));
+    effectType->draw(dest - m_drawElevation * g_sprites.getOffsetFactor(), 0, xPattern, yPattern, 0, highlightPhase, highlightColor, lightView);
 }
 
 void Tile::drawCreatures(const Point& dest, LightView* lightView)
@@ -165,13 +236,8 @@ void Tile::drawCreatures(const Point& dest, LightView* lightView)
     for (const CreaturePtr& creature : m_walkingCreatures) {
         if (creature->isHidden())
             continue;
-        // Delta ate o tile da criatura, PROJETADO no espaco diamante. Um
-        // passo em +x vale (+16,+8) na tela, e nao 32px num eixo so como na
-        // grade ortogonal.
-        const int cdx = creature->getPrewalkingPosition().x - m_position.x;
-        const int cdy = creature->getPrewalkingPosition().y - m_position.y;
-        Point creatureDest(dest.x + (cdx - cdy) * Otc::TILE_HALF_W,
-                           dest.y + (cdx + cdy) * Otc::TILE_HALF_H - m_drawElevation);
+        Point creatureDest(dest.x + ((creature->getPrewalkingPosition().x - m_position.x) * g_sprites.spriteSize() - m_drawElevation * g_sprites.getOffsetFactor()),
+                           dest.y + ((creature->getPrewalkingPosition().y - m_position.y) * g_sprites.spriteSize() - m_drawElevation * g_sprites.getOffsetFactor()));
         creature->draw(creatureDest, true, lightView);
     }
 
@@ -186,7 +252,7 @@ void Tile::drawCreatures(const Point& dest, LightView* lightView)
         CreaturePtr creature = thing->static_self_cast<Creature>();
         if (!creature || creature->isWalking())
             continue;
-        creature->draw(Point(dest.x, dest.y - m_drawElevation), true, lightView);
+        creature->draw(dest - m_drawElevation * g_sprites.getOffsetFactor(), true, lightView);
     }
 }
 
@@ -201,11 +267,8 @@ void Tile::drawTop(const Point& dest, LightView* lightView)
     for (const CreaturePtr& creature : m_walkingCreatures) {
         if (creature->isHidden())
             continue;
-        // Mesma projecao do drawCreatures.
-        const int cdx = creature->getPrewalkingPosition().x - m_position.x;
-        const int cdy = creature->getPrewalkingPosition().y - m_position.y;
-        Point creatureDest(dest.x + (cdx - cdy) * Otc::TILE_HALF_W,
-                           dest.y + (cdx + cdy) * Otc::TILE_HALF_H - m_drawElevation);
+        Point creatureDest(dest.x + ((creature->getPrewalkingPosition().x - m_position.x) * g_sprites.spriteSize() - m_drawElevation * g_sprites.getOffsetFactor()),
+                   dest.y + ((creature->getPrewalkingPosition().y - m_position.y) * g_sprites.spriteSize() - m_drawElevation * g_sprites.getOffsetFactor()));
         creature->draw(creatureDest, true, lightView);
     }
 
@@ -220,7 +283,7 @@ void Tile::drawTop(const Point& dest, LightView* lightView)
         CreaturePtr creature = thing->static_self_cast<Creature>();
         if (!creature || creature->isWalking())
             continue;
-        creature->draw(Point(dest.x, dest.y - m_drawElevation), true, lightView);
+        creature->draw(dest - m_drawElevation * g_sprites.getOffsetFactor(), true, lightView);
     }
 
     // effects
@@ -228,7 +291,9 @@ void Tile::drawTop(const Point& dest, LightView* lightView)
     for (int i = limit; i >= 0; --i) {
         if (m_effects[i]->isHidden())
             continue;
-        m_effects[i]->draw(Point(dest.x, dest.y - m_drawElevation), m_position.x - g_map.getCentralPosition().x, m_position.y - g_map.getCentralPosition().y, true, lightView);
+        if (m_effects[i]->getId() == Otc::LootHighlightEffectId && g_game.getFeature(Otc::GameContainerTypes))
+            continue;
+        m_effects[i]->draw(dest - m_drawElevation * g_sprites.getOffsetFactor(), m_position.x - g_map.getCentralPosition().x, m_position.y - g_map.getCentralPosition().y, true, lightView);
     }
 
     // top
@@ -304,29 +369,30 @@ bool Tile::drawToImage(const Point& dest, ImagePtr image)
     int x = dest.x;
     int y = dest.y;
 
-    /*
-     * Mesma regra do desenho na tela (ver o comentario em drawGround): a
-     * elevacao nao move o TERRENO, so o que esta em cima dele.
-     *
-     * E o deslocamento e so em Y. O codigo original subtraia de x e de y --
-     * elevacao e vertical por definicao, entao mover em x era errado mesmo
-     * na logica antiga; passava despercebido porque `drawToImage` so e usado
-     * para gerar imagem fora da tela.
-     */
-
-    // drawGround -- terreno, sem deslocamento
+    // drawGround
     m_drawElevation = 0;
     for (const ThingPtr& thing : m_things) {
         if (!thing->isGround() && !thing->isGroundBorder() && !thing->isOnBottom())
             break;
         if (thing->isHidden())
             continue;
+/*
+// OLD 'hack' to fix tables
+        if (thing->isGround() || thing->isGroundBorder() || thing->isOnBottom()) {
+            if (thing->getId() == 2322 || thing->getId() == 2323)
+                m_drawElevation = std::min<uint8_t>(m_drawElevation + thing->getElevation(), Otc::MAX_ELEVATION);
 
-        anythingDrawn |= thing->drawToImage(Point(x, y), image);
-        m_drawElevation = m_drawElevation + thing->getElevation();
+            anythingDrawn |= thing->drawToImage(Point(x - m_drawElevation, y - m_drawElevation), image);
+        }
+
+        if (thing->getId() != 2322 && thing->getId() != 2323)
+            m_drawElevation = std::min<uint8_t>(m_drawElevation + thing->getElevation(), Otc::MAX_ELEVATION);
+*/
+        anythingDrawn |= thing->drawToImage(Point(x - m_drawElevation, y - m_drawElevation), image);
+        m_drawElevation = std::min<uint8_t>(m_drawElevation + thing->getElevation(), Otc::MAX_ELEVATION);
     }
 
-    // drawBottom -- itens largados, sobem com a celula
+    // drawBottom
     for (auto it = m_things.rbegin(); it != m_things.rend(); ++it) {
         const ThingPtr& thing = *it;
         if (thing->isOnTop() || thing->isOnBottom() || thing->isGroundBorder() || thing->isGround() || thing->isCreature())
@@ -334,8 +400,8 @@ bool Tile::drawToImage(const Point& dest, ImagePtr image)
         if (thing->isHidden())
             continue;
 
-        anythingDrawn |= thing->drawToImage(Point(x, y - m_drawElevation), image);
-        m_drawElevation = m_drawElevation + thing->getElevation();
+        anythingDrawn |= thing->drawToImage(Point(x - m_drawElevation, y - m_drawElevation), image);
+        m_drawElevation = std::min<uint8_t>(m_drawElevation + thing->getElevation(), Otc::MAX_ELEVATION);
     }
 
     // drawTop
@@ -343,7 +409,7 @@ bool Tile::drawToImage(const Point& dest, ImagePtr image)
         if (!thing->isOnTop() || !thing->isHidden())
             continue;
 
-        anythingDrawn |= thing->drawToImage(Point(x, y - m_drawElevation), image);
+        anythingDrawn |= thing->drawToImage(Point(x - m_drawElevation, y - m_drawElevation), image);
     }
 
     return anythingDrawn;
@@ -358,6 +424,11 @@ void Tile::clean()
         m_widget->destroy();
         m_widget = nullptr;
     }
+
+    m_hasLootHighlightItem = false;
+    m_lootHighlightTimer.stop();
+    m_lootHighlightPhase = 0;
+    m_lootHighlightSeed = 0;
 }
 
 void Tile::addWalkingCreature(const CreaturePtr& creature)
@@ -438,6 +509,9 @@ void Tile::addThing(const ThingPtr& thing, int stackPos)
     if(thing->isTranslucent())
         checkTranslucentLight();
 
+    if (!thing->isEffect())
+        updateLootHighlightItemFlag();
+
     if(g_game.isTileThingLuaCallbackEnabled())
         callLuaField("onAddThing", thing);
 }
@@ -472,6 +546,9 @@ bool Tile::removeThing(ThingPtr thing)
 
     if(thing->isTranslucent())
         checkTranslucentLight();
+
+    if (removed && !thing->isEffect())
+        updateLootHighlightItemFlag();
 
     if (g_game.isTileThingLuaCallbackEnabled() && removed) {
         callLuaField("onRemoveThing", thing);
@@ -548,23 +625,6 @@ ItemPtr Tile::getGround()
     if(firstObject->isGround() && firstObject->isItem())
         return firstObject->static_self_cast<Item>();
     return nullptr;
-}
-
-/*
- * O tile e agua?
- *
- * Le do CHAO, nao da pilha inteira: o que define se alguem esta na agua e o
- * terreno, nao um item largado em cima dele. Varrer m_things faria uma pedra
- * sobre a agua responder "sim" tambem, e -- pior -- um item qualquer com a
- * flag transformaria um tile seco em molhado.
- */
-bool Tile::isWater()
-{
-    const ItemPtr& ground = getGround();
-    if (!ground)
-        return false;
-    ThingType* type = ground->rawGetThingType();
-    return type && type->isWater();
 }
 
 int Tile::getGroundSpeed()

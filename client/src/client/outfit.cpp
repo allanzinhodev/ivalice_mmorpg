@@ -141,32 +141,9 @@ void Outfit::draw(Point dest, Otc::Direction direction, uint walkAnimationPhase,
             animationPhase = std::min<int>(animationPhase + 1, animationPhases);
     }
 
-    /*
-     * O eixo Z da outfit, no Tibia, tem tres colunas:
-     *   0  em terra, a pe
-     *   1  montado
-     *   2  caminhando sobre agua
-     *
-     * As outfits do ivalice NAO tem montaria: o compilador emite patternZ 2,
-     * sendo 0 = seco e 1 = agua (compile.js:buildOutfitGroup). Por isso a
-     * agua pega a ULTIMA coluna que existir, nao o indice 2 fixo -- com duas
-     * colunas ela e a 1, com tres e a 2.
-     *
-     * Fixar o 2 e deixar o clamp resolver daria o mesmo resultado hoje, por
-     * coincidencia, e o resultado ERRADO no dia em que a coluna de montaria
-     * aparecer: a agua passaria a desenhar a arte da montaria.
-     */
-    const int ultimoZ = type->getNumPatternZ() - 1;
-    int zPattern = 0;
-    if (m_onWater)
-        zPattern = std::max<int>(0, ultimoZ);
-    else if (m_mount > 0)
-        zPattern = std::min<int>(1, ultimoZ);
-
+    int zPattern = m_mount > 0 ? std::min<int>(1, type->getNumPatternZ() - 1) : 0;
     auto drawMount = [&] {
-        // A montaria so entra se houver montaria DE VERDADE. Testar
-        // `zPattern > 0` faria a agua desenhar a montaria tambem.
-        if (m_mount > 0 && zPattern > 0) {
+        if (zPattern > 0) {
             int mountAnimationPhase = walkAnimationPhase;
             auto mountType = g_things.rawGetThingType(m_mount, ThingCategoryCreature);
             auto idleAnimator = mountType->getIdleAnimator();
@@ -348,7 +325,7 @@ void Outfit::draw(Point dest, Otc::Direction direction, uint walkAnimationPhase,
                 wingDest = dest + boneOffset * g_sprites.getOffsetFactor();
             }
         }
-        if (g_game.getFeature(Otc::GameWingOffset) && m_mount > 0) {
+        if (g_game.getFeature(Otc::GameWingOffset) && zPattern > 0) {
             if (direction == Otc::East)
                 wingDest -= Point(6, 2) * g_sprites.getOffsetFactor();
             else
@@ -419,7 +396,7 @@ void Outfit::draw(Point dest, Otc::Direction direction, uint walkAnimationPhase,
                 wingDest = dest + boneOffset * g_sprites.getOffsetFactor();
             }
         }
-        if (g_game.getFeature(Otc::GameWingOffset) && m_mount > 0)
+        if (g_game.getFeature(Otc::GameWingOffset) && zPattern > 0)
             wingDest += Point(4, 6);
 
         drawWings();
@@ -427,9 +404,7 @@ void Outfit::draw(Point dest, Otc::Direction direction, uint walkAnimationPhase,
     
     if (m_aura && (g_game.getFeature(Otc::GameDrawAuraOnTop) || g_game.getFeature(Otc::GameAuraFrontAndBack))) {
         if (g_game.getFeature(Otc::GameAuraFrontAndBack)){
-            // Correcao de altura da aura para quem esta MONTADO. Na agua o
-            // personagem continua no chao, entao nao se aplica.
-            if (m_mount > 0) {
+            if (zPattern > 0) {
                 if (direction == Otc::East)
                     topAuraDest -= Point(12, 6) * g_sprites.getOffsetFactor();
                 else if (direction == Otc::South)

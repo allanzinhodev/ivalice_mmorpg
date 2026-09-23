@@ -176,12 +176,12 @@ bool DrawQueueItemFillCoords::cache()
 
 void DrawQueueItemText::draw()
 {
-    g_text.drawText(m_point, m_hash, m_color, m_shadow);
+    g_text.drawText(m_point, m_hash, m_color, m_shadow, m_shader);
 }
 
 void DrawQueueItemTextColored::draw()
 {
-    g_text.drawColoredText(m_point, m_hash, m_colors, m_shadow);
+    g_text.drawColoredText(m_point, m_hash, m_colors, m_shadow, m_shader);
 }
 
 void::DrawQueueItemLine::draw()
@@ -275,18 +275,24 @@ void DrawQueue::setFrameBuffer(const Rect& dest, const Size& size, const Rect& s
     m_frameBufferSrc = Rect(Point(srcLeft, srcTop), Point(srcRight, srcBottom));
 }
 
-void DrawQueue::addText(BitmapFontPtr font, const std::string& text, const Rect& screenCoords, Fw::AlignmentFlag align, const Color& color, bool shadow)
+void DrawQueue::addText(BitmapFontPtr font, const std::string& text, const Rect& screenCoords,
+                        Fw::AlignmentFlag align, const Color& color, bool shadow,
+                        const PainterShaderProgramPtr& shader)
 {
     if (!font || text.empty()) return;
     uint64_t hash = g_text.addText(font, text, screenCoords.size(), align);
-    m_queue.push_back(std::make_unique<DrawQueueItemText>(screenCoords.topLeft(), font->getTexture(), hash, color, shadow));
+    m_queue.push_back(std::make_unique<DrawQueueItemText>(screenCoords.topLeft(), font->getTexture(), hash, color,
+                                                         shadow, shader));
 }
 
-void DrawQueue::addColoredText(BitmapFontPtr font, const std::string& text, const Rect& screenCoords, Fw::AlignmentFlag align, const std::vector<std::pair<int, Color>>& colors, bool shadow)
+void DrawQueue::addColoredText(BitmapFontPtr font, const std::string& text, const Rect& screenCoords,
+                               Fw::AlignmentFlag align, const std::vector<std::pair<int, Color>>& colors,
+                               bool shadow, const PainterShaderProgramPtr& shader)
 {
     if (!font || text.empty()) return;
     uint64_t hash = g_text.addText(font, text, screenCoords.size(), align);
-    m_queue.push_back(std::make_unique<DrawQueueItemTextColored>(screenCoords.topLeft(), font->getTexture(), hash, colors, shadow));
+    m_queue.push_back(std::make_unique<DrawQueueItemTextColored>(screenCoords.topLeft(), font->getTexture(), hash,
+                                                                colors, shadow, shader));
 }
 
 void DrawQueue::correctOutfit(const Rect& dest, int fromPos, bool oldScaling, bool center)

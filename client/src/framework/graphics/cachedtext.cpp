@@ -31,7 +31,7 @@ CachedText::CachedText()
     m_align = Fw::AlignCenter;
 }
 
-void CachedText::draw(const Rect& rect, const Color& color)
+void CachedText::draw(const Rect& rect, const Color& color, const PainterShaderProgramPtr& shader)
 {
     if(!m_font)
         return;
@@ -42,9 +42,10 @@ void CachedText::draw(const Rect& rect, const Color& color)
     }
 
     if (m_textColors.empty()) {
-        m_font->drawText(m_text, m_textCachedScreenCoords, Fw::AlignCenter, color);
+        g_drawQueue->addText(m_font, m_text, m_textCachedScreenCoords, Fw::AlignCenter, color, false, shader);
     } else {
-        m_font->drawColoredText(m_text, m_textCachedScreenCoords, Fw::AlignCenter, m_textColors);
+        g_drawQueue->addColoredText(m_font, m_text, m_textCachedScreenCoords, Fw::AlignCenter, m_textColors,
+                                    false, shader);
     }
 }
 

@@ -275,6 +275,7 @@ ObjectCategory = {
   OBJECTCATEGORY_TIBIACOINS = 23,
   OBJECTCATEGORY_CREATUREPRODUCTS = 24,
   OBJECTCATEGORY_QUIVER = 25,
+  OBJECTCATEGORY_SOULCORES = 26,
   OBJECTCATEGORY_FIST = 27,
   OBJECTCATEGORY_GOLD = 30,
   OBJECTCATEGORY_DEFAULT = 31,
@@ -296,12 +297,17 @@ ObjectCategoryOrder = {
   ObjectCategory.OBJECTCATEGORY_AMMO, ObjectCategory.OBJECTCATEGORY_AXES,
   ObjectCategory.OBJECTCATEGORY_CLUBS, ObjectCategory.OBJECTCATEGORY_DISTANCEWEAPONS,
   ObjectCategory.OBJECTCATEGORY_FIST, ObjectCategory.OBJECTCATEGORY_SWORDS,
-  ObjectCategory.OBJECTCATEGORY_WANDS, ObjectCategory.OBJECTCATEGORY_QUIVER
+  ObjectCategory.OBJECTCATEGORY_WANDS, ObjectCategory.OBJECTCATEGORY_PREMIUMSCROLLS,
+  ObjectCategory.OBJECTCATEGORY_QUIVER, ObjectCategory.OBJECTCATEGORY_SOULCORES
 }
 
 function getObjectCategoryName(category)
   if (category == ObjectCategory.OBJECTCATEGORY_QUIVER) then
     return "Quivers"
+  elseif (category == ObjectCategory.OBJECTCATEGORY_PREMIUMSCROLLS) then
+    return "Premium\nScrolls"
+  elseif (category == ObjectCategory.OBJECTCATEGORY_SOULCORES) then
+    return "Soul\nCores"
   elseif (category == ObjectCategory.OBJECTCATEGORY_WANDS) then
     return "Weapons:\nWands"
   elseif (category == ObjectCategory.OBJECTCATEGORY_SWORDS) then
@@ -604,6 +610,45 @@ function translateWheelVocation(id)
   if id == 2 or id == 6 then return 4 end     -- Druid / Elder Druid
   if id == 9 or id == 10 then return 5 end    -- Monk / Exalted Monk
   return 0
+end
+
+-- OTC/TFS custom market vocation ids used by server restrictVocation bitmasks.
+function translateMarketVocation(id)
+  if not id or id == 0 then return 0 end
+  if id == 1 or id == 5 then return 1 end     -- Sorcerer / Master Sorcerer
+  if id == 2 or id == 6 then return 2 end     -- Druid / Elder Druid
+  if id == 3 or id == 7 then return 3 end     -- Paladin / Royal Paladin
+  if id == 4 or id == 8 then return 4 end     -- Knight / Elite Knight
+  if id == 9 or id == 10 then return 9 end    -- Monk / Exalted Monk
+  return 0
+end
+
+function getMarketVocationBitMask(vocationId)
+  local marketVocId = translateMarketVocation(vocationId)
+  if marketVocId <= 0 then
+    return 0
+  end
+  return Bit.bit(marketVocId - 1)
+end
+
+function getDatVocationBitMask(vocationId)
+  local profession = 0
+  vocationId = tonumber(vocationId) or 0
+  if vocationId == 1 or vocationId == 5 then
+    profession = 3
+  elseif vocationId == 2 or vocationId == 6 then
+    profession = 4
+  elseif vocationId == 3 or vocationId == 7 then
+    profession = 2
+  elseif vocationId == 4 or vocationId == 8 then
+    profession = 1
+  elseif vocationId == 9 or vocationId == 10 then
+    profession = 5
+  end
+  if profession <= 0 then
+    return 0
+  end
+  return Bit.bit(profession)
 end
 
 function translateVocationName(id)

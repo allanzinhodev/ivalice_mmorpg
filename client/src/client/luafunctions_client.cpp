@@ -607,6 +607,7 @@ void Client::registerLuaFunctions()
     g_lua.bindClassMemberFunction<Creature>("setVocation", &Creature::setVocation);
     g_lua.bindClassMemberFunction<Creature>("getVocation", &Creature::getVocation);
     g_lua.bindClassMemberFunction<Creature>("getIcon", &Creature::getIcon);
+    g_lua.bindClassMemberFunction<Creature>("getEchoRaidVisualState", &Creature::getEchoRaidVisualState);
     g_lua.bindClassMemberFunction<Creature>("setOutfit", &Creature::setOutfit);
     g_lua.bindClassMemberFunction<Creature>("getOutfit", &Creature::getOutfit);
     g_lua.bindClassMemberFunction<Creature>("setOutfitColor", &Creature::setOutfitColor);
@@ -1196,5 +1197,11 @@ void Client::registerLuaFunctions()
     });
     g_lua.bindSingletonFunction("g_client", "setBossAreaCreatureEffectAlpha", [](double value) {
         g_client.setBossAreaCreatureEffectAlpha((float)value);
+    });
+    g_lua.bindSingletonFunction("g_client", "setShowLootHighlightEffect", [](bool enabled) {
+        g_client.setShowLootHighlightEffect(enabled);
+    });
+    g_lua.bindSingletonFunction("g_client", "shouldShowLootHighlightEffect", []() {
+        return g_client.shouldShowLootHighlightEffect();
     });
 }

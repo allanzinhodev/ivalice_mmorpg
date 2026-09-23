@@ -28,6 +28,7 @@
 #include "effect.h"
 #include "creature.h"
 #include "item.h"
+#include <framework/core/timer.h>
 #include <framework/luaengine/luaobject.h>
 #include <framework/stdext/time.h>
 
@@ -58,14 +59,7 @@ class Tile : public LuaObject
 {
 public:
     enum {
-        // O empilhamento de altura nao tem limite: cada item da pilha e um
-        // nivel de 8px. Com o valor original (10, herdado do Tibia) uma pilha
-        // de 13 itens era truncada em 10 e a elevacao SATURAVA -- medido: um
-        // degrau de 12 niveis desenhava na mesma altura que um de 4.
-        //
-        // O teto continua existindo como protecao contra pilha absurda vinda
-        // de um mapa corrompido, so que alto o bastante para nao atrapalhar.
-        MAX_THINGS = 64
+        MAX_THINGS = 10
     };
 
     Tile(const Position& position);
@@ -74,6 +68,7 @@ public:
 
     void drawGround(const Point& dest, LightView* lightView = nullptr);
     void drawBottom(const Point& dest, LightView* lightView = nullptr);
+    void drawLootHighlights(const Point& dest, LightView* lightView = nullptr);
     void drawCreatures(const Point& dest, LightView* lightView = nullptr);
     void drawTop(const Point& dest, LightView* lightView = nullptr);
     void drawTexts(Point dest);
@@ -112,7 +107,6 @@ public:
     std::vector<ThingPtr> getThings() { return m_things; }
     std::vector<EffectPtr> getEffects() { return m_effects; }
     ItemPtr getGround();
-    bool isWater();
     int getGroundSpeed();
     bool isBlocking() { return m_blocking != 0; }
     uint8 getMinimapColorByte();
@@ -181,14 +175,13 @@ public:
 
 private:
     void checkTranslucentLight();
+    void updateLootHighlightItemFlag();
 
     std::vector<CreaturePtr> m_walkingCreatures;
     std::vector<EffectPtr> m_effects; // leave this outside m_things because it has no stackpos.
     std::vector<ThingPtr> m_things;
     Position m_position;
-    // int, nao uint8: o empilhamento nao tem limite, e 255 e pouco -- uma
-    // pilha de 32 itens de 8px ja passa disso.
-    int m_drawElevation;
+    uint8 m_drawElevation;
     uint8 m_minimapColor;
     uint32 m_flags, m_houseId;
     uint16 m_speed = 0;
@@ -206,6 +199,11 @@ private:
     Color m_fill = Color::alpha;
 	
 	UIWidgetPtr m_widget;
+
+    bool m_hasLootHighlightItem = false;
+    Timer m_lootHighlightTimer;
+    uint32 m_lootHighlightSeed{ 0 };
+    int m_lootHighlightPhase{ 0 };
 };
 
 #endif

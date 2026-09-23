@@ -55,20 +55,6 @@ enum ThingCategory : uint8 {
     ThingCategoryCreature,
     ThingCategoryEffect,
     ThingCategoryMissile,
-
-    /*
-     * Tiles de cenario, 8x8, puramente visuais.
-     *
-     * Nao carregam flag nenhuma: quem decide colisao, altura e passagem e o
-     * item da celula, nao o desenho. O mapa e ilustrativo.
-     *
-     * Entra NO FIM do enum de proposito. Poe-la antes de Item deslocaria
-     * todos os outros valores, e `ThingCategoryItem == 0` esta assumido em
-     * varios pontos de thingtypemanager.cpp (o firstId = 100, entre outros).
-     * O preco e a ordem de serializacao: tileset vai por ultimo no .dat.
-     */
-    ThingCategoryTileset,
-
     ThingInvalidCategory,
     ThingLastCategory = ThingInvalidCategory
 };
@@ -121,17 +107,6 @@ enum ThingAttr : uint8 {
     // additional
     ThingAttrOpacity          = 100,
     ThingAttrNotPreWalkable   = 101,
-
-    // O tile e agua. Quem pisa nele desenha com zPattern 2 -- o indice que
-    // antes era da montaria passa a significar "caminhando sobre agua".
-    //
-    // Flag SEM CARGA, de proposito: atributo sem payload cai no `default` do
-    // ThingType::unserialize e e registrado sozinho. Um atributo COM valor
-    // exigiria um case proprio, e esquecer esse case dessincroniza a leitura
-    // do arquivo inteiro -- os bytes do valor viram o proximo atributo.
-    // 102 fica reservado: o dat.js do pipeline antigo emite visualOnly nesse
-    // numero, e reaproveita-lo faria um datapack antigo ser lido como agua.
-    ThingAttrWater            = 103,
 
     ThingAttrFloorChange      = 252,
     ThingAttrNoMoveAnimation  = 253, // 10.10: real value is 16, but we need to do this for backwards compatibility
@@ -331,7 +306,6 @@ public:
     // additional
     float getOpacity() { return m_opacity; }
     bool isNotPreWalkable() { return m_attribs.has(ThingAttrNotPreWalkable); }
-    bool isWater() { return m_attribs.has(ThingAttrWater); }
     void setPathable(bool var);
 
 private:

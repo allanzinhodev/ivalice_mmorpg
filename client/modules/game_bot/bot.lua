@@ -732,6 +732,13 @@ local function getCallbackConnections()
       onAddThing = botAddThing,
       onRemoveThing = botRemoveThing
     }},
+    {LocalPlayer, {
+      onPositionChange = botLocalPlayerPositionChange,
+      onWalk = botLocalPlayerWalk,
+      onManaChange = botManaChange,
+      onStatesChange = botStatesChange,
+      onInventoryChange = botInventoryChange
+    }},
     {Creature, {
       onAppear = botCreatureAppear,
       onDisappear = botCreatureDisappear,
@@ -739,11 +746,6 @@ local function getCallbackConnections()
       onHealthPercentChange = botCraetureHealthPercentChange,
       onTurn = botCreatureTurn,
       onWalk = botCreatureWalk
-    }},
-    {LocalPlayer, {
-      onManaChange = botManaChange,
-      onStatesChange = botStatesChange,
-      onInventoryChange = botInventoryChange
     }},
     {Container, {
       onOpen = botContainerOpen,
@@ -839,6 +841,12 @@ function botCreatureDisappear(...)
 end
 
 function botCreaturePositionChange(...)
+  local creature = select(1, ...)
+  if creature and creature:isLocalPlayer() then return end
+  return dispatchBotCallback("onCreaturePositionChange", ...)
+end
+
+function botLocalPlayerPositionChange(...)
   return dispatchBotCallback("onCreaturePositionChange", ...)
 end
 
@@ -899,6 +907,12 @@ function botCreatureTurn(...)
 end
 
 function botCreatureWalk(...)
+  local creature = select(1, ...)
+  if creature and creature:isLocalPlayer() then return end
+  return dispatchBotCallback("onWalk", ...)
+end
+
+function botLocalPlayerWalk(...)
   return dispatchBotCallback("onWalk", ...)
 end
 

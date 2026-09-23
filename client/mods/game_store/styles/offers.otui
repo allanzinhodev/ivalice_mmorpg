@@ -198,9 +198,16 @@ GeneralOffersPanel < Panel
       margin-top: 3
       margin-left: 27
       font: $var-cip-font-off
-      color: $var-cip-inactive-color
+      color: $var-text-cip-store-red
       text-auto-resize: true
       visible: false
+      UIWidget
+        id: strikeLine
+        height: 1
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.verticalCenter: parent.verticalCenter
+        background-color: $var-text-cip-store-red
   Button
     id: buy2
     size: 144 20
@@ -291,14 +298,15 @@ GeneralOffersPanel < Panel
       visible: false
       margin-left: 2
 
-    Label
+    Panel
       id: image
-      text-wrap: true
-      color: $var-text-cip-store-red
       visible: true
       margin-left: 2
       width: 260
-      color: #f4f4f4
+      phantom: true
+      layout:
+        type: verticalBox
+        fit-children: true
 
     Panel
       id: package

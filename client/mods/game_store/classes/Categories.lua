@@ -13,6 +13,141 @@ if not Categories then
 	Categories.renderGeneration = 0
 end
 
+local CATEGORIES_SHEET = '/images/store/categories'
+local categoryIconClips = {
+	store_equipment = 1,
+	store_weapons = 1,
+	store_houses = 2,
+	store_consumables = 6,
+	store_backpacks = 6,
+	store_services = 7,
+	store_blessings = 8,
+	store_prey = 9,
+	xp_boost = 9,
+	prey_wildcard = 9,
+	store_potions = 10,
+	store_mounts = 14,
+	store_outfits = 15,
+	store_extras = 16,
+	store_premium = 20,
+	store_cosmetics = 21,
+	store_furniture = 22,
+	store_beds = 22,
+	store_decorations = 23,
+	store_upgrades = 2,
+}
+
+local function resolveCategoryIconClip(icon, name)
+	local key = tostring(icon or ''):lower():gsub('%.png$', '')
+	if categoryIconClips[key] then
+		return categoryIconClips[key]
+	end
+
+	local label = tostring(name or ''):lower()
+	if label:find('premium', 1, true) or label:find('battle pass', 1, true) then
+		return categoryIconClips.store_premium
+	elseif label:find('boost', 1, true) then
+		return categoryIconClips.xp_boost
+	elseif label:find('consumable', 1, true) then
+		return categoryIconClips.store_consumables
+	elseif label:find('potion', 1, true) then
+		return categoryIconClips.store_potions
+	elseif label:find('bless', 1, true) then
+		return categoryIconClips.store_blessings
+	elseif label:find('prey', 1, true) then
+		return categoryIconClips.store_prey
+	elseif label:find('weapon', 1, true) then
+		return categoryIconClips.store_weapons
+	elseif label:find('backpack', 1, true) or label:find('container', 1, true) then
+		return categoryIconClips.store_backpacks
+	elseif label:find('equipment', 1, true) then
+		return categoryIconClips.store_equipment
+	elseif label:find('outfit', 1, true) then
+		return categoryIconClips.store_outfits
+	elseif label:find('mount', 1, true) then
+		return categoryIconClips.store_mounts
+	elseif label:find('cosmetic', 1, true) then
+		return categoryIconClips.store_cosmetics
+	elseif label:find('upgrade', 1, true) then
+		return categoryIconClips.store_upgrades
+	elseif label:find('bed', 1, true) then
+		return categoryIconClips.store_beds
+	elseif label:find('furniture', 1, true) then
+		return categoryIconClips.store_furniture
+	elseif label:find('decoration', 1, true) or label:find('decor', 1, true) then
+		return categoryIconClips.store_decorations
+	elseif label:find('house', 1, true) then
+		return categoryIconClips.store_houses
+	elseif label:find('extra', 1, true) or label:find('service', 1, true) then
+		return categoryIconClips.store_extras
+	end
+
+	if key:find('house', 1, true) or key:find('upgrade', 1, true) then
+		return categoryIconClips.store_houses
+	end
+	if key:find('bed', 1, true) then
+		return categoryIconClips.store_beds
+	end
+	if key:find('decor', 1, true) or key:find('furniture', 1, true) or key:find('category_', 1, true) then
+		return categoryIconClips.store_furniture
+	end
+
+	return nil
+end
+
+local function applyCategoryIcon(iconWidget, icon, name)
+	if not iconWidget then
+		return
+	end
+
+	iconWidget:setImageClip('0 0 13 13')
+
+	if name == 'Home' then
+		iconWidget:setImageSource('/images/store/icon-store-home')
+		return
+	end
+	if name == 'Search' then
+		iconWidget:setImageSource('/images/store/icon-store-search-result')
+		return
+	end
+
+	local label = tostring(name or ''):lower()
+	if label:find('boost', 1, true) then
+		iconWidget:setImageSource('/images/icons/xp_boost')
+		return
+	end
+
+	local clipId = resolveCategoryIconClip(icon, name)
+	if clipId then
+		iconWidget:setImageSource(CATEGORIES_SHEET)
+		iconWidget:setImageClip(string.format('%d 0 13 13', clipId * 13))
+		return
+	end
+
+	local iconPath = tostring(icon or '')
+	if iconPath ~= '' and (g_resources.fileExists(iconPath) or g_resources.fileExists('/images/store/' .. iconPath) or g_resources.fileExists('/images/store/' .. iconPath .. '.png')) then
+		if not iconPath:find('/', 1, true) then
+			iconPath = '/images/store/' .. iconPath:gsub('%.png$', '')
+		end
+		iconWidget:setImageSource(iconPath)
+		return
+	end
+
+	iconWidget:setImageSource(CATEGORIES_SHEET)
+	iconWidget:setImageClip(string.format('%d 0 13 13', 13))
+end
+
+local function getCategoryStateColor(state)
+	if state == OFFER_STATE_NEW then
+		return "$var-text-cip-color-green"
+	elseif state == OFFER_STATE_SALE then
+		return "$var-text-cip-store-sale"
+	elseif state == OFFER_STATE_TIMED then
+		return "$var-text-cip-store-timed"
+	end
+	return "$var-text-cip-color"
+end
+
 local function getCategoriesSignature(categories)
 	local parts = {}
 	for _, category in ipairs(categories or {}) do
@@ -20,7 +155,8 @@ local function getCategoriesSignature(categories)
 			tostring(category.name or ""),
 			tostring(category.icon or ""),
 			tostring(category.parent or ""),
-			tostring(category.description or "")
+			tostring(category.description or ""),
+			tostring(category.state or OFFER_STATE_NONE)
 		}, "\31")
 	end
 	return table.concat(parts, "\30")
@@ -49,7 +185,7 @@ function Categories:configure(categories)
 	Categories.selectTreeItem = nil
 
 	Categories.categoryTable = {
-		[0] = {name = "Home", icon = "/images/store/icon-store-home"},
+		[0] = {name = "Home", icon = "/images/store/icon-store-home", state = OFFER_STATE_NONE},
 	}
 
 	local createdCategories = {Home = true}
@@ -60,8 +196,9 @@ function Categories:configure(categories)
 			local existing = categoryByName[category.name]
 			if existing then
 				existing.icon = category.icon
+				existing.state = category.state
 			elseif not createdCategories[category.name] then
-				local entry = {name = category.name, icon = category.icon}
+				local entry = {name = category.name, icon = category.icon, state = category.state}
 				createdCategories[category.name] = true
 				categoryByName[category.name] = entry
 				Categories.categoryTable[#Categories.categoryTable + 1] = entry
@@ -71,12 +208,12 @@ function Categories:configure(categories)
 			if parent and not createdCategories[category.name] then
 				parent.childs = parent.childs or {}
 				createdCategories[category.name] = true
-				parent.childs[#parent.childs + 1] = {name = category.name, icon = category.icon}
+				parent.childs[#parent.childs + 1] = {name = category.name, icon = category.icon, state = category.state}
 			end
 		end
 	end
 
-	Categories.categoryTable[#Categories.categoryTable + 1] = {name = "Search", icon = "/images/store/icon-store-search-result", disabled = true}
+	Categories.categoryTable[#Categories.categoryTable + 1] = {name = "Search", icon = "/images/store/icon-store-search-result", state = OFFER_STATE_NONE, disabled = true}
 	Store:profileStep("Categories setup", setupStartedAt)
 
 	local id = 0
@@ -93,6 +230,7 @@ function Categories:configure(categories)
 			widget:setId(id)
 			Categories.widgets[id] = widget
 			widget.mainButton.text:setText(cat.name)
+			widget.mainButton.text:setColor(getCategoryStateColor(cat.state))
 			if cat.childs and #cat.childs > 0 then
 				widget.mainButton.scroll:setVisible(true)
 			else
@@ -103,21 +241,7 @@ function Categories:configure(categories)
 				widget:setVisible(false)
 			end
 
-			if g_resources.fileExists(cat.icon) or table.contains({"Home", "Search"}, cat.name) then
-				widget.mainButton.icon:setImageSource(cat.icon)
-			else
-				local currentWidget = widget.mainButton.icon
-				currentWidget.currentImageRequest = Store.currentRequest
-				Store.imageRequests[Store.currentRequest] = currentWidget
-				Store.currentRequest = Store.currentRequest + 1
-
-				currentWidget:insertLuaCall("onDestroy")
-				currentWidget.onDestroy = function()
-					Store.imageRequests[currentWidget.currentImageRequest] = nil
-				end
-
-				Store:downloadImage(currentWidget.currentImageRequest, "13/"..cat.icon)
-			end
+			applyCategoryIcon(widget.mainButton.icon, cat.icon, cat.name)
 
 			widget.mainButton.onClick = function()
 				Categories:onSelectCategory(widget.mainButton)
@@ -184,17 +308,9 @@ function Categories:onSelectCategory(widget, name)
 			local widgetId = 'TreeButton' .. tostring(index)
 			newWidget:setId(widgetId)
 
-			local currentWidget = newWidget.icon
-			currentWidget.currentImageRequest = Store.currentRequest
-			Store.imageRequests[Store.currentRequest] = currentWidget
-			Store.currentRequest = Store.currentRequest + 1
-
-			currentWidget:insertLuaCall("onDestroy")
-			currentWidget.onDestroy = function()
-				Store.imageRequests[currentWidget.currentImageRequest] = nil
-			end
-
-			Store:downloadImage(currentWidget.currentImageRequest, "13/"..child.icon)
+			applyCategoryIcon(newWidget.icon, child.icon, child.name)
+			newWidget.categoryState = child.state
+			newWidget.text:setColor(getCategoryStateColor(child.state))
 
 			local pos = (index - 1) * 20 + (Categories.buttonSize / 3)
 			if not name and not printed then
@@ -209,7 +325,7 @@ function Categories:onSelectCategory(widget, name)
 
 				if selectedButton then
 					selectedButton:setOn(false)
-					selectedButton.text:setColor("$var-text-cip-color")
+					selectedButton.text:setColor(getCategoryStateColor(selectedButton.categoryState))
 				end
 				selectedButton = newWidget
 				selectedButton:setOn(true)
