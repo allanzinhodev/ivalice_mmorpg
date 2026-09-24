@@ -760,17 +760,9 @@ void Game::autoWalk(const std::vector<Otc::Direction>& dirs, Position startPos)
         cancelFollow();
     }
 
-    auto it = dirs.begin();
-    Otc::Direction direction = *it;
-
     uint8_t flags = 0x04; // auto walk flag
 
-    TilePtr toTile = g_map.getTile(startPos.translatedToDirection(direction));
-    if(startPos == m_localPlayer->getPrewalkingPosition() && toTile && toTile->isWalkable() && !m_localPlayer->isWalking() && m_localPlayer->canWalk(direction, true)) {
-        m_localPlayer->preWalk(direction);
-        m_localPlayer->startServerWalking();
-        flags |= 0x01; // prewalk flag
-    }
+    // no prewalk: every step is animated only when the server moves the player
 
     g_lua.callGlobalField("g_game", "onAutoWalk", dirs);
 
@@ -832,10 +824,8 @@ bool Game::walk(Otc::Direction direction, bool isKeyDown)
     bool withPreWalk = false;
 
     if (toTile && toTile->isWalkable()) {
-        if (!m_localPlayer->isServerWalking()) {
-            m_localPlayer->preWalk(direction);
-            withPreWalk = true;
-        }
+        // no prewalk: wait for the server to confirm the step before animating it
+        m_localPlayer->awaitStep();
     } else {
         auto canChangeFloorDown = [&] {
             Position pos = toPos;

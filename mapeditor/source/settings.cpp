@@ -27,6 +27,7 @@
 #include <wx/wfstream.h>
 
 #include <string>
+#include <thread>
 
 Settings g_settings;
 
@@ -236,6 +237,7 @@ void Settings::IO(IOMode mode) {
 	Int(SHOW_TECHNICAL_ITEMS, 1);
 	Int(SHOW_WAYPOINTS, 1);
 	Int(SHOW_GRID, 0);
+	Int(ISOMETRIC_VIEW, 1);
 	Int(SHOW_EXTRA, 1);
 	Int(SHOW_SHADE, 1);
 	Int(SHOW_SPECIAL_TILES, 1);

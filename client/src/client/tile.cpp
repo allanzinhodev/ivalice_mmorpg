@@ -32,6 +32,7 @@
 #include "effect.h"
 #include "lightview.h"
 #include "spritemanager.h"
+#include "isometric.h"
 #include <framework/graphics/fontmanager.h>
 #include <framework/stdext/fastrand.h>
 #include <framework/core/adaptiverenderer.h>
@@ -95,7 +96,7 @@ void Tile::drawGround(const Point& dest, LightView* lightView)
         if (thing->isHidden())
             continue;
 
-        thing->draw(dest - m_drawElevation * g_sprites.getOffsetFactor(), true, lightView);
+        thing->draw(dest - Point(0, m_drawElevation * g_sprites.getOffsetFactor()), true, lightView);
         m_drawElevation = std::min<uint8_t>(m_drawElevation + thing->getElevation(), Otc::MAX_ELEVATION);
     }
 }
@@ -116,7 +117,7 @@ void Tile::drawBottom(const Point& dest, LightView* lightView)
             if (thing->isHidden() || !afterBottom)
                 continue;
 
-            thing->draw(dest - m_drawElevation * g_sprites.getOffsetFactor(), true, lightView);
+            thing->draw(dest - Point(0, m_drawElevation * g_sprites.getOffsetFactor()), true, lightView);
             m_drawElevation = std::min<uint8_t>(m_drawElevation + thing->getElevation(), Otc::MAX_ELEVATION);
         }
     }
@@ -138,7 +139,7 @@ void Tile::drawBottom(const Point& dest, LightView* lightView)
         if (thing->isHidden())
             continue;
 
-        thing->draw(dest - m_drawElevation * g_sprites.getOffsetFactor() , true, lightView);
+        thing->draw(dest - Point(0, m_drawElevation * g_sprites.getOffsetFactor()), true, lightView);
         m_drawElevation = std::min<uint8_t>(m_drawElevation + thing->getElevation(), Otc::MAX_ELEVATION);
     }
 
@@ -148,8 +149,8 @@ void Tile::drawBottom(const Point& dest, LightView* lightView)
                 if (x == 0 && y == 0)
                     continue;
                 if (const TilePtr& tile = g_map.getTile(m_position.translated(x, y))) {
-                    tile->drawCreatures(dest + Point(x * g_sprites.spriteSize(), y * g_sprites.spriteSize()), lightView);
-                    tile->drawTop(dest + Point(x * g_sprites.spriteSize(), y * g_sprites.spriteSize()), lightView);
+                    tile->drawCreatures(dest + Iso::delta(x, y, g_sprites.spriteSize()), lightView);
+                    tile->drawTop(dest + Iso::delta(x, y, g_sprites.spriteSize()), lightView);
                 }
             }
         }
@@ -222,7 +223,7 @@ void Tile::drawLootHighlights(const Point& dest, LightView* lightView)
 
     const float alpha = g_client.getEffectAlpha(Otc::ME_SOURCE_OWN);
     const Color highlightColor(255, 255, 255, static_cast<int>(alpha * 255));
-    effectType->draw(dest - m_drawElevation * g_sprites.getOffsetFactor(), 0, xPattern, yPattern, 0, highlightPhase, highlightColor, lightView);
+    effectType->draw(dest - Point(0, m_drawElevation * g_sprites.getOffsetFactor()), 0, xPattern, yPattern, 0, highlightPhase, highlightColor, lightView);
 }
 
 void Tile::drawCreatures(const Point& dest, LightView* lightView)
@@ -232,17 +233,18 @@ void Tile::drawCreatures(const Point& dest, LightView* lightView)
     if (m_topDraws < m_topCorrection)
         return;
 
-    // walking creatures
+    // walking creatures: placed at their destination cell (screen space), standing on
+    // its elevation; Creature's walk offset interpolates position and elevation back
     for (const CreaturePtr& creature : m_walkingCreatures) {
         if (creature->isHidden())
             continue;
-        Point creatureDest(dest.x + ((creature->getPrewalkingPosition().x - m_position.x) * g_sprites.spriteSize() - m_drawElevation * g_sprites.getOffsetFactor()),
-                           dest.y + ((creature->getPrewalkingPosition().y - m_position.y) * g_sprites.spriteSize() - m_drawElevation * g_sprites.getOffsetFactor()));
-        creature->draw(creatureDest, true, lightView);
+        const Position& to = creature->getPrewalkingPosition();
+        const TilePtr& toTile = g_map.getTile(to);
+        const int toElevation = (toTile ? toTile->getDrawElevation() : 0) * g_sprites.getOffsetFactor();
+        creature->draw(dest + Iso::delta(to.x - m_position.x, to.y - m_position.y, g_sprites.spriteSize()) - Point(0, toElevation), true, lightView);
     }
 
     // creatures
-    std::vector<CreaturePtr> creaturesToDraw;
     int limit = g_adaptiveRenderer.creaturesLimit();
     for (auto& thing : m_things) {
         if (!thing->isCreature() || thing->isHidden())
@@ -252,7 +254,7 @@ void Tile::drawCreatures(const Point& dest, LightView* lightView)
         CreaturePtr creature = thing->static_self_cast<Creature>();
         if (!creature || creature->isWalking())
             continue;
-        creature->draw(dest - m_drawElevation * g_sprites.getOffsetFactor(), true, lightView);
+        creature->draw(dest - Point(0, m_drawElevation * g_sprites.getOffsetFactor()), true, lightView);
     }
 }
 
@@ -263,37 +265,16 @@ void Tile::drawTop(const Point& dest, LightView* lightView)
     if (m_topDraws++ < m_topCorrection)
         return;
 
-    // walking creatures
-    for (const CreaturePtr& creature : m_walkingCreatures) {
-        if (creature->isHidden())
-            continue;
-        Point creatureDest(dest.x + ((creature->getPrewalkingPosition().x - m_position.x) * g_sprites.spriteSize() - m_drawElevation * g_sprites.getOffsetFactor()),
-                   dest.y + ((creature->getPrewalkingPosition().y - m_position.y) * g_sprites.spriteSize() - m_drawElevation * g_sprites.getOffsetFactor()));
-        creature->draw(creatureDest, true, lightView);
-    }
-
-    // creatures
-    std::vector<CreaturePtr> creaturesToDraw;
-    int limit = g_adaptiveRenderer.creaturesLimit();
-    for (auto& thing : m_things) {
-        if (!thing->isCreature() || thing->isHidden())
-            continue;
-        if (limit-- <= 0)
-            break;
-        CreaturePtr creature = thing->static_self_cast<Creature>();
-        if (!creature || creature->isWalking())
-            continue;
-        creature->draw(dest - m_drawElevation * g_sprites.getOffsetFactor(), true, lightView);
-    }
+    // creatures are drawn by drawCreatures, which always runs right before this
 
     // effects
-    limit = std::min<int>((int)m_effects.size() - 1, g_adaptiveRenderer.effetsLimit());
+    int limit = std::min<int>((int)m_effects.size() - 1, g_adaptiveRenderer.effetsLimit());
     for (int i = limit; i >= 0; --i) {
         if (m_effects[i]->isHidden())
             continue;
         if (m_effects[i]->getId() == Otc::LootHighlightEffectId && g_game.getFeature(Otc::GameContainerTypes))
             continue;
-        m_effects[i]->draw(dest - m_drawElevation * g_sprites.getOffsetFactor(), m_position.x - g_map.getCentralPosition().x, m_position.y - g_map.getCentralPosition().y, true, lightView);
+        m_effects[i]->draw(dest - Point(0, m_drawElevation * g_sprites.getOffsetFactor()), m_position.x - g_map.getCentralPosition().x, m_position.y - g_map.getCentralPosition().y, true, lightView);
     }
 
     // top
@@ -754,10 +735,10 @@ CreaturePtr Tile::getTopCreatureEx(Point offset)
         for (const CreaturePtr& c : tile->getCreatures()) {
             if (c->isLocalPlayer()) {
                 localPlayer = c;
-                localPlayerOffset = Point(offset.x - xy[0] * g_sprites.spriteSize(), offset.y - xy[1] * g_sprites.spriteSize());
+                localPlayerOffset = offset - Iso::delta(xy[0], xy[1], g_sprites.spriteSize());
                 continue;
             }
-            if (c->isInsideOffset(Point(offset.x - xy[0] * g_sprites.spriteSize(), offset.y - xy[1] * g_sprites.spriteSize())))
+            if (c->isInsideOffset(offset - Iso::delta(xy[0], xy[1], g_sprites.spriteSize())))
                 return c;
         }
     }

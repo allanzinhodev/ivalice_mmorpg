@@ -222,8 +222,11 @@ com 4 personagens. No `config.lua`: `mysqlUser/Pass/Database = "ivalice"`,
 
 ## Projecao isometrica: armadilhas ja enfrentadas
 
-A projecao vive em `MapView::transformPositionTo2D` e as constantes em
-`client/src/client/const.h` (`TILE_HALF_W/H`, `FLOOR_LIFT`).
+A projecao vive em `MapView::transformPositionTo2D` e as funcoes puras em
+`client/src/client/isometric.h` (losango `s x s/2`, derivado de `spriteSize`;
+um andar = `s/2` px, sai de graca do `coveredUp`). O map editor tem a mesma
+conta em `mapeditor/source/isometric.h` (View > Isometric view).
+Teste: `client/tests/isometric_test.cpp` (compila sozinho com `cl /std:c++20 /I client/src`).
 
 Tres bugs custaram tempo e valem lembrar:
 
@@ -257,15 +260,18 @@ Chame esse ponto de âncora. Não importa onde o desenho está dentro do sprite 
 mude o desenho de lugar e o displacement continua valendo.
 
 E `dest` tem um significado fixo, definido pela inversa usada no picking
-(`MapView::getPosition`): ela dá o tile para todo ponto `(sx,sy)` relativo a
-`dest` com `0 <= sx + 2*sy < 32` e `0 <= 2*sy - sx < 32` — o losango cujo
-**vértice superior** está em `dest`. Logo:
+(`Iso::screenToCell`): é o **canto superior esquerdo da caixa 32x16 do
+losango** (o centro do losango fica em `dest + (16, 8)`). Logo:
 
 | thing | onde deve cair | âncora |
 |---|---|---|
-| chão | vértice superior do losango | `(16, 0)` |
-| criatura | pés no centro da célula | `(16, pés_y - 8)` |
-| efeito / missile | centro do desenho no centro da célula | `(16, 16 - 8)` |
+| chão (losango nas linhas 0–15, face lateral de 1 andar nas 16–31) | caixa do losango | `(0, 0)` |
+| criatura | pés no centro da célula | `(0, pés_y - 8)` |
+| efeito / missile | centro do desenho no centro da célula | `(0, 16 - 8)` |
+
+Outfits com `patternX = 2`: coluna 0 = Norte, 1 = Leste; Oeste e Sul são o
+flip horizontal delas em volta de `dest.x + 16` (client `Outfit::draw`,
+editor `BlitCreature`).
 
 `gen-things.js` rasteriza o chão com a **mesma inequação** do picking, então
 render e clique concordam pixel a pixel e a tesselação sai sem folga nem

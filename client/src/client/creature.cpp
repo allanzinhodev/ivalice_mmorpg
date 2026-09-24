@@ -42,6 +42,7 @@
 #include <framework/graphics/texturemanager.h>
 #include <framework/graphics/framebuffermanager.h>
 #include "spritemanager.h"
+#include "isometric.h"
 
 #include <framework/util/stats.h>
 #include <framework/util/extras.h>
@@ -418,6 +419,11 @@ void Creature::walk(const Position& oldPos, const Position& newPos)
     m_lastStepFromPosition = oldPos;
     m_lastStepToPosition = newPos;
 
+    // the step interpolates between both tiles' item elevation
+    const TilePtr& fromTile = g_map.getTile(oldPos);
+    const TilePtr& toTile = g_map.getTile(newPos);
+    m_walkElevationDelta = ((fromTile ? fromTile->getDrawElevation() : 0) - (toTile ? toTile->getDrawElevation() : 0)) * g_sprites.getOffsetFactor();
+
     // set current walking direction
     setDirection(m_lastStepDirection);
     m_walkDirection = m_direction;
@@ -469,7 +475,7 @@ void Creature::updateJump()
 
     // schedules next update
     if (m_jumpTimer.ticksElapsed() < m_jumpDuration) {
-        m_jumpOffset = PointF(height, height);
+        m_jumpOffset = PointF(0, height); // straight up on screen
 
         int diff = 0;
         if (m_jumpTimer.ticksElapsed() < halfJumpDuration)
@@ -616,35 +622,32 @@ void Creature::updateWalkAnimation(uint8 totalPixelsWalked)
 void Creature::updateWalkOffset(uint8 totalPixelsWalked, bool inNextFrame)
 {
     Point& walkOffset = inNextFrame ? m_walkOffsetInNextFrame : m_walkOffset;
-    walkOffset = Point(0, 0);
+    const int s = g_sprites.spriteSize();
+
+    // grid-space offset from the destination back to the origin, shrinking to 0
+    Point grid(0, 0);
     if (m_walkDirection == Otc::North || m_walkDirection == Otc::NorthEast || m_walkDirection == Otc::NorthWest)
-        walkOffset.y = g_sprites.spriteSize() - totalPixelsWalked;
+        grid.y = s - totalPixelsWalked;
     else if (m_walkDirection == Otc::South || m_walkDirection == Otc::SouthEast || m_walkDirection == Otc::SouthWest)
-        walkOffset.y = totalPixelsWalked - g_sprites.spriteSize();
+        grid.y = totalPixelsWalked - s;
 
     if (m_walkDirection == Otc::East || m_walkDirection == Otc::NorthEast || m_walkDirection == Otc::SouthEast)
-        walkOffset.x = totalPixelsWalked - g_sprites.spriteSize();
+        grid.x = totalPixelsWalked - s;
     else if (m_walkDirection == Otc::West || m_walkDirection == Otc::NorthWest || m_walkDirection == Otc::SouthWest)
-        walkOffset.x = g_sprites.spriteSize() - totalPixelsWalked;
+        grid.x = s - totalPixelsWalked;
+
+    // projected to screen, climbing from the origin tile elevation to the destination's
+    walkOffset = Iso::fromGridPx(grid);
+    walkOffset.y -= m_walkElevationDelta * (s - totalPixelsWalked) / s;
 }
 
 void Creature::updateWalkingTile()
 {
-    // determine new walking tile
-    TilePtr newWalkingTile;
-    Rect virtualCreatureRect(g_sprites.spriteSize() + (m_walkOffset.x - getDisplacementX()),
-        g_sprites.spriteSize() + (m_walkOffset.y - getDisplacementY()),
-        g_sprites.spriteSize(), g_sprites.spriteSize());
-    for (int xi = -1; xi <= 1 && !newWalkingTile; ++xi) {
-        for (int yi = -1; yi <= 1 && !newWalkingTile; ++yi) {
-            Rect virtualTileRect((xi + 1) * g_sprites.spriteSize(), (yi + 1) * g_sprites.spriteSize(), g_sprites.spriteSize(), g_sprites.spriteSize());
-
-            // only render creatures where bottom right is inside tile rect
-            if (virtualTileRect.contains(virtualCreatureRect.bottomRight())) {
-                newWalkingTile = g_map.getOrCreateTile(getPrewalkingPosition().translated(xi, yi, 0));
-            }
-        }
-    }
+    // draw with whichever end of the step is in front (larger x+y), so the tile
+    // painted later does not cover the creature halfway through the step
+    const Position to = getPrewalkingPosition();
+    const Position& from = m_lastStepFromPosition;
+    TilePtr newWalkingTile = g_map.getOrCreateTile(to.x + to.y >= from.x + from.y || from.z != to.z ? to : from);
 
     if (newWalkingTile != m_walkingTile) {
         if (m_walkingTile)
@@ -1023,16 +1026,13 @@ void Creature::cancelShieldBlinkEvent()
 
 Point Creature::getDrawOffset()
 {
+    // relative to the prewalking position, like Tile::drawCreatures places it; elevation is Y only
     Point drawOffset;
-    if (m_walking) {
-        if (m_walkingTile)
-            drawOffset -= Point(1, 1) * m_walkingTile->getDrawElevation() * g_sprites.getOffsetFactor();
+    const TilePtr& tile = g_map.getTile(getPrewalkingPosition());
+    if (tile)
+        drawOffset.y -= tile->getDrawElevation() * g_sprites.getOffsetFactor();
+    if (m_walking)
         drawOffset += m_walkOffset;
-    } else {
-        const TilePtr& tile = getTile();
-        if (tile)
-            drawOffset -= Point(1, 1) * tile->getDrawElevation() * g_sprites.getOffsetFactor();
-    }
     return drawOffset;
 }
 

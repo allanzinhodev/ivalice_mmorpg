@@ -25,6 +25,7 @@
 #include "map.h"
 #include "tile.h"
 #include "spritemanager.h"
+#include "isometric.h"
 #include "client.h"
 #include "game.h"
 #include <framework/core/clock.h>
@@ -79,12 +80,14 @@ void Missile::setPath(const Position& fromPosition, const Position& toPosition)
     m_source = fromPosition;
     m_destination = toPosition;
 
-    m_direction = fromPosition.getDirectionFromPosition(toPosition);
-
     m_position = fromPosition;
-    m_delta = Point(toPosition.x - fromPosition.x, toPosition.y - fromPosition.y);
-    m_duration = 150 * std::sqrt(m_delta.length());
-    m_delta *= g_sprites.spriteSize();
+    const Point grid(toPosition.x - fromPosition.x, toPosition.y - fromPosition.y);
+    m_duration = 150 * std::sqrt(grid.length());
+
+    // screen-space travel (a floor up is s/2 higher); the sprite follows the on-screen angle
+    const int dz = toPosition.z - fromPosition.z;
+    m_delta = Iso::delta(grid.x + dz, grid.y + dz, g_sprites.spriteSize());
+    m_direction = Iso::screenDirection(m_delta);
     m_animationTimer.restart();
 
     // schedule removal
